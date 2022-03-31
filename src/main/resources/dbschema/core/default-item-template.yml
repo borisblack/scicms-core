@@ -1,0 +1,131 @@
+coreVersion: v1
+kind: ItemTemplate
+metadata:
+  name: defaultItemTemplate
+spec:
+  properties:
+    id:
+      type: uuid
+      columnName: id
+      displayName: ID
+      description: ID
+      required: true
+      unique: true
+      indexed: true
+    configId:
+      type: uuid
+      columnName: config_id
+      displayName: ConfigID
+      description: ConfigID
+      required: true
+      indexed: true
+      private: true
+    generation:
+      type: int
+      columnName: generation
+      displayName: Generation
+      description: Generation
+      minRange: 1
+    majorRev:
+      type: string
+      columnName: major_rev
+      displayName: Major Rev
+      description: Major Rev
+      length: 50
+    minorRev:
+      type: string
+      columnName: minor_rev
+      displayName: Minor Rev
+      description: Minor Rev
+      length: 50
+    lastVersion:
+      type: bool
+      columnName: last_version
+      displayName: Last Version
+      description: Last Version
+    current:
+      type: bool
+      columnName: is_current
+      displayName: Current
+      description: Current
+    released:
+      type: bool
+      columnName: released
+      displayName: Released
+      description: Released
+    lifecycle:
+      type: relation
+      columnName: lifecycle_id
+      target: lifecycle
+      relType: manyToOne
+      displayName: Lifecycle
+      description: Lifecycle
+    state:
+      type: relation
+      columnName: state_id
+      target: state
+      relType: manyToOne
+      displayName: Lifecycle State
+      description: Lifecycle State
+    permission:
+      type: relation
+      columnName: permission_id
+      target: permission
+      relType: manyToOne
+      displayName: Permission
+      description: Permission
+    locale:
+      type: enum
+      columnName: locale
+      enumName: locale
+      displayName: Locale
+      description: Locale
+      defaultValue: en-US
+      indexed: true
+    createdAt:
+      type: datetime
+      columnName: created_at
+      displayName: Created At
+      description: Created At
+      required: true
+    createdBy:
+      type: relation
+      columnName: created_by_id
+      target: user
+      relType: manyToOne
+      displayName: Created By
+      description: Created By
+      required: true
+    updatedAt:
+      type: datetime
+      columnName: updated_at
+      displayName: Updated At
+      description: Updated At
+    updatedBy:
+      type: relation
+      columnName: updated_by_id
+      target: user
+      relType: manyToOne
+      displayName: Updated By
+      description: Updated By
+    ownedBy:
+      type: relation
+      columnName: owned_by_id
+      target: user
+      relType: manyToOne
+      displayName: Owned By
+      description: Owned By
+    managedBy:
+      type: relation
+      columnName: managed_by_id
+      target: user
+      relType: manyToOne
+      displayName: Managed By
+      description: Managed By
+    lockedBy:
+      type: relation
+      columnName: locked_by_id
+      target: user
+      relType: manyToOne
+      displayName: Locked By
+      description: Locked By

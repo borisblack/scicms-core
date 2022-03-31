@@ -1,0 +1,125 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: item
+  tableName: core_items
+  displayName: Item
+  singularName: item
+  pluralName: items
+  description: Items
+  core: true
+  performDdlCreate: false
+#  isVersioned: false
+#  isManualVersioning: false
+#  isNotLockable: false
+#  isLocalized: false
+spec:
+  properties:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+    tableName:
+      type: string
+      columnName: table_name
+      displayName: Table Name
+      description: Table Name
+      length: 50
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+    singularName:
+      type: string
+      columnName: singular_name
+      displayName: Singular Name
+      description: Singular Name
+      length: 50
+    pluralName:
+      type: string
+      columnName: plural_name
+      displayName: Plural Name
+      description: Plural Name
+      required: true
+      length: 50
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+    dataSource:
+      type: enum
+      columnName: data_source
+      enumName: dataSource
+      displayName: Data Source
+      description: Data Source
+    icon:
+      type: string
+      columnName: icon
+      displayName: Icon
+      description: Icon
+      length: 50
+    core:
+      type: bool
+      columnName: core
+      displayName: Core
+      description: Core
+    performDdlCreate:
+      type: bool
+      columnName: perform_ddl_create
+      displayName: Perform DDL Create
+      description: Perform DDL Create
+    versioned:
+      type: bool
+      columnName: versioned
+      displayName: Versioned
+      description: Versioned
+    manualVersioning:
+      type: bool
+      columnName: manual_versioning
+      displayName: Manual Versioning
+      description: Manual Versioning
+    revisionPolicy:
+      type: relation
+      columnName: revision_policy_id
+      target: revisionPolicy
+      relType: manyToOne
+      displayName: Revision Policy
+      description: Revision Policy
+    notLockable:
+      type: bool
+      columnName: not_lockable
+      displayName: Not Lockable
+      description: Not Lockable
+    localized:
+      type: bool
+      columnName: localized
+      displayName: Localized
+      description: Localized
+    implementation:
+      type: string
+      columnName: implementation
+      displayName: Implementation
+      description: Implementation
+      length: 100
+    properties:
+      type: array
+      columnName: properties
+      displayName: Properties
+      description: Properties
+      required: true
+      defaultValue: '[]'
+    checksum:
+      type: string
+      columnName: checksum
+      displayName: Checksum
+      description: Checksum
+      length: 50
