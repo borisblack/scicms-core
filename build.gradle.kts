@@ -23,6 +23,7 @@ repositories {
 }
 
 dependencies {
+    implementation(files("/lib/sqlbuilder-3.0.2.jar"))
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

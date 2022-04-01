@@ -1,0 +1,39 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: partChangeItem
+  dataSource: main
+  tableName: part_changes
+  displayName: Part Change
+  singularName: partChange
+  pluralName: partChanges
+  description: Part Changes
+  core: false
+  performDdl: true
+  versioned: false
+  manualVersioning: false
+  notLockable: false
+  localized: false
+spec:
+  properties:
+    source:
+      type: relation
+      columnName: source_id
+      target: part
+      relType: oneToOne
+      displayName: Source Part
+      description: Source Part
+    target:
+      type: relation
+      columnName: target_id
+      target: changeNotice
+      relType: oneToOne
+      displayName: Target Change Notice
+      description: Target Change Notice
+    sortOrder:
+      type: int
+      columnName: sort_order
+      displayName: Sort Order
+      description: Sort Order

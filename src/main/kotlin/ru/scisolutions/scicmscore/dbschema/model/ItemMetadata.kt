@@ -10,7 +10,7 @@ class ItemMetadata(
     val description: String? = null,
     val icon: String? = null,
     val core: Boolean = false,
-    val performDdlCreate: Boolean = true,
+    val performDdl: Boolean = true,
     val versioned: Boolean = false,
     val manualVersioning: Boolean = false,
     val revisionPolicy: String? = null,

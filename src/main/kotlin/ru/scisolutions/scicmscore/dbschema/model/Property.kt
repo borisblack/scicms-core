@@ -2,10 +2,13 @@ package ru.scisolutions.scicmscore.dbschema.model
 
 class Property(
     val type: String,
-    val columnName: String,
+    val columnName: String? = null, // can be null for some relations
     val enumName: String? = null,
     val target: String? = null,
     val relType: String? = null,
+    val mappedBy: String? = null,
+    val inversedBy: String? = null,
+    val viaTable: String? = null,
     val displayName: String,
     val description: String? = null,
     val pattern: String? = null, // for string type

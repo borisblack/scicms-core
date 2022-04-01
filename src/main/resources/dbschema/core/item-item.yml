@@ -10,7 +10,7 @@ metadata:
   pluralName: items
   description: Items
   core: true
-  performDdlCreate: false
+  performDdl: false
 #  isVersioned: false
 #  isManualVersioning: false
 #  isNotLockable: false
@@ -72,7 +72,7 @@ spec:
       columnName: core
       displayName: Core
       description: Core
-    performDdlCreate:
+    performDdl:
       type: bool
       columnName: perform_ddl_create
       displayName: Perform DDL Create
