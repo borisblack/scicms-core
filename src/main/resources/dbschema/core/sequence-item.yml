@@ -1,0 +1,72 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: sequence
+  tableName: core_sequences
+  displayName: Sequence
+  singularName: sequence
+  pluralName: sequences
+  description: Sequences
+  core: true
+  performDdl: false
+spec:
+  properties:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+    prefix:
+      type: string
+      columnName: prefix
+      displayName: Prefix
+      description: Prefix
+      length: 50
+    suffix:
+      type: string
+      columnName: suffix
+      displayName: Suffix
+      description: Suffix
+      length: 50
+    initialValue:
+      type: int
+      columnName: initial_value
+      displayName: Initial Value
+      description: Initial Value
+    currentValue:
+      type: int
+      columnName: current_value
+      displayName: Current Value
+      description: Current Value
+    step:
+      type: int
+      columnName: step
+      displayName: Step
+      description: Step
+    padWith:
+      type: string
+      columnName: pad_with
+      displayName: Pad With
+      description: Pad With
+      length: 1
+    padTo:
+      type: int
+      columnName: pad_to
+      displayName: Pad To
+      description: Pad To
+      minRange: 0
+  indexes:
+    core_sequence_name_uk:
+      columns:
+        - name
+      unique: true

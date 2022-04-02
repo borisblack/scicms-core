@@ -3,7 +3,7 @@ kind: Item
 includeTemplates:
   - defaultItemTemplate
 metadata:
-  name: partChangeItem
+  name: partChange
   dataSource: main
   tableName: part_changes
   displayName: Part Change

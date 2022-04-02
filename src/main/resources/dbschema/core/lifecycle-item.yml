@@ -1,0 +1,52 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: lifecycle
+  tableName: core_lifecycles
+  displayName: Lifecycle
+  singularName: lifecycle
+  pluralName: lifecycle
+  description: Lifecycles
+  core: true
+  performDdl: true
+spec:
+  properties:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+    startState:
+      type: string
+      columnName: start_state
+      displayName: Start State
+      description: Start State
+      length: 50
+    spec:
+      type: json
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      defaultValue: '{}'
+  indexes:
+    core_lifecycle_name_uk:
+      columns:
+        - name
+      unique: true

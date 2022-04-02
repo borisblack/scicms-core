@@ -119,7 +119,7 @@ spec:
       type: relation
       target: partBom
       relType: manyToMany
-      viaTable: partBom
+      viaTable: part_bom
       displayName: Part BOM
       description: Part BOM
 #  indexes:

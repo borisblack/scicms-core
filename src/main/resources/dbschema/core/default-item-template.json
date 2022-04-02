@@ -72,12 +72,11 @@
         "description": "Lifecycle"
       },
       "state": {
-        "type": "relation",
-        "columnName": "state_id",
-        "target": "state",
-        "relType": "manyToOne",
+        "type": "string",
+        "columnName": "state",
         "displayName": "Lifecycle State",
-        "description": "Lifecycle State"
+        "description": "Lifecycle State",
+        "length": 50
       },
       "permission": {
         "type": "relation",

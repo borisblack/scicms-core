@@ -1,0 +1,41 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: allowedLifecycle
+  dataSource: main
+  tableName: core_allowed_lifecycles
+  displayName: Allowed Lifecycle
+  singularName: allowedLifecycle
+  pluralName: allowedLifecycles
+  description: Allowed Lifecycles
+  core: true
+  performDdl: true
+  versioned: false
+spec:
+  properties:
+    source:
+      type: relation
+      columnName: source_id
+      target: item
+      relType: oneToOne
+      displayName: Source Item
+      description: Source Item
+    target:
+      type: relation
+      columnName: target_id
+      target: lifecycle
+      relType: oneToOne
+      displayName: Target Lifecycle
+      description: Target Lifecycle
+    sortOrder:
+      type: int
+      columnName: sort_order
+      displayName: Sort Order
+      description: Sort Order
+    default:
+      type: bool
+      columnName: is_default
+      displayName: Default
+      description: Default
