@@ -1,0 +1,40 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: permission
+  tableName: sec_permissions
+  displayName: Permission
+  singularName: permission
+  pluralName: permissions
+  description: Permission
+  core: true
+  performDdl: true
+spec:
+  properties:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+    principal:
+      type: bool
+      columnName: principal
+      displayName: Principal
+      description: Principal
+    permissions:
+      type: relation
+      target: identity
+      relType: manyToMany
+      relItem: access
+      inversedBy: permissions
+      displayName: Identities
+      description: Identities
+  indexes:
+    sec_permission_name_uk:
+      columns:
+        - name
+      unique: true

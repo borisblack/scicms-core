@@ -37,3 +37,15 @@ spec:
       displayName: Description
       description: Description
       length: 250
+    parts:
+      type: relation
+      target: part
+      relType: oneToMany
+      mappedBy: product
+      displayName: Parts
+      description: Parts
+  indexes:
+    product_name_uk:
+      columns:
+        - name
+      unique: true

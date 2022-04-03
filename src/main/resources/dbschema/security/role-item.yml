@@ -1,0 +1,36 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: role
+  tableName: sec_roles
+  displayName: Role
+  singularName: role
+  pluralName: roles
+  description: Roles
+  core: true
+  performDdl: true
+spec:
+  properties:
+    user:
+      type: relation
+      columnName: username
+      target: user(username)
+      relType: manyToOne
+      inversedBy: roles
+      displayName: User
+      description: User
+    role:
+      type: string
+      columnName: role
+      displayName: Role
+      description: Role
+      required: true
+      length: 50
+  indexes:
+    sec_role_username_role_uk:
+      columns:
+        - username
+        - role
+      unique: true

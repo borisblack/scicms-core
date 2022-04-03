@@ -2,6 +2,7 @@ coreVersion: v1
 kind: Item
 includeTemplates:
   - defaultItemTemplate
+  - defaultRelTemplate
 metadata:
   name: partChange
   dataSource: main
@@ -32,8 +33,8 @@ spec:
       relType: oneToOne
       displayName: Target Change Notice
       description: Target Change Notice
-    sortOrder:
-      type: int
-      columnName: sort_order
-      displayName: Sort Order
-      description: Sort Order
+  part_change_source_target_uk:
+    columns:
+      - source
+      - target
+    unique: true

@@ -58,7 +58,7 @@
             <column name="table_name" type="varchar(50)"/>
             <column name="icon" type="varchar(50)"/>
             <column name="core" type="boolean"/>
-            <column name="perform_ddl_create" type="boolean"/>
+            <column name="perform_ddl" type="boolean"/>
             <column name="versioned" type="boolean"/>
             <column name="manual_versioning" type="boolean"/>
             <column name="revision_policy_id" type="varchar(36)">

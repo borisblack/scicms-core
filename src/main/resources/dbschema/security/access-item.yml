@@ -1,0 +1,49 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+  - defaultRelTemplate
+metadata:
+  name: access
+  dataSource: main
+  tableName: sec_access
+  displayName: Access
+  singularName: access
+  pluralName: access
+  description: Access
+  core: true
+  performDdl: true
+  versioned: false
+spec:
+  properties:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+    source:
+      type: relation
+      columnName: source_id
+      target: permission
+      relType: oneToOne
+      displayName: Source Permission
+      description: Source Permission
+    target:
+      type: relation
+      columnName: target_id
+      target: identity
+      relType: oneToOne
+      displayName: Target Identity
+      description: Target Identity
+  indexes:
+    sec_access_name_uk:
+      columns:
+        - name
+      unique: true
+    sec_access_source_target_uk:
+      columns:
+        - source
+        - target
+      unique: true

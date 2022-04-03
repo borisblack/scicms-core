@@ -1,0 +1,36 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: groupMember
+  tableName: sec_group_members
+  displayName: Group Member
+  singularName: groupMember
+  pluralName: groupMembers
+  description: Group Members
+  core: true
+  performDdl: true
+spec:
+  properties:
+    group:
+      type: relation
+      columnName: group_id
+      target: group
+      relType: manyToOne
+      inversedBy: roles
+      displayName: Group
+      description: Group
+    user:
+      type: relation
+      columnName: username
+      target: user(username)
+      relType: manyToOne
+      displayName: User
+      description: User
+  indexes:
+    sec_group_member_uk:
+      columns:
+        - group
+        - user
+      unique: true

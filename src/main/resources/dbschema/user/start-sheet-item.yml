@@ -38,3 +38,8 @@ spec:
       mappedBy: startSheet
       displayName: Parts
       description: Parts
+  indexes:
+    start_sheet_name_uk:
+      columns:
+        - name
+      unique: true

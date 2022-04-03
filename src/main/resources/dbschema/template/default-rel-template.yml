@@ -1,0 +1,11 @@
+coreVersion: v1
+kind: ItemTemplate
+metadata:
+  name: defaultRelTemplate
+spec:
+  properties:
+    sortOrder:
+      type: int
+      columnName: sort_order
+      displayName: Sort Order
+      description: Sort Order

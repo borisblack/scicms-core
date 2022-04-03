@@ -1,0 +1,45 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: user
+  tableName: sec_users
+  displayName: User
+  singularName: user
+  pluralName: users
+  description: Users
+  core: true
+  performDdl: true
+spec:
+  properties:
+    username:
+      type: string
+      columnName: username
+      displayName: Username
+      description: Username
+      required: true
+      length: 50
+    password:
+      type: password
+      columnName: password
+      displayName: Password
+      description: Password
+      length: 50
+    enabled:
+      type: bool
+      columnName: enabled
+      displayName: Enabled
+      description: Enabled
+    roles:
+      type: relation
+      target: role
+      relType: oneToMany
+      mappedBy: user
+      displayName: Roles
+      description: Roles
+  indexes:
+    sec_user_username_uk:
+      columns:
+        - username
+      unique: true

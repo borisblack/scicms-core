@@ -45,7 +45,7 @@ spec:
       type: relation
       target: part
       relType: manyToMany
+      relItem: partChange
       mappedBy: changeNotices
-      viaTable: part_changes
       displayName: Parts
       description: Parts

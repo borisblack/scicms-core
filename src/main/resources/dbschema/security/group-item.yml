@@ -1,0 +1,41 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: group
+  tableName: sec_groups
+  displayName: Group
+  singularName: group
+  pluralName: groups
+  description: Groups
+  core: true
+  performDdl: true
+spec:
+  properties:
+    groupName:
+      type: string
+      columnName: group_name
+      displayName: Group Name
+      description: Group Name
+      required: true
+      length: 50
+    roles:
+      type: relation
+      target: groupRole
+      relType: oneToMany
+      mappedBy: group
+      displayName: Roles
+      description: Roles
+    members:
+      type: relation
+      target: groupMember
+      relType: oneToMany
+      mappedBy: group
+      displayName: Members
+      description: Members
+  indexes:
+    sec_group_name_uk:
+      columns:
+        - groupName
+      unique: true

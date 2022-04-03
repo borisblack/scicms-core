@@ -1,0 +1,40 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: identity
+  tableName: sec_identities
+  displayName: Identity
+  singularName: identity
+  pluralName: identities
+  description: Identities
+  core: true
+  performDdl: true
+spec:
+  properties:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+    principal:
+      type: bool
+      columnName: principal
+      displayName: Principal
+      description: Principal
+    permissions:
+      type: relation
+      target: permission
+      relType: manyToMany
+      relItem: access
+      mappedBy: identities
+      displayName: Permissions
+      description: Permissions
+  indexes:
+    sec_identity_name_uk:
+      columns:
+        - name
+      unique: true

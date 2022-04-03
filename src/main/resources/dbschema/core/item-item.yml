@@ -127,9 +127,16 @@ spec:
       type: relation
       target: lifecycle
       relType: manyToMany
-      viaTable: allowed_lifecycles
+      relItem: allowedLifecycle
       displayName: Lifecycles
       description: Lifecycles
+    permissions:
+      type: relation
+      target: permission
+      relType: manyToMany
+      relItem: allowedPermission
+      displayName: Allowed Permissions
+      description: Allowed Permissions
   indexes:
     core_item_name_uk:
       columns:

@@ -6,9 +6,9 @@ class Property(
     val enumName: String? = null,
     val target: String? = null,
     val relType: String? = null,
+    val relItem: String? = null,
     val mappedBy: String? = null,
     val inversedBy: String? = null,
-    val viaTable: String? = null,
     val displayName: String,
     val description: String? = null,
     val pattern: String? = null, // for string type

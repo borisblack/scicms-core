@@ -2,6 +2,7 @@ coreVersion: v1
 kind: Item
 includeTemplates:
   - defaultItemTemplate
+  - defaultRelTemplate
 metadata:
   name: allowedLifecycle
   dataSource: main
@@ -29,13 +30,13 @@ spec:
       relType: oneToOne
       displayName: Target Lifecycle
       description: Target Lifecycle
-    sortOrder:
-      type: int
-      columnName: sort_order
-      displayName: Sort Order
-      description: Sort Order
     default:
       type: bool
       columnName: is_default
       displayName: Default
       description: Default
+  core_allowed_lifecycle_source_target_uk:
+    columns:
+      - source
+      - target
+    unique: true

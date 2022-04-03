@@ -1,0 +1,36 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: groupRole
+  tableName: sec_group_roles
+  displayName: Group Role
+  singularName: groupRole
+  pluralName: groupRoles
+  description: Group Roles
+  core: true
+  performDdl: true
+spec:
+  properties:
+    group:
+      type: relation
+      columnName: group_id
+      target: group
+      relType: manyToOne
+      inversedBy: roles
+      displayName: Group
+      description: Group
+    role:
+      type: string
+      columnName: role
+      displayName: Role
+      description: Role
+      required: true
+      length: 50
+  indexes:
+    sec_group_role_uk:
+      columns:
+        - group
+        - role
+      unique: true

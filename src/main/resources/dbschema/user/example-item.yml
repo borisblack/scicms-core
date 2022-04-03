@@ -3,16 +3,16 @@ kind: Item
 includeTemplates:
   - defaultItemTemplate
 metadata:
-  name: part
+  name: example
   dataSource: main # optional ('main' by default)
-  tableName: parts # optional (pluralName in lowercase by default). Prefixes core_ and sec_ are not allowed
-  displayName: Part # optional (name by default)
-  singularName: part # optional (name by default)
-  pluralName: parts
-  description: Parts # optional (null by default)
+  tableName: examples # optional (pluralName in lowercase by default). Prefixes core_ and sec_ are not allowed
+  displayName: Example # optional (name by default)
+  singularName: example # optional (name by default)
+  pluralName: examples
+  description: Examples # optional (null by default)
   icon: fas fa-swatchbook # optional (null by default)
   core: true # optional (false by default)
-  performDdl: true # optional (true by default)
+  performDdl: false # optional (true by default)
   versioned: false # optional (false by default)
   manualVersioning: false # optional (false by default)
   revisionPolicy: # optional (null by default)
@@ -22,12 +22,21 @@ metadata:
 spec:
   properties:
     name:
-      type: string
+      type: string  # uuid, string, text, enum, sequence, email, password, int, float, decimal, date, time, datetime, timestamp, bool, array, json, media, relation
       columnName: name
-      displayName: Name
-      description: Name
-      required: true
-      length: 50
+      displayName: Name # optional (name by default)
+      description: Name # optional (null by default)
+#      pattern: # optional (null by default) - string
+      defaultValue: # optional (null by default)
+      required: true # optional (false by default)
+      unique: true # optional (false by default)
+      indexed: true # optional (false by default)
+      private: false # optional (false by default)
+      length: 50 # optional (null by default) - string
+#      precision: # optional (null by default) - float, decimal
+#      scale: # optional (null by default) - float, decimal
+#      minRange: # optional (null by default) - int, float, decimal
+#      maxRange: # optional (null by default) - int, float, decimal
     displayName:
       type: string
       columnName: display_name
@@ -107,23 +116,8 @@ spec:
       inversedBy: parts
       displayName: Start Sheet
       description: Start Sheet
-    changeNotices:
-      type: relation
-      target: changeNotice
-      relType: manyToMany
-      relItem: partChange
-      inversedBy: parts
-      displayName: Change Notices
-      description: Change Notices
-    partBom:
-      type: relation
-      target: partBom
-      relType: manyToMany
-      relItem: partBom
-      displayName: Part BOM
-      description: Part BOM
   indexes:
-    part_name_uk:
+    example_name_uk:
       columns:
         - name
       unique: true
