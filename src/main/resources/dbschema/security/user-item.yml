@@ -10,7 +10,7 @@ metadata:
   pluralName: users
   description: Users
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     username:
@@ -39,7 +39,7 @@ spec:
       displayName: Roles
       description: Roles
   indexes:
-    sec_user_username_uk:
+    sec_users_username_uk:
       columns:
         - username
       unique: true

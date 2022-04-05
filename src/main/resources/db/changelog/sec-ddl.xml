@@ -3,267 +3,23 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
-    <changeSet id="2022-01-03-init-core-ddl" author="bchernysh">
-        <createTable tableName="core_revision_policies">
+    <changeSet id="2022-04-05-init-sec-ddl" author="bchernysh">
+        <createTable tableName="sec_users">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_revision_policies_pk"/>
+                <constraints primaryKey="true" primaryKeyName="sec_users_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_revision_policies_name_uk"/>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="sec_users_username_uk"/>
             </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="revisions" type="text" defaultValue="[]"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
+            <column name="password" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_by_id" type="varchar(36)">
+            <column name="enabled" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createTable tableName="core_items">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_items_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_items_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="singular_name" type="varchar(50)"/>
-            <column name="plural_name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="description" type="varchar(250)"/>
-            <column name="data_source" type="varchar(50)"/>
-            <column name="table_name" type="varchar(50)"/>
-            <column name="icon" type="varchar(50)"/>
-            <column name="core" type="boolean"/>
-            <column name="perform_ddl" type="boolean"/>
-            <column name="versioned" type="boolean"/>
-            <column name="manual_versioning" type="boolean"/>
-            <column name="revision_policy_id" type="varchar(36)">
-                <constraints foreignKeyName="core_items_revision_policy_fk" references="core_revision_policies(id)"/>
-            </column>
-            <column name="not_lockable" type="boolean"/>
-            <column name="localized" type="boolean"/>
-            <column name="implementation" type="varchar(100)"/>
-            <column name="spec" type="text" defaultValue="{}"/>
-            <column name="checksum" type="varchar(50)"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-<!--        <createIndex tableName="core_items" indexName="core_items_permission_idx">-->
-<!--            <column name="permission_id"/>-->
-<!--        </createIndex>-->
-
-        <createTable tableName="core_enumerations">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_enumerations_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_enumerations_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="core" type="boolean"/>
-            <column name="spec" type="text" defaultValue="{}"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createTable tableName="core_sequences">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_sequences_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_sequences_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="prefix" type="varchar(50)"/>
-            <column name="suffix" type="varchar(50)"/>
-            <column name="initial_value" type="int"/>
-            <column name="current_value" type="int"/>
-            <column name="step" type="int"/>
-            <column name="pad_with" type="char(1)"/>
-            <column name="pad_to" type="int"/>
-            <column name="entries" type="text" defaultValue="[]"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createTable tableName="core_media_types">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_media_types_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_media_types_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="extension" type="varchar(50)"/>
-            <column name="mimetype" type="varchar(100)"/>
-            <column name="pattern" type="varchar(50)"/>
-            <column name="rule_type" type="varchar(100)"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createTable tableName="core_media">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_media_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="filename" type="varchar(250)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="file_type_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_media_file_type_fk" references="core_media_types(id)"/>
-            </column>
-            <column name="file_size" type="int"/>
-            <column name="mimetype" type="varchar(100)"/>
-            <column name="checksum" type="varchar(50)"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createTable tableName="core_lifecycles">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_lifecycles_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_lifecycles_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="start_state" type="varchar(50)"/>
-            <column name="spec" type="text" defaultValue="{}"/>
             <column name="generation" type="int"/>
             <column name="major_rev" type="varchar(50)"/>
             <column name="minor_rev" type="varchar(50)"/>
@@ -286,19 +42,277 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-        <createTable tableName="core_allowed_lifecycles">
+        <createTable tableName="sec_roles">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_allowed_lifecycles_pk"/>
+                <constraints primaryKey="true" primaryKeyName="sec_roles_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" foreignKeyName="sec_roles_username_fk" references="sec_users(username)"/>
+            </column>
+            <column name="role" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="sec_roles" constraintName="sec_roles_username_role_uk" columnNames="username, role"/>
+
+        <createTable tableName="sec_groups">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_groups_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_name" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="sec_groups_name_uk"/>
+            </column>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <createTable tableName="sec_group_roles">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_group_roles_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="varchar(36)">
+                <constraints nullable="false" foreignKeyName="sec_group_roles_group_fk" references="sec_groups(id)"/>
+            </column>
+            <column name="role" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="sec_group_roles" constraintName="sec_group_roles_group_role_uk" columnNames="group_id, role"/>
+
+        <createTable tableName="sec_group_members">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_group_members_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="varchar(36)">
+                <constraints nullable="false" foreignKeyName="sec_group_members_group_fk" references="sec_groups(id)"/>
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="sec_group_members" constraintName="sec_group_members_group_username_uk" columnNames="group_id, username"/>
+
+        <createTable tableName="sec_identities">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_identities_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="principal" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="sec_identities" constraintName="sec_identities_name_principal_uk" columnNames="name, principal"/>
+
+        <createTable tableName="sec_permissions">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_permissions_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="sec_permissions_name_uk"/>
+            </column>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <createTable tableName="sec_access">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_access_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="varchar(50)"/>
+            <column name="sort_order" type="int"/>
+            <column name="source_id" type="varchar(36)">
+                <constraints nullable="false" foreignKeyName="sec_access_source_fk" references="sec_permissions(id)"/>
+            </column>
+            <column name="target_id" type="varchar(36)">
+                <constraints nullable="false" foreignKeyName="sec_access_target_fk" references="sec_identities(id)"/>
+            </column>
+            <column name="mask" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="begin_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="datetime"/>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="sec_access" constraintName="sec_access_source_target_uk" columnNames="source_id, target_id"/>
+
+        <createTable tableName="sec_allowed_permissions">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_allowed_permissions_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="sort_order" type="int"/>
             <column name="source_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_allowed_lifecycles_source_fk" references="core_items(id)"/>
+                <constraints nullable="false" foreignKeyName="sec_allowed_permissions_source_fk" references="core_items(id)"/>
             </column>
             <column name="target_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_allowed_lifecycles_target_fk" references="core_lifecycles(id)"/>
+                <constraints nullable="false" foreignKeyName="sec_allowed_permissions_target_fk" references="sec_permissions(id)"/>
             </column>
             <column name="is_default" type="boolean"/>
             <column name="generation" type="int"/>
@@ -323,6 +337,6 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-        <addUniqueConstraint tableName="core_allowed_lifecycles" constraintName="core_allowed_lifecycles_source_target_uk" columnNames="source_id, target_id"/>
+        <addUniqueConstraint tableName="sec_allowed_permissions" constraintName="sec_allowed_permissions_source_target_uk" columnNames="source_id, target_id"/>
     </changeSet>
 </databaseChangeLog>

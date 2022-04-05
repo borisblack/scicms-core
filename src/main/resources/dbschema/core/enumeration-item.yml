@@ -45,7 +45,7 @@ spec:
       required: true
       defaultValue: '{}'
   indexes:
-    core_enumeration_name_uk:
+    core_enumerations_name_uk:
       columns:
         - name
       unique: true

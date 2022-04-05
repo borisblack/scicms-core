@@ -12,16 +12,15 @@ metadata:
   pluralName: access
   description: Access
   core: true
-  performDdl: true
+  performDdl: false
   versioned: false
 spec:
   properties:
-    name:
+    displayName:
       type: string
-      columnName: name
-      displayName: Name
-      description: Name
-      required: true
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
       length: 50
     source:
       type: relation
@@ -38,10 +37,6 @@ spec:
       displayName: Target Identity
       description: Target Identity
   indexes:
-    sec_access_name_uk:
-      columns:
-        - name
-      unique: true
     sec_access_source_target_uk:
       columns:
         - source

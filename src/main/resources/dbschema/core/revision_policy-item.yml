@@ -32,7 +32,7 @@ spec:
       displayName: Revisions
       description: Revisions
   indexes:
-    core_revision_policy_name_uk:
+    core_revision_policies_name_uk:
       columns:
         - name
       unique: true

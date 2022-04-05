@@ -10,7 +10,7 @@ metadata:
   pluralName: identities
   description: Identities
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     name:
@@ -34,7 +34,7 @@ spec:
       displayName: Permissions
       description: Permissions
   indexes:
-    sec_identity_name_uk:
+    sec_identities_name_uk:
       columns:
         - name
       unique: true

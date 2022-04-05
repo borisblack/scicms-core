@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     property = "kind"
 )
 @JsonSubTypes(value = [
-    JsonSubTypes.Type(value = ItemTemplateModel::class, name = ItemTemplateModel.KIND),
-    JsonSubTypes.Type(value = ItemModel::class, name = ItemModel.KIND)
+    JsonSubTypes.Type(value = ItemTemplate::class, name = ItemTemplate.KIND),
+    JsonSubTypes.Type(value = Item::class, name = Item.KIND)
 ])
 abstract class AbstractModel(
     val coreVersion: String,

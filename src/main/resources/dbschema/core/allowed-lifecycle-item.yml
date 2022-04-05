@@ -12,7 +12,7 @@ metadata:
   pluralName: allowedLifecycles
   description: Allowed Lifecycles
   core: true
-  performDdl: true
+  performDdl: false
   versioned: false
 spec:
   properties:
@@ -35,8 +35,9 @@ spec:
       columnName: is_default
       displayName: Default
       description: Default
-  core_allowed_lifecycle_source_target_uk:
-    columns:
-      - source
-      - target
-    unique: true
+  indexes:
+    core_allowed_lifecycles_source_target_uk:
+      columns:
+        - source
+        - target
+      unique: true

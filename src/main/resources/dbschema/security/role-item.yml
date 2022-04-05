@@ -10,7 +10,7 @@ metadata:
   pluralName: roles
   description: Roles
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     user:
@@ -29,7 +29,7 @@ spec:
       required: true
       length: 50
   indexes:
-    sec_role_username_role_uk:
+    sec_roles_username_role_uk:
       columns:
         - username
         - role

@@ -27,7 +27,7 @@ spec:
       displayName: Name # optional (name by default)
       description: Name # optional (null by default)
 #      pattern: # optional (null by default) - string
-      defaultValue: # optional (null by default)
+#      defaultValue: # optional (null by default)
       required: true # optional (false by default)
       unique: true # optional (false by default)
       indexed: true # optional (false by default)
@@ -117,7 +117,7 @@ spec:
       displayName: Start Sheet
       description: Start Sheet
   indexes:
-    example_name_uk:
+    examples_name_uk:
       columns:
         - name
       unique: true

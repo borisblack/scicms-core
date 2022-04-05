@@ -10,7 +10,7 @@ metadata:
   pluralName: groupRoles
   description: Group Roles
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     group:
@@ -29,7 +29,7 @@ spec:
       required: true
       length: 50
   indexes:
-    sec_group_role_uk:
+    sec_group_roles_uk:
       columns:
         - group
         - role

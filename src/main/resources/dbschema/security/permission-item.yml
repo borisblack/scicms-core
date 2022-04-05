@@ -10,7 +10,7 @@ metadata:
   pluralName: permissions
   description: Permission
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     name:
@@ -20,12 +20,7 @@ spec:
       description: Name
       required: true
       length: 50
-    principal:
-      type: bool
-      columnName: principal
-      displayName: Principal
-      description: Principal
-    permissions:
+    identities:
       type: relation
       target: identity
       relType: manyToMany
@@ -34,7 +29,7 @@ spec:
       displayName: Identities
       description: Identities
   indexes:
-    sec_permission_name_uk:
+    sec_permissions_name_uk:
       columns:
         - name
       unique: true

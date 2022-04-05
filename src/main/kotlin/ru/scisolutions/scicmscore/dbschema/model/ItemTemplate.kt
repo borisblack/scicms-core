@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.dbschema.model
 
-class ItemTemplateModel(
+class ItemTemplate(
     coreVersion: String,
     metadata: Metadata,
     val spec: Spec

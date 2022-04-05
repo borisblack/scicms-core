@@ -5,13 +5,13 @@ scicms-core:
 spring:
   datasource:
 #    driver-class-name: oracle.jdbc.OracleDriver
-#    url: jdbc:oracle:thin:@//localhost:1521/xepdb1
-#    username: scicms
-#    password: scicms
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://dockerhost:5432/scicms
+    url: jdbc:oracle:thin:@//localhost:1521/xepdb1
     username: scicms
     password: scicms
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://dockerhost:5432/scicms
+#    username: scicms
+#    password: scicms
 
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml

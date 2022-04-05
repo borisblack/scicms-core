@@ -1,0 +1,137 @@
+{
+  "coreVersion": "v1",
+  "kind": "Item",
+  "includeTemplates": [
+    "defaultItemTemplate"
+  ],
+  "metadata": {
+    "name": "defaultItemTemplate",
+    "dataSource": "main",
+    "tableName": "examples",
+    "displayName": "Example",
+    "singularName": "example",
+    "pluralName": "examples",
+    "description": "Examples",
+    "icon": "fas fa-swatchbook",
+    "core": true,
+    "performDdl": false,
+    "versioned": false,
+    "manualVersioning": false,
+    "revisionPolicy": "",
+    "notLockable": false,
+    "localized": false,
+    "implementation": ""
+  },
+  "spec": {
+    "properties": {
+      "name": {
+        "type": "string",
+        "columnName": "name",
+        "displayName": "Name",
+        "description": "Name",
+        "required": true,
+        "unique": true,
+        "indexed": true,
+        "private": false,
+        "length": 50
+      },
+      "displayName": {
+        "type": "string",
+        "columnName": "display_name",
+        "displayName": "Display Name",
+        "description": "Display Name",
+        "length": 50
+      },
+      "description": {
+        "type": "string",
+        "columnName": "description",
+        "displayName": "Description",
+        "description": "Description",
+        "length": 250
+      },
+      "product": {
+        "type": "relation",
+        "columnName": "product_id",
+        "target": "product",
+        "relType": "manyToOne",
+        "inversedBy": "parts",
+        "displayName": "Product",
+        "description": "Product"
+      },
+      "partType": {
+        "type": "enum",
+        "columnName": "part_type",
+        "enumName": "partType",
+        "displayName": "Part Type",
+        "description": "Part Type"
+      },
+      "ownershipType": {
+        "type": "enum",
+        "columnName": "ownership_type",
+        "enumName": "ownershipType",
+        "displayName": "Ownership Type",
+        "description": "Ownership Type"
+      },
+      "units": {
+        "type": "enum",
+        "columnName": "units",
+        "enumName": "units",
+        "displayName": "Units",
+        "description": "Units"
+      },
+      "cost": {
+        "type": "decimal",
+        "columnName": "cost",
+        "displayName": "Cost",
+        "description": "Cost",
+        "precision": 14,
+        "scale": 4,
+        "minRange": 0
+      },
+      "weight": {
+        "type": "decimal",
+        "columnName": "weight",
+        "displayName": "Weight",
+        "description": "Weight",
+        "precision": 14,
+        "scale": 4,
+        "minRange": 0
+      },
+      "releaseDate": {
+        "type": "datetime",
+        "columnName": "release_date",
+        "displayName": "Release Date",
+        "description": "Release Date"
+      },
+      "effectiveDate": {
+        "type": "datetime",
+        "columnName": "effective_date",
+        "displayName": "Effective Date",
+        "description": "Effective Date"
+      },
+      "supersededDate": {
+        "type": "datetime",
+        "columnName": "superseded_date",
+        "displayName": "Superseded Date",
+        "description": "Superseded Date"
+      },
+      "startSheet": {
+        "type": "relation",
+        "columnName": "start_sheet_id",
+        "target": "startSheet",
+        "relType": "manyToOne",
+        "inversedBy": "parts",
+        "displayName": "Start Sheet",
+        "description": "Start Sheet"
+      }
+    },
+    "indexes": {
+      "examples_name_uk": {
+        "columns": [
+          "name"
+        ],
+        "unique": true
+      }
+    }
+  }
+}

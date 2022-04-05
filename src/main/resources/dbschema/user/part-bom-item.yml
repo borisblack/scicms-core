@@ -39,8 +39,9 @@ spec:
       displayName: Quantity
       description: Quantity
       minRange: 0
-  part_bom_source_target_uk:
-    columns:
-      - source
-      - target
-    unique: true
+  indexes:
+    part_bom_source_target_uk:
+      columns:
+        - source
+        - target
+      unique: true

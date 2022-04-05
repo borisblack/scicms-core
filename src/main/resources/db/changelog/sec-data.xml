@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <property name="now" value="sysdate" dbms="oracle"/>
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="now" value="now()" dbms="postgresql"/>
+    <property name="adminGroupId" value="ec024ec7-7a24-4578-bd0a-074108aef96a"/>
+    <property name="userGroupId" value="f84ce926-bff0-4d82-8a6b-499291dfce9a"/>
+    <property name="rootUserId" value="0c924266-3c61-4362-81d7-9d69403fbe32"/>
+    <property name="defaultPermissionId" value="6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"/>
+    <property name="adminRoleIdentityId" value="c666c861-3be0-4a97-a49d-15296fc37870"/>
+    <changeSet id="2022-04-05-init-sec-data" author="bchernysh">
+        <insert tableName="sec_users">
+            <column name="id" value="${rootUserId}"/>
+            <column name="config_id" value="${rootUserId}"/>
+            <column name="username" value="root"/>
+            <column name="password" value="$2a$10$xWtNwNO5w2yhGi4bDHR17.fMASga7XSIiQKETwtXGCY/4pSoxzIMG"/> <!--master-->
+            <column name="enabled" valueBoolean="true"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_groups">
+            <column name="id" value="${adminGroupId}"/>
+            <column name="config_id" value="${adminGroupId}"/>
+            <column name="group_name" value="Administrators"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_groups">
+            <column name="id" value="${userGroupId}"/>
+            <column name="config_id" value="${userGroupId}"/>
+            <column name="group_name" value="Users"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_group_roles">
+            <column name="id" value="ffe0d4c5-d75e-49d1-9f34-9879d26b5ebf"/>
+            <column name="config_id" value="ffe0d4c5-d75e-49d1-9f34-9879d26b5ebf"/>
+            <column name="group_id" value="${adminGroupId}"/>
+            <column name="role" value="ROLE_ADMIN"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_group_roles">
+            <column name="id" value="324e81ec-2092-4a5f-969c-50f4f41131b7"/>
+            <column name="config_id" value="324e81ec-2092-4a5f-969c-50f4f41131b7"/>
+            <column name="group_id" value="${userGroupId}"/>
+            <column name="role" value="ROLE_USER"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_group_members">
+            <column name="id" value="c4990398-62f1-4b51-a604-34ad8955f13b"/>
+            <column name="config_id" value="c4990398-62f1-4b51-a604-34ad8955f13b"/>
+            <column name="group_id" value="${adminGroupId}"/>
+            <column name="username" value="root"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_identities">
+            <column name="id" value="${adminRoleIdentityId}"/>
+            <column name="config_id" value="${adminRoleIdentityId}"/>
+            <column name="name" value="ROLE_ADMIN"/>
+            <column name="principal" valueBoolean="false"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_permissions">
+            <column name="id" value="${defaultPermissionId}"/>
+            <column name="config_id" value="${defaultPermissionId}"/>
+            <column name="name" value="Default Access"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+
+        <insert tableName="sec_access">
+            <column name="id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
+            <column name="config_id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
+            <column name="sort_order" value="100"/>
+            <column name="source_id" value="${defaultPermissionId}"/>
+            <column name="target_id" value="${adminRoleIdentityId}"/>
+            <column name="mask" value="31"/>
+            <column name="begin_date" valueDate="${now}"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

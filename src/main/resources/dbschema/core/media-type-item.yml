@@ -10,7 +10,7 @@ metadata:
   pluralName: mediaTypes
   description: Media Types
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     name:
@@ -57,7 +57,7 @@ spec:
       displayName: Rule Type
       description: Rule Type
   indexes:
-    core_media_type_name_uk:
+    core_media_types_name_uk:
       columns:
         - name
       unique: true

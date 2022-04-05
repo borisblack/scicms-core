@@ -10,7 +10,7 @@ metadata:
   pluralName: lifecycle
   description: Lifecycles
   core: true
-  performDdl: true
+  performDdl: false
 spec:
   properties:
     name:
@@ -46,7 +46,7 @@ spec:
       required: true
       defaultValue: '{}'
   indexes:
-    core_lifecycle_name_uk:
+    core_lifecycles_name_uk:
       columns:
         - name
       unique: true

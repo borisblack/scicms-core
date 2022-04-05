@@ -10,8 +10,8 @@ metadata:
   pluralName: media
   description: Media
   core: true
-  performDdl: true
-  isVersioned: true
+  performDdl: false
+  versioned: true
 spec:
   properties:
     filename:

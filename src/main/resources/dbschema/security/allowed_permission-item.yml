@@ -12,7 +12,7 @@ metadata:
   pluralName: access
   description: Allowed Permissions
   core: true
-  performDdl: true
+  performDdl: false
   versioned: false
 spec:
   properties:
@@ -31,7 +31,7 @@ spec:
       displayName: Target Permission
       description: Target Permission
   indexes:
-    sec_allowed_permission_source_target_uk:
+    sec_allowed_permissions_source_target_uk:
       columns:
         - source
         - target

@@ -11,10 +11,10 @@ metadata:
   description: Items
   core: true
   performDdl: false
-#  isVersioned: false
-#  isManualVersioning: false
-#  isNotLockable: false
-#  isLocalized: false
+#  versioned: false
+#  manualVersioning: false
+#  notLockable: false
+#  localized: false
 spec:
   properties:
     name:
@@ -138,7 +138,7 @@ spec:
       displayName: Allowed Permissions
       description: Allowed Permissions
   indexes:
-    core_item_name_uk:
+    core_items_name_uk:
       columns:
         - name
       unique: true
