@@ -1,8 +1,8 @@
 package ru.scisolutions.scicmscore.dbschema
 
-import ru.scisolutions.scicmscore.dbschema.model.AbstractModel
-import ru.scisolutions.scicmscore.dbschema.model.Item
-import ru.scisolutions.scicmscore.dbschema.model.ItemTemplate
+import ru.scisolutions.scicmscore.api.model.AbstractModel
+import ru.scisolutions.scicmscore.api.model.Item
+import ru.scisolutions.scicmscore.api.model.ItemTemplate
 
 class DbSchema {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()

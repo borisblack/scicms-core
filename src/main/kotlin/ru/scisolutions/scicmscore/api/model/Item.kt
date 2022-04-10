@@ -1,7 +1,7 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
-class Item(
-    coreVersion: String,
+data class Item(
+    override val coreVersion: String,
     val includeTemplates: Set<String>,
     override val metadata: ItemMetadata,
     val spec: Spec

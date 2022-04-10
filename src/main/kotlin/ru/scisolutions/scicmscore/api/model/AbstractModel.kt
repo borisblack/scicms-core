@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -13,6 +13,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     JsonSubTypes.Type(value = Item::class, name = Item.KIND)
 ])
 abstract class AbstractModel(
-    val coreVersion: String,
+    open val coreVersion: String,
     open val metadata: Metadata
 )

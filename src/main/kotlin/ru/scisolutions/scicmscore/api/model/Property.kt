@@ -1,6 +1,6 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
-class Property(
+data class Property(
     val type: String,
     val columnName: String? = null, // can be null for some relations
     val enumName: String? = null,

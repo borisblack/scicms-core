@@ -1,6 +1,6 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
-class Spec(
+data class Spec(
     val properties: Map<String, Property> = emptyMap(),
     val indexes: Map<String, Index> = emptyMap()
 ) {

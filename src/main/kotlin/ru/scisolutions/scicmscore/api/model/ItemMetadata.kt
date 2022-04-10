@@ -1,7 +1,7 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
-class ItemMetadata(
-    name: String,
+data class ItemMetadata(
+    override val name: String,
     val displayName: String = name,
     val singularName: String = name,
     val pluralName: String,

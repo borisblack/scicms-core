@@ -1,6 +1,6 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
-class Index(
+data class Index(
     val columns: Set<String>,
     val unique: Boolean = false
 )

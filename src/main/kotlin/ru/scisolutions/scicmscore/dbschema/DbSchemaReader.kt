@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import ru.scisolutions.scicmscore.dbschema.model.AbstractModel
+import ru.scisolutions.scicmscore.api.model.AbstractModel
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths

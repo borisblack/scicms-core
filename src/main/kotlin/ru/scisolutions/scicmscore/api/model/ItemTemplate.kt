@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.dbschema.model
+package ru.scisolutions.scicmscore.api.model
 
 class ItemTemplate(
     coreVersion: String,

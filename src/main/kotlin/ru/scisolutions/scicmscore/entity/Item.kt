@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.entity
 
-import ru.iss.dms.converter.SpecConverter
-import ru.scisolutions.scicmscore.dbschema.model.Spec
+import ru.scisolutions.scicmscore.converter.SpecConverter
+import ru.scisolutions.scicmscore.api.model.Spec
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -66,6 +66,6 @@ class Item(
     val checksum: String? = null,
 ) : AbstractEntity() {
     companion object {
-        private const val DEFAULT_DATASOURCE = "main"
+        const val DEFAULT_DATASOURCE = "main"
     }
 }
