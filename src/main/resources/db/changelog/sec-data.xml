@@ -25,7 +25,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_groups">
@@ -39,7 +39,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_groups">
@@ -53,7 +53,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_group_roles">
@@ -68,7 +68,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_group_roles">
@@ -83,7 +83,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_group_members">
@@ -98,7 +98,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_identities">
@@ -113,7 +113,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_permissions">
@@ -127,7 +127,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
         <insert tableName="sec_access">
@@ -145,7 +145,7 @@
             <column name="released" valueBoolean="false"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId"/>
+            <column name="created_by_id" value="${rootUserId}"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

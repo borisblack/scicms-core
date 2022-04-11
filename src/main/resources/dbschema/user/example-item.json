@@ -17,7 +17,7 @@
     "performDdl": false,
     "versioned": false,
     "manualVersioning": false,
-    "revisionPolicy": "",
+    "revisionPolicy": null,
     "notLockable": false,
     "localized": false,
     "implementation": ""

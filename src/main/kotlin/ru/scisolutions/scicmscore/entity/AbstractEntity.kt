@@ -11,10 +11,10 @@ import javax.persistence.MappedSuperclass
 @EntityListeners(AuditEntityListener::class)
 abstract class AbstractEntity {
     @Id
-    val id: UUID = UUID.randomUUID()
+    val id: String = UUID.randomUUID().toString()
 
     @Column(name = "config_id", nullable = false)
-    var configId: UUID = id
+    val configId: String = id
 
     @Column
     val generation: Int? = null
@@ -35,13 +35,13 @@ abstract class AbstractEntity {
     val released: Boolean? = null
 
     @Column(name = "lifecycle_id")
-    val lifecycleId: UUID? = null
+    val lifecycleId: String? = null
 
     @Column
     val state: String? = null
 
     @Column(name = "permission_id")
-    var permissionId: UUID? = null
+    var permissionId: String? = null
 
     @Column(name = "locale")
     val locale: String? = null
@@ -50,20 +50,20 @@ abstract class AbstractEntity {
     lateinit var createdAt: LocalDateTime
 
     @Column(name = "created_by_id", nullable = false)
-    lateinit var createdById: UUID
+    lateinit var createdById: String
 
     @Column(name = "updated_at")
     lateinit var updatedAt: LocalDateTime
 
     @Column(name = "updated_by_id")
-    lateinit var updatedById: UUID
+    lateinit var updatedById: String
 
     @Column(name = "owned_by_id")
-    val ownedById: UUID? = null
+    val ownedById: String? = null
 
     @Column(name = "managed_by_id")
-    val managedById: UUID? = null
+    val managedById: String? = null
 
     @Column(name = "locked_by_id")
-    val lockedById: UUID? = null
+    val lockedById: String? = null
 }

@@ -23,6 +23,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -76,6 +77,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -116,6 +118,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -157,6 +160,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -195,6 +199,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -235,6 +240,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -271,6 +277,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -308,6 +315,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
+            <column name="locale" type="varchar(50)"/>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">

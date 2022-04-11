@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.entity
 
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -18,6 +17,6 @@ class RevisionPolicy(
     val revisions: String?,
 ) : AbstractEntity() {
     companion object {
-        val DEFAULT_REVISION_POLICY_ID = UUID.fromString("48fea283-2872-4ca3-8fbd-980b7654907b")
+        const val DEFAULT_REVISION_POLICY_ID: String = "48fea283-2872-4ca3-8fbd-980b7654907b"
     }
 }
