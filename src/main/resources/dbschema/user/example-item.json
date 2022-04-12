@@ -5,7 +5,7 @@
     "defaultItemTemplate"
   ],
   "metadata": {
-    "name": "defaultItemTemplate",
+    "name": "example",
     "dataSource": "main",
     "tableName": "examples",
     "displayName": "Example",

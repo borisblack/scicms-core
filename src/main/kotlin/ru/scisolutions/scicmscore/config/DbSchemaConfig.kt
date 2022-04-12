@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import ru.scisolutions.scicmscore.dbschema.DbSchemaReader
 import ru.scisolutions.scicmscore.dbschema.DbSchemaSeeder
+import ru.scisolutions.scicmscore.service.AllowedPermissionService
 import ru.scisolutions.scicmscore.service.ItemService
-import ru.scisolutions.scicmscore.service.PermissionService
 
 @Configuration
 class DbSchemaConfig(
@@ -17,7 +17,7 @@ class DbSchemaConfig(
     @Value("\${scicms-core.db-schema.seed-on-init:true}")
     private val seedOnInit: Boolean,
     private val itemService: ItemService,
-    private val permissionService: PermissionService,
+    private val allowedPermissionService: AllowedPermissionService
 ) {
     private val logger: Logger = LoggerFactory.getLogger(DbSchemaConfig::class.java)
 
@@ -25,7 +25,7 @@ class DbSchemaConfig(
     fun dbSchemaSeeder(): DbSchemaSeeder {
         val seeder = DbSchemaSeeder(
             itemService = itemService,
-            permissionService = permissionService
+            allowedPermissionService = allowedPermissionService
         )
         if (seedOnInit) {
             logger.info("DB schema seed flag enabled")

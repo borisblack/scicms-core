@@ -2,13 +2,15 @@ package ru.scisolutions.scicmscore.dbschema
 
 import ru.scisolutions.scicmscore.api.mapper.ItemMapper
 import ru.scisolutions.scicmscore.api.model.Item
+import ru.scisolutions.scicmscore.entity.AllowedPermission
+import ru.scisolutions.scicmscore.entity.Permission
+import ru.scisolutions.scicmscore.service.AllowedPermissionService
 import ru.scisolutions.scicmscore.service.ItemService
-import ru.scisolutions.scicmscore.service.PermissionService
 import ru.scisolutions.scicmscore.entity.Item as ItemEntity
 
 class DbSchemaSeeder(
     private val itemService: ItemService,
-    private val permissionService: PermissionService
+    private val allowedPermissionService: AllowedPermissionService
 ) {
     fun seedDbSchema(dbSchema: DbSchema) {
         for ((name, item) in dbSchema.getItems()) {
@@ -16,9 +18,18 @@ class DbSchemaSeeder(
             if (itemEntity == null) {
                 // TODO: Add table
 
+                // Add item
                 itemEntity = itemMapper.map(item)
                 // itemEntity.allowedPermissions.add(permissionService.defaultPermission)
                 itemService.save(itemEntity)
+
+                // Add default allowed permission
+                // val defaultAllowedPermission = AllowedPermission(
+                //     sourceId = itemEntity.id,
+                //     targetId = Permission.DEFAULT_PERMISSION_ID,
+                //     isDefault = true
+                // )
+                // allowedPermissionService.save(defaultAllowedPermission)
             } else if (isChanged(item, itemEntity)) {
                 // TODO: Change table
 

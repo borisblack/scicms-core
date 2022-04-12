@@ -1,14 +1,10 @@
 package ru.scisolutions.scicmscore.entity
 
-import ru.scisolutions.scicmscore.converter.SpecConverter
 import ru.scisolutions.scicmscore.api.model.Spec
-import javax.persistence.CascadeType
+import ru.scisolutions.scicmscore.converter.SpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
-import javax.persistence.JoinColumn
-import javax.persistence.JoinTable
-import javax.persistence.ManyToMany
 import javax.persistence.Table
 
 @Entity
@@ -69,13 +65,13 @@ class Item(
     @Column
     val checksum: String? = null,
 
-    @ManyToMany(cascade = [CascadeType.ALL])
-    @JoinTable(
-        name = "sec_allowed_permissions",
-        joinColumns = [JoinColumn(name = "source_id")],
-        inverseJoinColumns = [JoinColumn(name = "target_id")],
-    )
-    val allowedPermissions: MutableSet<Permission> = mutableSetOf()
+    // @ManyToMany(cascade = [CascadeType.ALL])
+    // @JoinTable(
+    //     name = "sec_allowed_permissions",
+    //     joinColumns = [JoinColumn(name = "source_id")],
+    //     inverseJoinColumns = [JoinColumn(name = "target_id")],
+    // )
+    // val allowedPermissions: MutableSet<Permission> = mutableSetOf()
 ) : AbstractEntity() {
     companion object {
         const val DEFAULT_DATASOURCE = "main"
