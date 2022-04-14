@@ -39,6 +39,6 @@ spec:
   indexes:
     sec_access_source_target_uk:
       columns:
-        - source
-        - target
+        - source_id
+        - target_id
       unique: true

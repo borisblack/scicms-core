@@ -14,5 +14,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 ])
 abstract class AbstractModel(
     open val coreVersion: String,
-    open val metadata: Metadata
+    open val metadata: BaseMetadata
 )

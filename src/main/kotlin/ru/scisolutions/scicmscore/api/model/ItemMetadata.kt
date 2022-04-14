@@ -17,4 +17,4 @@ data class ItemMetadata(
     val notLockable: Boolean = false,
     val localized: Boolean = false,
     val implementation: String? = null
-) : Metadata(name)
+) : BaseMetadata(name)

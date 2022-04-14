@@ -1,5 +1,5 @@
 package ru.scisolutions.scicmscore.api.model
 
-open class Metadata(
+open class BaseMetadata(
     open val name: String
 )

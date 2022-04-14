@@ -22,4 +22,33 @@ data class Property(
     val scale: Int? = null, // for float, decimal types
     val minRange: Int? = null, // for int, float, decimal types
     val maxRange: Int? = null // for int, float, decimal types
-)
+) {
+    enum class Type(val value: String) {
+        UUID("uuid"),
+        STRING("string"),
+        TEXT("text"),
+        ENUM("enum"),
+        SEQUENCE("sequence"),
+        EMAIL("email"),
+        PASSWORD("password"),
+        INT("int"),
+        FLOAT("float"),
+        DECIMAL("decimal"),
+        DATE("date"),
+        TIME("time"),
+        DATETIME("datetime"),
+        TIMESTAMP("timestamp"),
+        BOOL("bool"),
+        ARRAY("array"),
+        JSON("json"),
+        MEDIA("media"),
+        RELATION("relation")
+    }
+
+    enum class RelType(val value: String) {
+        ONE_TO_ONE("oneToOne"),
+        ONE_TO_MANY("oneToMany"),
+        MANY_TO_ONE("manyToOne"),
+        MANY_TO_MANY("manyToMany")
+    }
+}

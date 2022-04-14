@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.api.model
 
 class ItemTemplate(
     coreVersion: String,
-    metadata: Metadata,
+    metadata: BaseMetadata,
     val spec: Spec
 ) : AbstractModel(coreVersion, metadata) {
     companion object {

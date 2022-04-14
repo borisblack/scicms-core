@@ -1,23 +1,26 @@
-package ru.scisolutions.scicmscore.dbschema
+package ru.scisolutions.scicmscore.dbschema.seeder.impl
 
+import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.api.mapper.ItemMapper
 import ru.scisolutions.scicmscore.api.model.Item
-import ru.scisolutions.scicmscore.entity.AllowedPermission
-import ru.scisolutions.scicmscore.entity.Permission
-import ru.scisolutions.scicmscore.service.AllowedPermissionService
+import ru.scisolutions.scicmscore.dbschema.DbSchema
+import ru.scisolutions.scicmscore.dbschema.seeder.DbSchemaSeeder
+import ru.scisolutions.scicmscore.dbschema.seeder.ItemSeeder
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.entity.Item as ItemEntity
 
-class DbSchemaSeeder(
+@Service
+class DbSchemaSeederImpl(
     private val itemService: ItemService,
-    private val allowedPermissionService: AllowedPermissionService
-) {
-    fun seedDbSchema(dbSchema: DbSchema) {
+    private val itemSeeder: ItemSeeder
+) : DbSchemaSeeder {
+    override fun seed(dbSchema: DbSchema) {
         for ((name, item) in dbSchema.getItems()) {
             var itemEntity = itemService.items[name]
-            if (itemEntity == null) {
-                // TODO: Add table
 
+            itemSeeder.seed(item, itemEntity) // create/update table
+
+            if (itemEntity == null) {
                 // Add item
                 itemEntity = itemMapper.map(item)
                 // itemEntity.allowedPermissions.add(permissionService.defaultPermission)
@@ -31,8 +34,8 @@ class DbSchemaSeeder(
                 // )
                 // allowedPermissionService.save(defaultAllowedPermission)
             } else if (isChanged(item, itemEntity)) {
-                // TODO: Change table
-
+                // Update item
+                itemMapper.copy(item, itemEntity)
                 itemService.save(itemEntity)
             }
         }

@@ -9,7 +9,7 @@ metadata:
   tableName: sec_allowed_permissions
   displayName: Allowed Permission
   singularName: allowedPermission
-  pluralName: access
+  pluralName: allowedPermissions
   description: Allowed Permissions
   core: true
   performDdl: false
@@ -33,6 +33,6 @@ spec:
   indexes:
     sec_allowed_permissions_source_target_uk:
       columns:
-        - source
-        - target
+        - source_id
+        - target_id
       unique: true

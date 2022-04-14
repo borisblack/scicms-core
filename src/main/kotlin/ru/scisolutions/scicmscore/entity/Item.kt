@@ -11,59 +11,59 @@ import javax.persistence.Table
 @Table(name = "core_items")
 class Item(
     @Column(nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(name = "display_name")
-    val displayName: String = name,
+    var displayName: String = name,
 
     @Column(name = "singular_name")
-    val singularName: String = name,
+    var singularName: String = name,
 
     @Column(name = "plural_name", nullable = false)
-    val pluralName: String,
+    var pluralName: String,
 
     @Column(name = "table_name")
-    val tableName: String = pluralName.lowercase(),
+    var tableName: String = pluralName.lowercase(),
 
     @Column
-    val description: String? = null,
+    var description: String? = null,
 
     @Column(name = "data_source")
-    val dataSource: String = DEFAULT_DATASOURCE,
+    var dataSource: String = DEFAULT_DATASOURCE,
 
     @Column(name = "icon")
-    val icon: String? = null,
+    var icon: String? = null,
 
     @Column(name = "core")
-    val core: Boolean = false,
+    var core: Boolean = false,
 
     @Column(name = "perform_ddl")
-    val performDdl: Boolean = false,
+    var performDdl: Boolean = false,
 
     @Column(name = "versioned")
-    val versioned: Boolean = false,
+    var versioned: Boolean = false,
 
     @Column(name = "manual_versioning")
-    val manualVersioning: Boolean = false,
+    var manualVersioning: Boolean = false,
 
     @Column(name = "revision_policy_id")
-    val revisionPolicyId: String? = null,
+    var revisionPolicyId: String? = null,
 
     @Column(name = "not_lockable")
-    val notLockable: Boolean = false,
+    var notLockable: Boolean = false,
 
     @Column(name = "localized")
-    val localized: Boolean = false,
+    var localized: Boolean = false,
 
     @Column(name = "implementation")
-    val implementation: String? = null,
+    var implementation: String? = null,
 
     @Column
     @Convert(converter = SpecConverter::class)
     var spec: Spec = Spec(),
 
     @Column
-    val checksum: String? = null,
+    var checksum: String? = null,
 
     // @ManyToMany(cascade = [CascadeType.ALL])
     // @JoinTable(
