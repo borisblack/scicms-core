@@ -7,6 +7,7 @@ import liquibase.change.ConstraintsConfig
 import liquibase.change.core.CreateIndexChange
 import liquibase.change.core.CreateTableChange
 import liquibase.change.core.DropTableChange
+import liquibase.change.core.RenameTableChange
 import liquibase.changelog.ChangeSet
 import liquibase.changelog.DatabaseChangeLog
 import liquibase.database.DatabaseFactory
@@ -197,7 +198,8 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
     }
 
     private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =
-        item.hashCode().toString() != itemEntity.checksum
+        item.hashCode().toString() != itemEntity.checksum &&
+            (item.metadata.tableName != itemEntity.tableName || item.spec.hashCode() != itemEntity.spec.hashCode())
 
     private fun updateTable(item: Item, itemEntity: ItemEntity) {
         val metadata = item.metadata
@@ -205,23 +207,33 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
         val databaseChangeLog = DatabaseChangeLog()
         val changeSet = addChangeSet(databaseChangeLog, "update-${metadata.tableName}")
 
-        addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
+        if (metadata.tableName != itemEntity.tableName && item.spec.hashCode() == itemEntity.spec.hashCode()) {
+            addRenameTableChange(changeSet, itemEntity.tableName, metadata.tableName) // rename table
+        } else {
+            addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
 
-        addCreateTableChange(changeSet, item) // create table
+            addCreateTableChange(changeSet, item) // create table
+        }
 
         // Run changelog
         val liquibase = newLiquibase(databaseChangeLog)
         liquibase.update("")
     }
 
-    private fun addDropTableChange(changeSet: ChangeSet, tableName: String, cascade: Boolean) {
-        val dropTableChange = newDropTableChange(tableName, cascade)
-        changeSet.addChange(dropTableChange)
+    private fun addRenameTableChange(changeSet: ChangeSet, oldTableName: String, newTableName: String) {
+        val renameTableChange = RenameTableChange().apply {
+            this.oldTableName = oldTableName
+            this.newTableName = newTableName
+        }
+        changeSet.addChange(renameTableChange)
     }
 
-    private fun newDropTableChange(tableName: String, cascade: Boolean) = DropTableChange().apply {
-        this.tableName = tableName
-        this.isCascadeConstraints = cascade
+    private fun addDropTableChange(changeSet: ChangeSet, tableName: String, cascade: Boolean) {
+        val dropTableChange = DropTableChange().apply {
+            this.tableName = tableName
+            this.isCascadeConstraints = cascade
+        }
+        changeSet.addChange(dropTableChange)
     }
 
     private fun newLiquibase(databaseChangeLog: DatabaseChangeLog) = Liquibase(

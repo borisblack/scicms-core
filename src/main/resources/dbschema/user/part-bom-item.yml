@@ -16,7 +16,7 @@ metadata:
   versioned: false
   manualVersioning: false
   notLockable: false
-  localized: false
+  localized: true
 spec:
   properties:
     source:

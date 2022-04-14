@@ -23,7 +23,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -77,7 +77,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -95,6 +95,18 @@
 
 <!--        <createIndex tableName="core_items" indexName="core_items_permission_idx">-->
 <!--            <column name="permission_id"/>-->
+<!--        </createIndex>-->
+
+<!--        <createIndex tableName="core_items" indexName="core_items_locale_idx">-->
+<!--            <column name="locale"/>-->
+<!--        </createIndex>-->
+
+<!--        <createIndex tableName="core_items" indexName="core_items_lifecycle_idx">-->
+<!--            <column name="lifecycle_id"/>-->
+<!--        </createIndex>-->
+
+<!--        <createIndex tableName="core_items" indexName="core_items_state_idx">-->
+<!--            <column name="state"/>-->
 <!--        </createIndex>-->
 
         <createTable tableName="core_enumerations">
@@ -118,7 +130,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -160,7 +172,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -199,7 +211,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -240,7 +252,7 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">

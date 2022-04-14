@@ -17,7 +17,7 @@ metadata:
   manualVersioning: false # optional (false by default)
 #  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b # optional (null by default)
   notLockable: false # optional (false by default)
-  localized: false # optional (false by default)
+  localized: true # optional (false by default)
   implementation: # optional (null by default)
 spec:
   properties:
