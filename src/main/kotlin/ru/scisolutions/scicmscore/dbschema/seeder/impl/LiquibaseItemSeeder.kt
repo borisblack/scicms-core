@@ -80,7 +80,9 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
     private fun addCreateTableChange(changeSet: ChangeSet, item: Item) {
         val metadata = item.metadata
         val spec = item.spec
-        val createTableChange = newCreateTableChange(metadata.tableName)
+        val createTableChange = CreateTableChange().apply {
+            this.tableName = metadata.tableName
+        }
         changeSet.addChange(createTableChange)
 
         // Add columns
@@ -93,7 +95,7 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
             createTableChange.addColumn(newColumn(metadata.tableName, property))
 
             // Add index if required
-            if (property.indexed && !property.unique) { // the unique column is already indexed
+            if (property.indexed && !property.keyed && !property.unique) { // the primary key or unique column is already indexed
                 addCreateIndexChange(changeSet, metadata.tableName, property)
             }
         }
@@ -102,10 +104,6 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
         for ((name, index) in spec.indexes) {
             addCreateIndexChange(changeSet, metadata.tableName, name, index)
         }
-    }
-
-    private fun newCreateTableChange(tableName: String) = CreateTableChange().apply {
-        this.tableName = tableName
     }
 
     private fun newColumn(tableName: String, property: Property) = ColumnConfig().apply {
@@ -118,7 +116,10 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
         this.constraints = ConstraintsConfig().apply {
             this.isNullable = !property.required
 
-            if (property.unique) {
+            if (property.keyed) {
+                this.isPrimaryKey = true
+                this.primaryKeyName = "${tableName}_${property.columnName}_pk"
+            } else if (property.unique) {
                 this.isUnique = true
                 this.uniqueConstraintName = "${tableName}_${property.columnName}_uk"
             }

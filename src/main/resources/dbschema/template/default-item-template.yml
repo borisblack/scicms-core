@@ -10,8 +10,7 @@ spec:
       displayName: ID
       description: ID
       required: true
-      unique: true
-      indexed: true
+      keyed: true
     configId:
       type: uuid
       columnName: config_id

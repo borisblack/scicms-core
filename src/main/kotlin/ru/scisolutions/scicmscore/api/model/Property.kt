@@ -14,6 +14,7 @@ data class Property(
     val pattern: String? = null, // for string type
     val defaultValue: String? = null,
     val required: Boolean = false,
+    val keyed: Boolean = false, // primary key, only for internal use!
     val unique: Boolean = false,
     val indexed: Boolean = false,
     val private: Boolean = false,
