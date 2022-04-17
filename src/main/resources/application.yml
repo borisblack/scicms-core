@@ -2,6 +2,15 @@ scicms-core:
   db-schema:
     path: src/main/resources/dbschema
     seed-on-init: true
+  security:
+    jwt-token:
+      id: scisolutionsJWT
+      secret: scisolutionsSecretKey
+      expiration-interval-millis: 1_800_000
+
+server:
+  port: 8079
+
 spring:
   datasource:
 #    driver-class-name: oracle.jdbc.OracleDriver

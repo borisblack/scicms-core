@@ -22,7 +22,7 @@ spec:
       length: 50
     password:
       type: password
-      columnName: password
+      columnName: passwd
       displayName: Password
       description: Password
       length: 50

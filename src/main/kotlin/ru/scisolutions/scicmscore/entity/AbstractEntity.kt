@@ -53,10 +53,10 @@ abstract class AbstractEntity {
     lateinit var createdById: String
 
     @Column(name = "updated_at")
-    lateinit var updatedAt: LocalDateTime
+    var updatedAt: LocalDateTime? = null
 
     @Column(name = "updated_by_id")
-    lateinit var updatedById: String
+    var updatedById: String? = null
 
     @Column(name = "owned_by_id")
     val ownedById: String? = null

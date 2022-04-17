@@ -14,7 +14,7 @@
             <column name="username" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="sec_users_username_uk"/>
             </column>
-            <column name="password" type="varchar(100)">
+            <column name="passwd" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="enabled" type="boolean">

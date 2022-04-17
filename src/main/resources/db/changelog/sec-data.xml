@@ -16,7 +16,7 @@
             <column name="id" value="${rootUserId}"/>
             <column name="config_id" value="${rootUserId}"/>
             <column name="username" value="root"/>
-            <column name="password" value="$2a$10$xWtNwNO5w2yhGi4bDHR17.fMASga7XSIiQKETwtXGCY/4pSoxzIMG"/> <!--master-->
+            <column name="passwd" value="$2a$10$xWtNwNO5w2yhGi4bDHR17.fMASga7XSIiQKETwtXGCY/4pSoxzIMG"/> <!--master-->
             <column name="enabled" valueBoolean="true"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>

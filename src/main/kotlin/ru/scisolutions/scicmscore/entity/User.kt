@@ -10,8 +10,8 @@ class User(
     @Column(nullable = false)
     val username: String,
 
-//    @Column(nullable = false)
-//    val password: String,
+   // @Column(name = "passwd", nullable = false)
+   // val password: String,
 
     @Column(nullable = false)
     val enabled: Boolean
