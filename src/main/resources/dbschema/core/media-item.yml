@@ -7,7 +7,7 @@ metadata:
   tableName: core_media
   displayName: Media
   singularName: media
-  pluralName: media
+  pluralName: medias
   description: Media
   core: true
   performDdl: false
@@ -33,13 +33,6 @@ spec:
       displayName: Description
       description: Description
       length: 250
-    fileType:
-      type: relation
-      columnName: file_type_id
-      target: mediaType
-      relType: manyToOne
-      displayName: File Type
-      description: File Type
     fileSize:
       type: int
       columnName: file_size

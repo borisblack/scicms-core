@@ -9,7 +9,7 @@ metadata:
   tableName: sec_access
   displayName: Access
   singularName: access
-  pluralName: access
+  pluralName: accesses
   description: Access
   core: true
   performDdl: false

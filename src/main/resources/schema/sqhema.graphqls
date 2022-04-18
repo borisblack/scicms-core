@@ -1,8 +1,31 @@
+scalar Date
+scalar Time
+scalar DateTime
+scalar Object
+scalar JSON
+
 type Query {
     shows(titleFilter: String): [Show]
+}
+
+type ResponseCollectionMeta {
+    pagination: Pagination
+}
+
+type Pagination {
+    page: Int
+    pageSize: Int
+    start: Int
+    limit: Int
+    total: Int!
+    pageCount: Int!
 }
 
 type Show {
     title: String
     releaseYear: Int
+}
+
+type Mutation {
+    updateShow(title: String): Show!
 }

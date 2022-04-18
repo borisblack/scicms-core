@@ -22,7 +22,7 @@
             <column name="last_version" type="boolean"/>
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
@@ -38,6 +38,10 @@
             <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
+
+        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
 
         <createTable tableName="core_items">
             <column name="id" type="varchar(36)">
@@ -76,7 +80,7 @@
             <column name="last_version" type="boolean"/>
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
@@ -93,9 +97,9 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-<!--        <createIndex tableName="core_items" indexName="core_items_permission_idx">-->
-<!--            <column name="permission_id"/>-->
-<!--        </createIndex>-->
+        <createIndex tableName="core_items" indexName="core_items_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
 
 <!--        <createIndex tableName="core_items" indexName="core_items_locale_idx">-->
 <!--            <column name="locale"/>-->
@@ -129,7 +133,7 @@
             <column name="last_version" type="boolean"/>
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
@@ -145,6 +149,10 @@
             <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
+
+        <createIndex tableName="core_enumerations" indexName="core_enumerations_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
 
         <createTable tableName="core_sequences">
             <column name="id" type="varchar(36)">
@@ -171,7 +179,7 @@
             <column name="last_version" type="boolean"/>
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
@@ -188,44 +196,9 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-        <createTable tableName="core_media_types">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_media_types_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_media_types_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="extension" type="varchar(50)"/>
-            <column name="mimetype" type="varchar(100)"/>
-            <column name="pattern" type="varchar(50)"/>
-            <column name="rule_type" type="varchar(100)"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="locale" type="varchar(50)"/> <!--add index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
+        <createIndex tableName="core_sequences" indexName="core_sequences_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
 
         <createTable tableName="core_media">
             <column name="id" type="varchar(36)">
@@ -239,9 +212,6 @@
             </column>
             <column name="display_name" type="varchar(50)"/>
             <column name="description" type="varchar(250)"/>
-            <column name="file_type_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_media_file_type_fk" references="core_media_types(id)"/>
-            </column>
             <column name="file_size" type="int"/>
             <column name="mimetype" type="varchar(100)"/>
             <column name="checksum" type="varchar(50)"/>
@@ -251,7 +221,7 @@
             <column name="last_version" type="boolean"/>
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)"/> <!--add index-->
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
@@ -267,6 +237,10 @@
             <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
+
+        <createIndex tableName="core_media" indexName="core_media_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
 
         <createTable tableName="core_lifecycles">
             <column name="id" type="varchar(36)">
@@ -304,6 +278,10 @@
             <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
 
         <createTable tableName="core_allowed_lifecycles">
             <column name="id" type="varchar(36)">
@@ -344,5 +322,9 @@
         </createTable>
 
         <addUniqueConstraint tableName="core_allowed_lifecycles" constraintName="core_allowed_lifecycles_source_target_uk" columnNames="source_id, target_id"/>
+
+        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

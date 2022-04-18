@@ -4,12 +4,12 @@ includeTemplates:
   - defaultItemTemplate
   - defaultRelTemplate
 metadata:
-  name: partBom
+  name: partBOM
   dataSource: main
   tableName: part_bom
   displayName: Part BOM
-  singularName: partBom
-  pluralName: partBom
+  singularName: partBOM
+  pluralName: partBOMs
   description: Part BOM
   core: false
   performDdl: true

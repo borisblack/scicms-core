@@ -135,7 +135,7 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
             "varchar(${property.length})"
         }
         Type.TEXT.value, Type.ARRAY.value, Type.JSON.value -> "text"
-        Type.ENUM.value, Type.SEQUENCE.value, Type.EMAIL.value -> "varchar(50)"
+        Type.ENUM.value, Type.SEQUENCE.value, Type.EMAIL.value, Type.PASSWORD.value -> "varchar(50)"
         Type.INT.value -> {
             if (property.minRange != null && property.maxRange != null && property.minRange > property.maxRange)
                 throw IllegalArgumentException("Column [$tableName.${property.columnName}]: Invalid range ratio (minRange=${property.minRange} > maxRange=${property.maxRange})")

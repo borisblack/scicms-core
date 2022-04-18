@@ -11,13 +11,17 @@ import ru.scisolutions.scicmscore.service.ItemService
 @Repository
 @Transactional
 class ItemServiceImpl(private val itemRepository: ItemRepository) : ItemService {
-    override val items: Map<String, Item> by lazy { fetchAll() }
+    override val items: MutableMap<String, Item> by lazy { fetchAll() }
 
     @Transactional(readOnly = true)
-    fun fetchAll(): Map<String, Item> {
+    fun fetchAll(): MutableMap<String, Item> {
         val itemList = itemRepository.findAll()
-        return itemList.associateBy { it.name }
+        return itemList.associateBy { it.name }.toMutableMap()
     }
 
-    override fun save(item: Item): Item = itemRepository.save(item)
+    override fun save(item: Item): Item {
+        val savedItem = itemRepository.save(item)
+        this.items[item.name] = savedItem
+        return savedItem
+    }
 }

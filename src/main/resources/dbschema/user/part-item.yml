@@ -115,11 +115,11 @@ spec:
       inversedBy: parts
       displayName: Change Notices
       description: Change Notices
-    partBom:
+    partBOM:
       type: relation
-      target: partBom
+      target: part
       relType: manyToMany
-      relItem: partBom
+      relItem: partBOM
       displayName: Part BOM
       description: Part BOM
   indexes:

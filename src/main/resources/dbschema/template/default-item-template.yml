@@ -72,6 +72,7 @@ spec:
       relType: manyToOne
       displayName: Permission
       description: Permission
+      indexed: true
     locale:
       type: enum
       columnName: locale
