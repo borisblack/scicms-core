@@ -24,4 +24,9 @@ class ItemServiceImpl(private val itemRepository: ItemRepository) : ItemService 
         this.items[item.name] = savedItem
         return savedItem
     }
+
+    override fun delete(item: Item) {
+        itemRepository.delete(item)
+        this.items.remove(item.name)
+    }
 }

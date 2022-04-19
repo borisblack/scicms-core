@@ -4,5 +4,9 @@ import ru.scisolutions.scicmscore.api.model.Item
 import ru.scisolutions.scicmscore.entity.Item as ItemEntity
 
 interface ItemSeeder {
-    fun seed(item: Item, itemEntity: ItemEntity?)
+    fun create(item: Item)
+
+    fun update(item: Item, itemEntity: ItemEntity)
+
+    fun delete(itemEntity: ItemEntity)
 }

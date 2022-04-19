@@ -28,22 +28,40 @@ import javax.sql.DataSource
 
 @Service
 class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
-    override fun seed(item: Item, itemEntity: ItemEntity?) {
+    override fun create(item: Item) {
         val metadata = item.metadata
         if (!metadata.performDdl) {
-            logger.info("Item [{}]: DDL performing flag is disabled. Seeding skipped", metadata.name)
+            logger.info("Item [{}]: DDL performing flag is disabled. Creating skipped", metadata.name)
             return
         }
 
-        if (itemEntity == null) {
-            logger.info("Creating the table [{}]", metadata.tableName)
-            createTable(item)
-        } else if (isChanged(item, itemEntity)) {
+        logger.info("Creating the table [{}]", metadata.tableName)
+        createTable(item)
+    }
+
+    override fun update(item: Item, itemEntity: ItemEntity) {
+        val metadata = item.metadata
+        if (!metadata.performDdl) {
+            logger.info("Item [{}]: DDL performing flag is disabled. Updating skipped", metadata.name)
+            return
+        }
+
+        if (isChanged(item, itemEntity)) {
             logger.info("Updating the table [{}]", metadata.tableName)
             updateTable(item, itemEntity)
         } else {
-            logger.info("Item [{}] is unchanged. Nothing to seed", item.metadata.name)
+            logger.info("Item [{}] is unchanged. Nothing to update", item.metadata.name)
         }
+    }
+
+    override fun delete(itemEntity: ItemEntity) {
+        if (!itemEntity.performDdl) {
+            logger.info("Item [{}]: DDL performing flag is disabled. Deleting skipped", itemEntity.name)
+            return
+        }
+
+        logger.info("Deleting the table [{}]", itemEntity.tableName)
+        dropTable(itemEntity)
     }
 
     private fun createTable(item: Item) {
@@ -235,6 +253,17 @@ class LiquibaseItemSeeder(private val dataSource: DataSource) : ItemSeeder {
             this.isCascadeConstraints = cascade
         }
         changeSet.addChange(dropTableChange)
+    }
+
+    private fun dropTable(itemEntity: ItemEntity) {
+        val databaseChangeLog = DatabaseChangeLog()
+        val changeSet = addChangeSet(databaseChangeLog, "update-${itemEntity.tableName}")
+
+        addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
+
+        // Run changelog
+        val liquibase = newLiquibase(databaseChangeLog)
+        liquibase.update("")
     }
 
     private fun newLiquibase(databaseChangeLog: DatabaseChangeLog) = Liquibase(

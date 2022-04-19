@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.dbschema.seeder.impl
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.api.mapper.ItemMapper
 import ru.scisolutions.scicmscore.api.model.Item
@@ -11,14 +12,30 @@ import ru.scisolutions.scicmscore.entity.Item as ItemEntity
 
 @Service
 class DbSchemaSeederImpl(
+    @Value("\${scicms-core.db-schema.delete-if-absent:false}")
+    private val deleteIfAbsent: Boolean,
     private val itemService: ItemService,
     private val itemSeeder: ItemSeeder
 ) : DbSchemaSeeder {
     override fun seed(dbSchema: DbSchema) {
-        for ((name, item) in dbSchema.getItems()) {
+        val items = dbSchema.getItems()
+        // Create/update items
+        seedItems(items)
+
+        // Delete absent items
+        if (deleteIfAbsent)
+            deleteAbsentItems(items)
+    }
+
+    private fun seedItems(items: Map<String, Item>) {
+        for ((name, item) in items) {
             var itemEntity = itemService.items[name]
 
-            itemSeeder.seed(item, itemEntity) // create/update table
+            // Create/update table
+            if (itemEntity == null)
+                itemSeeder.create(item) // create table
+            else
+                itemSeeder.update(item, itemEntity) // update table
 
             if (itemEntity == null) {
                 // Add item
@@ -43,6 +60,20 @@ class DbSchemaSeederImpl(
 
     private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =
         item.hashCode().toString() != itemEntity.checksum
+
+    private fun deleteAbsentItems(items: Map<String, Item>) {
+        val itemsToDelete = mutableListOf<ItemEntity>()
+        for ((name, itemEntity) in itemService.items) {
+            if (!items.containsKey(name)) {
+                itemSeeder.delete(itemEntity) // drop table
+                itemsToDelete.add(itemEntity)
+            }
+        }
+
+        // Delete items
+        for (itemEntity in itemsToDelete)
+            itemService.delete(itemEntity)
+    }
 
     companion object {
         private val itemMapper = ItemMapper()

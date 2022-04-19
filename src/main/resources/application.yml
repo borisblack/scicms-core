@@ -2,6 +2,7 @@ scicms-core:
   db-schema:
     path: src/main/resources/dbschema
     seed-on-init: true
+    delete-if-absent: true
   default-locale: en-US
   security:
     jwt-token:
