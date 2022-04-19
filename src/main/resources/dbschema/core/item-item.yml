@@ -123,14 +123,14 @@ spec:
       displayName: Checksum
       description: Checksum
       length: 50
-    lifecycles:
+    allowedLifecycles:
       type: relation
       target: lifecycle
       relType: manyToMany
       relItem: allowedLifecycle
-      displayName: Lifecycles
-      description: Lifecycles
-    permissions:
+      displayName: Allowed Lifecycles
+      description: Allowed Lifecycles
+    allowedPermissions:
       type: relation
       target: permission
       relType: manyToMany
