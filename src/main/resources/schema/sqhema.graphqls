@@ -4,12 +4,218 @@ scalar DateTime
 scalar Object
 scalar JSON
 
-type Query {
-    shows(titleFilter: String): [Show]
+input IDFilterInput {
+    and: [ID]
+    between: [ID]
+    contains: ID
+    containsi: ID
+    endsWith: ID
+    eq: ID
+    gt: ID
+    gte: ID
+    in: [ID]
+    lt: ID
+    lte: ID
+    ne: ID
+    not: IDFilterInput
+    notContains: ID
+    notContainsi: ID
+    notIn: [ID]
+    notNull: Boolean
+    null: Boolean
+    or: [ID]
+    startsWith: ID
 }
 
-type ResponseCollectionMeta {
-    pagination: Pagination
+input IntFilterInput {
+    and: [Int]
+    between: [Int]
+    contains: Int
+    containsi: Int
+    endsWith: Int
+    eq: Int
+    gt: Int
+    gte: Int
+    in: [Int]
+    lt: Int
+    lte: Int
+    ne: Int
+    not: IntFilterInput
+    notContains: Int
+    notContainsi: Int
+    notIn: [Int]
+    notNull: Boolean
+    null: Boolean
+    or: [Int]
+    startsWith: Int
+}
+
+input FloatFilterInput {
+    and: [Float]
+    between: [Float]
+    contains: Float
+    containsi: Float
+    endsWith: Float
+    eq: Float
+    gt: Float
+    gte: Float
+    in: [Float]
+    lt: Float
+    lte: Float
+    ne: Float
+    not: FloatFilterInput
+    notContains: Float
+    notContainsi: Float
+    notIn: [Float]
+    notNull: Boolean
+    null: Boolean
+    or: [Float]
+    startsWith: Float
+}
+
+input StringFilterInput {
+    and: [String]
+    between: [String]
+    contains: String
+    containsi: String
+    endsWith: String
+    eq: String
+    gt: String
+    gte: String
+    in: [String]
+    lt: String
+    lte: String
+    ne: String
+    not: StringFilterInput
+    notContains: String
+    notContainsi: String
+    notIn: [String]
+    notNull: Boolean
+    null: Boolean
+    or: [String]
+    startsWith: String
+}
+
+input BooleanFilterInput {
+    and: [Boolean]
+    between: [Boolean]
+    contains: Boolean
+    containsi: Boolean
+    endsWith: Boolean
+    eq: Boolean
+    gt: Boolean
+    gte: Boolean
+    in: [Boolean]
+    lt: Boolean
+    lte: Boolean
+    ne: Boolean
+    not: BooleanFilterInput
+    notContains: Boolean
+    notContainsi: Boolean
+    notIn: [Boolean]
+    notNull: Boolean
+    null: Boolean
+    or: [Boolean]
+    startsWith: Boolean
+}
+
+input DateFilterInput {
+    and: [Date]
+    between: [Date]
+    contains: Date
+    containsi: Date
+    endsWith: Date
+    eq: Date
+    gt: Date
+    gte: Date
+    in: [Date]
+    lt: Date
+    lte: Date
+    ne: Date
+    not: DateFilterInput
+    notContains: Date
+    notContainsi: Date
+    notIn: [Date]
+    notNull: Boolean
+    null: Boolean
+    or: [Date]
+    startsWith: Date
+}
+
+input TimeFilterInput {
+    and: [Time]
+    between: [Time]
+    contains: Time
+    containsi: Time
+    endsWith: Time
+    eq: Time
+    gt: Time
+    gte: Time
+    in: [Time]
+    lt: Time
+    lte: Time
+    ne: Time
+    not: TimeFilterInput
+    notContains: Time
+    notContainsi: Time
+    notIn: [Time]
+    notNull: Boolean
+    null: Boolean
+    or: [Time]
+    startsWith: Time
+}
+
+input DateTimeFilterInput {
+    and: [DateTime]
+    between: [DateTime]
+    contains: DateTime
+    containsi: DateTime
+    endsWith: DateTime
+    eq: DateTime
+    gt: DateTime
+    gte: DateTime
+    in: [DateTime]
+    lt: DateTime
+    lte: DateTime
+    ne: DateTime
+    not: DateTimeFilterInput
+    notContains: DateTime
+    notContainsi: DateTime
+    notIn: [DateTime]
+    notNull: Boolean
+    null: Boolean
+    or: [DateTime]
+    startsWith: DateTime
+}
+
+input JSONFilterInput {
+    and: [JSON]
+    between: [JSON]
+    contains: JSON
+    containsi: JSON
+    endsWith: JSON
+    eq: JSON
+    gt: JSON
+    gte: JSON
+    in: [JSON]
+    lt: JSON
+    lte: JSON
+    ne: JSON
+    not: JSONFilterInput
+    notContains: JSON
+    notContainsi: JSON
+    notIn: [JSON]
+    notNull: Boolean
+    null: Boolean
+    or: [JSON]
+    startsWith: JSON
+}
+
+input PaginationInput {
+    page: Int
+    pageSize: Int
+    start: Int
+    limit: Int
 }
 
 type Pagination {
@@ -21,9 +227,17 @@ type Pagination {
     pageCount: Int!
 }
 
+type ResponseCollectionMeta {
+    pagination: Pagination
+}
+
 type Show {
     title: String
     releaseYear: Int
+}
+
+type Query {
+    shows(titleFilter: String): [Show]
 }
 
 type Mutation {

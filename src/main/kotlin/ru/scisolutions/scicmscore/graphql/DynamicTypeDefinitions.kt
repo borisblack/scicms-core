@@ -4,38 +4,47 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsTypeDefinitionRegistry
 import graphql.language.Description
 import graphql.language.FieldDefinition
+import graphql.language.InputObjectTypeDefinition
+import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.ObjectTypeDefinition
 import graphql.language.ObjectTypeExtensionDefinition
 import graphql.language.TypeName
 import graphql.schema.idl.TypeDefinitionRegistry
-import ru.scisolutions.scicmscore.api.model.Property
-import ru.scisolutions.scicmscore.api.model.Property.Type
 import ru.scisolutions.scicmscore.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
-import java.util.Locale
-import graphql.language.Type as GraphQLType
 
 @DgsComponent
 class DynamicTypeDefinitions(private val itemService: ItemService) {
     @DgsTypeDefinitionRegistry
     fun registry(): TypeDefinitionRegistry {
         val typeDefinitionRegistry = TypeDefinitionRegistry()
-        val queryBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query")
-        val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
 
-        for ((_, item) in itemService.items) {
+        // Fill Query
+        val queryBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query")
+        for ((name, item) in itemService.items) {
+            if (name in excludedQueryItemNames)
+                continue
+
             typeDefinitionRegistry.add(getTypeDefinition(item))
             typeDefinitionRegistry.add(getResponseTypeDefinition(item))
             typeDefinitionRegistry.add(getResponseCollectionTypeDefinition(item))
+            typeDefinitionRegistry.add(getFiltersInputTypeDefinition(item))
 
             queryBuilder.fieldDefinition(getResponseQueryDefinition(item))
             queryBuilder.fieldDefinition(getResponseCollectionQueryDefinition(item))
+        }
+        typeDefinitionRegistry.add(queryBuilder.build())
+
+        // Fill Mutation
+        val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
+        for ((name, item) in itemService.items) {
+            if (name in excludedMutationItemNames)
+                continue
+
             // mutationBuilder.fieldDefinition(getMutationDefinition(item))
         }
-
-        typeDefinitionRegistry.add(queryBuilder.build())
         typeDefinitionRegistry.add(mutationBuilder.build())
 
         return typeDefinitionRegistry
@@ -47,7 +56,7 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
             .description(Description(item.description, null, true))
 
         for ((name, property) in item.spec.properties) {
-            val type = graphQLType(name, property)
+            val type = typeResolver.objectType(name, property)
             val fieldDefinitionBuilder = FieldDefinition.newFieldDefinition()
                 .name(name)
                 .type(type)
@@ -57,49 +66,6 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         }
 
         return typeBuilder.build()
-    }
-
-    private fun graphQLType(name: String, property: Property): GraphQLType<*> =
-        when (property.type) {
-            Type.UUID.value -> {
-                val type = if (property.keyed) "ID" else "String"
-                graphQLTypeWithObligation(type, property.required)
-            }
-            Type.STRING.value, Type.TEXT.value,
-            Type.ENUM.value, // TODO: Add enum types
-            Type.SEQUENCE.value,
-            Type.EMAIL.value, // TODO: Add regexp email scalar type
-            Type.PASSWORD.value -> graphQLTypeWithObligation("String", property.required)
-            Type.INT.value -> graphQLTypeWithObligation("Int", property.required)
-            Type.FLOAT.value,
-            Type.DECIMAL.value -> graphQLTypeWithObligation("Float", property.required)
-            Type.DATE.value -> graphQLTypeWithObligation("Date", property.required)
-            Type.TIME.value -> graphQLTypeWithObligation("Time", property.required)
-            Type.DATETIME.value -> graphQLTypeWithObligation("DateTime", property.required)
-            Type.TIMESTAMP.value -> graphQLTypeWithObligation("Int", property.required)
-            Type.BOOL.value -> graphQLTypeWithObligation("Boolean", property.required)
-            Type.ARRAY.value,
-            Type.JSON.value -> graphQLTypeWithObligation("String", property.required)
-            Type.MEDIA.value -> graphQLTypeWithObligation("UUID", property.required)
-            Type.RELATION.value -> {
-                if (property.target == null)
-                    throw IllegalArgumentException("Property [$name]: Target is null")
-
-                val target = property.target
-                    .substringBefore("(")
-                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-
-                if (property.relType == Property.RelType.ONE_TO_MANY.value || property.relType == Property.RelType.MANY_TO_MANY.value)
-                    ListType(NonNullType(TypeName(target)))
-                else
-                    graphQLTypeWithObligation(target, property.required)
-            }
-            else -> throw IllegalArgumentException("Property [$name]: Invalid type (${property.type})")
-        }
-
-    private fun graphQLTypeWithObligation(type: String, required: Boolean): GraphQLType<*> {
-        val typeName = TypeName(type)
-        return if (required) NonNullType(typeName) else typeName
     }
 
     private fun getResponseTypeDefinition(item: Item): ObjectTypeDefinition {
@@ -150,25 +116,86 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         return FieldDefinition.newFieldDefinition()
             .name(item.name)
             .type(TypeName("${item.name.capitalize()}Response"))
-            // .inputValueDefinition(actionInputValueDefinition())
-            // .inputValueDefinition(matchesInputValueDefinition())
-            // .inputValueDefinition(whereInputValueDefinition())
-            // .inputValueDefinition(sortInputValueDefinition())
-            // .inputValueDefinition(limitInputValueDefinition())
-            // .inputValueDefinition(offsetInputValueDefinition())
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("id")
+                    .type(TypeName("ID"))
+                    .build()
+            )
             .build()
     }
 
     private fun getResponseCollectionQueryDefinition(item: Item): FieldDefinition {
+        val name = item.name.capitalize()
         return FieldDefinition.newFieldDefinition()
             .name(item.pluralName)
-            .type(TypeName("${item.name.capitalize()}ResponseCollection"))
-            // .inputValueDefinition(actionInputValueDefinition())
-            // .inputValueDefinition(matchesInputValueDefinition())
-            // .inputValueDefinition(whereInputValueDefinition())
-            // .inputValueDefinition(sortInputValueDefinition())
-            // .inputValueDefinition(limitInputValueDefinition())
-            // .inputValueDefinition(offsetInputValueDefinition())
+            .type(TypeName("${name}ResponseCollection"))
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("filters")
+                    .type(TypeName("${name}FiltersInput"))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("pagination")
+                    .type(TypeName("PaginationInput"))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("sort")
+                    .type(ListType(TypeName("String")))
+                    .build()
+            )
             .build()
+    }
+
+    private fun getFiltersInputTypeDefinition(item: Item): InputObjectTypeDefinition {
+        val inputName = "${item.name.capitalize()}FiltersInput"
+        val inputBuilder = InputObjectTypeDefinition.newInputObjectDefinition()
+            .name(inputName)
+
+        for ((name, property) in item.spec.properties) {
+            val type = typeResolver.filterInputType(name, property)
+            val inputValueDefinitionBuilder = InputValueDefinition.newInputValueDefinition()
+                .name(name)
+                .type(type)
+
+            inputBuilder.inputValueDefinition(inputValueDefinitionBuilder.build())
+        }
+
+        // and
+        inputBuilder.inputValueDefinition(
+            InputValueDefinition.newInputValueDefinition()
+                .name("and")
+                .type(ListType(TypeName(inputName)))
+                .build()
+        )
+
+        // or
+        inputBuilder.inputValueDefinition(
+            InputValueDefinition.newInputValueDefinition()
+                .name("or")
+                .type(ListType(TypeName(inputName)))
+                .build()
+        )
+
+        // not
+        inputBuilder.inputValueDefinition(
+            InputValueDefinition.newInputValueDefinition()
+                .name("not")
+                .type(TypeName(inputName))
+                .build()
+        )
+
+        return inputBuilder.build()
+    }
+
+    companion object {
+        private const val EXAMPLE = "example"
+        private val excludedQueryItemNames = setOf(EXAMPLE)
+        private val excludedMutationItemNames = setOf(EXAMPLE) // excludedMutationItemNames should contain names from excludedQueryItemNames
+        private val typeResolver = TypeResolver()
     }
 }
