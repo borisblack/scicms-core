@@ -1,6 +1,6 @@
-package ru.scisolutions.scicmscore.api.mapper
+package ru.scisolutions.scicmscore.domain.mapper
 
-import ru.scisolutions.scicmscore.api.model.Item
+import ru.scisolutions.scicmscore.domain.model.Item
 import ru.scisolutions.scicmscore.entity.Item as ItemEntity
 
 class ItemMapper : Mapper<Item, ItemEntity> {

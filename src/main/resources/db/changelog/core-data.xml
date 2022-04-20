@@ -10,6 +10,36 @@
     <property name="rootUserId" value="0c924266-3c61-4362-81d7-9d69403fbe32"/>
     <property name="defaultPermissionId" value="6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"/>
     <changeSet id="2022-01-03-init-core-data" author="bchernysh">
+        <insert tableName="core_locales">
+            <column name="id" value="d81fd69a-1834-4ee5-9afa-e20151f804c5"/>
+            <column name="config_id" value="d81fd69a-1834-4ee5-9afa-e20151f804c5"/>
+            <column name="name" value="en-US"/>
+            <column name="display_name" value="English"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="core_locales">
+            <column name="id" value="afcedcba-124c-46ae-a791-d986aa26ed9a"/>
+            <column name="config_id" value="afcedcba-124c-46ae-a791-d986aa26ed9a"/>
+            <column name="name" value="ru-RU"/>
+            <column name="display_name" value="Russian"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="last_version" valueBoolean="true"/>
+            <column name="is_current" valueBoolean="true"/>
+            <column name="released" valueBoolean="false"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
         <insert tableName="core_revision_policies">
             <column name="id" value="${defaultRevisionPolicyId}"/>
             <column name="config_id" value="${defaultRevisionPolicyId}"/>

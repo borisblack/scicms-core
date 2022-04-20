@@ -12,7 +12,7 @@ metadata:
   core: true
   performDdl: false
 spec:
-  properties:
+  attributes:
     username:
       type: string
       columnName: username

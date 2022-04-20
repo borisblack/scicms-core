@@ -8,7 +8,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.api.model.AbstractModel
+import ru.scisolutions.scicmscore.domain.model.AbstractModel
 import ru.scisolutions.scicmscore.dbschema.DbSchema
 import ru.scisolutions.scicmscore.dbschema.reader.DbSchemaReader
 import java.nio.file.Files

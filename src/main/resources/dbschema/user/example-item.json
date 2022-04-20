@@ -23,7 +23,7 @@
     "implementation": ""
   },
   "spec": {
-    "properties": {
+    "attributes": {
       "name": {
         "type": "string",
         "columnName": "name",
@@ -31,7 +31,7 @@
         "description": "Name",
         "required": true,
         "unique": true,
-        "indexed": true,
+        "indexed": false,
         "private": false,
         "length": 50
       },
@@ -61,21 +61,31 @@
       "partType": {
         "type": "enum",
         "columnName": "part_type",
-        "enumName": "partType",
+        "enumSet": [
+          "Assembly",
+          "Part"
+        ],
         "displayName": "Part Type",
         "description": "Part Type"
       },
       "ownershipType": {
         "type": "enum",
         "columnName": "ownership_type",
-        "enumName": "ownershipType",
+        "enumSet": [
+          "Manufactured",
+          "Borrowed",
+          "Bought"
+        ],
         "displayName": "Ownership Type",
         "description": "Ownership Type"
       },
       "units": {
         "type": "enum",
         "columnName": "units",
-        "enumName": "units",
+        "enumSet": [
+          "pcs",
+          "kg"
+        ],
         "displayName": "Units",
         "description": "Units"
       },

@@ -13,12 +13,12 @@ metadata:
   description: Part BOM
   core: false
   performDdl: true
-  versioned: false
+  versioned: true
   manualVersioning: false
   notLockable: false
   localized: true
 spec:
-  properties:
+  attributes:
     source:
       type: relation
       columnName: source_id

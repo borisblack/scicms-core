@@ -17,7 +17,7 @@ metadata:
   notLockable: false
   localized: true
 spec:
-  properties:
+  attributes:
     displayName:
       type: string
       columnName: display_name
@@ -27,7 +27,14 @@ spec:
     noticeType:
       type: enum
       columnName: notice_type
-      enumName: noticeType
+      enumSet:
+        - ЕЕ
+        - АИ
+        - ДИ
+        - ДП
+        - ДПИ
+        - ИИ
+        - ПИ
       displayName: Notice Type
       description: Notice Type
     cause:

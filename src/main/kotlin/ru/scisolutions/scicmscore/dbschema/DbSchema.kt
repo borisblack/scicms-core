@@ -1,11 +1,11 @@
 package ru.scisolutions.scicmscore.dbschema
 
-import ru.scisolutions.scicmscore.api.model.AbstractModel
-import ru.scisolutions.scicmscore.api.model.BaseMetadata
-import ru.scisolutions.scicmscore.api.model.Item
-import ru.scisolutions.scicmscore.api.model.ItemTemplate
-import ru.scisolutions.scicmscore.api.model.Property
-import ru.scisolutions.scicmscore.api.model.Spec
+import ru.scisolutions.scicmscore.domain.model.AbstractModel
+import ru.scisolutions.scicmscore.domain.model.BaseMetadata
+import ru.scisolutions.scicmscore.domain.model.Item
+import ru.scisolutions.scicmscore.domain.model.ItemTemplate
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.ItemSpec
 
 class DbSchema {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()
@@ -32,13 +32,13 @@ class DbSchema {
         }
     }
 
-    private fun validateSpec(metadata: BaseMetadata, spec: Spec) {
-        for ((name, property) in spec.properties) {
-            if (property.type !in validPropertyTypes)
-                throw IllegalArgumentException("Property [${metadata.name}.$name]: Invalid type (${property.type})")
+    private fun validateSpec(metadata: BaseMetadata, spec: ItemSpec) {
+        for ((name, attribute) in spec.attributes) {
+            if (attribute.type !in validAttributeTypes)
+                throw IllegalArgumentException("Attribute [${metadata.name}.$name]: Invalid type (${attribute.type})")
 
-            if (property.relType != null && property.relType !in validPropertyRelTypes)
-                throw IllegalArgumentException("Property [${metadata.name}.$name]: Invalid relation type (${property.relType})")
+            if (attribute.relType != null && attribute.relType !in validAttributeRelTypes)
+                throw IllegalArgumentException("Attribute [${metadata.name}.$name]: Invalid relation type (${attribute.relType})")
         }
     }
 
@@ -62,11 +62,11 @@ class DbSchema {
     }
 
     companion object {
-        val validPropertyTypes = Property.Type.values()
+        val validAttributeTypes = Attribute.Type.values()
             .map { it.value }
             .toSet()
 
-        val validPropertyRelTypes = Property.RelType.values()
+        val validAttributeRelTypes = Attribute.RelType.values()
             .map { it.value }
             .toSet()
     }

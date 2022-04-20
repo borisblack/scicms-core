@@ -3,7 +3,7 @@ kind: ItemTemplate
 metadata:
   name: defaultItemTemplate
 spec:
-  properties:
+  attributes:
     id:
       type: uuid
       columnName: id
@@ -17,7 +17,7 @@ spec:
       displayName: ConfigID
       description: ConfigID
       required: true
-      indexed: true
+      unique: true
       private: true
     generation:
       type: int
@@ -52,6 +52,19 @@ spec:
       columnName: released
       displayName: Released
       description: Released
+#    locale:
+#      type: relation
+#      columnName: locale
+#      target: locale(name)
+#      relType: manyToOne
+#      displayName: Locale
+#      description: Locale
+    locale:
+      type: string
+      columnName: locale
+      displayName: Locale
+      description: Locale
+      length: 50
     lifecycle:
       type: relation
       columnName: lifecycle_id
@@ -72,15 +85,6 @@ spec:
       relType: manyToOne
       displayName: Permission
       description: Permission
-      indexed: true
-    locale:
-      type: enum
-      columnName: locale
-      enumName: locale
-      displayName: Locale
-      description: Locale
-      defaultValue: en-US
-      indexed: true
     createdAt:
       type: datetime
       columnName: created_at
@@ -128,3 +132,7 @@ spec:
       relType: manyToOne
       displayName: Locked By
       description: Locked By
+  indexes:
+    _permission_idx:
+      columns:
+        - permission_id

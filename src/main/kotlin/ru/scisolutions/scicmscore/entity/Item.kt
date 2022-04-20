@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.entity
 
-import ru.scisolutions.scicmscore.api.model.Spec
-import ru.scisolutions.scicmscore.converter.SpecConverter
+import ru.scisolutions.scicmscore.domain.model.ItemSpec
+import ru.scisolutions.scicmscore.converter.ItemSpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -59,8 +59,8 @@ class Item(
     var implementation: String? = null,
 
     @Column
-    @Convert(converter = SpecConverter::class)
-    var spec: Spec = Spec(),
+    @Convert(converter = ItemSpecConverter::class)
+    var spec: ItemSpec = ItemSpec(),
 
     @Column
     var checksum: String? = null,

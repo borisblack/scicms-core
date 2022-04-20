@@ -12,7 +12,7 @@ metadata:
   core: true
   performDdl: false
 spec:
-  properties:
+  attributes:
     groupName:
       type: string
       columnName: group_name

@@ -1,10 +1,10 @@
-package ru.scisolutions.scicmscore.api.model
+package ru.scisolutions.scicmscore.domain.model
 
 data class Item(
     override val coreVersion: String,
     val includeTemplates: Set<String>,
     override val metadata: ItemMetadata,
-    val spec: Spec
+    val spec: ItemSpec
 ) : AbstractModel(coreVersion, metadata) {
     fun includeTemplate(itemTemplate: ItemTemplate) = Item(
         coreVersion = this.coreVersion,

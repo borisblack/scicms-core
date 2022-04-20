@@ -16,12 +16,12 @@ class ItemTypeDefinitions {
             .name(item.name.capitalize())
             .description(Description(item.description, null, true))
 
-        for ((name, property) in item.spec.properties) {
-            val type = typeResolver.objectType(name, property)
+        for ((name, attribute) in item.spec.attributes) {
+            val type = typeResolver.objectType(name, attribute)
             val fieldDefinitionBuilder = FieldDefinition.newFieldDefinition()
                 .name(name)
                 .type(type)
-                .description(Description(property.description, null, false))
+                .description(Description(attribute.description, null, false))
 
             typeBuilder.fieldDefinition(fieldDefinitionBuilder.build())
         }
@@ -78,8 +78,8 @@ class ItemTypeDefinitions {
         val inputBuilder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name(inputName)
 
-        for ((name, property) in item.spec.properties) {
-            val type = typeResolver.filterInputType(name, property)
+        for ((name, attribute) in item.spec.attributes) {
+            val type = typeResolver.filterInputType(name, attribute)
             val inputValueDefinitionBuilder = InputValueDefinition.newInputValueDefinition()
                 .name(name)
                 .type(type)
@@ -118,22 +118,22 @@ class ItemTypeDefinitions {
         val inputBuilder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name("${item.name.capitalize()}Input")
 
-        for ((name, property) in item.spec.properties) {
-            if (property.keyed)
+        for ((name, attribute) in item.spec.attributes) {
+            if (attribute.keyed)
                 continue
 
-            // Exclude version properties
-            if (!item.manualVersioning && name == MAJOR_REV)
+            // Exclude version attributes
+            if (!item.manualVersioning && name == MAJOR_REV_ATTR_NAME)
                 continue
 
-            if (name in versionProperties)
+            if (name in versionAttributes)
                 continue
 
             // Exclude state attribute (promote is used to change state)
-            if (name == STATE)
+            if (name == STATE_ATTR_NAME)
                 continue
 
-            val type = typeResolver.inputType(name, property)
+            val type = typeResolver.inputType(name, attribute)
             val inputValueDefinitionBuilder = InputValueDefinition.newInputValueDefinition()
                 .name(name)
                 .type(type)
@@ -145,7 +145,7 @@ class ItemTypeDefinitions {
     }
 
     fun getResponseQueryDefinition(item: Item): FieldDefinition {
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name(item.name)
             .type(TypeName("${item.name.capitalize()}Response"))
             .inputValueDefinition(
@@ -154,12 +154,25 @@ class ItemTypeDefinitions {
                     .type(TypeName("ID"))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
+    }
+
+    private fun addLocalizationInputIfRequired(builder: FieldDefinition.Builder, item: Item) {
+        if (item.localized)
+            builder
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("locale")
+                        .type(TypeName("String"))
+                        .build()
+                )
     }
 
     fun getResponseCollectionQueryDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name(item.pluralName)
             .type(TypeName("${name}ResponseCollection"))
             .inputValueDefinition(
@@ -180,12 +193,14 @@ class ItemTypeDefinitions {
                     .type(ListType(TypeName("String")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getCreateMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("create${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -194,12 +209,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("${name}Input")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getUpdateMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("update${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -214,12 +231,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("${name}Input")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getDeleteMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("delete${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -228,12 +247,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getPurgeMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("purge${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -242,12 +263,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getLockMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("lock${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -256,12 +279,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getUnlockMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("unlock${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -270,12 +295,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-            .build()
+        addLocalizationInputIfRequired(builder, item)
+
+        return builder.build()
     }
 
     fun getPromoteMutationDefinition(item: Item): FieldDefinition {
         val name = item.name.capitalize()
-        return FieldDefinition.newFieldDefinition()
+        val builder = FieldDefinition.newFieldDefinition()
             .name("promote${name}")
             .type(TypeName("${name}Response"))
             .inputValueDefinition(
@@ -290,18 +317,19 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("String")))
                     .build()
             )
+        addLocalizationInputIfRequired(builder, item)
 
-            .build()
+        return builder.build()
     }
 
     companion object {
-        private const val MAJOR_REV = "majorRev"
-        private const val GENERATION = "generation"
-        private const val LAST_VERSION = "lastVersion"
-        private const val CURRENT = "current"
-        private const val STATE = "state"
+        private const val MAJOR_REV_ATTR_NAME = "majorRev"
+        private const val GENERATION_ATTR_NAME = "generation"
+        private const val LAST_VERSION_ATTR_NAME = "lastVersion"
+        private const val CURRENT_ATTR_NAME = "current"
+        private const val STATE_ATTR_NAME = "state"
 
-        private val versionProperties = setOf(GENERATION, LAST_VERSION, CURRENT)
+        private val versionAttributes = setOf(GENERATION_ATTR_NAME, LAST_VERSION_ATTR_NAME, CURRENT_ATTR_NAME)
         private val typeResolver = TypeResolver()
     }
 }

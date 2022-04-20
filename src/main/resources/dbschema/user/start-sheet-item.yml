@@ -17,13 +17,14 @@ metadata:
   notLockable: false
   localized: true
 spec:
-  properties:
+  attributes:
     name:
       type: string
       columnName: name
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     displayName:
       type: string
@@ -38,8 +39,3 @@ spec:
       mappedBy: startSheet
       displayName: Parts
       description: Parts
-  indexes:
-    start_sheets_name_uk:
-      columns:
-        - name
-      unique: true

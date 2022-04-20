@@ -12,7 +12,7 @@ metadata:
   core: true
   performDdl: false
 spec:
-  properties:
+  attributes:
     user:
       type: relation
       columnName: username

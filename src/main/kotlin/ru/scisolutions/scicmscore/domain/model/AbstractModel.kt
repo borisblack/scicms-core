@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.api.model
+package ru.scisolutions.scicmscore.domain.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

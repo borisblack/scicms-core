@@ -1,11 +1,11 @@
-package ru.scisolutions.scicmscore.api.model
+package ru.scisolutions.scicmscore.domain.model
 
-data class Spec(
-    val properties: Map<String, Property> = emptyMap(),
+data class ItemSpec(
+    val attributes: Map<String, Attribute> = emptyMap(),
     val indexes: Map<String, Index> = emptyMap()
 ) {
-    fun merge(other: Spec) = Spec(
-        properties = merge(this.properties, other.properties),
+    fun merge(other: ItemSpec) = ItemSpec(
+        attributes = merge(this.attributes, other.attributes),
         indexes = merge(this.indexes, other.indexes)
     )
 

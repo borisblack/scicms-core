@@ -13,7 +13,7 @@ metadata:
   performDdl: false
   versioned: true
 spec:
-  properties:
+  attributes:
     filename:
       type: string
       columnName: filename

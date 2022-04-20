@@ -16,7 +16,7 @@ metadata:
 #  notLockable: false
 #  localized: false
 spec:
-  properties:
+  attributes:
     name:
       type: string
       columnName: name
@@ -58,7 +58,8 @@ spec:
     dataSource:
       type: enum
       columnName: data_source
-      enumName: dataSource
+      enumSet:
+        - main
       displayName: Data Source
       description: Data Source
     icon:

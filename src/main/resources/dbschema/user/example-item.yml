@@ -20,7 +20,7 @@ metadata:
   localized: false # optional (false by default)
   implementation: # optional (null by default)
 spec:
-  properties:
+  attributes:
     name:
       type: string  # uuid, string, text, enum, sequence, email, password, int, float, decimal, date, time, datetime, timestamp, bool, array, json, media, relation
       columnName: name
@@ -29,8 +29,8 @@ spec:
 #      pattern: # optional (null by default) - string
 #      defaultValue: # optional (null by default)
       required: true # optional (false by default)
-      unique: true # optional (false by default)
-      indexed: true # optional (false by default)
+      unique: true # optional (false by default). Additional columns may be added to the unique index depending on configuration parameters (versioning.include-in-unique-index and i18n.include-in-unique-index) and attributes (versioned and localized). If other logic is needed, use the indexes section
+      indexed: false # optional (false by default)
       private: false # optional (false by default)
       length: 50 # optional (null by default) - string
 #      precision: # optional (null by default) - decimal
@@ -62,19 +62,26 @@ spec:
     partType:
       type: enum
       columnName: part_type
-      enumName: partType
+      enumSet:
+        - Assembly
+        - Part
       displayName: Part Type
       description: Part Type
     ownershipType:
       type: enum
       columnName: ownership_type
-      enumName: ownershipType
+      enumSet:
+        - Manufactured
+        - Borrowed
+        - Bought
       displayName: Ownership Type
       description: Ownership Type
     units:
       type: enum
       columnName: units
-      enumName: units
+      enumSet:
+        - pcs
+        - kg
       displayName: Units
       description: Units
     cost:
@@ -117,7 +124,7 @@ spec:
       displayName: Start Sheet
       description: Start Sheet
   indexes:
-    examples_name_uk:
-      columns:
+    examples_name_uk: # if the index name begins with _, it will be prefixed by the tableName
+      columns: # the index will be created with the specified columns only (without additional version or locale columns)
         - name
       unique: true

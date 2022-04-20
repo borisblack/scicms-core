@@ -3,6 +3,7 @@ scalar Time
 scalar DateTime
 scalar Object
 scalar JSON
+scalar Upload
 
 input IDFilterInput {
     and: [ID]
@@ -231,15 +232,16 @@ type ResponseCollectionMeta {
     pagination: Pagination
 }
 
-type Show {
-    title: String
-    releaseYear: Int
+type UserInfo {
+    username: String!
+    roles: [String!]!
 }
 
 type Query {
-    shows(titleFilter: String): [Show]
+    me: UserInfo
 }
 
 type Mutation {
-    updateShow(title: String): Show!
+    upload(file: Upload!): ID!
+    uploadMultiple(files: [Upload!]!): [ID!]!
 }

@@ -4,6 +4,45 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
     <changeSet id="2022-01-03-init-core-ddl" author="bchernysh">
+        <createTable tableName="core_locales">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="core_locales_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="core_locales_name_uk"/>
+            </column>
+            <column name="display_name" type="varchar(50)"/>
+            <column name="description" type="varchar(250)"/>
+            <column name="core" type="boolean"/>
+            <column name="spec" type="text" defaultValue="{}"/>
+            <column name="generation" type="int"/>
+            <column name="major_rev" type="varchar(50)"/>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="last_version" type="boolean"/>
+            <column name="is_current" type="boolean"/>
+            <column name="released" type="boolean"/>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_locales_locale_fk" references="core_locales(name)"/>
+            </column>
+            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
+            <column name="state" type="varchar(50)"/> <!--add index-->
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="owned_by_id" type="varchar(36)"/>
+            <column name="managed_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
         <createTable tableName="core_revision_policies">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_revision_policies_pk"/>
@@ -23,7 +62,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/> <!--add index-->
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_revision_policies_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -81,7 +122,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/> <!--add index-->
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_items_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -113,47 +156,6 @@
 <!--            <column name="state"/>-->
 <!--        </createIndex>-->
 
-        <createTable tableName="core_enumerations">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_enumerations_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_enumerations_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="core" type="boolean"/>
-            <column name="spec" type="text" defaultValue="{}"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
-            <column name="released" type="boolean"/>
-            <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/> <!--add index-->
-            <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
-            <column name="state" type="varchar(50)"/> <!--add index-->
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createIndex tableName="core_enumerations" indexName="core_enumerations_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
         <createTable tableName="core_sequences">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_sequences_pk"/>
@@ -180,7 +182,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/> <!--add index-->
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_sequences_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -222,7 +226,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/> <!--add index-->
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_media_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/> <!--add foreign key or index-->
             <column name="state" type="varchar(50)"/> <!--add index-->
             <column name="created_at" type="datetime">
@@ -263,7 +269,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_lifecycles_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -305,7 +313,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_allowed_lifecycles_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">

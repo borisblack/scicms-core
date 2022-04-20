@@ -17,13 +17,14 @@ metadata:
   notLockable: false
   localized: true
 spec:
-  properties:
+  attributes:
     name:
       type: string
       columnName: name
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     displayName:
       type: string
@@ -44,8 +45,3 @@ spec:
       mappedBy: product
       displayName: Parts
       description: Parts
-  indexes:
-    products_name_uk:
-      columns:
-        - name
-      unique: true

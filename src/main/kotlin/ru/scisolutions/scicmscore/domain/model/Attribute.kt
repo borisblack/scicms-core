@@ -1,9 +1,9 @@
-package ru.scisolutions.scicmscore.api.model
+package ru.scisolutions.scicmscore.domain.model
 
-data class Property(
+data class Attribute(
     val type: String,
     val columnName: String? = null, // can be null for some relations
-    val enumName: String? = null,
+    val enumSet: Set<String>? = null,
     val target: String? = null,
     val relType: String? = null,
     val relItem: String? = null,

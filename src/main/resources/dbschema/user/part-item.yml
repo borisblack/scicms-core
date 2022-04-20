@@ -4,30 +4,31 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: part
-  dataSource: main # optional ('main' by default)
-  tableName: parts # optional (pluralName in lowercase by default). Prefixes core_ and sec_ are not allowed
-  displayName: Part # optional (name by default)
-  singularName: part # optional (name by default)
+  dataSource: main
+  tableName: parts
+  displayName: Part
+  singularName: part
   pluralName: parts
-  description: Parts # optional (null by default)
-  icon: fas fa-swatchbook # optional (null by default)
-  core: true # optional (false by default)
-  performDdl: true # optional (true by default)
-  versioned: false # optional (false by default)
-  manualVersioning: false # optional (false by default)
+  description: Parts
+  icon: fas fa-swatchbook
+  core: true
+  performDdl: true
+  versioned: true
+  manualVersioning: false
 #  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b # optional (null by default)
-  notLockable: false # optional (false by default)
-  localized: true # optional (false by default)
+  notLockable: false
+  localized: true
   implementation: # optional (null by default)
 spec:
-  properties:
+  attributes:
     name:
       type: string
       columnName: name
       displayName: Name
       description: Name
-      required: true
       length: 50
+      required: true
+      unique: true
     displayName:
       type: string
       columnName: display_name
@@ -44,28 +45,35 @@ spec:
       type: relation
       columnName: product_id
       target: product
-      relType: manyToOne # oneToOne, oneToMany, manyToOne, manyToMany
-#      relItem: # for manyToMany association (<owningItem><RelatedItem>Rel by default)
-#      mappedBy: # in bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key
+      relType: manyToOne
       inversedBy: parts
       displayName: Product
       description: Product
     partType:
       type: enum
       columnName: part_type
-      enumName: partType
+      enumSet:
+        - Сборка
+        - Компонент
+        - Материал
+        - Программа
       displayName: Part Type
       description: Part Type
     ownershipType:
       type: enum
       columnName: ownership_type
-      enumName: ownershipType
+      enumSet:
+        - Разработанное
+        - Заимствованное
+        - Покупное
       displayName: Ownership Type
       description: Ownership Type
     units:
       type: enum
       columnName: units
-      enumName: units
+      enumSet:
+        - Шт
+        - Кг
       displayName: Units
       description: Units
     cost:
@@ -122,8 +130,3 @@ spec:
       relItem: partBOM
       displayName: Part BOM
       description: Part BOM
-  indexes:
-    parts_name_uk:
-      columns:
-        - name
-      unique: true

@@ -3,12 +3,12 @@ kind: Item
 includeTemplates:
   - defaultItemTemplate
 metadata:
-  name: revisionPolicy
-  tableName: core_revision_policies
-  displayName: Revision Policy
-  singularName: revisionPolicy
-  pluralName: revisionPolicies
-  description: Revision Policies
+  name: locale
+  tableName: core_locales
+  displayName: Locale
+  singularName: locale
+  pluralName: locales
+  description: Locales
   core: true
   performDdl: false
 spec:
@@ -26,13 +26,8 @@ spec:
       displayName: Display Name
       description: Display Name
       length: 50
-    revisions:
-      type: text
-      columnName: revisions
-      displayName: Revisions
-      description: Revisions
   indexes:
-    core_revision_policies_name_uk:
+    core_locales_name_uk:
       columns:
         - name
       unique: true

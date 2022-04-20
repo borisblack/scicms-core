@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.api.mapper
+package ru.scisolutions.scicmscore.domain.mapper
 
 interface Mapper<S, T> {
     fun map(source: S): T

@@ -2,8 +2,8 @@ package ru.scisolutions.scicmscore.dbschema.seeder.impl
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.api.mapper.ItemMapper
-import ru.scisolutions.scicmscore.api.model.Item
+import ru.scisolutions.scicmscore.domain.mapper.ItemMapper
+import ru.scisolutions.scicmscore.domain.model.Item
 import ru.scisolutions.scicmscore.dbschema.DbSchema
 import ru.scisolutions.scicmscore.dbschema.seeder.DbSchemaSeeder
 import ru.scisolutions.scicmscore.dbschema.seeder.ItemSeeder

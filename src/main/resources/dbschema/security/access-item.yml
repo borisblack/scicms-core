@@ -15,7 +15,7 @@ metadata:
   performDdl: false
   versioned: false
 spec:
-  properties:
+  attributes:
     displayName:
       type: string
       columnName: display_name

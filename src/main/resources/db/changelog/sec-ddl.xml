@@ -27,7 +27,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_users_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -67,7 +69,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_roles_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -106,7 +110,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_groups_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -146,7 +152,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_group_roles_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -188,7 +196,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_group_members_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -230,7 +240,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_identities_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -269,7 +281,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_permissions_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -318,7 +332,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_access_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -362,7 +378,9 @@
             <column name="is_current" type="boolean"/>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_allowed_permissions_locale_fk" references="core_locales(name)"/>
+            </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">

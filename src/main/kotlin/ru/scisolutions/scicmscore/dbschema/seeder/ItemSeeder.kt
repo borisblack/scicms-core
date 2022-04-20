@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.dbschema.seeder
 
-import ru.scisolutions.scicmscore.api.model.Item
+import ru.scisolutions.scicmscore.domain.model.Item
 import ru.scisolutions.scicmscore.entity.Item as ItemEntity
 
 interface ItemSeeder {

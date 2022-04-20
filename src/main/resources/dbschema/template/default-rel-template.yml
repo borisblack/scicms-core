@@ -3,7 +3,7 @@ kind: ItemTemplate
 metadata:
   name: defaultRelTemplate
 spec:
-  properties:
+  attributes:
     sortOrder:
       type: int
       columnName: sort_order

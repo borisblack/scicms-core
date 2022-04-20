@@ -15,7 +15,7 @@ metadata:
   performDdl: false
   versioned: false
 spec:
-  properties:
+  attributes:
     source:
       type: relation
       columnName: source_id

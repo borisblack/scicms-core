@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.api.model
+package ru.scisolutions.scicmscore.domain.model
 
 data class Index(
     val columns: Set<String>,
