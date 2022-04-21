@@ -8,169 +8,168 @@ import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
+import graphql.schema.DataFetchingEnvironment
+import org.slf4j.LoggerFactory
 import ru.scisolutions.scicmscore.entity.Item
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 
 class ItemTypeDefinitions {
-    fun getTypeDefinition(item: Item): ObjectTypeDefinition {
+    fun getObjectType(item: Item): ObjectTypeDefinition {
         val typeBuilder = ObjectTypeDefinition.newObjectTypeDefinition()
             .name(item.name.capitalize())
             .description(Description(item.description, null, true))
 
-        for ((name, attribute) in item.spec.attributes) {
-            val type = typeResolver.objectType(name, attribute)
-            val fieldDefinitionBuilder = FieldDefinition.newFieldDefinition()
-                .name(name)
-                .type(type)
-                .description(Description(attribute.description, null, false))
-
-            typeBuilder.fieldDefinition(fieldDefinitionBuilder.build())
-        }
+        item.spec.attributes
+            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromObjectType(item, attrName, attribute) }
+            .forEach { (attrName, attribute) ->
+                val type = typeResolver.objectType(attrName, attribute)
+                typeBuilder.fieldDefinition(
+                    FieldDefinition.newFieldDefinition()
+                        .name(attrName)
+                        .type(type)
+                        .description(Description(attribute.description, null, false))
+                        .build()
+                )
+            }
 
         return typeBuilder.build()
     }
 
-    fun getResponseTypeDefinition(item: Item): ObjectTypeDefinition {
-        val typeBuilder = ObjectTypeDefinition.newObjectTypeDefinition()
+    fun responseObjectType(item: Item): ObjectTypeDefinition =
+        ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${item.name.capitalize()}Response")
+            .fieldDefinition(
+                FieldDefinition.newFieldDefinition()
+                    .name("data")
+                    .type(TypeName(item.name.capitalize()))
+                    .build()
+            )
+            .build()
 
-        val dataFieldDefinitionBuilder = FieldDefinition.newFieldDefinition()
-            .name("data")
-            .type(TypeName(item.name.capitalize()))
-
-        typeBuilder.fieldDefinition(dataFieldDefinitionBuilder.build())
-
-        return typeBuilder.build()
-    }
-
-    fun getResponseCollectionTypeDefinition(item: Item): ObjectTypeDefinition {
-        val typeBuilder = ObjectTypeDefinition.newObjectTypeDefinition()
+    fun responseCollectionObjectType(item: Item): ObjectTypeDefinition =
+        ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${item.name.capitalize()}ResponseCollection")
-
-        val dataFieldDefinitionBuilder = FieldDefinition.newFieldDefinition()
-            .name("data")
-            .type(
-                NonNullType(
-                    ListType(
+            .fieldDefinition(
+                FieldDefinition.newFieldDefinition()
+                    .name("data")
+                    .type(
                         NonNullType(
-                            TypeName(item.name.capitalize())
+                            ListType(
+                                NonNullType(
+                                    TypeName(item.name.capitalize())
+                                )
+                            )
                         )
                     )
-                )
+                    .build()
             )
-
-        typeBuilder.fieldDefinition(dataFieldDefinitionBuilder.build())
-
-        val metaFieldDefinitionBuilder = FieldDefinition.newFieldDefinition()
-            .name("meta")
-            .type(
-                NonNullType(
-                    TypeName("ResponseCollectionMeta")
-                )
+            .fieldDefinition(
+                FieldDefinition.newFieldDefinition()
+                    .name("meta")
+                    .type(
+                        NonNullType(
+                            TypeName("ResponseCollectionMeta")
+                        )
+                    )
+                    .build()
             )
+            .build()
 
-        typeBuilder.fieldDefinition(metaFieldDefinitionBuilder.build())
-
-        return typeBuilder.build()
-    }
-
-    fun getFiltersInputTypeDefinition(item: Item): InputObjectTypeDefinition {
+    fun filtersInputObjectType(item: Item): InputObjectTypeDefinition {
         val inputName = "${item.name.capitalize()}FiltersInput"
         val inputBuilder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name(inputName)
 
-        for ((name, attribute) in item.spec.attributes) {
-            val type = typeResolver.filterInputType(name, attribute)
-            val inputValueDefinitionBuilder = InputValueDefinition.newInputValueDefinition()
-                .name(name)
-                .type(type)
+        item.spec.attributes
+            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName, attribute) }
+            .forEach { (attrName, attribute) ->
+                val type = typeResolver.filterInputType(attrName, attribute)
+                inputBuilder.inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name(attrName)
+                        .type(type)
+                        .build()
+                )
+            }
 
-            inputBuilder.inputValueDefinition(inputValueDefinitionBuilder.build())
-        }
-
-        // and
-        inputBuilder.inputValueDefinition(
-            InputValueDefinition.newInputValueDefinition()
-                .name("and")
-                .type(ListType(TypeName(inputName)))
-                .build()
-        )
-
-        // or
-        inputBuilder.inputValueDefinition(
-            InputValueDefinition.newInputValueDefinition()
-                .name("or")
-                .type(ListType(TypeName(inputName)))
-                .build()
-        )
-
-        // not
-        inputBuilder.inputValueDefinition(
-            InputValueDefinition.newInputValueDefinition()
-                .name("not")
-                .type(TypeName(inputName))
-                .build()
-        )
+        inputBuilder
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("and")
+                    .type(ListType(TypeName(inputName)))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("or")
+                    .type(ListType(TypeName(inputName)))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("not")
+                    .type(TypeName(inputName))
+                    .build()
+            )
 
         return inputBuilder.build()
     }
 
-    fun getInputTypeDefinition(item: Item): InputObjectTypeDefinition {
+    fun inputObjectType(item: Item): InputObjectTypeDefinition {
         val inputBuilder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name("${item.name.capitalize()}Input")
 
-        for ((name, attribute) in item.spec.attributes) {
-            if (attribute.keyed)
-                continue
-
-            // Exclude version attributes
-            if (!item.manualVersioning && name == MAJOR_REV_ATTR_NAME)
-                continue
-
-            if (name in versionAttributes)
-                continue
-
-            // Exclude state attribute (promote is used to change state)
-            if (name == STATE_ATTR_NAME)
-                continue
-
-            val type = typeResolver.inputType(name, attribute)
-            val inputValueDefinitionBuilder = InputValueDefinition.newInputValueDefinition()
-                .name(name)
-                .type(type)
-
-            inputBuilder.inputValueDefinition(inputValueDefinitionBuilder.build())
-        }
+        item.spec.attributes
+            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromInputObjectType(item, attrName, attribute) }
+            .forEach { (attrName, attribute) ->
+                val type = typeResolver.inputType(attrName, attribute)
+                inputBuilder.inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name(attrName)
+                        .type(type)
+                        .build()
+                )
+            }
 
         return inputBuilder.build()
     }
 
-    fun getResponseQueryDefinition(item: Item): FieldDefinition {
+    fun responseQueryField(item: Item): FieldDefinition {
         val builder = FieldDefinition.newFieldDefinition()
             .name(item.name)
             .type(TypeName("${item.name.capitalize()}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(TypeName("ID"))
+                    .type(NonNullType(TypeName("ID")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.versioned)
+        //     builder.inputValueDefinition(majorRevInput())
+        //
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    private fun addLocalizationInputIfRequired(builder: FieldDefinition.Builder, item: Item) {
-        if (item.localized)
-            builder
-                .inputValueDefinition(
-                    InputValueDefinition.newInputValueDefinition()
-                        .name("locale")
-                        .type(TypeName("String"))
-                        .build()
-                )
+    private fun localeInput(): InputValueDefinition =
+        InputValueDefinition.newInputValueDefinition()
+            .name(LOCALE_ATTR_NAME)
+            .type(TypeName("String"))
+            .build()
+
+    private fun majorRevInput(required: Boolean = false): InputValueDefinition {
+        val stringType = TypeName("String")
+        return InputValueDefinition.newInputValueDefinition()
+            .name(MAJOR_REV_ATTR_NAME)
+            .type(if (required) NonNullType(stringType) else stringType)
+            .build()
     }
 
-    fun getResponseCollectionQueryDefinition(item: Item): FieldDefinition {
+    fun responseCollectionQueryField(item: Item): FieldDefinition {
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name(item.pluralName)
@@ -193,12 +192,17 @@ class ItemTypeDefinitions {
                     .type(ListType(TypeName("String")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        if (item.versioned)
+            builder.inputValueDefinition(majorRevInput())
+
+        if (item.localized)
+            builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getCreateMutationDefinition(item: Item): FieldDefinition {
+    fun createMutationField(item: Item): FieldDefinition {
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("create${name}")
@@ -209,12 +213,76 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("${name}Input")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        if (item.versioned && item.manualVersioning)
+            builder.inputValueDefinition(majorRevInput(true))
+
+        if (item.localized)
+            builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getUpdateMutationDefinition(item: Item): FieldDefinition {
+    fun createVersionMutationField(item: Item): FieldDefinition {
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied")
+
+        val name = item.name.capitalize()
+        val builder = FieldDefinition.newFieldDefinition()
+            .name("create${name}Version")
+            .type(TypeName("${name}Response"))
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("id")
+                    .type(NonNullType(TypeName("ID")))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("data")
+                    .type(NonNullType(TypeName("${name}Input")))
+                    .build()
+            )
+
+        if (item.manualVersioning)
+            builder.inputValueDefinition(majorRevInput(true))
+
+        if (item.localized)
+            builder.inputValueDefinition(localeInput())
+
+        return builder.build()
+    }
+
+    fun createLocalizationMutationField(item: Item): FieldDefinition {
+        if (!item.localized)
+            throw IllegalArgumentException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied")
+
+        val name = item.name.capitalize()
+        val builder = FieldDefinition.newFieldDefinition()
+            .name("create${name}Localization")
+            .type(TypeName("${name}Response"))
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("id")
+                    .type(NonNullType(TypeName("ID")))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("data")
+                    .type(NonNullType(TypeName("${name}Input")))
+                    .build()
+            )
+
+        builder.inputValueDefinition(localeInput())
+
+        return builder.build()
+    }
+
+    fun updateMutationField(item: Item): FieldDefinition {
+        if (item.versioned)
+            throw IllegalArgumentException("Item [${item.name}] is versioned. Update mutation cannot be applied")
+
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("update${name}")
@@ -231,12 +299,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("${name}Input")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getDeleteMutationDefinition(item: Item): FieldDefinition {
+    fun deleteMutationField(item: Item): FieldDefinition {
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("delete${name}")
@@ -247,28 +317,38 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.versioned)
+        //     builder.inputValueDefinition(majorRevInput())
+        //
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getPurgeMutationDefinition(item: Item): FieldDefinition {
+    fun purgeMutationField(item: Item): FieldDefinition {
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [${item.name}] is not versioned. Purge mutation cannot be applied")
+
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("purge${name}")
-            .type(TypeName("${name}Response"))
+            .type(TypeName("${name}ResponseCollection"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getLockMutationDefinition(item: Item): FieldDefinition {
+    fun lockMutationField(item: Item): FieldDefinition {
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("lock${name}")
@@ -279,12 +359,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getUnlockMutationDefinition(item: Item): FieldDefinition {
+    fun unlockMutationField(item: Item): FieldDefinition {
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("unlock${name}")
@@ -295,12 +377,14 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("ID")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
-    fun getPromoteMutationDefinition(item: Item): FieldDefinition {
+    fun promoteMutationField(item: Item): FieldDefinition {
         val name = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("promote${name}")
@@ -317,19 +401,66 @@ class ItemTypeDefinitions {
                     .type(NonNullType(TypeName("String")))
                     .build()
             )
-        addLocalizationInputIfRequired(builder, item)
+
+        // if (item.localized)
+        //     builder.inputValueDefinition(localeInput())
 
         return builder.build()
     }
 
+    fun listCustomMutationFields(item: Item): List<FieldDefinition> {
+        if (item.implementation.isNullOrBlank())
+            throw IllegalArgumentException("Item [${item.name}] has no implementation")
+
+        val list = mutableListOf<FieldDefinition>()
+        val clazz = Class.forName(item.implementation)
+        clazz.declaredMethods.asSequence()
+            .filter { Modifier.isPublic(it.modifiers) }
+            .filter {
+                if (it.parameterCount != 1 || !it.parameterTypes[0].isAssignableFrom(DataFetchingEnvironment::class.java)) {
+                    logger.info("Method [{}#{}] has invalid signature. Skipping this method", clazz.simpleName, it.name)
+                    false
+                } else
+                    true
+            }
+            // .filter { it.returnType != Unit::class.java }
+            .filter {
+                if (it.name in reservedMethodNames) {
+                    logger.info("Method [{}#{}] name is reserved. Skipping this method", clazz.simpleName, it.name)
+                    false
+                } else
+                    true
+            }
+            .forEach { list.add(customMutationField(item, it)) }
+
+        return list
+    }
+
+    private fun customMutationField(item: Item, method: Method): FieldDefinition =
+        FieldDefinition.newFieldDefinition()
+            .name("${method.name}${item.name.capitalize()}")
+            .type(TypeName("JSON"))
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("data")
+                    .type(TypeName("JSON"))
+                    .build()
+            )
+            .build()
+
     companion object {
         private const val MAJOR_REV_ATTR_NAME = "majorRev"
-        private const val GENERATION_ATTR_NAME = "generation"
-        private const val LAST_VERSION_ATTR_NAME = "lastVersion"
-        private const val CURRENT_ATTR_NAME = "current"
-        private const val STATE_ATTR_NAME = "state"
-
-        private val versionAttributes = setOf(GENERATION_ATTR_NAME, LAST_VERSION_ATTR_NAME, CURRENT_ATTR_NAME)
+        private const val LOCALE_ATTR_NAME = "locale"
+        private const val CREATE_METHOD_NAME = "create"
+        private const val UPDATE_METHOD_NAME = "update"
+        private const val DELETE_METHOD_NAME = "delete"
+        private const val PURGE_METHOD_NAME = "purge"
+        private const val LOCK_METHOD_NAME = "lock"
+        private const val UNLOCK_METHOD_NAME = "unlock"
+        private const val PROMOTE_METHOD_NAME = "promote"
+        private val reservedMethodNames = setOf(CREATE_METHOD_NAME, UPDATE_METHOD_NAME, DELETE_METHOD_NAME, PURGE_METHOD_NAME, LOCK_METHOD_NAME, UNLOCK_METHOD_NAME, PROMOTE_METHOD_NAME)
+        private val logger = LoggerFactory.getLogger(ItemTypeDefinitions::class.java)
         private val typeResolver = TypeResolver()
+        private val excludeAttributePolicy = ExcludeAttributePolicy()
     }
 }

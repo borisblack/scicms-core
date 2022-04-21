@@ -22,7 +22,7 @@ class LiquibaseIndexes(
 
         // Process indexes
         for ((indexName, index) in item.spec.indexes) {
-            list.add(getIndex(item, indexName, index))
+            list.add(index(item, indexName, index))
         }
 
         return list
@@ -36,6 +36,10 @@ class LiquibaseIndexes(
             throw IllegalArgumentException("The attribute [$attrName] has no index")
 
         return if (attribute.unique) {
+            val columnName = attribute.columnName
+            if (columnName == GENERATION_COLUMN_NAME || columnName == MAJOR_REV_COLUMN_NAME || columnName == LOCALE_COLUMN_NAME)
+                throw IllegalArgumentException("The column [$columnName] cannot be unique")
+
             val isVersioned = item.metadata.versioned && versioningIncludeInUniqueIndex
             val isLocalized = item.metadata.localized && i18nIncludeInUniqueIndex
             if (isVersioned) {
@@ -46,13 +50,13 @@ class LiquibaseIndexes(
                 }
             } else {
                 if (isLocalized) {
-                    listOf(getLocalizedIndex(item, attribute))
+                    listOf(localizedIndex(item, attribute))
                 } else {
-                    listOf(getAttributeIndex(item, attribute))
+                    listOf(attributeIndex(item, attribute))
                 }
             }
         } else {
-            listOf(getAttributeIndex(item, attribute))
+            listOf(attributeIndex(item, attribute))
         }
     }
 
@@ -110,7 +114,7 @@ class LiquibaseIndexes(
         )
     }
 
-    private fun getLocalizedIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun localizedIndex(item: Item, attribute: Attribute): CreateIndexChange {
         val tableName = item.metadata.tableName
         val suffix = if (attribute.unique) "uk" else "idx"
 
@@ -125,7 +129,7 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun getAttributeIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun attributeIndex(item: Item, attribute: Attribute): CreateIndexChange {
         val tableName = item.metadata.tableName
         val suffix = if (attribute.unique) "uk" else "idx"
 
@@ -139,7 +143,7 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun getIndex(item: Item, indexName: String, index: Index): CreateIndexChange {
+    private fun index(item: Item, indexName: String, index: Index): CreateIndexChange {
         val tableName = item.metadata.tableName
 
         return CreateIndexChange().apply {

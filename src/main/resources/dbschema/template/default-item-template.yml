@@ -24,6 +24,7 @@ spec:
       columnName: generation
       displayName: Generation
       description: Generation
+      private: true
       minRange: 1
     majorRev:
       type: string
@@ -42,16 +43,19 @@ spec:
       columnName: last_version
       displayName: Last Version
       description: Last Version
+      private: true
     current:
       type: bool
       columnName: is_current
       displayName: Current
       description: Current
+      private: true
     released:
       type: bool
       columnName: released
       displayName: Released
       description: Released
+      private: true # not sure how to use it yet
 #    locale:
 #      type: relation
 #      columnName: locale
@@ -132,6 +136,7 @@ spec:
       relType: manyToOne
       displayName: Locked By
       description: Locked By
+
   indexes:
     _permission_idx:
       columns:

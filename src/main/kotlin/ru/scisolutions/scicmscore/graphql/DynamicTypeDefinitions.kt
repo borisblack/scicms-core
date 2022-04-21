@@ -14,35 +14,52 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
 
         // Fill Query
         val queryBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query")
-        for ((name, item) in itemService.items) {
-            if (name in excludedQueryItemNames)
-                continue
+        itemService.items.asSequence()
+            .filter { (name, _) -> name !in excludedQueryItemNames }
+            .forEach { (_, item) ->
+                typeDefinitionRegistry.add(itemTypeDefinitions.getObjectType(item))
+                typeDefinitionRegistry.add(itemTypeDefinitions.responseObjectType(item))
+                typeDefinitionRegistry.add(itemTypeDefinitions.responseCollectionObjectType(item))
+                typeDefinitionRegistry.add(itemTypeDefinitions.filtersInputObjectType(item)) // for filtering
+                typeDefinitionRegistry.add(itemTypeDefinitions.inputObjectType(item)) // for mutations
 
-            typeDefinitionRegistry.add(itemTypeDefinitions.getTypeDefinition(item))
-            typeDefinitionRegistry.add(itemTypeDefinitions.getResponseTypeDefinition(item))
-            typeDefinitionRegistry.add(itemTypeDefinitions.getResponseCollectionTypeDefinition(item))
-            typeDefinitionRegistry.add(itemTypeDefinitions.getFiltersInputTypeDefinition(item))
-            typeDefinitionRegistry.add(itemTypeDefinitions.getInputTypeDefinition(item))
+                queryBuilder.fieldDefinition(itemTypeDefinitions.responseQueryField(item))
+                queryBuilder.fieldDefinition(itemTypeDefinitions.responseCollectionQueryField(item))
+            }
 
-            queryBuilder.fieldDefinition(itemTypeDefinitions.getResponseQueryDefinition(item))
-            queryBuilder.fieldDefinition(itemTypeDefinitions.getResponseCollectionQueryDefinition(item))
-        }
         typeDefinitionRegistry.add(queryBuilder.build())
 
         // Fill Mutation
         val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
-        for ((name, item) in itemService.items) {
-            if (name in excludedMutationItemNames)
-                continue
+        itemService.items.asSequence()
+            .filter { (name, _) -> name !in excludedMutationItemNames }
+            .forEach { (_, item) ->
+                mutationBuilder.fieldDefinition(itemTypeDefinitions.createMutationField(item))
 
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getCreateMutationDefinition(item))
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getUpdateMutationDefinition(item))
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getDeleteMutationDefinition(item))
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getPurgeMutationDefinition(item))
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getLockMutationDefinition(item))
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getUnlockMutationDefinition(item))
-            mutationBuilder.fieldDefinition(itemTypeDefinitions.getPromoteMutationDefinition(item))
-        }
+                if (item.versioned)
+                    mutationBuilder.fieldDefinition(itemTypeDefinitions.createVersionMutationField(item))
+                else
+                    mutationBuilder.fieldDefinition(itemTypeDefinitions.updateMutationField(item))
+
+                if (item.localized)
+                    mutationBuilder.fieldDefinition(itemTypeDefinitions.createLocalizationMutationField(item))
+
+                mutationBuilder.fieldDefinition(itemTypeDefinitions.deleteMutationField(item))
+
+                if (item.versioned)
+                    mutationBuilder.fieldDefinition(itemTypeDefinitions.purgeMutationField(item))
+
+                mutationBuilder.fieldDefinition(itemTypeDefinitions.lockMutationField(item))
+                mutationBuilder.fieldDefinition(itemTypeDefinitions.unlockMutationField(item))
+                mutationBuilder.fieldDefinition(itemTypeDefinitions.promoteMutationField(item))
+
+                // Add custom mutations
+                if (!item.implementation.isNullOrBlank()) {
+                    val customMutations = itemTypeDefinitions.listCustomMutationFields(item)
+                    customMutations.forEach { mutationBuilder.fieldDefinition(it) }
+                }
+            }
+
         typeDefinitionRegistry.add(mutationBuilder.build())
 
         return typeDefinitionRegistry
@@ -50,8 +67,9 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
 
     companion object {
         private const val EXAMPLE = "example"
+        private const val ITEM = "item"
         private val excludedQueryItemNames = setOf(EXAMPLE)
-        private val excludedMutationItemNames = setOf(EXAMPLE) // excludedMutationItemNames should contain names from excludedQueryItemNames
+        private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(ITEM)) // excludedMutationItemNames should contain names from excludedQueryItemNames
         private val itemTypeDefinitions = ItemTypeDefinitions()
     }
 }
