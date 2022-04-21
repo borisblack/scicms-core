@@ -4,6 +4,23 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsTypeDefinitionRegistry
 import graphql.language.ObjectTypeExtensionDefinition
 import graphql.schema.idl.TypeDefinitionRegistry
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemCreateLocalizationMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemCreateMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemCreateVersionMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemCustomMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemDeleteMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemLockMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemPromoteMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemPurgeMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemResponseCollectionQueryFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemResponseQueryFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemUnlockMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.ItemUpdateMutationFieldBuilder
+import ru.scisolutions.scicmscore.graphql.type.builder.ItemFiltersInputObjectTypeBuilder
+import ru.scisolutions.scicmscore.graphql.type.builder.ItemInputObjectTypeBuilder
+import ru.scisolutions.scicmscore.graphql.type.builder.ItemObjectTypeBuilder
+import ru.scisolutions.scicmscore.graphql.type.builder.ItemResponseCollectionObjectTypeBuilder
+import ru.scisolutions.scicmscore.graphql.type.builder.ItemResponseObjectTypeBuilder
 import ru.scisolutions.scicmscore.service.ItemService
 
 @DgsComponent
@@ -17,14 +34,14 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         itemService.items.asSequence()
             .filter { (name, _) -> name !in excludedQueryItemNames }
             .forEach { (_, item) ->
-                typeDefinitionRegistry.add(itemTypeDefinitions.getObjectType(item))
-                typeDefinitionRegistry.add(itemTypeDefinitions.responseObjectType(item))
-                typeDefinitionRegistry.add(itemTypeDefinitions.responseCollectionObjectType(item))
-                typeDefinitionRegistry.add(itemTypeDefinitions.filtersInputObjectType(item)) // for filtering
-                typeDefinitionRegistry.add(itemTypeDefinitions.inputObjectType(item)) // for mutations
+                typeDefinitionRegistry.add(ItemObjectTypeBuilder(item).build())
+                typeDefinitionRegistry.add(ItemResponseObjectTypeBuilder(item).build())
+                typeDefinitionRegistry.add(ItemResponseCollectionObjectTypeBuilder(item).build())
+                typeDefinitionRegistry.add(ItemFiltersInputObjectTypeBuilder(item).build()) // for filtering
+                typeDefinitionRegistry.add(ItemInputObjectTypeBuilder(item).build()) // for mutations
 
-                queryBuilder.fieldDefinition(itemTypeDefinitions.responseQueryField(item))
-                queryBuilder.fieldDefinition(itemTypeDefinitions.responseCollectionQueryField(item))
+                queryBuilder.fieldDefinition(ItemResponseQueryFieldBuilder(item).build())
+                queryBuilder.fieldDefinition(ItemResponseCollectionQueryFieldBuilder(item).build())
             }
 
         typeDefinitionRegistry.add(queryBuilder.build())
@@ -34,28 +51,28 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         itemService.items.asSequence()
             .filter { (name, _) -> name !in excludedMutationItemNames }
             .forEach { (_, item) ->
-                mutationBuilder.fieldDefinition(itemTypeDefinitions.createMutationField(item))
+                mutationBuilder.fieldDefinition(ItemCreateMutationFieldBuilder(item).build())
 
                 if (item.versioned)
-                    mutationBuilder.fieldDefinition(itemTypeDefinitions.createVersionMutationField(item))
+                    mutationBuilder.fieldDefinition(ItemCreateVersionMutationFieldBuilder(item).build())
                 else
-                    mutationBuilder.fieldDefinition(itemTypeDefinitions.updateMutationField(item))
+                    mutationBuilder.fieldDefinition(ItemUpdateMutationFieldBuilder(item).build())
 
                 if (item.localized)
-                    mutationBuilder.fieldDefinition(itemTypeDefinitions.createLocalizationMutationField(item))
+                    mutationBuilder.fieldDefinition(ItemCreateLocalizationMutationFieldBuilder(item).build())
 
-                mutationBuilder.fieldDefinition(itemTypeDefinitions.deleteMutationField(item))
+                mutationBuilder.fieldDefinition(ItemDeleteMutationFieldBuilder(item).build())
 
                 if (item.versioned)
-                    mutationBuilder.fieldDefinition(itemTypeDefinitions.purgeMutationField(item))
+                    mutationBuilder.fieldDefinition(ItemPurgeMutationFieldBuilder(item).build())
 
-                mutationBuilder.fieldDefinition(itemTypeDefinitions.lockMutationField(item))
-                mutationBuilder.fieldDefinition(itemTypeDefinitions.unlockMutationField(item))
-                mutationBuilder.fieldDefinition(itemTypeDefinitions.promoteMutationField(item))
+                mutationBuilder.fieldDefinition(ItemLockMutationFieldBuilder(item).build())
+                mutationBuilder.fieldDefinition(ItemUnlockMutationFieldBuilder(item).build())
+                mutationBuilder.fieldDefinition(ItemPromoteMutationFieldBuilder(item).build())
 
                 // Add custom mutations
                 if (!item.implementation.isNullOrBlank()) {
-                    val customMutations = itemTypeDefinitions.listCustomMutationFields(item)
+                    val customMutations = ItemCustomMutationFieldBuilder(item).buildList()
                     customMutations.forEach { mutationBuilder.fieldDefinition(it) }
                 }
             }
@@ -70,6 +87,5 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         private const val ITEM = "item"
         private val excludedQueryItemNames = setOf(EXAMPLE)
         private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(ITEM)) // excludedMutationItemNames should contain names from excludedQueryItemNames
-        private val itemTypeDefinitions = ItemTypeDefinitions()
     }
 }

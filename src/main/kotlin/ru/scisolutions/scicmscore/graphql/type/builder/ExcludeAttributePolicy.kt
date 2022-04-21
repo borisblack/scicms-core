@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.graphql
+package ru.scisolutions.scicmscore.graphql.type.builder
 
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.entity.Item

@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute
 import java.util.Locale
 
 class TypeResolver {
-    fun objectType(name: String, attribute: Attribute): Type<*> =
+    fun objectType(attrName: String, attribute: Attribute): Type<*> =
         when (attribute.type) {
             Attribute.Type.UUID.value -> {
                 val type = if (attribute.keyed) "ID" else "String"
@@ -32,7 +32,7 @@ class TypeResolver {
             Attribute.Type.MEDIA.value -> typeWithObligation("String", attribute.required)
             Attribute.Type.RELATION.value -> {
                 if (attribute.target == null)
-                    throw IllegalArgumentException("Attribute [$name]: Target is null")
+                    throw IllegalArgumentException("Attribute [$attrName]: Target is null")
 
                 val target = attribute.target
                     .substringBefore("(")
@@ -43,7 +43,7 @@ class TypeResolver {
                 else
                     typeWithObligation(target, attribute.required)
             }
-            else -> throw IllegalArgumentException("Attribute [$name]: Invalid type (${attribute.type})")
+            else -> throw IllegalArgumentException("Attribute [$attrName]: Invalid type (${attribute.type})")
         }
 
     private fun typeWithObligation(type: String, required: Boolean): Type<*> {
@@ -51,7 +51,7 @@ class TypeResolver {
         return if (required) NonNullType(typeName) else typeName
     }
 
-    fun filterInputType(name: String, attribute: Attribute): Type<*> =
+    fun filterInputType(attrName: String, attribute: Attribute): Type<*> =
         when (attribute.type) {
             Attribute.Type.UUID.value -> {
                 val type = if (attribute.keyed) "IDFilterInput" else "StringFilterInput"
@@ -75,7 +75,7 @@ class TypeResolver {
             Attribute.Type.MEDIA.value -> TypeName("StringFilterInput")
             Attribute.Type.RELATION.value -> {
                 if (attribute.target == null)
-                    throw IllegalArgumentException("Attribute [$name]: Target is null")
+                    throw IllegalArgumentException("Attribute [$attrName]: Target is null")
 
                 val target = attribute.target
                     .capitalize()
@@ -83,10 +83,10 @@ class TypeResolver {
 
                 TypeName("${target}FiltersInput")
             }
-            else -> throw IllegalArgumentException("Attribute [$name]: Invalid type (${attribute.type})")
+            else -> throw IllegalArgumentException("Attribute [$attrName]: Invalid type (${attribute.type})")
         }
 
-    fun inputType(name: String, attribute: Attribute): Type<*> =
+    fun inputType(attrName: String, attribute: Attribute): Type<*> =
         when (attribute.type) {
             Attribute.Type.UUID.value -> TypeName("String")
             Attribute.Type.STRING.value, Attribute.Type.TEXT.value,
@@ -107,13 +107,13 @@ class TypeResolver {
             Attribute.Type.MEDIA.value -> TypeName("String")
             Attribute.Type.RELATION.value -> {
                 if (attribute.target == null)
-                    throw IllegalArgumentException("Attribute [$name]: Target is null")
+                    throw IllegalArgumentException("Attribute [$attrName]: Target is null")
 
                 if (attribute.relType == Attribute.RelType.ONE_TO_MANY.value || attribute.relType == Attribute.RelType.MANY_TO_MANY.value)
                     ListType(TypeName("ID"))
                 else
                     TypeName("ID")
             }
-            else -> throw IllegalArgumentException("Attribute [$name]: Invalid type (${attribute.type})")
+            else -> throw IllegalArgumentException("Attribute [$attrName]: Invalid type (${attribute.type})")
         }
 }
