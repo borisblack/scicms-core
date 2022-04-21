@@ -5,17 +5,18 @@ import graphql.language.InputValueDefinition
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
 
 class ItemDeleteMutationFieldBuilder(private val item: Item) {
     fun build(): FieldDefinition {
-        val capitalizedName = item.name.capitalize()
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
-            .name("delete${capitalizedName}")
-            .type(TypeName("${capitalizedName}Response"))
+            .name("delete${capitalizedItemName}")
+            .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(NonNullType(TypeName("ID")))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
 

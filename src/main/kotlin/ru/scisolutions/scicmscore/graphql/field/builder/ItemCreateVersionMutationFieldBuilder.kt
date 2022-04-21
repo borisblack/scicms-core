@@ -5,6 +5,7 @@ import graphql.language.InputValueDefinition
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
 import ru.scisolutions.scicmscore.graphql.inputvalue.builder.LocaleInputValueBuilder
 import ru.scisolutions.scicmscore.graphql.inputvalue.builder.MajorRevInputValueBuilder
 
@@ -13,20 +14,20 @@ class ItemCreateVersionMutationFieldBuilder(private val item: Item) {
         if (!item.versioned)
             throw IllegalArgumentException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied")
 
-        val capitalizedName = item.name.capitalize()
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
-            .name("create${capitalizedName}Version")
-            .type(TypeName("${capitalizedName}Response"))
+            .name("create${capitalizedItemName}Version")
+            .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(NonNullType(TypeName("ID")))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("data")
-                    .type(NonNullType(TypeName("${capitalizedName}Input")))
+                    .type(NonNullType(TypeName("${capitalizedItemName}Input")))
                     .build()
             )
 

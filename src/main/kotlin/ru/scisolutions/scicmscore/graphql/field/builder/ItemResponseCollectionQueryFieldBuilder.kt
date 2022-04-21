@@ -5,6 +5,7 @@ import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
 import ru.scisolutions.scicmscore.graphql.inputvalue.builder.LocaleInputValueBuilder
 import ru.scisolutions.scicmscore.graphql.inputvalue.builder.MajorRevInputValueBuilder
 
@@ -29,7 +30,7 @@ class ItemResponseCollectionQueryFieldBuilder(private val item: Item) {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("sort")
-                    .type(ListType(TypeName("String")))
+                    .type(ListType(TypeNames.STRING))
                     .build()
             )
 

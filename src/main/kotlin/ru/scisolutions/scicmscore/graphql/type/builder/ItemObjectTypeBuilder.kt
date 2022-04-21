@@ -11,7 +11,7 @@ class ItemObjectTypeBuilder(private val item: Item) {
             .name(item.name.capitalize())
             .description(Description(item.description, null, true))
 
-        item.spec.attributes
+        item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.fieldDefinition(

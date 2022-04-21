@@ -11,25 +11,25 @@ class TypeResolver {
     fun objectType(attrName: String, attribute: Attribute): Type<*> =
         when (attribute.type) {
             Attribute.Type.UUID.value -> {
-                val type = if (attribute.keyed) "ID" else "String"
-                typeWithObligation(type, attribute.required)
+                val type = if (attribute.keyed) TypeNames.ID else TypeNames.STRING
+                wrapTypeName(type, attribute.required)
             }
             Attribute.Type.STRING.value, Attribute.Type.TEXT.value,
             Attribute.Type.ENUM.value, // TODO: Add enum types
             Attribute.Type.SEQUENCE.value,
             Attribute.Type.EMAIL.value, // TODO: Add regexp email scalar type
-            Attribute.Type.PASSWORD.value -> typeWithObligation("String", attribute.required)
-            Attribute.Type.INT.value -> typeWithObligation("Int", attribute.required)
+            Attribute.Type.PASSWORD.value -> wrapTypeName(TypeNames.STRING, attribute.required)
+            Attribute.Type.INT.value -> wrapTypeName(TypeNames.INT, attribute.required)
             Attribute.Type.FLOAT.value,
-            Attribute.Type.DECIMAL.value -> typeWithObligation("Float", attribute.required)
-            Attribute.Type.DATE.value -> typeWithObligation("Date", attribute.required)
-            Attribute.Type.TIME.value -> typeWithObligation("Time", attribute.required)
-            Attribute.Type.DATETIME.value -> typeWithObligation("DateTime", attribute.required)
-            Attribute.Type.TIMESTAMP.value -> typeWithObligation("Int", attribute.required)
-            Attribute.Type.BOOL.value -> typeWithObligation("Boolean", attribute.required)
+            Attribute.Type.DECIMAL.value -> wrapTypeName(TypeNames.FLOAT, attribute.required)
+            Attribute.Type.DATE.value -> wrapTypeName(TypeNames.DATE, attribute.required)
+            Attribute.Type.TIME.value -> wrapTypeName(TypeNames.TIME, attribute.required)
+            Attribute.Type.DATETIME.value -> wrapTypeName(TypeNames.DATETIME, attribute.required)
+            Attribute.Type.TIMESTAMP.value -> wrapTypeName(TypeNames.INT, attribute.required)
+            Attribute.Type.BOOL.value -> wrapTypeName(TypeNames.BOOLEAN, attribute.required)
             Attribute.Type.ARRAY.value,
-            Attribute.Type.JSON.value -> typeWithObligation("String", attribute.required)
-            Attribute.Type.MEDIA.value -> typeWithObligation("String", attribute.required)
+            Attribute.Type.JSON.value -> wrapTypeName(TypeNames.STRING, attribute.required)
+            Attribute.Type.MEDIA.value -> wrapTypeName(TypeNames.STRING, attribute.required)
             Attribute.Type.RELATION.value -> {
                 if (attribute.target == null)
                     throw IllegalArgumentException("Attribute [$attrName]: Target is null")
@@ -41,15 +41,13 @@ class TypeResolver {
                 if (attribute.relType == Attribute.RelType.ONE_TO_MANY.value || attribute.relType == Attribute.RelType.MANY_TO_MANY.value)
                     ListType(NonNullType(TypeName(target)))
                 else
-                    typeWithObligation(target, attribute.required)
+                    wrapTypeName(TypeName(target), attribute.required)
             }
             else -> throw IllegalArgumentException("Attribute [$attrName]: Invalid type (${attribute.type})")
         }
 
-    private fun typeWithObligation(type: String, required: Boolean): Type<*> {
-        val typeName = TypeName(type)
-        return if (required) NonNullType(typeName) else typeName
-    }
+    private fun wrapTypeName(typeName: TypeName, required: Boolean): Type<*> =
+        if (required) NonNullType(typeName) else typeName
 
     fun filterInputType(attrName: String, attribute: Attribute): Type<*> =
         when (attribute.type) {
@@ -88,23 +86,23 @@ class TypeResolver {
 
     fun inputType(attrName: String, attribute: Attribute): Type<*> =
         when (attribute.type) {
-            Attribute.Type.UUID.value -> TypeName("String")
+            Attribute.Type.UUID.value -> TypeNames.STRING
             Attribute.Type.STRING.value, Attribute.Type.TEXT.value,
             Attribute.Type.ENUM.value, // TODO: Add enum types
             Attribute.Type.SEQUENCE.value,
             Attribute.Type.EMAIL.value, // TODO: Add regexp email scalar type
-            Attribute.Type.PASSWORD.value -> TypeName("String")
-            Attribute.Type.INT.value -> TypeName("Int")
+            Attribute.Type.PASSWORD.value -> TypeNames.STRING
+            Attribute.Type.INT.value -> TypeNames.INT
             Attribute.Type.FLOAT.value,
-            Attribute.Type.DECIMAL.value -> TypeName("Float")
-            Attribute.Type.DATE.value -> TypeName("Date")
-            Attribute.Type.TIME.value -> TypeName("Time")
-            Attribute.Type.DATETIME.value -> TypeName("DateTime")
-            Attribute.Type.TIMESTAMP.value -> TypeName("Int")
-            Attribute.Type.BOOL.value -> TypeName("Boolean")
+            Attribute.Type.DECIMAL.value -> TypeNames.FLOAT
+            Attribute.Type.DATE.value -> TypeNames.DATE
+            Attribute.Type.TIME.value -> TypeNames.TIME
+            Attribute.Type.DATETIME.value -> TypeNames.DATETIME
+            Attribute.Type.TIMESTAMP.value -> TypeNames.INT
+            Attribute.Type.BOOL.value -> TypeNames.BOOLEAN
             Attribute.Type.ARRAY.value,
-            Attribute.Type.JSON.value -> TypeName("String")
-            Attribute.Type.MEDIA.value -> TypeName("String")
+            Attribute.Type.JSON.value,
+            Attribute.Type.MEDIA.value -> TypeNames.STRING
             Attribute.Type.RELATION.value -> {
                 if (attribute.target == null)
                     throw IllegalArgumentException("Attribute [$attrName]: Target is null")

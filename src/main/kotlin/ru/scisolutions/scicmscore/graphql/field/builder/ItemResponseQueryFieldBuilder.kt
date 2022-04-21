@@ -5,6 +5,7 @@ import graphql.language.InputValueDefinition
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
 
 class ItemResponseQueryFieldBuilder(private val item: Item) {
     fun build(): FieldDefinition {
@@ -14,7 +15,7 @@ class ItemResponseQueryFieldBuilder(private val item: Item) {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(NonNullType(TypeName("ID")))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
 

@@ -5,6 +5,7 @@ import graphql.language.InputValueDefinition
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
 import ru.scisolutions.scicmscore.graphql.inputvalue.builder.LocaleInputValueBuilder
 
 class ItemCreateLocalizationMutationFieldBuilder(private val item: Item) {
@@ -12,20 +13,20 @@ class ItemCreateLocalizationMutationFieldBuilder(private val item: Item) {
         if (!item.localized)
             throw IllegalArgumentException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied")
 
-        val capitalizedName = item.name.capitalize()
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
-            .name("create${capitalizedName}Localization")
-            .type(TypeName("${capitalizedName}Response"))
+            .name("create${capitalizedItemName}Localization")
+            .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(NonNullType(TypeName("ID")))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("data")
-                    .type(NonNullType(TypeName("${capitalizedName}Input")))
+                    .type(NonNullType(TypeName("${capitalizedItemName}Input")))
                     .build()
             )
 

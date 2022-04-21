@@ -86,6 +86,6 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         private const val EXAMPLE = "example"
         private const val ITEM = "item"
         private val excludedQueryItemNames = setOf(EXAMPLE)
-        private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(ITEM)) // excludedMutationItemNames should contain names from excludedQueryItemNames
+        private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(ITEM))
     }
 }

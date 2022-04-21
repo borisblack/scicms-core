@@ -1,13 +1,13 @@
 package ru.scisolutions.scicmscore.graphql.inputvalue.builder
 
 import graphql.language.InputValueDefinition
-import graphql.language.TypeName
+import ru.scisolutions.scicmscore.graphql.TypeNames
 
 class LocaleInputValueBuilder {
     fun build(): InputValueDefinition =
         InputValueDefinition.newInputValueDefinition()
             .name(LOCALE_ATTR_NAME)
-            .type(TypeName("String"))
+            .type(TypeNames.STRING)
             .build()
 
     companion object {

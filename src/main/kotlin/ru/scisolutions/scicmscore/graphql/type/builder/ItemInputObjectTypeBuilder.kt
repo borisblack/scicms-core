@@ -9,7 +9,7 @@ class ItemInputObjectTypeBuilder(private val item: Item) {
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name("${item.name.capitalize()}Input")
 
-        item.spec.attributes
+        item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(

@@ -10,14 +10,14 @@ import ru.scisolutions.scicmscore.graphql.inputvalue.builder.MajorRevInputValueB
 
 class ItemCreateMutationFieldBuilder(private val item: Item) {
     fun build(): FieldDefinition {
-        val capitalizedName = item.name.capitalize()
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
-            .name("create${capitalizedName}")
-            .type(TypeName("${capitalizedName}Response"))
+            .name("create${capitalizedItemName}")
+            .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("data")
-                    .type(NonNullType(TypeName("${capitalizedName}Input")))
+                    .type(NonNullType(TypeName("${capitalizedItemName}Input")))
                     .build()
             )
 

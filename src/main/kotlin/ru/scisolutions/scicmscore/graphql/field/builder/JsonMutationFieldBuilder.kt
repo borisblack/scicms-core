@@ -2,17 +2,17 @@ package ru.scisolutions.scicmscore.graphql.field.builder
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
-import graphql.language.TypeName
+import ru.scisolutions.scicmscore.graphql.TypeNames
 
 class JsonMutationFieldBuilder(private val fieldName: String) {
     fun build(): FieldDefinition =
         FieldDefinition.newFieldDefinition()
             .name(fieldName)
-            .type(TypeName("JSON"))
+            .type(TypeNames.JSON)
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("data")
-                    .type(TypeName("JSON"))
+                    .type(TypeNames.JSON)
                     .build()
             )
             .build()

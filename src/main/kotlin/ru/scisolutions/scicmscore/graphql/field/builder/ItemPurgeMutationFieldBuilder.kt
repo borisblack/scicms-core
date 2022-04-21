@@ -5,20 +5,21 @@ import graphql.language.InputValueDefinition
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
 
 class ItemPurgeMutationFieldBuilder(private val item: Item) {
     fun build(): FieldDefinition {
         if (!item.versioned)
             throw IllegalArgumentException("Item [${item.name}] is not versioned. Purge mutation cannot be applied")
 
-        val capitalizedName = item.name.capitalize()
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
-            .name("purge${capitalizedName}")
-            .type(TypeName("${capitalizedName}ResponseCollection"))
+            .name("purge${capitalizedItemName}")
+            .type(TypeName("${capitalizedItemName}ResponseCollection"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(NonNullType(TypeName("ID")))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
 
