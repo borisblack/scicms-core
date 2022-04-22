@@ -261,6 +261,7 @@
             <column name="display_name" type="varchar(50)"/>
             <column name="description" type="varchar(250)"/>
             <column name="start_state" type="varchar(50)"/>
+            <column name="implementation" type="varchar(100)"/>
             <column name="spec" type="text" defaultValue="{}"/>
             <column name="generation" type="int"/>
             <column name="major_rev" type="varchar(50)"/>

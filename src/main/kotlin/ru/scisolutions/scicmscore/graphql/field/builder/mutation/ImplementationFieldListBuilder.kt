@@ -1,13 +1,16 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.mutation
 
 import graphql.language.FieldDefinition
+import graphql.language.InputValueDefinition
 import graphql.schema.DataFetchingEnvironment
 import org.slf4j.LoggerFactory
 import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.graphql.TypeNames
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionListBuilder
 import java.lang.reflect.Modifier
 
-class ItemCustomMutationFieldBuilder(private val item: Item) {
-    fun buildList(): List<FieldDefinition> {
+class ImplementationFieldListBuilder(private val item: Item) : FieldDefinitionListBuilder {
+    override fun buildList(): List<FieldDefinition> {
         if (item.implementation.isNullOrBlank())
             throw IllegalArgumentException("Item [${item.name}] has no implementation")
 
@@ -33,11 +36,23 @@ class ItemCustomMutationFieldBuilder(private val item: Item) {
             }
             .forEach {
                 val fieldName = "${it.name}${capitalizedItemName}"
-                fields.add(JsonMutationFieldBuilder(fieldName).build())
+                fields.add(newJsonField(fieldName))
             }
 
         return fields.toList()
     }
+
+    private fun newJsonField(fieldName: String) =
+        FieldDefinition.newFieldDefinition()
+            .name(fieldName)
+            .type(TypeNames.JSON)
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("data")
+                    .type(TypeNames.JSON)
+                    .build()
+            )
+            .build()
 
     companion object {
         private const val CREATE_METHOD_NAME = "create"
@@ -48,6 +63,6 @@ class ItemCustomMutationFieldBuilder(private val item: Item) {
         private const val UNLOCK_METHOD_NAME = "unlock"
         private const val PROMOTE_METHOD_NAME = "promote"
         private val reservedMethodNames = setOf(CREATE_METHOD_NAME, UPDATE_METHOD_NAME, DELETE_METHOD_NAME, PURGE_METHOD_NAME, LOCK_METHOD_NAME, UNLOCK_METHOD_NAME, PROMOTE_METHOD_NAME)
-        private val logger = LoggerFactory.getLogger(ItemCustomMutationFieldBuilder::class.java)
+        private val logger = LoggerFactory.getLogger(ImplementationFieldListBuilder::class.java)
     }
 }

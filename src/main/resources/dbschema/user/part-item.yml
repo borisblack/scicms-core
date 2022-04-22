@@ -18,7 +18,7 @@ metadata:
 #  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b # optional (null by default)
   notLockable: false
   localized: true
-  implementation: ru.scisolutions.itemimpl.PartItemImplementation # optional (null by default)
+  implementation: ru.scisolutions.userimpl.item.PartItemImplementation # optional (null by default)
 spec:
   attributes:
     name:

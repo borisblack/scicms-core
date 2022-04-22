@@ -20,7 +20,7 @@
     "revisionPolicy": null,
     "notLockable": false,
     "localized": false,
-    "implementation": "ru.scisolutions.itemimpl.ExampleItemImplementation"
+    "implementation": "ru.scisolutions.userimpl.item.ExampleItemImplementation"
   },
   "spec": {
     "attributes": {

@@ -31,17 +31,13 @@ class TypeResolver {
             Attribute.Type.JSON.value -> wrapTypeName(TypeNames.STRING, attribute.required)
             Attribute.Type.MEDIA.value -> wrapTypeName(TypeNames.STRING, attribute.required)
             Attribute.Type.RELATION.value -> {
-                if (attribute.target == null)
-                    throw IllegalArgumentException("Attribute [$attrName]: Target is null")
-
-                val target = attribute.target
-                    .substringBefore("(")
-                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                val capitalizedTargetItemName = attribute.target?.substringBefore("(")?.capitalize()
+                    ?: throw IllegalArgumentException("Attribute [$attrName]: Target is null")
 
                 if (attribute.relType == Attribute.RelType.ONE_TO_MANY.value || attribute.relType == Attribute.RelType.MANY_TO_MANY.value)
-                    ListType(NonNullType(TypeName(target)))
+                    TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
-                    wrapTypeName(TypeName(target), attribute.required)
+                    wrapTypeName(TypeName("${capitalizedTargetItemName}Response"), attribute.required)
             }
             else -> throw IllegalArgumentException("Attribute [$attrName]: Invalid type (${attribute.type})")
         }

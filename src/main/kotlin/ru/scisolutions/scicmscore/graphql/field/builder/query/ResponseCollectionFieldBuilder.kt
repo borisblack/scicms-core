@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.query
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
@@ -6,19 +6,19 @@ import graphql.language.ListType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
 import ru.scisolutions.scicmscore.graphql.TypeNames
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.LocaleInputValueBuilder
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.MajorRevInputValueBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.InputValues
 
-class ItemResponseCollectionQueryFieldBuilder(private val item: Item) {
-    fun build(): FieldDefinition {
-        val name = item.name.capitalize()
+class ResponseCollectionFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
+    override fun build(): FieldDefinition {
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name(item.pluralName)
-            .type(TypeName("${name}ResponseCollection"))
+            .type(TypeName("${capitalizedItemName}ResponseCollection"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("filters")
-                    .type(TypeName("${name}FiltersInput"))
+                    .type(TypeName("${capitalizedItemName}FiltersInput"))
                     .build()
             )
             .inputValueDefinition(
@@ -35,10 +35,10 @@ class ItemResponseCollectionQueryFieldBuilder(private val item: Item) {
             )
 
         if (item.versioned)
-            builder.inputValueDefinition(MajorRevInputValueBuilder().build())
+            builder.inputValueDefinition(InputValues.MAJOR_REV)
 
         if (item.localized)
-            builder.inputValueDefinition(LocaleInputValueBuilder().build())
+            builder.inputValueDefinition(InputValues.LOCALE)
 
         return builder.build()
     }

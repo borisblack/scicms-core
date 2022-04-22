@@ -7,8 +7,8 @@ import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
 
-class ItemResponseCollectionObjectTypeBuilder(private val item: Item) {
-    fun build(): ObjectTypeDefinition {
+class ResponseCollectionObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
+    override fun build(): ObjectTypeDefinition {
         val capitalizedItemName = item.name.capitalize()
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}ResponseCollection")

@@ -1,4 +1,4 @@
-package ru.scisolutions.itemimpl
+package ru.scisolutions.userimpl.item
 
 import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetchingEnvironment

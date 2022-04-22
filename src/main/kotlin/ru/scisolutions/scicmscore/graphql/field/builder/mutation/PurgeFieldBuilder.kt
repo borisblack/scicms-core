@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.mutation
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
@@ -6,9 +6,10 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
 import ru.scisolutions.scicmscore.graphql.TypeNames
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionBuilder
 
-class ItemPurgeMutationFieldBuilder(private val item: Item) {
-    fun build(): FieldDefinition {
+class PurgeFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
+    override fun build(): FieldDefinition {
         if (!item.versioned)
             throw IllegalArgumentException("Item [${item.name}] is not versioned. Purge mutation cannot be applied")
 
@@ -24,7 +25,7 @@ class ItemPurgeMutationFieldBuilder(private val item: Item) {
             )
 
         // if (item.localized)
-        //     builder.inputValueDefinition(LocaleInputValueBuilder().build())
+        //     builder.inputValueDefinition(InputValues.LOCALE)
 
         return builder.build()
     }

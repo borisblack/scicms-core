@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.mutation
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
@@ -6,11 +6,11 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
 import ru.scisolutions.scicmscore.graphql.TypeNames
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.LocaleInputValueBuilder
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.MajorRevInputValueBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.InputValues
 
-class ItemCreateVersionMutationFieldBuilder(private val item: Item) {
-    fun build(): FieldDefinition {
+class CreateVersionFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
+    override fun build(): FieldDefinition {
         if (!item.versioned)
             throw IllegalArgumentException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied")
 
@@ -32,10 +32,10 @@ class ItemCreateVersionMutationFieldBuilder(private val item: Item) {
             )
 
         if (item.manualVersioning)
-            builder.inputValueDefinition(MajorRevInputValueBuilder(true).build())
+            builder.inputValueDefinition(InputValues.NON_NULL_MAJOR_REV)
 
         if (item.localized)
-            builder.inputValueDefinition(LocaleInputValueBuilder().build())
+            builder.inputValueDefinition(InputValues.LOCALE)
 
         return builder.build()
     }

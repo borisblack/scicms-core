@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.mutation
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
@@ -6,12 +6,14 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
 import ru.scisolutions.scicmscore.graphql.TypeNames
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionBuilder
 
-class ItemResponseQueryFieldBuilder(private val item: Item) {
-    fun build(): FieldDefinition {
+class DeleteFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
+    override fun build(): FieldDefinition {
+        val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
-            .name(item.name)
-            .type(TypeName("${item.name.capitalize()}Response"))
+            .name("delete${capitalizedItemName}")
+            .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
@@ -20,10 +22,10 @@ class ItemResponseQueryFieldBuilder(private val item: Item) {
             )
 
         // if (item.versioned)
-        //     builder.inputValueDefinition(MajorRevInputValueBuilder().build())
+        //     builder.inputValueDefinition(InputValues.MAJOR_REV)
         //
         // if (item.localized)
-        //     builder.inputValueDefinition(LocaleInputValueBuilder().build())
+        //     builder.inputValueDefinition(InputValues.LOCALE)
 
         return builder.build()
     }

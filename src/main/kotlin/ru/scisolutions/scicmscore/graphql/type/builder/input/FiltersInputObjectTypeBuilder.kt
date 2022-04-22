@@ -1,14 +1,15 @@
-package ru.scisolutions.scicmscore.graphql.type.builder
+package ru.scisolutions.scicmscore.graphql.type.builder.input
 
 import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.AttributeFilterInputValueBuilder
+import ru.scisolutions.scicmscore.graphql.TypeResolver
+import ru.scisolutions.scicmscore.graphql.type.builder.ExcludeAttributePolicy
 
-class ItemFiltersInputObjectTypeBuilder(private val item: Item) {
-    fun build(): InputObjectTypeDefinition {
+class FiltersInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBuilder {
+    override fun build(): InputObjectTypeDefinition {
         val inputName = "${item.name.capitalize()}FiltersInput"
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name(inputName)
@@ -35,7 +36,10 @@ class ItemFiltersInputObjectTypeBuilder(private val item: Item) {
             .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(
-                    AttributeFilterInputValueBuilder(attrName, attribute).build()
+                    InputValueDefinition.newInputValueDefinition()
+                        .name(attrName)
+                        .type(typeResolver.filterInputType(attrName, attribute))
+                        .build()
                 )
             }
 
@@ -44,5 +48,6 @@ class ItemFiltersInputObjectTypeBuilder(private val item: Item) {
 
     companion object {
         private val excludeAttributePolicy = ExcludeAttributePolicy()
+        private val typeResolver = TypeResolver()
     }
 }

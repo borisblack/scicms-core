@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.query
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
@@ -6,13 +6,13 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
 import ru.scisolutions.scicmscore.graphql.TypeNames
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionBuilder
 
-class ItemUnlockMutationFieldBuilder(private val item: Item) {
-    fun build(): FieldDefinition {
-        val capitalizedItemName = item.name.capitalize()
+class ResponseFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
+    override fun build(): FieldDefinition {
         val builder = FieldDefinition.newFieldDefinition()
-            .name("unlock${capitalizedItemName}")
-            .type(TypeName("${capitalizedItemName}Response"))
+            .name(item.name)
+            .type(TypeName("${item.name.capitalize()}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
@@ -20,8 +20,11 @@ class ItemUnlockMutationFieldBuilder(private val item: Item) {
                     .build()
             )
 
+        // if (item.versioned)
+        //     builder.inputValueDefinition(InputValues.MAJOR_REV)
+        //
         // if (item.localized)
-        //     builder.inputValueDefinition(LocaleInputValueBuilder().build())
+        //     builder.inputValueDefinition(InputValues.LOCALE)
 
         return builder.build()
     }

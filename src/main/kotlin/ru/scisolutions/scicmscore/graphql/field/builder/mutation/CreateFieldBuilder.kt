@@ -1,15 +1,15 @@
-package ru.scisolutions.scicmscore.graphql.field.builder
+package ru.scisolutions.scicmscore.graphql.field.builder.mutation
 
 import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.entity.Item
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.LocaleInputValueBuilder
-import ru.scisolutions.scicmscore.graphql.inputvalue.builder.MajorRevInputValueBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.FieldDefinitionBuilder
+import ru.scisolutions.scicmscore.graphql.field.builder.InputValues
 
-class ItemCreateMutationFieldBuilder(private val item: Item) {
-    fun build(): FieldDefinition {
+class CreateFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
+    override fun build(): FieldDefinition {
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("create${capitalizedItemName}")
@@ -22,10 +22,10 @@ class ItemCreateMutationFieldBuilder(private val item: Item) {
             )
 
         if (item.versioned && item.manualVersioning)
-            builder.inputValueDefinition(MajorRevInputValueBuilder(true).build())
+            builder.inputValueDefinition(InputValues.NON_NULL_MAJOR_REV)
 
         if (item.localized)
-            builder.inputValueDefinition(LocaleInputValueBuilder().build())
+            builder.inputValueDefinition(InputValues.LOCALE)
 
         return builder.build()
     }
