@@ -242,6 +242,6 @@ type Query {
 }
 
 type Mutation {
-    upload(file: Upload!): ID!
-    uploadMultiple(files: [Upload!]!): [ID!]!
+    upload(file: Upload!): ID
+    uploadMultiple(files: [Upload!]!): [ID!]
 }

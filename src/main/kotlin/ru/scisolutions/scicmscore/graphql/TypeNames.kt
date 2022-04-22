@@ -14,4 +14,14 @@ object TypeNames {
     val OBJECT = TypeName("Object")
     val JSON = TypeName("JSON")
     val UPLOAD = TypeName("Upload")
+
+    val ID_FILTER_INPUT = TypeName("IDFilterInput")
+    val INT_FILTER_INPUT = TypeName("IntFilterInput")
+    val FLOAT_FILTER_INPUT = TypeName("FloatFilterInput")
+    val STRING_FILTER_INPUT = TypeName("StringFilterInput")
+    val BOOLEAN_FILTER_INPUT = TypeName("BooleanFilterInput")
+    val DATE_FILTER_INPUT = TypeName("DateFilterInput")
+    val TIME_FILTER_INPUT = TypeName("TimeFilterInput")
+    val DATETIME_FILTER_INPUT = TypeName("DateTimeFilterInput")
+    val JSON_FILTER_INPUT = TypeName("JSONFilterInput")
 }
