@@ -31,7 +31,7 @@ class ApiSecurityConfig(
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()
-            .antMatchers("/graphiql").permitAll()
+            .antMatchers("/graphiql"/*, "/schema.json"*/).permitAll()
             .anyRequest().authenticated()
             .and()
             .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())

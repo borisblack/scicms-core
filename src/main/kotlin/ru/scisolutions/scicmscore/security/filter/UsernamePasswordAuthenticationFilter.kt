@@ -67,7 +67,7 @@ class UsernamePasswordAuthenticationFilter(
 
         // Create JWT token
         val jwtToken: String = jwtTokenService.generateJwtToken(resultAuthentication)
-        sendJWTTokenResponse(req, res, jwtToken, (resultAuthentication.principal as User).user)
+        sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
 
     private fun tryToAuthenticateWithUsernameAndPassword(username: String, password: String): Authentication {
@@ -84,8 +84,16 @@ class UsernamePasswordAuthenticationFilter(
         return resultAuthentication
     }
 
-    private fun sendJWTTokenResponse(req: HttpServletRequest, res: HttpServletResponse, jwtToken: String, user: UserEntity) {
-        val tokenResponse = TokenResponse(jwtToken, user)
+    private fun sendJWTTokenResponse(req: HttpServletRequest, res: HttpServletResponse, jwtToken: String, authentication: Authentication) {
+        val user = (authentication.principal as User).user
+        val tokenResponse = TokenResponse(
+            jwt = jwtToken,
+            user = UserInfo(
+                id = user.id,
+                username = user.username,
+                roles = authentication.authorities.map { it.authority }.toSet()
+            )
+        )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK
         res.addHeader("Content-Type", "application/json")
@@ -104,7 +112,13 @@ class UsernamePasswordAuthenticationFilter(
 
     private class TokenResponse(
         val jwt: String,
-        val user: UserEntity
+        val user: UserInfo
+    )
+
+    private class UserInfo(
+        val id: String,
+        val username: String,
+        val roles: Set<String>
     )
 
     companion object {

@@ -1,6 +1,7 @@
 scicms-core:
-  db-schema:
-    path: src/main/resources/dbschema
+  schema:
+    path: src/main/resources/schema
+    read-on-init: true
     seed-on-init: true
     delete-if-absent: false
   i18n:
@@ -13,6 +14,10 @@ scicms-core:
       expiration-interval-millis: 1_800_000
   versioning:
     include-in-unique-index: true
+
+dgs:
+  graphql:
+    schema-locations: classpath*:graphql/**/*.graphql*
 
 server:
   port: 8079
