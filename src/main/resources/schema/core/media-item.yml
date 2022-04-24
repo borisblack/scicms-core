@@ -38,13 +38,22 @@ spec:
       columnName: file_size
       displayName: File Size
       description: File Size
+      required: true
       minRange: 0
     mimeType:
       type: string
       columnName: mimeType
       displayName: MIME Type
       description: MIME Type
+      required: true
       length: 50
+    path:
+      type: string
+      columnName: path
+      displayName: Path
+      description: Path
+      required: true
+      length: 100
     checksum:
       type: string
       columnName: checksum

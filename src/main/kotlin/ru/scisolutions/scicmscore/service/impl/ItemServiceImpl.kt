@@ -3,8 +3,8 @@ package ru.scisolutions.scicmscore.service.impl
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.scisolutions.scicmscore.entity.Item
-import ru.scisolutions.scicmscore.repository.ItemRepository
+import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.persistence.repository.ItemRepository
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service

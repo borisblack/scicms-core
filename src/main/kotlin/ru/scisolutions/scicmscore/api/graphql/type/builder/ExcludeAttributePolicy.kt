@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.api.graphql.type.builder
 
 import ru.scisolutions.scicmscore.engine.schema.model.Attribute
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class ExcludeAttributePolicy {
     fun excludeFromObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {

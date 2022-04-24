@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.service
 
-import ru.scisolutions.scicmscore.entity.User
+import ru.scisolutions.scicmscore.persistence.entity.User
 
 interface UserService {
     fun findByUsername(username: String): User?

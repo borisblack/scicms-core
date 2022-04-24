@@ -1,13 +1,13 @@
-package ru.scisolutions.scicmscore.api.graphql.datafetcher
+package ru.scisolutions.scicmscore.engine.data.handler.impl
 
-import com.netflix.graphql.dgs.DgsComponent
-import com.netflix.graphql.dgs.DgsQuery
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
+import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 
-@DgsComponent
-class MeDataFetcher {
-    @DgsQuery
-    fun me(): UserInfo? {
+@Service
+class UserHandlerImpl : UserHandler {
+    override fun me(): UserInfo? {
         val authentication = SecurityContextHolder.getContext().authentication
         return if (authentication == null)
             null
@@ -16,6 +16,4 @@ class MeDataFetcher {
             roles = authentication.authorities.map { it.authority }.toSet()
         )
     }
-
-    data class UserInfo(val username: String, val roles: Set<String>)
 }

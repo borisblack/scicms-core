@@ -1,10 +1,10 @@
-package ru.scisolutions.scicmscore.mapper
+package ru.scisolutions.scicmscore.engine.schema.seeder
 
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.entity.Item as ItemEntity
+import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
-class ItemMapper : Mapper<Item, ItemEntity> {
-    override fun map(source: Item): ItemEntity {
+class ItemMapper {
+    fun map(source: Item): ItemEntity {
         val metadata = source.metadata
         val target = ItemEntity(
             name = metadata.name,
@@ -15,16 +15,16 @@ class ItemMapper : Mapper<Item, ItemEntity> {
         return target
     }
 
-    override fun copy(source: Item, target: ItemEntity) {
+    fun copy(source: Item, target: ItemEntity) {
         val metadata = source.metadata
-
+        
         target.name = metadata.name
         target.displayName = metadata.displayName
         target.singularName = metadata.singularName
         target.pluralName = metadata.pluralName
         target.tableName = metadata.tableName
         target.description = metadata.description
-        target.dataSource = metadata.dataSource ?: ItemEntity.DEFAULT_DATASOURCE
+        target.dataSource = metadata.dataSource ?: ru.scisolutions.scicmscore.persistence.entity.Item.DEFAULT_DATASOURCE
         target.icon = metadata.icon
         target.core = metadata.core
         target.performDdl = metadata.performDdl

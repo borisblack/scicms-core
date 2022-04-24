@@ -1,12 +1,17 @@
 scicms-core:
+  i18n:
+    default-locale: en-US
+    include-in-unique-index: true
+  media:
+    provider: local
+    provider-options:
+      base-path: D:/storage
+      create-directories: true
   schema:
     path: src/main/resources/schema
     read-on-init: true
     seed-on-init: true
     delete-if-absent: false
-  i18n:
-    default-locale: en-US
-    include-in-unique-index: true
   security:
     jwt-token:
       id: scisolutionsJWT

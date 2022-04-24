@@ -36,7 +36,7 @@ dependencies {
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
-
+    implementation("com.google.guava:guava:31.1-jre")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 

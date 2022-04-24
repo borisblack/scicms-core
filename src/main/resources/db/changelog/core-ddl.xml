@@ -216,8 +216,15 @@
             </column>
             <column name="display_name" type="varchar(50)"/>
             <column name="description" type="varchar(250)"/>
-            <column name="file_size" type="int"/>
-            <column name="mimetype" type="varchar(100)"/>
+            <column name="file_size" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mimetype" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
             <column name="checksum" type="varchar(50)"/>
             <column name="generation" type="int"/>
             <column name="major_rev" type="varchar(50)"/>

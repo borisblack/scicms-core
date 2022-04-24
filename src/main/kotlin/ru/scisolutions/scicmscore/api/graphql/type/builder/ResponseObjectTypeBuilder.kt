@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.api.graphql.type.builder
 import graphql.language.FieldDefinition
 import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class ResponseObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
     override fun build(): ObjectTypeDefinition {

@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.seeder
 
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.entity.Item as ItemEntity
+import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 interface ItemSeeder {
     fun create(item: Item)

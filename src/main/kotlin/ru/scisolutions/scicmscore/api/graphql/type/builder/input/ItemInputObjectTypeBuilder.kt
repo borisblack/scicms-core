@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.api.graphql.type.builder.input
 
 import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ExcludeAttributePolicy
 

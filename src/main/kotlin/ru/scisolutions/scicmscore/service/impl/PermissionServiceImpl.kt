@@ -3,8 +3,8 @@ package ru.scisolutions.scicmscore.service.impl
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.scisolutions.scicmscore.entity.Permission
-import ru.scisolutions.scicmscore.repository.PermissionRepository
+import ru.scisolutions.scicmscore.persistence.entity.Permission
+import ru.scisolutions.scicmscore.persistence.repository.PermissionRepository
 import ru.scisolutions.scicmscore.service.PermissionService
 
 @Service

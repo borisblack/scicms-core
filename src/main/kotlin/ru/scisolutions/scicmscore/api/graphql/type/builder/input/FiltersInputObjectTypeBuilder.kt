@@ -4,7 +4,7 @@ import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ExcludeAttributePolicy
 

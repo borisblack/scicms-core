@@ -10,11 +10,11 @@ import org.springframework.security.core.userdetails.cache.NullUserCache
 import org.springframework.security.provisioning.JdbcUserDetailsManager
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
-import ru.scisolutions.scicmscore.entity.Permission
+import ru.scisolutions.scicmscore.persistence.entity.Permission
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.sql.DataSource
-import ru.scisolutions.scicmscore.entity.User as UserEntity
+import ru.scisolutions.scicmscore.persistence.entity.User as UserEntity
 
 private const val USERS_BY_USERNAME_QUERY =
     "SELECT username, passwd, enabled FROM sec_users WHERE LOWER(username) = LOWER(?)"
@@ -103,7 +103,7 @@ private const val DEFAULT_GENERATION = 1
 private const val DEFAULT_MAJOR_REV = "A"
 private const val DEFAULT_IS_CURRENT = true
 private const val DEFAULT_PERMISSION_ID = Permission.DEFAULT_PERMISSION_ID
-private const val ROOT_USER_ID = UserEntity.ROOT_USER_ID
+private const val ROOT_USER_ID = ru.scisolutions.scicmscore.persistence.entity.User.ROOT_USER_ID
 
 @Component
 class CustomUserDetailsManager(

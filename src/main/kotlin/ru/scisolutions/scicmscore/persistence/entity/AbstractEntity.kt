@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.entity
+package ru.scisolutions.scicmscore.persistence.entity
 
 import java.time.LocalDateTime
 import java.util.UUID
@@ -16,7 +16,6 @@ abstract class AbstractEntity {
     @Column(name = "config_id", nullable = false)
     val configId: String = id
 
-    @Column
     val generation: Int? = null
 
     @Column(name = "major_rev")
@@ -31,19 +30,16 @@ abstract class AbstractEntity {
     @Column(name = "is_current")
     val isCurrent: Boolean? = null
 
-    @Column(name = "released")
     val released: Boolean? = null
 
     @Column(name = "lifecycle_id")
     val lifecycleId: String? = null
 
-    @Column
     val state: String? = null
 
     @Column(name = "permission_id")
     var permissionId: String? = null
 
-    @Column(name = "locale")
     val locale: String? = null
 
     @Column(name = "created_at", nullable = false)

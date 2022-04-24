@@ -17,7 +17,7 @@ import ru.scisolutions.scicmscore.engine.schema.model.Item
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.sql.DataSource
-import ru.scisolutions.scicmscore.entity.Item as ItemEntity
+import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class LiquibaseItemSeeder(

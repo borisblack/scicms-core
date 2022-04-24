@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.entity
+package ru.scisolutions.scicmscore.persistence.entity
 
 import java.time.LocalDateTime
 import javax.persistence.PrePersist

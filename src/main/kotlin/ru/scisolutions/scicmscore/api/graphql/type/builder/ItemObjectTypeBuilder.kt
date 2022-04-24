@@ -7,7 +7,7 @@ import graphql.language.ListType
 import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.engine.schema.model.Attribute
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 

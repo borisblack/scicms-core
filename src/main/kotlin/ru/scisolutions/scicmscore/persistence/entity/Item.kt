@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.entity
+package ru.scisolutions.scicmscore.persistence.entity
 
 import ru.scisolutions.scicmscore.engine.schema.model.ItemSpec
 import ru.scisolutions.scicmscore.converter.ItemSpecConverter

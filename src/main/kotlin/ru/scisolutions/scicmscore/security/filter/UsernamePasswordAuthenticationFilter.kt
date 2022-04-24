@@ -20,7 +20,7 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import ru.scisolutions.scicmscore.entity.User as UserEntity
+import ru.scisolutions.scicmscore.persistence.entity.User as UserEntity
 
 class UsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,

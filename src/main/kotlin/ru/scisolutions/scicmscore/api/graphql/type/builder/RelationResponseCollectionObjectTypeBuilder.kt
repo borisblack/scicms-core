@@ -5,7 +5,7 @@ import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class RelationResponseCollectionObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
     override fun build(): ObjectTypeDefinition {

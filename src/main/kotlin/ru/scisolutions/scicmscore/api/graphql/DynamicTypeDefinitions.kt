@@ -87,9 +87,10 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
     companion object {
         private const val EXAMPLE = "example"
         private const val ITEM = "item"
+        private const val MEDIA = "media"
         private val excludedQueryItemNames = setOf(EXAMPLE)
         private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(
-            ITEM
+            ITEM, MEDIA
         ))
     }
 }

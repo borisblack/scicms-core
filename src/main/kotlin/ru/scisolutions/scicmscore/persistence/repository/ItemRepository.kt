@@ -1,6 +1,6 @@
-package ru.scisolutions.scicmscore.repository
+package ru.scisolutions.scicmscore.persistence.repository
 
 import org.springframework.data.repository.CrudRepository
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 
 interface ItemRepository : CrudRepository<Item, String>

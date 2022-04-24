@@ -4,7 +4,7 @@ import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
 import graphql.schema.DataFetchingEnvironment
 import org.slf4j.LoggerFactory
-import ru.scisolutions.scicmscore.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.api.graphql.field.builder.FieldDefinitionListBuilder
 import java.lang.reflect.Modifier
@@ -12,7 +12,7 @@ import java.lang.reflect.Modifier
 class ImplementationFieldListBuilder(private val item: Item) : FieldDefinitionListBuilder {
     override fun buildList(): List<FieldDefinition> {
         if (item.implementation.isNullOrBlank())
-            throw IllegalArgumentException("Item [${item.name}] has no implementation")
+            throw IllegalStateException("Item [${item.name}] has no implementation")
 
         val fields = mutableListOf<FieldDefinition>()
         val clazz = Class.forName(item.implementation)

@@ -237,11 +237,21 @@ type UserInfo {
     roles: [String!]!
 }
 
+type UploadedFile {
+    id: ID!
+    filename: String
+    description: String
+    fileSize: Int!
+    mimetype: String!
+    checksum: String!
+    createdAt: DateTime!
+}
+
 type Query {
     me: UserInfo
 }
 
 type Mutation {
-    upload(file: Upload!): ID
-    uploadMultiple(files: [Upload!]!): [ID!]
+    upload(file: Upload!): UploadedFile
+    uploadMultiple(files: [Upload!]!): [UploadedFile!]
 }
