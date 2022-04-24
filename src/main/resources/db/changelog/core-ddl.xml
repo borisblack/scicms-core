@@ -225,7 +225,9 @@
             <column name="path" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="checksum" type="varchar(50)"/>
+            <column name="checksum" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="generation" type="int"/>
             <column name="major_rev" type="varchar(50)"/>
             <column name="minor_rev" type="varchar(50)"/>

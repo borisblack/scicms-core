@@ -59,4 +59,5 @@ spec:
       columnName: checksum
       displayName: Checksum
       description: Checksum
+      required: true
       length: 50

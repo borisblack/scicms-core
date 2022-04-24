@@ -12,6 +12,9 @@ import ru.scisolutions.scicmscore.service.MediaService
 @Transactional
 class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaService {
     @Transactional(readOnly = true)
+    override fun findById(id: String): Media? = mediaRepository.findById(id).orElse(null)
+
+    @Transactional(readOnly = true)
     override fun getById(id: String): Media = mediaRepository.getById(id)
 
     override fun save(media: Media): Media = mediaRepository.save(media)

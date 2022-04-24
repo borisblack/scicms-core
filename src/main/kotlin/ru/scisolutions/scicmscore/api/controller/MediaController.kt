@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.api.controller
 
-import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,8 +19,8 @@ class MediaController(
     private val dataEngine: DataEngine
 ) {
     @GetMapping("/{id}/download")
-    fun download(@PathVariable id: String, request: HttpServletRequest): ResponseEntity<ByteArrayResource> {
-        val media = mediaService.getById(id)
+    fun download(@PathVariable id: String, request: HttpServletRequest): ResponseEntity<*> {
+        val media = mediaService.findById(id) ?: return ResponseEntity.notFound().build<Unit>()
         val resource = dataEngine.download(media)
         val filename = URLEncoder.encode(media.filename.replace(" ", "_"), "UTF-8")
 
