@@ -52,12 +52,13 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
         itemService.items.asSequence()
             .filter { (name, _) -> name !in excludedMutationItemNames }
-            .forEach { (_, item) ->
-                mutationBuilder.fieldDefinition(CreateFieldBuilder(item).build())
+            .forEach { (name, item) ->
+                if (name !in excludedCreateItemNames)
+                    mutationBuilder.fieldDefinition(CreateFieldBuilder(item).build())
 
                 if (item.versioned)
                     mutationBuilder.fieldDefinition(CreateVersionFieldBuilder(item).build())
-                else
+                else if (name !in excludedUpdateItemNames)
                     mutationBuilder.fieldDefinition(UpdateFieldBuilder(item).build())
 
                 if (item.localized)
@@ -85,12 +86,12 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
     }
 
     companion object {
-        private const val EXAMPLE = "example"
-        private const val ITEM = "item"
-        private const val MEDIA = "media"
-        private val excludedQueryItemNames = setOf(EXAMPLE)
-        private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(
-            ITEM, MEDIA
-        ))
+        private const val EXAMPLE_ITEM_NAME = "example"
+        private const val ITEM_ITEM_NAME = "item"
+        private const val MEDIA_ITEM_NAME = "media"
+        private val excludedQueryItemNames = setOf(EXAMPLE_ITEM_NAME)
+        private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(ITEM_ITEM_NAME))
+        private val excludedCreateItemNames = setOf(MEDIA_ITEM_NAME)
+        private val excludedUpdateItemNames = setOf(MEDIA_ITEM_NAME)
     }
 }

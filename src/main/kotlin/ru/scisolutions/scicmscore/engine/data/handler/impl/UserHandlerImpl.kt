@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
+import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
@@ -13,7 +14,7 @@ class UserHandlerImpl : UserHandler {
             null
         else UserInfo(
             username = authentication.name,
-            roles = authentication.authorities.map { it.authority }.toSet()
+            roles = AuthorityUtils.authorityListToSet(authentication.authorities)
         )
     }
 }

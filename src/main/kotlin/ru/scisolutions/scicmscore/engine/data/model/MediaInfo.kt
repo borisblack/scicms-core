@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.data.model
 
 import java.time.OffsetDateTime
 
-class UploadedFile(
+class MediaInfo(
     val id: String,
     val filename: String,
     val displayName: String? = null,

@@ -10,6 +10,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
@@ -20,7 +21,6 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import ru.scisolutions.scicmscore.persistence.entity.User as UserEntity
 
 class UsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
@@ -91,7 +91,7 @@ class UsernamePasswordAuthenticationFilter(
             user = UserInfo(
                 id = user.id,
                 username = user.username,
-                roles = authentication.authorities.map { it.authority }.toSet()
+                roles = AuthorityUtils.authorityListToSet(authentication.authorities)
             )
         )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)

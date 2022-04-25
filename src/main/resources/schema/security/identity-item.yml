@@ -21,10 +21,13 @@ spec:
       required: true
       length: 50
     principal:
-      type: bool
+      type: int
       columnName: principal
       displayName: Principal
       description: Principal
+      required: true
+      minRange: 0
+      maxRange: 1
     permissions:
       type: relation
       target: permission

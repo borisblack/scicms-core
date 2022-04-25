@@ -230,7 +230,7 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="principal" type="boolean">
+            <column name="principal" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="generation" type="int"/>

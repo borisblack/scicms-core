@@ -20,7 +20,7 @@ class MediaController(
 ) {
     @GetMapping("/{id}/download")
     fun download(@PathVariable id: String, request: HttpServletRequest): ResponseEntity<*> {
-        val media = mediaService.findById(id) ?: return ResponseEntity.notFound().build<Unit>()
+        val media = mediaService.findByIdForRead(id) ?: return ResponseEntity.notFound().build<Unit>()
         val resource = dataEngine.download(media)
         val filename = URLEncoder.encode(media.filename.replace(" ", "_"), "UTF-8")
 

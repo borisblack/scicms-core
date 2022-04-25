@@ -237,7 +237,7 @@ type UserInfo {
     roles: [String!]!
 }
 
-type UploadedFile {
+type MediaInfo {
     id: ID!
     filename: String
     description: String
@@ -252,6 +252,6 @@ type Query {
 }
 
 type Mutation {
-    upload(file: Upload!): UploadedFile
-    uploadMultiple(files: [Upload!]!): [UploadedFile!]
+    upload(file: Upload!): MediaInfo
+    uploadMultiple(files: [Upload!]!): [MediaInfo!]
 }

@@ -105,7 +105,7 @@
             <column name="id" value="${adminRoleIdentityId}"/>
             <column name="config_id" value="${adminRoleIdentityId}"/>
             <column name="name" value="ROLE_ADMIN"/>
-            <column name="principal" valueBoolean="false"/>
+            <column name="principal" value="0"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="last_version" valueBoolean="true"/>
