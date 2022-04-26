@@ -54,7 +54,7 @@ spec:
       columnName: product_id
       target: product
       relType: manyToOne # oneToOne, oneToMany, manyToOne, manyToMany
-#      relItem: # for manyToMany association (<owningItem><RelatedItem>Rel by default)
+#      relItem: # for manyToMany association
 #      mappedBy: # in bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key
       inversedBy: parts
       displayName: Product

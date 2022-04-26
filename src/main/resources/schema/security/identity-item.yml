@@ -19,6 +19,7 @@ spec:
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     principal:
       type: int
@@ -28,16 +29,10 @@ spec:
       required: true
       minRange: 0
       maxRange: 1
-    permissions:
+    access:
       type: relation
-      target: permission
-      relType: manyToMany
-      relItem: access
-      mappedBy: identities
-      displayName: Permissions
-      description: Permissions
-  indexes:
-    sec_identities_name_uk:
-      columns:
-        - name
-      unique: true
+      target: access
+      relType: oneToMany
+      mappedBy: target
+      displayName: Access
+      description: Access

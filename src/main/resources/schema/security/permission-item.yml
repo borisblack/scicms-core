@@ -19,17 +19,12 @@ spec:
       displayName: Name
       description: Name
       required: true
-      length: 50
-    identities:
-      type: relation
-      target: identity
-      relType: manyToMany
-      relItem: access
-      inversedBy: permissions
-      displayName: Identities
-      description: Identities
-  indexes:
-    sec_permissions_name_uk:
-      columns:
-        - name
       unique: true
+      length: 50
+    access:
+      type: relation
+      target: access
+      relType: oneToMany
+      mappedBy: target
+      displayName: Access
+      description: Access

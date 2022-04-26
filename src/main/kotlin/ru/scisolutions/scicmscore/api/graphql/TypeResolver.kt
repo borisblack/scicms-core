@@ -41,7 +41,7 @@ class TypeResolver {
                 if (attribute.relType == Attribute.RelType.ONE_TO_MANY.value || attribute.relType == Attribute.RelType.MANY_TO_MANY.value)
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
-                    TypeName("${capitalizedTargetItemName}Response").nonNull(attribute.required)
+                    TypeName("${capitalizedTargetItemName}RelationResponse").nonNull(attribute.required)
             }
             else -> throw IllegalArgumentException("Attribute [$attrName]: Invalid type (${attribute.type})")
         }

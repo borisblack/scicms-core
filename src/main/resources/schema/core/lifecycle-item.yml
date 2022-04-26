@@ -19,6 +19,7 @@ spec:
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     displayName:
       type: string
@@ -45,8 +46,3 @@ spec:
       description: Specification
       required: true
       defaultValue: '{}'
-  indexes:
-    core_lifecycles_name_uk:
-      columns:
-        - name
-      unique: true

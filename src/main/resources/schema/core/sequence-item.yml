@@ -19,6 +19,7 @@ spec:
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     displayName:
       type: string
@@ -65,8 +66,3 @@ spec:
       displayName: Pad To
       description: Pad To
       minRange: 0
-  indexes:
-    core_sequences_name_uk:
-      columns:
-        - name
-      unique: true

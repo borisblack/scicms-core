@@ -23,6 +23,7 @@ spec:
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     tableName:
       type: string
@@ -126,20 +127,15 @@ spec:
       length: 50
     allowedLifecycles:
       type: relation
-      target: lifecycle
-      relType: manyToMany
-      relItem: allowedLifecycle
+      target: allowedLifecycle
+      relType: oneToMany
+      mappedBy: source
       displayName: Allowed Lifecycles
       description: Allowed Lifecycles
     allowedPermissions:
       type: relation
-      target: permission
-      relType: manyToMany
-      relItem: allowedPermission
+      target: allowedPermission
+      relType: oneToMany
+      mappedBy: source
       displayName: Allowed Permissions
       description: Allowed Permissions
-  indexes:
-    core_items_name_uk:
-      columns:
-        - name
-      unique: true

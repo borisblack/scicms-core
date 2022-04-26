@@ -23,14 +23,15 @@ spec:
       type: relation
       columnName: source_id
       target: part
-      relType: oneToOne
+      relType: manyToOne
+      inversedBy: partBOM
       displayName: Source Part
       description: Source Part
     target:
       type: relation
       columnName: target_id
       target: part
-      relType: oneToOne
+      relType: manyToOne
       displayName: Target Part
       description: Target Part
     quantity:

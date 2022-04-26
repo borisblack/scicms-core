@@ -19,6 +19,7 @@ spec:
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     displayName:
       type: string
@@ -31,8 +32,3 @@ spec:
       columnName: revisions
       displayName: Revisions
       description: Revisions
-  indexes:
-    core_revision_policies_name_uk:
-      columns:
-        - name
-      unique: true

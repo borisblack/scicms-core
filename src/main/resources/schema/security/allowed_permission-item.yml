@@ -20,14 +20,15 @@ spec:
       type: relation
       columnName: source_id
       target: item
-      relType: oneToOne
+      relType: manyToOne
+      inversedBy: allowedPermissions
       displayName: Source Item
       description: Source Item
     target:
       type: relation
       columnName: target_id
       target: permission
-      relType: oneToOne
+      relType: manyToOne
       displayName: Target Permission
       description: Target Permission
   indexes:

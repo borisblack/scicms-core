@@ -18,6 +18,7 @@ import ru.scisolutions.scicmscore.api.graphql.field.builder.query.ResponseCollec
 import ru.scisolutions.scicmscore.api.graphql.field.builder.query.ResponseFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ItemObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.RelationResponseCollectionObjectTypeBuilder
+import ru.scisolutions.scicmscore.api.graphql.type.builder.RelationResponseObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ResponseCollectionObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ResponseObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.input.FiltersInputObjectTypeBuilder
@@ -33,10 +34,11 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         // Fill Query
         val queryBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query")
         itemService.items.asSequence()
-            .filter { (name, _) -> name !in excludedQueryItemNames }
+            .filter { (_, item) -> !excludeItemPolicy.excludeFromQuery(item) }
             .forEach { (_, item) ->
                 typeDefinitionRegistry.add(ItemObjectTypeBuilder(item).build())
                 typeDefinitionRegistry.add(ResponseObjectTypeBuilder(item).build())
+                typeDefinitionRegistry.add(RelationResponseObjectTypeBuilder(item).build())
                 typeDefinitionRegistry.add(ResponseCollectionObjectTypeBuilder(item).build())
                 typeDefinitionRegistry.add(RelationResponseCollectionObjectTypeBuilder(item).build())
                 typeDefinitionRegistry.add(FiltersInputObjectTypeBuilder(item).build()) // for filtering
@@ -51,14 +53,14 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         // Fill Mutation
         val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
         itemService.items.asSequence()
-            .filter { (name, _) -> name !in excludedMutationItemNames }
-            .forEach { (name, item) ->
-                if (name !in excludedCreateItemNames)
+            .filter { (_, item) -> !excludeItemPolicy.excludeFromMutation(item) }
+            .forEach { (_, item) ->
+                if (!excludeItemPolicy.excludeFromCreateMutation(item))
                     mutationBuilder.fieldDefinition(CreateFieldBuilder(item).build())
 
                 if (item.versioned)
                     mutationBuilder.fieldDefinition(CreateVersionFieldBuilder(item).build())
-                else if (name !in excludedUpdateItemNames)
+                else if (!excludeItemPolicy.excludeFromUpdateMutation(item))
                     mutationBuilder.fieldDefinition(UpdateFieldBuilder(item).build())
 
                 if (item.localized)
@@ -86,12 +88,6 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
     }
 
     companion object {
-        private const val EXAMPLE_ITEM_NAME = "example"
-        private const val ITEM_ITEM_NAME = "item"
-        private const val MEDIA_ITEM_NAME = "media"
-        private val excludedQueryItemNames = setOf(EXAMPLE_ITEM_NAME)
-        private val excludedMutationItemNames = excludedQueryItemNames.plus(setOf(ITEM_ITEM_NAME))
-        private val excludedCreateItemNames = setOf(MEDIA_ITEM_NAME)
-        private val excludedUpdateItemNames = setOf(MEDIA_ITEM_NAME)
+        private val excludeItemPolicy = ExcludeItemPolicy()
     }
 }

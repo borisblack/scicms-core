@@ -19,6 +19,7 @@ spec:
       displayName: Name
       description: Name
       required: true
+      unique: true
       length: 50
     displayName:
       type: string
@@ -26,8 +27,3 @@ spec:
       displayName: Display Name
       description: Display Name
       length: 50
-  indexes:
-    core_locales_name_uk:
-      columns:
-        - name
-      unique: true

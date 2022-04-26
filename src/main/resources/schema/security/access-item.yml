@@ -26,14 +26,16 @@ spec:
       type: relation
       columnName: source_id
       target: permission
-      relType: oneToOne
+      relType: manyToOne
+      inversedBy: access
       displayName: Source Permission
       description: Source Permission
     target:
       type: relation
       columnName: target_id
       target: identity
-      relType: oneToOne
+      relType: manyToOne
+      inversedBy: access
       displayName: Target Identity
       description: Target Identity
   indexes:

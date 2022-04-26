@@ -125,8 +125,8 @@ spec:
       description: Change Notices
     partBOM:
       type: relation
-      target: part
-      relType: manyToMany
-      relItem: partBOM
+      target: partBOM
+      relType: oneToMany
+      mappedBy: source
       displayName: Part BOM
       description: Part BOM
