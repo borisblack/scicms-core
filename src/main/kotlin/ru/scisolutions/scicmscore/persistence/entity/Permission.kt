@@ -8,7 +8,7 @@ import javax.persistence.Table
 @Table(name = "sec_permissions")
 class Permission(
     @Column(nullable = false)
-    val name: String,
+    var name: String,
 ) : AbstractEntity() {
     companion object {
         const val DEFAULT_PERMISSION_ID: String = "6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"

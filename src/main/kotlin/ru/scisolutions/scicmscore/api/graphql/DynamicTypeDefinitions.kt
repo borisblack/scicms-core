@@ -7,8 +7,8 @@ import graphql.schema.idl.TypeDefinitionRegistry
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateLocalizationFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateVersionFieldBuilder
+import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CustomMethodFieldListBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.DeleteFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.ImplementationFieldListBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.LockFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.PromoteFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.PurgeFieldBuilder
@@ -16,6 +16,7 @@ import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.UnlockField
 import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.UpdateFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.query.ResponseCollectionFieldBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.query.ResponseFieldBuilder
+import ru.scisolutions.scicmscore.api.graphql.type.builder.CustomMethodResponseObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ItemObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.RelationResponseCollectionObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.RelationResponseObjectTypeBuilder
@@ -23,10 +24,14 @@ import ru.scisolutions.scicmscore.api.graphql.type.builder.ResponseCollectionObj
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ResponseObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.input.FiltersInputObjectTypeBuilder
 import ru.scisolutions.scicmscore.api.graphql.type.builder.input.ItemInputObjectTypeBuilder
+import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.service.ItemService
 
 @DgsComponent
-class DynamicTypeDefinitions(private val itemService: ItemService) {
+class DynamicTypeDefinitions(
+    private val itemService: ItemService,
+    private val dataEngine: DataEngine
+) {
     @DgsTypeDefinitionRegistry
     fun registry(): TypeDefinitionRegistry {
         val typeDefinitionRegistry = TypeDefinitionRegistry()
@@ -54,7 +59,7 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
         val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
         itemService.items.asSequence()
             .filter { (_, item) -> !excludeItemPolicy.excludeFromMutation(item) }
-            .forEach { (_, item) ->
+            .forEach { (itemName, item) ->
                 if (!excludeItemPolicy.excludeFromCreateMutation(item))
                     mutationBuilder.fieldDefinition(CreateFieldBuilder(item).build())
 
@@ -76,8 +81,10 @@ class DynamicTypeDefinitions(private val itemService: ItemService) {
                 mutationBuilder.fieldDefinition(PromoteFieldBuilder(item).build())
 
                 // Add custom mutations
-                if (!item.implementation.isNullOrBlank()) {
-                    val customMutations = ImplementationFieldListBuilder(item).buildList()
+                if (item.implementation != null) {
+                    typeDefinitionRegistry.add(CustomMethodResponseObjectTypeBuilder(item).build())
+
+                    val customMutations = CustomMethodFieldListBuilder(itemName, dataEngine.getCustomMethods(itemName)).buildList()
                     customMutations.forEach { mutationBuilder.fieldDefinition(it) }
                 }
             }

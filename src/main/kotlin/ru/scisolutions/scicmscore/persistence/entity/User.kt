@@ -8,13 +8,13 @@ import javax.persistence.Table
 @Table(name = "sec_users")
 class User(
     @Column(nullable = false)
-    val username: String,
+    var username: String,
 
    // @Column(name = "passwd", nullable = false)
    // val password: String,
 
     @Column(nullable = false)
-    val enabled: Boolean
+    var enabled: Boolean
 ) : AbstractEntity() {
     companion object {
         const val ROOT_USER_ID: String = "0c924266-3c61-4362-81d7-9d69403fbe32"

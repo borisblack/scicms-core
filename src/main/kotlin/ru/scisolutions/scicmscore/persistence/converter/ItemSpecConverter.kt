@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.converter
+package ru.scisolutions.scicmscore.persistence.converter
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature

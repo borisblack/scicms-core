@@ -1,12 +1,15 @@
 package ru.scisolutions.userimpl.item
 
-import graphql.execution.DataFetcherResult
-import graphql.schema.DataFetchingEnvironment
+import ru.scisolutions.scicmscore.engine.data.model.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.data.model.CustomMethodResponse
 
 class PartItemImplementation {
-    fun send(dfe: DataFetchingEnvironment): DataFetcherResult<*> {
-        return DataFetcherResult.newResult<Map<String, String>>()
-            .data(mapOf("message" to "Success"))
-            .build()
+    fun send(input: CustomMethodInput): CustomMethodResponse {
+        return CustomMethodResponse(
+            data = mapOf(
+                "message" to "Success",
+                "greeting" to input.data?.get("greeting")
+            )
+        )
     }
 }

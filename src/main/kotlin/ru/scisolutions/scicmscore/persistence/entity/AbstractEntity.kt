@@ -11,36 +11,36 @@ import javax.persistence.MappedSuperclass
 @EntityListeners(AuditEntityListener::class)
 abstract class AbstractEntity {
     @Id
-    val id: String = UUID.randomUUID().toString()
+    var id: String = UUID.randomUUID().toString()
 
     @Column(name = "config_id", nullable = false)
-    val configId: String = id
+    var configId: String = id
 
-    val generation: Int? = null
+    var generation: Int? = null
 
     @Column(name = "major_rev")
-    val majorRev: String? = null
+    var majorRev: String? = null
 
     @Column(name = "minor_rev")
-    val minorRev: String? = null
+    var minorRev: String? = null
 
     @Column(name = "last_version")
-    val lastVersion: Boolean? = null
+    var lastVersion: Boolean? = null
 
     @Column(name = "is_current")
-    val isCurrent: Boolean? = null
+    var isCurrent: Boolean? = null
 
-    val released: Boolean? = null
+    var released: Boolean? = null
 
     @Column(name = "lifecycle_id")
-    val lifecycleId: String? = null
+    var lifecycleId: String? = null
 
-    val state: String? = null
+    var state: String? = null
 
     @Column(name = "permission_id")
     var permissionId: String? = null
 
-    val locale: String? = null
+    var locale: String? = null
 
     @Column(name = "created_at", nullable = false)
     lateinit var createdAt: LocalDateTime
@@ -55,11 +55,11 @@ abstract class AbstractEntity {
     var updatedById: String? = null
 
     @Column(name = "owned_by_id")
-    val ownedById: String? = null
+    var ownedById: String? = null
 
     @Column(name = "managed_by_id")
-    val managedById: String? = null
+    var managedById: String? = null
 
     @Column(name = "locked_by_id")
-    val lockedById: String? = null
+    var lockedById: String? = null
 }

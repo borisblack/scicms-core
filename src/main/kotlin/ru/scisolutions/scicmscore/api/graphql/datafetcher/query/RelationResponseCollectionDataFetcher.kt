@@ -7,7 +7,7 @@ import ru.scisolutions.scicmscore.engine.data.model.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.ResponseCollection
 
 class RelationResponseCollectionDataFetcher : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
-    override fun get(environment: DataFetchingEnvironment?): DataFetcherResult<RelationResponseCollection> {
+    override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
         return DataFetcherResult.newResult<RelationResponseCollection>()
             .data(RelationResponseCollection(emptyList()))
             .build()

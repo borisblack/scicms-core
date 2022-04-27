@@ -8,14 +8,14 @@ import javax.persistence.Table
 @Table(name = "sec_allowed_permissions")
 class AllowedPermission(
     @Column(name = "sort_order")
-    val sortOrder: Int? = null,
+    var sortOrder: Int? = null,
 
     @Column(name = "source_id", nullable = false)
-    val sourceId: String,
+    var sourceId: String,
 
     @Column(name = "target_id", nullable = false)
-    val targetId: String,
+    var targetId: String,
 
     @Column(name = "is_default", nullable = false)
-    val isDefault: Boolean = false
+    var isDefault: Boolean = false
 ) : AbstractEntity()

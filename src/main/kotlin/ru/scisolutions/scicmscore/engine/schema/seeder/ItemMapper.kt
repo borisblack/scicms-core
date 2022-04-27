@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.seeder
 
 import ru.scisolutions.scicmscore.engine.schema.model.Item
+import ru.scisolutions.scicmscore.persistence.converter.ItemImplementationConverter
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 class ItemMapper {
@@ -33,8 +34,12 @@ class ItemMapper {
         target.revisionPolicyId = metadata.revisionPolicy
         target.notLockable = metadata.notLockable
         target.localized = metadata.localized
-        target.implementation = metadata.implementation
+        target.implementation = itemImplementationConverter.convertToEntityAttribute(metadata.implementation)
         target.spec = source.spec
         target.checksum = source.hashCode().toString()
+    }
+
+    companion object {
+        private val itemImplementationConverter = ItemImplementationConverter()
     }
 }

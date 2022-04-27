@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
+import ru.scisolutions.scicmscore.config.props.JwtTokenProps
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.User
 import javax.servlet.FilterChain
@@ -24,7 +25,8 @@ import javax.servlet.http.HttpServletResponse
 
 class UsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
-    private val jwtTokenService: JwtTokenService
+    private val jwtTokenService: JwtTokenService,
+    private val jwtTokenProps: JwtTokenProps
 ) : GenericFilterBean() {
     override fun doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) {
         req as HttpServletRequest
@@ -66,7 +68,7 @@ class UsernamePasswordAuthenticationFilter(
         SecurityContextHolder.getContext().authentication = resultAuthentication
 
         // Create JWT token
-        val jwtToken: String = jwtTokenService.generateJwtToken(resultAuthentication)
+        val jwtToken = jwtTokenService.generateJwtToken(resultAuthentication)
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
 
@@ -85,9 +87,11 @@ class UsernamePasswordAuthenticationFilter(
     }
 
     private fun sendJWTTokenResponse(req: HttpServletRequest, res: HttpServletResponse, jwtToken: String, authentication: Authentication) {
+        val claims = jwtTokenService.parseToken(jwtToken)
         val user = (authentication.principal as User).user
         val tokenResponse = TokenResponse(
             jwt = jwtToken,
+            expirationIntervalMillis = jwtTokenProps.expirationIntervalMillis,
             user = UserInfo(
                 id = user.id,
                 username = user.username,
@@ -112,7 +116,8 @@ class UsernamePasswordAuthenticationFilter(
 
     private class TokenResponse(
         val jwt: String,
-        val user: UserInfo
+        val user: UserInfo,
+        val expirationIntervalMillis: Long
     )
 
     private class UserInfo(

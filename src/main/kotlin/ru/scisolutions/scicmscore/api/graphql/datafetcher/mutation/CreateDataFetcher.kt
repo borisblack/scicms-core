@@ -6,7 +6,7 @@ import graphql.schema.DataFetchingEnvironment
 import ru.scisolutions.scicmscore.engine.data.model.Response
 
 class CreateDataFetcher : DataFetcher<DataFetcherResult<Response>> {
-    override fun get(environment: DataFetchingEnvironment?): DataFetcherResult<Response> {
+    override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         return DataFetcherResult.newResult<Response>()
             .data(Response())
             .build()

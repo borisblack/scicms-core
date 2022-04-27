@@ -8,22 +8,22 @@ import javax.persistence.Table
 @Table(name = "core_media")
 class Media(
     @Column(nullable = false)
-    val filename: String,
+    var filename: String,
 
     @Column(name = "display_name")
-    val displayName: String? = null,
+    var displayName: String? = null,
 
-    val description: String? = null,
+    var description: String? = null,
 
     @Column(name = "file_size", nullable = false)
-    val fileSize: Long,
+    var fileSize: Long,
 
     @Column(nullable = false)
-    val mimetype: String,
+    var mimetype: String,
 
     @Column(nullable = false)
-    val path: String,
+    var path: String,
 
     @Column(nullable = false)
-    val checksum: String
+    var checksum: String
 ) : AbstractEntity()

@@ -69,7 +69,7 @@ class ApiSecurityConfig(
 
     @Bean
     fun usernamePasswordAuthenticationFilter(): Filter =
-        UsernamePasswordAuthenticationFilter(authenticationManager(), jwtTokenService())
+        UsernamePasswordAuthenticationFilter(authenticationManager(), jwtTokenService(), jwtTokenProps)
 
     @Bean
     fun jwtTokenService(): JwtTokenService = JwtTokenService(jwtTokenProps)

@@ -8,6 +8,7 @@ import graphql.schema.idl.TypeDefinitionRegistry
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.CreateDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.CreateLocalizationDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.CreateVersionDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.CustomMethodDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.DeleteDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.LockDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.PromoteDataFetcher
@@ -18,8 +19,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponse
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponseDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseCollectionDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateLocalizationFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.PurgeFieldBuilder
+import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.schema.model.Attribute.RelType
 import ru.scisolutions.scicmscore.engine.schema.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
@@ -27,7 +27,9 @@ import ru.scisolutions.scicmscore.service.ItemService
 
 @DgsComponent
 class DynamicDataFetcher(
-    private val itemService: ItemService
+    private val itemService: ItemService,
+    private val dataEngine: DataEngine,
+    private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
     fun registry(codeRegistryBuilder: GraphQLCodeRegistry.Builder, registry: TypeDefinitionRegistry): GraphQLCodeRegistry.Builder {
@@ -45,7 +47,7 @@ class DynamicDataFetcher(
         // Mutation
         itemService.items.asSequence()
             .filter { (_, item) -> !excludeItemPolicy.excludeFromMutation(item) }
-            .forEach { (_, item) ->
+            .forEach { (itemName, item) ->
                 val capitalizedItemName = item.name.capitalize()
 
                 if (!excludeItemPolicy.excludeFromCreateMutation(item))
@@ -82,9 +84,13 @@ class DynamicDataFetcher(
                 codeRegistryBuilder
                     .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), PromoteDataFetcher())
 
-                // Add custom data fetcher
-                if (!item.implementation.isNullOrBlank()) {
-                    // TODO: Add custom data fetcher
+                // Custom methods
+                if (item.implementation != null) {
+                    val customMethodNames = dataEngine.getCustomMethods(itemName)
+                    for (methodName in customMethodNames) {
+                        codeRegistryBuilder
+                            .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "${methodName}${capitalizedItemName}"), customMethodDataFetcher)
+                    }
                 }
             }
 

@@ -8,13 +8,13 @@ import javax.persistence.Table
 @Table(name = "core_revision_policies")
 class RevisionPolicy(
     @Column(nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(name = "display_name")
-    val displayName: String?,
+    var displayName: String?,
 
     @Column
-    val revisions: String?,
+    var revisions: String?,
 ) : AbstractEntity() {
     companion object {
         const val DEFAULT_REVISION_POLICY_ID: String = "48fea283-2872-4ca3-8fbd-980b7654907b"
