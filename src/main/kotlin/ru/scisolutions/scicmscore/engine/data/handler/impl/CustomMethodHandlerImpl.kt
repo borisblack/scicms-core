@@ -15,22 +15,29 @@ class CustomMethodHandlerImpl(
     private val itemService: ItemService,
     private val applicationContext: ApplicationContext
 ) : CustomMethodHandler {
+    private val classes = mutableMapOf<String, Class<*>>()
+    private val instances = mutableMapOf<Class<*>, Any>()
+
     override fun getCustomMethods(itemName: String): Set<String> {
         val item = itemService.items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
-        val implementation = item.implementation ?: throw IllegalStateException("Item [$itemName] has no implementation")
+        val implementation = item.implementation
+        if (implementation.isNullOrBlank())
+            throw IllegalStateException("Item [$itemName] has no implementation")
 
-        return implementation.declaredMethods.asSequence()
+        val clazz = getClass(implementation)
+
+        return clazz.declaredMethods.asSequence()
             .filter { Modifier.isPublic(it.modifiers) }
             .filter {
                 if (it.parameterCount != 1 || it.parameterTypes[0] != CustomMethodInput::class.java || it.returnType != CustomMethodResponse::class.java) {
-                    logger.info("Method [{}#{}] has invalid signature. Skipping this method", implementation.simpleName, it.name)
+                    logger.info("Method [{}#{}] has invalid signature. Skipping this method", clazz.simpleName, it.name)
                     false
                 } else
                     true
             }
             .filter {
                 if (it.name in reservedMethodNames) {
-                    logger.info("Method [{}#{}] name is reserved. Skipping this method", implementation.simpleName, it.name)
+                    logger.info("Method [{}#{}] name is reserved. Skipping this method", clazz.simpleName, it.name)
                     false
                 } else
                     true
@@ -39,25 +46,42 @@ class CustomMethodHandlerImpl(
             .toSet()
     }
 
+    private fun getClass(className: String): Class<*> {
+        if (className !in classes) {
+            classes[className] = Class.forName(className)
+        }
+
+        return classes[className] as Class<*>
+    }
+
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
         val item = itemService.items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
-        val implementation = item.implementation ?: throw IllegalStateException("Item [$itemName] has no implementation")
-        val customMethod = implementation.getMethod(methodName, CustomMethodInput::class.java)
+        val implementation = item.implementation
+        if (implementation.isNullOrBlank())
+            throw IllegalStateException("Item [$itemName] has no implementation")
+
+        val clazz = getClass(implementation)
+        val customMethod = clazz.getMethod(methodName, CustomMethodInput::class.java)
             ?: throw IllegalStateException("Method [$methodName] with valid signature not found")
 
         if (customMethod.returnType != CustomMethodResponse::class.java)
-            throw IllegalArgumentException("Method [${implementation.simpleName}#${customMethod.name}] has invalid signature")
+            throw IllegalArgumentException("Method [${clazz.simpleName}#${customMethod.name}] has invalid signature")
 
-        val instance = getInstance(implementation)
+        val instance = getInstance(clazz)
         return customMethod.invoke(instance, customMethodInput) as CustomMethodResponse
     }
 
-    private fun getInstance(clazz: Class<*>) =
-        try {
-            applicationContext.getBean(clazz)
-        } catch(e: BeansException) {
-            clazz.getConstructor().newInstance()
+    private fun getInstance(clazz: Class<*>): Any {
+        if (clazz !in instances) {
+            instances[clazz] = try {
+                applicationContext.getBean(clazz)
+            } catch (e: BeansException) {
+                clazz.getConstructor().newInstance()
+            }
         }
+
+        return instances[clazz] as Any
+    }
 
     companion object {
         private const val CREATE_METHOD_NAME = "create"

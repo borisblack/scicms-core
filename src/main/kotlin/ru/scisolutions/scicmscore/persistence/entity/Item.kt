@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
 import ru.scisolutions.scicmscore.engine.schema.model.ItemSpec
-import ru.scisolutions.scicmscore.persistence.converter.ItemImplementationConverter
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert
@@ -57,8 +56,7 @@ class Item(
     var localized: Boolean = false,
 
     @Column(name = "implementation")
-    @Convert(converter = ItemImplementationConverter::class)
-    var implementation: Class<*>? = null,
+    var implementation: String? = null,
 
     @Column
     @Convert(converter = ItemSpecConverter::class)
