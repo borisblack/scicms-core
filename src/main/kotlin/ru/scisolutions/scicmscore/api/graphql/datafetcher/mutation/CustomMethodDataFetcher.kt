@@ -15,10 +15,6 @@ class CustomMethodDataFetcher(
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<CustomMethodResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<CustomMethodResponse> {
-        val inputData = dfe.arguments["data"]
-        if (inputData !is Map<*, *>?)
-            throw IllegalArgumentException("Input data must be of the Map type")
-
         val fieldName = dfe.field.name
         val fieldType = (dfe.fieldType as GraphQLObjectType).name
         val fieldTypeMatcher = fieldTypePattern.matcher(fieldType)
@@ -36,7 +32,7 @@ class CustomMethodDataFetcher(
             itemName,
             methodName,
             CustomMethodInput(
-                data = inputData as Map<String, Any?>?
+                data = dfe.arguments["data"]
             )
         )
 
