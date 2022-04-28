@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.util
 import com.google.common.io.BaseEncoding
 
 object Base64Encoding {
-    fun encodeOrNull(rawText: String?) =
+    fun encodeNullable(rawText: String?) =
         if (rawText == null)
             null
         else
@@ -15,7 +15,7 @@ object Base64Encoding {
 
     fun encode(rawText: String) = BaseEncoding.base64().encode(rawText.toByteArray())
 
-    fun decodeOrNull(encodedText: String?) =
+    fun decodeNullable(encodedText: String?) =
         if (encodedText == null) null
         else
             try {

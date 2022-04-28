@@ -27,8 +27,8 @@ class TypeResolver {
             AttributeType.DECIMAL.value -> TypeNames.FLOAT.nonNull(attribute.required)
             AttributeType.DATE.value -> TypeNames.DATE.nonNull(attribute.required)
             AttributeType.TIME.value -> TypeNames.TIME.nonNull(attribute.required)
-            AttributeType.DATETIME.value -> TypeNames.DATETIME.nonNull(attribute.required)
-            AttributeType.TIMESTAMP.value -> TypeNames.INT.nonNull(attribute.required)
+            AttributeType.DATETIME.value,
+            AttributeType.TIMESTAMP.value -> TypeNames.DATETIME.nonNull(attribute.required)
             AttributeType.BOOL.value -> TypeNames.BOOLEAN.nonNull(attribute.required)
             AttributeType.ARRAY.value,
             AttributeType.JSON.value,
@@ -60,7 +60,7 @@ class TypeResolver {
             AttributeType.DATE.value -> TypeNames.DATE_FILTER_INPUT
             AttributeType.TIME.value -> TypeNames.TIME_FILTER_INPUT
             AttributeType.DATETIME.value -> TypeNames.DATETIME_FILTER_INPUT
-            AttributeType.TIMESTAMP.value -> TypeNames.INT_FILTER_INPUT
+            AttributeType.TIMESTAMP.value -> TypeNames.DATETIME_FILTER_INPUT
             AttributeType.BOOL.value -> TypeNames.BOOLEAN_FILTER_INPUT
             AttributeType.ARRAY.value,
             AttributeType.JSON.value,
@@ -90,7 +90,7 @@ class TypeResolver {
             AttributeType.DATE.value -> TypeNames.DATE
             AttributeType.TIME.value -> TypeNames.TIME
             AttributeType.DATETIME.value -> TypeNames.DATETIME
-            AttributeType.TIMESTAMP.value -> TypeNames.INT
+            AttributeType.TIMESTAMP.value -> TypeNames.DATETIME
             AttributeType.BOOL.value -> TypeNames.BOOLEAN
             AttributeType.ARRAY.value,
             AttributeType.JSON.value,

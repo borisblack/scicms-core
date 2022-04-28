@@ -20,10 +20,17 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
             val attrName = item.spec.columns[columnName] as String
             val attribute = item.spec.attributes[attrName] as Attribute
             val value = when (attribute.type) {
-                Type.PASSWORD.value -> Base64Encoding.decodeOrNull(rs.getString(i))
-                Type.DATETIME.value -> rs.getTimestamp(i).toLocalDateTime().atOffset(ZoneOffset.UTC)
+                Type.UUID.value, Type.STRING.value, Type.ENUM.value, Type.SEQUENCE.value, Type.EMAIL.value -> rs.getString(i)
+                Type.TEXT.value, Type.ARRAY.value, Type.JSON.value -> {
+                    val obj = rs.getObject(i)
+                    if (obj is Clob) obj.characterStream.readText() else obj
+                }
+                Type.PASSWORD.value -> Base64Encoding.decodeNullable(rs.getString(i))
+                Type.DATE.value -> rs.getDate(i)?.toLocalDate()
+                Type.TIME.value -> rs.getTime(i)?.toLocalTime()?.atOffset(ZoneOffset.UTC)
+                Type.DATETIME.value, Type.TIMESTAMP.value ->  rs.getTimestamp(i)?.toLocalDateTime()?.atOffset(ZoneOffset.UTC)
                 Type.BOOL.value -> rs.getBoolean(i)
-                else -> parseObjectValue(rs.getObject(i))
+                else -> rs.getObject(i)
             }
 
             itemRec[attrName] = value
@@ -31,10 +38,4 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
 
         return itemRec
     }
-
-    private fun parseObjectValue(value: Any?) =
-        when (value) {
-            is Clob -> value.characterStream.readText()
-            else -> value
-        }
 }
