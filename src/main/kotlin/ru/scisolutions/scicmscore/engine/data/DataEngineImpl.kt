@@ -32,11 +32,11 @@ class DataEngineImpl(
 
     override fun download(media: Media): ByteArrayResource = mediaHandler.download(media)
 
-    override fun getResponse(itemName: String, id: String, fields: Set<String>): Response =
-        responseHandler.getResponse(itemName, id, fields)
+    override fun getResponse(itemName: String, fields: Set<String>, id: String): Response =
+        responseHandler.getResponse(itemName, fields, id)
 
-    override fun getRelationResponse(sourceItemRec: ItemRec, itemName: String, fields: Set<String>): RelationResponse =
-        relationResponseHandler.getRelationResponse(sourceItemRec, itemName, fields)
+    override fun getRelationResponse(itemName: String, fields: Set<String>, sourceItemRec: ItemRec, fieldName: String): RelationResponse =
+        relationResponseHandler.getRelationResponse(itemName, fields, sourceItemRec, fieldName)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

@@ -11,7 +11,7 @@ class ResponseHandlerImpl(
     private val itemService: ItemService,
     private val itemRecDao: ItemRecDao,
 ) : ResponseHandler {
-    override fun getResponse(itemName: String, id: String, fields: Set<String>): Response {
+    override fun getResponse(itemName: String, fields: Set<String>, id: String): Response {
         val item = itemService.getItem(itemName)
         val itemRec = itemRecDao.findById(item, id, fields)
 

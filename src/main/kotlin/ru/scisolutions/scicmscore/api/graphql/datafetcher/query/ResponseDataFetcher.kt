@@ -18,7 +18,7 @@ class ResponseDataFetcher(
             .map { it.name }
             .toSet()
 
-        val result = dataEngine.getResponse(itemName, dfe.arguments[ID_ARG_NAME] as String, fields)
+        val result = dataEngine.getResponse(itemName, fields, dfe.arguments[ID_ARG_NAME] as String)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

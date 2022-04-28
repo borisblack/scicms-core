@@ -4,5 +4,5 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.RelationResponse
 
 interface RelationResponseHandler {
-    fun getRelationResponse(sourceItemRec: ItemRec, itemName: String, fields: Set<String>): RelationResponse
+    fun getRelationResponse(itemName: String, fields: Set<String>, sourceItemRec: ItemRec, fieldName: String): RelationResponse
 }

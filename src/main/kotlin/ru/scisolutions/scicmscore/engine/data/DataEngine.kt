@@ -20,9 +20,9 @@ interface DataEngine {
 
     fun download(media: Media): ByteArrayResource
 
-    fun getResponse(itemName: String, id: String, fields: Set<String>): Response
+    fun getResponse(itemName: String, fields: Set<String>, id: String): Response
 
-    fun getRelationResponse(sourceItemRec: ItemRec, itemName: String, fields: Set<String>): RelationResponse
+    fun getRelationResponse(itemName: String, fields: Set<String>, sourceItemRec: ItemRec, fieldName: String): RelationResponse
 
     fun getCustomMethods(itemName: String): Set<String>
 

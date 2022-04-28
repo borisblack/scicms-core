@@ -3,7 +3,6 @@ package ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation
 import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
-import graphql.schema.GraphQLObjectType
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
 import ru.scisolutions.scicmscore.engine.data.DataEngine
@@ -17,7 +16,7 @@ class CustomMethodDataFetcher(
 ) : DataFetcher<DataFetcherResult<CustomMethodResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<CustomMethodResponse> {
         val fieldName = dfe.field.name
-        val fieldType = (dfe.fieldType as GraphQLObjectType).name
+        val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
         val capitalizedItemName = DataFetcherUtil.parseItemName(fieldName, fieldType, fieldTypePattern)
         val itemName = capitalizedItemName.decapitalize()
         val methodName = fieldName.substringBefore(capitalizedItemName)

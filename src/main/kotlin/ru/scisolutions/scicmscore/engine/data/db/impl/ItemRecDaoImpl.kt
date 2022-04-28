@@ -10,6 +10,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.withHandleUnchecked
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
@@ -23,6 +24,7 @@ class ItemRecDaoImpl(
     override fun findById(item: Item, id: String, fields: Set<String>): ItemRec? {
         val sql = buildFindByIdSql(item, id, fields)
 
+        logger.debug("Running SQL: {}", sql)
         val itemRec: ItemRec? = jdbi.withHandleUnchecked {
             val result = it.createQuery(sql)
                 .map(ItemRecMapper(item))
@@ -59,5 +61,7 @@ class ItemRecDaoImpl(
     companion object {
         private const val ID_COL_NAME = "id"
         private const val PERMISSION_ID_COL_NAME = "permission_id"
+
+        private val logger = LoggerFactory.getLogger(ItemRecDao::class.java)
     }
 }
