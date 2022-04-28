@@ -19,6 +19,9 @@ class ItemServiceImpl(private val itemRepository: ItemRepository) : ItemService 
         return itemList.associateBy { it.name }.toMutableMap()
     }
 
+    override fun getItem(itemName: String): Item =
+        items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
+
     override fun save(item: Item): Item {
         val savedItem = itemRepository.save(item)
         this.items[item.name] = savedItem

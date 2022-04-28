@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.engine.schema.seeder
+package ru.scisolutions.scicmscore.engine.schema.mapper
 
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
@@ -24,7 +24,7 @@ class ItemMapper {
         target.pluralName = metadata.pluralName
         target.tableName = metadata.tableName
         target.description = metadata.description
-        target.dataSource = metadata.dataSource ?: ru.scisolutions.scicmscore.persistence.entity.Item.DEFAULT_DATASOURCE
+        target.dataSource = metadata.dataSource ?: ItemEntity.DEFAULT_DATASOURCE
         target.icon = metadata.icon
         target.core = metadata.core
         target.performDdl = metadata.performDdl

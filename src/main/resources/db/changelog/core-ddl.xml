@@ -18,11 +18,19 @@
             <column name="description" type="varchar(250)"/>
             <column name="core" type="boolean"/>
             <column name="spec" type="text" defaultValue="{}"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
@@ -55,11 +63,19 @@
             </column>
             <column name="display_name" type="varchar(50)"/>
             <column name="revisions" type="text" defaultValue="[]"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
@@ -115,11 +131,19 @@
             <column name="implementation" type="varchar(100)"/>
             <column name="spec" type="text" defaultValue="{}"/>
             <column name="checksum" type="varchar(50)"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
@@ -175,11 +199,19 @@
             <column name="pad_with" type="char(1)"/>
             <column name="pad_to" type="int"/>
             <column name="entries" type="text" defaultValue="[]"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
@@ -228,11 +260,19 @@
             <column name="checksum" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
@@ -272,11 +312,19 @@
             <column name="start_state" type="varchar(50)"/>
             <column name="implementation" type="varchar(100)"/>
             <column name="spec" type="text" defaultValue="{}"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
@@ -316,11 +364,19 @@
                 <constraints nullable="false" foreignKeyName="core_allowed_lifecycles_target_fk" references="core_lifecycles(id)"/>
             </column>
             <column name="is_default" type="boolean"/>
-            <column name="generation" type="int"/>
-            <column name="major_rev" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean"/>
-            <column name="is_current" type="boolean"/>
+            <column name="last_version" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_current" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="released" type="boolean"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
+import ru.scisolutions.scicmscore.engine.data.mapper.MediaMapper
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.service.MediaService
 import java.io.File

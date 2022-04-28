@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 
 @DgsComponent
-class FileDataFetcher(
+class MediaDataFetcher(
     private val dataEngine: DataEngine
 ) {
     @DgsMutation

@@ -22,6 +22,11 @@ repositories {
     mavenCentral()
 }
 
+object Constants {
+    const val jacksonVersion = "2.13.2"
+    const val jdbi3Version = "3.28.0"
+}
+
 dependencies {
     implementation(files("/lib/sqlbuilder-3.0.2.jar"))
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -30,13 +35,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.liquibase:liquibase-core")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.2")
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", Constants.jacksonVersion)
+    implementation("com.fasterxml.jackson.dataformat", "jackson-dataformat-yaml", Constants.jacksonVersion)
     implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.google.guava:guava:31.1-jre")
+    implementation("org.jdbi", "jdbi3-core", Constants.jdbi3Version)
+    implementation("org.jdbi", "jdbi3-kotlin", Constants.jdbi3Version)
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 

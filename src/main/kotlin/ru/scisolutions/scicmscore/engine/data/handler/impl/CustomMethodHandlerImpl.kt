@@ -19,7 +19,7 @@ class CustomMethodHandlerImpl(
     private val instances = mutableMapOf<Class<*>, Any>()
 
     override fun getCustomMethods(itemName: String): Set<String> {
-        val item = itemService.items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
+        val item = itemService.getItem(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation")
@@ -55,7 +55,7 @@ class CustomMethodHandlerImpl(
     }
 
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
-        val item = itemService.items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
+        val item = itemService.getItem(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation")

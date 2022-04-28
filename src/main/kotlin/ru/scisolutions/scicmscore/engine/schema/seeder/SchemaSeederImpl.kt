@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.schema.seeder
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity

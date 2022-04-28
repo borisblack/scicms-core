@@ -8,11 +8,11 @@ class ExcludeAttributePolicy {
         if (attribute.private)
             return false
 
-        if (!item.versioned && (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME))
-            return false
+        // if (!item.versioned && (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME))
+        //     return false
 
-        if (!item.localized && attrName == LOCALE_ATTR_NAME)
-            return false
+        // if (!item.localized && attrName == LOCALE_ATTR_NAME)
+        //     return false
 
         return true
     }
@@ -40,7 +40,7 @@ class ExcludeAttributePolicy {
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
 
-        if (attrName == STATE_ATTR_NAME) // promote is used to change state
+        if (attrName == STATE_ATTR_NAME) // use [promote] for state change
             return false
 
         return true

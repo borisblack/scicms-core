@@ -5,9 +5,14 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
+import ru.scisolutions.scicmscore.engine.data.handler.RelationResponseHandler
+import ru.scisolutions.scicmscore.engine.data.handler.ResponseHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
 import ru.scisolutions.scicmscore.engine.data.model.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
+import ru.scisolutions.scicmscore.engine.data.model.RelationResponse
+import ru.scisolutions.scicmscore.engine.data.model.Response
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.persistence.entity.Media
 
@@ -15,6 +20,8 @@ import ru.scisolutions.scicmscore.persistence.entity.Media
 class DataEngineImpl(
     private val userHandler: UserHandler,
     private val mediaHandler: MediaHandler,
+    private val responseHandler: ResponseHandler,
+    private val relationResponseHandler: RelationResponseHandler,
     private val customMethodHandler: CustomMethodHandler
 ) : DataEngine {
     override fun me(): UserInfo? = userHandler.me()
@@ -24,6 +31,12 @@ class DataEngineImpl(
     override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = mediaHandler.uploadMultiple(files)
 
     override fun download(media: Media): ByteArrayResource = mediaHandler.download(media)
+
+    override fun getResponse(itemName: String, id: String, fields: Set<String>): Response =
+        responseHandler.getResponse(itemName, id, fields)
+
+    override fun getRelationResponse(sourceItemRec: ItemRec, itemName: String, fields: Set<String>): RelationResponse =
+        relationResponseHandler.getRelationResponse(sourceItemRec, itemName, fields)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

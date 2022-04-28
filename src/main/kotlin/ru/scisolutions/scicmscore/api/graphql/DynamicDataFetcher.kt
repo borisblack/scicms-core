@@ -29,6 +29,8 @@ import ru.scisolutions.scicmscore.service.ItemService
 class DynamicDataFetcher(
     private val itemService: ItemService,
     private val dataEngine: DataEngine,
+    private val responseDataFetcher: ResponseDataFetcher,
+    private val relationResponseDataFetcher: RelationResponseDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
@@ -40,7 +42,7 @@ class DynamicDataFetcher(
                 addAttributeDataFetchers(codeRegistryBuilder, item)
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.name), ResponseDataFetcher())
+                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.name), responseDataFetcher)
                     .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.pluralName), ResponseCollectionDataFetcher())
             }
 
@@ -102,9 +104,9 @@ class DynamicDataFetcher(
         item.spec.attributes.asSequence()
             .filter { (_, attribute) -> attribute.type == Type.RELATION.value }
             .forEach { (attrName, attribute) ->
-                if (attribute.relType == RelType.ONE_TO_ONE.value || attribute.relType == RelType.ONE_TO_ONE.value) {
+                if (attribute.relType == RelType.ONE_TO_ONE.value || attribute.relType == RelType.MANY_TO_ONE.value) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), RelationResponseDataFetcher())
+                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseDataFetcher)
                 } else if (attribute.relType == RelType.ONE_TO_MANY.value || attribute.relType == RelType.MANY_TO_MANY.value) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), RelationResponseCollectionDataFetcher())

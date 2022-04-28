@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.scisolutions.scicmscore.persistence.AccessUtil
+import ru.scisolutions.scicmscore.util.AccessUtil
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.persistence.repository.MediaRepository
 import ru.scisolutions.scicmscore.service.MediaService

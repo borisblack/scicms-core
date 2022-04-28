@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.engine.data.handler.impl
+package ru.scisolutions.scicmscore.engine.data.mapper
 
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.persistence.entity.Media

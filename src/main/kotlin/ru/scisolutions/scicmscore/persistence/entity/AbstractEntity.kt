@@ -16,19 +16,20 @@ abstract class AbstractEntity {
     @Column(name = "config_id", nullable = false)
     var configId: String = id
 
-    var generation: Int? = null
+    @Column(nullable = false)
+    var generation: Int = 1
 
-    @Column(name = "major_rev")
-    var majorRev: String? = null
+    @Column(name = "major_rev", nullable = false)
+    var majorRev: String = "A"
 
     @Column(name = "minor_rev")
     var minorRev: String? = null
 
-    @Column(name = "last_version")
-    var lastVersion: Boolean? = null
+    @Column(name = "last_version", nullable = false)
+    var lastVersion: Boolean = true
 
-    @Column(name = "is_current")
-    var isCurrent: Boolean? = null
+    @Column(name = "is_current", nullable = false)
+    var isCurrent: Boolean = true
 
     var released: Boolean? = null
 

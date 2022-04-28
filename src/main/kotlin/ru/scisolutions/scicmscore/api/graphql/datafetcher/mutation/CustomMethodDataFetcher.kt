@@ -5,6 +5,7 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.GraphQLObjectType
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.CustomMethodResponse
@@ -17,24 +18,10 @@ class CustomMethodDataFetcher(
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<CustomMethodResponse> {
         val fieldName = dfe.field.name
         val fieldType = (dfe.fieldType as GraphQLObjectType).name
-        val fieldTypeMatcher = fieldTypePattern.matcher(fieldType)
-        val capitalizedItemName: String
-        val itemName: String
-        if (fieldTypeMatcher.matches()) {
-            capitalizedItemName = fieldTypeMatcher.group(1)
-            itemName = capitalizedItemName.decapitalize()
-        } else {
-            throw IllegalArgumentException("Field [$fieldName] has invalid type ($fieldType)")
-        }
-
+        val capitalizedItemName = DataFetcherUtil.parseItemName(fieldName, fieldType, fieldTypePattern)
+        val itemName = capitalizedItemName.decapitalize()
         val methodName = fieldName.substringBefore(capitalizedItemName)
-        val result = dataEngine.callCustomMethod(
-            itemName,
-            methodName,
-            CustomMethodInput(
-                data = dfe.arguments["data"]
-            )
-        )
+        val result = dataEngine.callCustomMethod(itemName, methodName, CustomMethodInput(dfe.arguments[DATA_ARG_NAME]))
 
         return DataFetcherResult.newResult<CustomMethodResponse>()
             .data(result)
@@ -42,6 +29,8 @@ class CustomMethodDataFetcher(
     }
 
     companion object {
+        private const val DATA_ARG_NAME = "data"
+
         private val fieldTypePattern = Pattern.compile("(\\w+)CustomMethodResponse")
     }
 }

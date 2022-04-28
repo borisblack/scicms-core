@@ -24,6 +24,8 @@ spec:
       columnName: generation
       displayName: Generation
       description: Generation
+      required: true
+      defaultValue: 1
       private: true
       minRange: 1
     majorRev:
@@ -31,6 +33,8 @@ spec:
       columnName: major_rev
       displayName: Major Rev
       description: Major Rev
+      required: true
+      defaultValue: A
       length: 50
     minorRev:
       type: string
@@ -43,12 +47,16 @@ spec:
       columnName: last_version
       displayName: Last Version
       description: Last Version
+      required: true
+      defaultValue: true
       private: true
     current:
       type: bool
       columnName: is_current
       displayName: Current
       description: Current
+      required: true
+      defaultValue: true
       private: true
     released:
       type: bool
