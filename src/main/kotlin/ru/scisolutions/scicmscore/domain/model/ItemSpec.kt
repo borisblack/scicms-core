@@ -1,8 +1,8 @@
 package ru.scisolutions.scicmscore.domain.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
-import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType as AttrRelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
 data class ItemSpec(
     val attributes: Map<String, Attribute> = emptyMap(),
@@ -12,7 +12,8 @@ data class ItemSpec(
     val columnNameToAttrNameMap: Map<String, String> =
         attributes
             .filter { (_, attribute) ->
-                attribute.type != Type.RELATION.value || (attribute.relType != RelType.ONE_TO_MANY.value && attribute.relType != RelType.MANY_TO_MANY.value)
+                val attrRelType = AttrRelType.nullableValueOf(attribute.relType)
+                AttrType.valueOf(attribute.type) != AttrType.relation || (attrRelType != AttrRelType.oneToMany && attrRelType != AttrRelType.manyToMany)
             }
             .map { (attrName, attribute) -> (attribute.columnName ?: attrName).lowercase() to attrName }
             .toMap()

@@ -19,11 +19,11 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponse
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponseDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseCollectionDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseDataFetcher
-import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
-import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
 @DgsComponent
 class DynamicDataFetcher(
@@ -102,12 +102,13 @@ class DynamicDataFetcher(
     private fun addAttributeDataFetchers(codeRegistryBuilder: GraphQLCodeRegistry.Builder, item: Item) {
         val capitalizedItemName = item.name.capitalize()
         item.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Type.RELATION.value }
+            .filter { (_, attribute) -> AttrType.valueOf(attribute.type) == AttrType.relation }
             .forEach { (attrName, attribute) ->
-                if (attribute.relType == RelType.ONE_TO_ONE.value || attribute.relType == RelType.MANY_TO_ONE.value) {
+                val attrRelType = RelType.nullableValueOf(attribute.relType)
+                if (attrRelType == RelType.oneToOne || attrRelType == RelType.manyToOne) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseDataFetcher)
-                } else if (attribute.relType == RelType.ONE_TO_MANY.value || attribute.relType == RelType.MANY_TO_MANY.value) {
+                } else if (attrRelType == RelType.oneToMany || attrRelType == RelType.manyToMany) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), RelationResponseCollectionDataFetcher())
                 }

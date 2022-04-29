@@ -6,10 +6,12 @@ import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.domain.model.Attribute
-import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType as AttrRelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
 class ItemObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
     override fun build(): ObjectTypeDefinition {
@@ -33,8 +35,9 @@ class ItemObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
             .name(attrName)
             .type(typeResolver.objectType(attrName, attribute))
 
-        if (attribute.type == Attribute.Type.RELATION.value &&
-            (attribute.relType == Attribute.RelType.ONE_TO_MANY.value || attribute.relType == Attribute.RelType.MANY_TO_MANY.value)
+        val attrRelType = AttrRelType.nullableValueOf(attribute.relType)
+        if (AttrType.valueOf(attribute.type) == AttrType.relation &&
+            (attrRelType == AttrRelType.oneToMany || attrRelType == AttrRelType.manyToMany)
         ) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 

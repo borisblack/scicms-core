@@ -1,31 +1,21 @@
 package ru.scisolutions.scicmscore.engine.schema
 
-import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.domain.model.ItemSpec
 
 class ItemSpecValidator {
     fun validate(spec: ItemSpec) {
         for ((attrName, attribute) in spec.attributes) {
-            if (attribute.type !in validAttributeTypes)
-                throw IllegalArgumentException("Attribute [$attrName] has invalid type (${attribute.type})")
+            val attrType = Type.valueOf(attribute.type)
 
-            if (attribute.relType != null && attribute.relType !in validAttributeRelTypes)
-                throw IllegalArgumentException("Attribute [$attrName] has invalid relation type (${attribute.relType})")
+            if (attribute.relType != null)
+                RelType.valueOf(attribute.relType)
 
-            if (attribute.type == Attribute.Type.RELATION.value) {
+            if (attrType == Type.relation) {
                 requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
                 requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
             }
         }
-    }
-
-    companion object {
-        val validAttributeTypes = Attribute.Type.values()
-            .map { it.value }
-            .toSet()
-
-        val validAttributeRelTypes = Attribute.RelType.values()
-            .map { it.value }
-            .toSet()
     }
 }
