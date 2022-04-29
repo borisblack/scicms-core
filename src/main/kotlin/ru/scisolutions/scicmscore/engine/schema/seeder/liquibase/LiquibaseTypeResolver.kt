@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.seeder.liquibase
 
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute.Type
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 
 class LiquibaseTypeResolver {

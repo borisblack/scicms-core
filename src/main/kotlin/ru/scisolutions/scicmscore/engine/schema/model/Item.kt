@@ -1,5 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.model
 
+import ru.scisolutions.scicmscore.domain.model.ItemSpec
+
 data class Item(
     override val coreVersion: String,
     val includeTemplates: Set<String>,

@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.util.AccessUtil
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.AccessUtil
 
 @Service
 class ItemRecDaoImpl(
@@ -43,7 +43,10 @@ class ItemRecDaoImpl(
         val idCol = DbColumn(table, ID_COL_NAME, null, null)
         val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
         val columns = fields
-            .map { DbColumn(table, item.spec.getAttribute(it).columnName, null, null) }
+            .map {
+                val attribute = item.spec.getAttribute(it)
+                DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
+            }
             .toTypedArray()
 
         return SelectQuery()

@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import ru.scisolutions.scicmscore.engine.schema.model.ItemSpec
+import ru.scisolutions.scicmscore.domain.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert

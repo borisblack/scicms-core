@@ -3,10 +3,10 @@ package ru.scisolutions.scicmscore.api.graphql
 import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute
 import graphql.language.Type as GraphQLType
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute.RelType as AttributeRelType
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute.Type as AttributeType
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType as AttributeRelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttributeType
 
 private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) NonNullType(this) else this
 

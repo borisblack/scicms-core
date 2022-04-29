@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema
 
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute
-import ru.scisolutions.scicmscore.engine.schema.model.ItemSpec
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.ItemSpec
 
 class ItemSpecValidator {
     fun validate(spec: ItemSpec) {

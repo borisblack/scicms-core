@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.schema.seeder.liquibase
 
 import liquibase.change.ColumnConfig
 import liquibase.change.ConstraintsConfig
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 
 class LiquibaseColumns {
@@ -10,21 +10,21 @@ class LiquibaseColumns {
         val list = mutableListOf<ColumnConfig>()
 
         // Process attributes
-        for ((_, attribute) in item.spec.attributes) {
+        for ((attrName, attribute) in item.spec.attributes) {
             // Skip list relation types
             if (attribute.type == Attribute.Type.RELATION.value &&
                 (attribute.relType == Attribute.RelType.ONE_TO_MANY.value || attribute.relType == Attribute.RelType.MANY_TO_MANY.value))
                 break
 
-            list.add(getColumn(item, attribute))
+            list.add(getColumn(item, attrName, attribute))
         }
 
         return list
     }
 
-    private fun getColumn(item: Item, attribute: Attribute) =
+    private fun getColumn(item: Item, attrName: String, attribute: Attribute) =
         ColumnConfig().apply {
-            this.name = attribute.columnName
+            this.name = attribute.columnName ?: attrName.lowercase()
             this.type = typeResolver.getType(item, attribute)
 
             if (attribute.defaultValue != null)

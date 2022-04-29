@@ -1,8 +1,8 @@
-package ru.scisolutions.scicmscore.engine.schema.model
+package ru.scisolutions.scicmscore.domain.model
 
 data class Attribute(
     val type: String,
-    val columnName: String? = null, // can be null for some relations
+    val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
     val enumSet: Set<String>? = null,
     val target: String? = null,
     val relType: String? = null,

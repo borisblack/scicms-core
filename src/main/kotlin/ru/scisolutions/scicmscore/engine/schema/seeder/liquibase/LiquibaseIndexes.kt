@@ -2,8 +2,8 @@ package ru.scisolutions.scicmscore.engine.schema.seeder.liquibase
 
 import liquibase.change.AddColumnConfig
 import liquibase.change.core.CreateIndexChange
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute
-import ru.scisolutions.scicmscore.engine.schema.model.Index
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Index
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 
 class LiquibaseIndexes(

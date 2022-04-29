@@ -20,8 +20,8 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponse
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseCollectionDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseDataFetcher
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute.RelType
-import ru.scisolutions.scicmscore.engine.schema.model.Attribute.Type
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
