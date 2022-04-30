@@ -55,7 +55,7 @@ class ItemRecDaoImpl(
             .addCondition(
                 InCondition(
                     permissionIdCol,
-                    CustomSql(AccessUtil.getPermissionIdsStatement(AccessUtil.READ_MASK))
+                    CustomSql(AccessUtil.getPermissionIdsForReadStatement())
                 )
             )
             .validate().toString()

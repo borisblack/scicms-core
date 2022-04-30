@@ -12,15 +12,13 @@ class LiquibaseColumns {
         val list = mutableListOf<ColumnConfig>()
 
         // Process attributes
-        for ((attrName, attribute) in item.spec.attributes) {
-            // Skip list relation types
-            val attrRelType = RelType.nullableValueOf(attribute.relType)
-            if (Type.valueOf(attribute.type) == Type.relation &&
-                (attrRelType == RelType.oneToMany || attrRelType == RelType.manyToMany))
-                break
-
-            list.add(getColumn(item, attrName, attribute))
-        }
+        item.spec.attributes.asSequence()
+            .filter { (_, attribute) ->
+                attribute.type != Type.relation || (attribute.relType != RelType.oneToMany && attribute.relType != RelType.manyToMany)
+            }
+            .forEach { (attrName, attribute) ->
+                list.add(getColumn(item, attrName, attribute))
+            }
 
         return list
     }

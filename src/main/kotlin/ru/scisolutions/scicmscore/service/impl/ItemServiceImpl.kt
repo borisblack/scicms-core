@@ -6,16 +6,21 @@ import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.repository.ItemRepository
 import ru.scisolutions.scicmscore.service.ItemService
+import javax.persistence.EntityManager
 
 @Service
 @Repository
 @Transactional
-class ItemServiceImpl(private val itemRepository: ItemRepository) : ItemService {
+class ItemServiceImpl(
+    private val em: EntityManager,
+    private val itemRepository: ItemRepository
+) : ItemService {
     override val items: MutableMap<String, Item> by lazy { fetchAll() }
 
-    @Transactional(readOnly = true)
-    fun fetchAll(): MutableMap<String, Item> {
+    private fun fetchAll(): MutableMap<String, Item> {
         val itemList = itemRepository.findAll()
+        itemList.forEach { em.detach(it) }
+
         return itemList.associateBy { it.name }.toMutableMap()
     }
 

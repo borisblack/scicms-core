@@ -22,7 +22,7 @@ metadata:
 spec:
   attributes:
     name:
-      type: string  # uuid, string, text, enum, sequence, email, password, int, float, decimal, date, time, datetime, timestamp, bool, array, json, media, relation
+      type: string  # uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation
       columnName: name # optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
       displayName: Name # optional (name by default)
       description: Name # optional (null by default)
@@ -35,8 +35,8 @@ spec:
       length: 50 # optional (null by default) - string
 #      precision: # optional (null by default) - decimal
 #      scale: # optional (null by default) - decimal
-#      minRange: # optional (null by default) - int, float, decimal
-#      maxRange: # optional (null by default) - int, float, decimal
+#      minRange: # optional (null by default) - int, long, float, double, decimal
+#      maxRange: # optional (null by default) - int, long, float, double, decimal
     displayName:
       type: string
       columnName: display_name

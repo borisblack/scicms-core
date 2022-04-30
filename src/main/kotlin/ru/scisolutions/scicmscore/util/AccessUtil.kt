@@ -26,6 +26,16 @@ object AccessUtil {
     val DELETE_MASK = setOf(8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30 ,31)
     val ADMINISTRATION_MASK = setOf(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31)
 
+    fun getPermissionIdsForReadStatement() = getPermissionIdsStatement(READ_MASK)
+
+    fun getPermissionIdsForWriteStatement() = getPermissionIdsStatement(WRITE_MASK)
+
+    fun getPermissionIdsForCreateStatement() = getPermissionIdsStatement(CREATE_MASK)
+
+    fun getPermissionIdsForDeleteStatement() = getPermissionIdsStatement(DELETE_MASK)
+
+    fun getPermissionIdsForAdministrationStatement() = getPermissionIdsStatement(ADMINISTRATION_MASK)
+
     fun getPermissionIdsStatement(mask: Set<Int>): String {
         val authentication = SecurityContextHolder.getContext().authentication
         val username = authentication.name

@@ -9,8 +9,8 @@ import graphql.language.TypeName
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.domain.model.Attribute.RelType as AttrRelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
 class ItemObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
@@ -35,10 +35,7 @@ class ItemObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
             .name(attrName)
             .type(typeResolver.objectType(attrName, attribute))
 
-        val attrRelType = AttrRelType.nullableValueOf(attribute.relType)
-        if (AttrType.valueOf(attribute.type) == AttrType.relation &&
-            (attrRelType == AttrRelType.oneToMany || attrRelType == AttrRelType.manyToMany)
-        ) {
+        if (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
             val capitalizedTargetItemName = attribute.target.substringBefore("(").capitalize()
