@@ -51,10 +51,10 @@
       },
       "product": {
         "type": "relation",
-        "columnName": "product_id",
-        "target": "product",
         "relType": "manyToOne",
+        "target": "product",
         "inversedBy": "parts",
+        "columnName": "product_id",
         "displayName": "Product",
         "description": "Product"
       },
@@ -127,10 +127,10 @@
       },
       "startSheet": {
         "type": "relation",
-        "columnName": "start_sheet_id",
-        "target": "startSheet",
         "relType": "manyToOne",
+        "target": "startSheet",
         "inversedBy": "parts",
+        "columnName": "start_sheet_id",
         "displayName": "Start Sheet",
         "description": "Start Sheet"
       }

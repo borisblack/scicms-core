@@ -21,16 +21,16 @@ spec:
   attributes:
     source:
       type: relation
-      columnName: source_id
-      target: part
       relType: manyToOne
+      target: part
+      columnName: source_id
       displayName: Source Part
       description: Source Part
     target:
       type: relation
-      columnName: target_id
-      target: changeNotice
       relType: manyToOne
+      target: changeNotice
+      columnName: target_id
       displayName: Target Change Notice
       description: Target Change Notice
   indexes:

@@ -79,9 +79,9 @@ spec:
       length: 50
     lifecycle:
       type: relation
-      columnName: lifecycle_id
-      target: lifecycle
       relType: manyToOne
+      target: lifecycle
+      columnName: lifecycle_id
       displayName: Lifecycle
       description: Lifecycle
     state:
@@ -92,9 +92,9 @@ spec:
       length: 50
     permission:
       type: relation
-      columnName: permission_id
-      target: permission
       relType: manyToOne
+      target: permission
+      columnName: permission_id
       displayName: Permission
       description: Permission
     createdAt:
@@ -105,9 +105,9 @@ spec:
       required: true
     createdBy:
       type: relation
-      columnName: created_by_id
-      target: user
       relType: manyToOne
+      target: user
+      columnName: created_by_id
       displayName: Created By
       description: Created By
       required: true
@@ -118,30 +118,16 @@ spec:
       description: Updated At
     updatedBy:
       type: relation
-      columnName: updated_by_id
-      target: user
       relType: manyToOne
+      target: user
+      columnName: updated_by_id
       displayName: Updated By
       description: Updated By
-    ownedBy:
-      type: relation
-      columnName: owned_by_id
-      target: user
-      relType: manyToOne
-      displayName: Owned By
-      description: Owned By
-    managedBy:
-      type: relation
-      columnName: managed_by_id
-      target: user
-      relType: manyToOne
-      displayName: Managed By
-      description: Managed By
     lockedBy:
       type: relation
-      columnName: locked_by_id
-      target: user
       relType: manyToOne
+      target: user
+      columnName: locked_by_id
       displayName: Locked By
       description: Locked By
 

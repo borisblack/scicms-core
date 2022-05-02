@@ -1,16 +1,17 @@
 package ru.scisolutions.scicmscore.domain.model
 
 import java.util.Objects
+import java.util.regex.Pattern
 
 class Attribute(
     val type: Type,
-    val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
-    val enumSet: Set<String>? = null,
-    val target: String? = null,
     val relType: RelType? = null,
-    val relItem: String? = null,
+    val target: String? = null, // by default, id is used as the key attribute for target. But for oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
+    val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
     val mappedBy: String? = null,
     val inversedBy: String? = null,
+    val enumSet: Set<String>? = null,
+    val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
     val displayName: String,
     val description: String? = null,
     val pattern: String? = null, // for string type
@@ -30,6 +31,26 @@ class Attribute(
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
 
+    fun extractTarget(): String {
+        requireNotNull(target) { "Target is null" }
+
+        val matcher = targetPattern.matcher(target)
+        if (!matcher.matches())
+            throw IllegalArgumentException("Target [$target] is invalid")
+
+        return matcher.group(1)
+    }
+
+    fun extractTargetKeyAttrName(): String {
+        requireNotNull(target) { "Target is null" }
+
+        val matcher = targetPattern.matcher(target)
+        if (!matcher.matches())
+            throw IllegalArgumentException("Target [$target] is invalid")
+
+        return matcher.group(2) ?: ID_ATTR_NAME
+    }
+
     override fun hashCode(): Int =
         Objects.hash(
             type.name,
@@ -37,7 +58,7 @@ class Attribute(
             enumSet,
             target,
             relType?.name,
-            relItem,
+            intermediate,
             mappedBy,
             inversedBy,
             displayName,
@@ -70,7 +91,7 @@ class Attribute(
             enumSet == other.enumSet &&
             target == other.target &&
             relType == other.relType &&
-            relItem == other.relItem &&
+            intermediate == other.intermediate &&
             mappedBy == other.mappedBy &&
             inversedBy == other.inversedBy &&
             displayName == other.displayName &&
@@ -87,5 +108,11 @@ class Attribute(
             scale == other.scale &&
             minRange == other.minRange &&
             maxRange == other.maxRange
+    }
+
+    companion object {
+        private const val ID_ATTR_NAME = "id"
+
+        private val targetPattern = Pattern.compile("^(\\w+)(?:\\((\\w+)\\))?$")
     }
 }

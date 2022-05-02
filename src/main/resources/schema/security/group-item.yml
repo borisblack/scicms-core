@@ -22,15 +22,15 @@ spec:
       length: 50
     roles:
       type: relation
-      target: groupRole
       relType: oneToMany
+      target: groupRole
       mappedBy: group
       displayName: Roles
       description: Roles
     members:
       type: relation
-      target: groupMember
       relType: oneToMany
+      target: groupMember
       mappedBy: group
       displayName: Members
       description: Members

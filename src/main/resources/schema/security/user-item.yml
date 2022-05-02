@@ -33,8 +33,8 @@ spec:
       description: Enabled
     roles:
       type: relation
-      target: role
       relType: oneToMany
+      target: role
       mappedBy: user
       displayName: Roles
       description: Roles

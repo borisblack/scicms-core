@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.engine.data.model.RelationResponse
+import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 
 @Component
 class RelationResponseDataFetcher(
@@ -16,7 +16,7 @@ class RelationResponseDataFetcher(
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
         val fieldName = dfe.field.name
         val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
-        val capitalizedItemName = DataFetcherUtil.extractItemNameFromRelationResponseFieldType(fieldType)
+        val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromRelationResponseFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
         val sourceItemRec: ItemRec = dfe.getSource()
         val dataField = dfe.selectionSet.fields[0]

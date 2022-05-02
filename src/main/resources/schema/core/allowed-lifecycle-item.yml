@@ -18,17 +18,17 @@ spec:
   attributes:
     source:
       type: relation
-      columnName: source_id
-      target: item
       relType: manyToOne
+      target: item
       inversedBy: allowedLifecycles
+      columnName: source_id
       displayName: Source Item
       description: Source Item
     target:
       type: relation
-      columnName: target_id
-      target: lifecycle
       relType: manyToOne
+      target: lifecycle
+      columnName: target_id
       displayName: Target Lifecycle
       description: Target Lifecycle
     default:

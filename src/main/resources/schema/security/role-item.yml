@@ -15,10 +15,10 @@ spec:
   attributes:
     user:
       type: relation
-      columnName: username
-      target: user(username)
       relType: manyToOne
+      target: user(username)
       inversedBy: roles
+      columnName: username
       displayName: User
       description: User
     role:

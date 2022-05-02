@@ -20,21 +20,21 @@ object AccessUtil {
                 "(sid.principal = 1 AND sid.name = :$USERNAME_PARAM_NAME) OR (sid.principal = 0 AND sid.name IN :$ROLES_PARAM_NAME)" +
             ")"
 
-    val READ_MASK = setOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31)
-    val WRITE_MASK = setOf(2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23, 26, 27, 30, 31)
-    val CREATE_MASK = setOf(4, 5, 6, 7, 12, 13, 14, 15, 20, 21, 22, 23, 28, 29, 30, 31)
-    val DELETE_MASK = setOf(8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30 ,31)
-    val ADMINISTRATION_MASK = setOf(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31)
+    val readMask = setOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31)
+    val writeMask = setOf(2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23, 26, 27, 30, 31)
+    val createMask = setOf(4, 5, 6, 7, 12, 13, 14, 15, 20, 21, 22, 23, 28, 29, 30, 31)
+    val deleteMask = setOf(8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30 ,31)
+    val administrationMask = setOf(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31)
 
-    fun getPermissionIdsForReadStatement() = getPermissionIdsStatement(READ_MASK)
+    fun getPermissionIdsForReadStatement() = getPermissionIdsStatement(readMask)
 
-    fun getPermissionIdsForWriteStatement() = getPermissionIdsStatement(WRITE_MASK)
+    fun getPermissionIdsForWriteStatement() = getPermissionIdsStatement(writeMask)
 
-    fun getPermissionIdsForCreateStatement() = getPermissionIdsStatement(CREATE_MASK)
+    fun getPermissionIdsForCreateStatement() = getPermissionIdsStatement(createMask)
 
-    fun getPermissionIdsForDeleteStatement() = getPermissionIdsStatement(DELETE_MASK)
+    fun getPermissionIdsForDeleteStatement() = getPermissionIdsStatement(deleteMask)
 
-    fun getPermissionIdsForAdministrationStatement() = getPermissionIdsStatement(ADMINISTRATION_MASK)
+    fun getPermissionIdsForAdministrationStatement() = getPermissionIdsStatement(administrationMask)
 
     fun getPermissionIdsStatement(mask: Set<Int>): String {
         val authentication = SecurityContextHolder.getContext().authentication

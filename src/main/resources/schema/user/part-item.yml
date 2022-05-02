@@ -43,10 +43,10 @@ spec:
       length: 250
     product:
       type: relation
-      columnName: product_id
-      target: product
       relType: manyToOne
+      target: product
       inversedBy: parts
+      columnName: product_id
       displayName: Product
       description: Product
     partType:
@@ -107,26 +107,40 @@ spec:
       columnName: superseded_date
       displayName: Superseded Date
       description: Superseded Date
+    ownedBy:
+      type: relation
+      relType: manyToOne
+      target: user
+      columnName: owned_by_id
+      displayName: Owned By
+      description: Owned By
+    managedBy:
+      type: relation
+      relType: manyToOne
+      target: user
+      columnName: managed_by_id
+      displayName: Managed By
+      description: Managed By
     startSheet:
       type: relation
-      columnName: start_sheet_id
-      target: startSheet
       relType: manyToOne
+      target: startSheet
       inversedBy: parts
+      columnName: start_sheet_id
       displayName: Start Sheet
       description: Start Sheet
     changeNotices:
       type: relation
-      target: changeNotice
       relType: manyToMany
-      relItem: partChange
+      target: changeNotice
+      intermediate: partChange
       inversedBy: parts
       displayName: Change Notices
       description: Change Notices
     partBOM:
       type: relation
-      target: partBOM
       relType: oneToMany
+      target: partBOM
       mappedBy: source
       displayName: Part BOM
       description: Part BOM

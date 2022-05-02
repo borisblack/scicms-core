@@ -31,8 +31,8 @@ spec:
       maxRange: 1
     access:
       type: relation
-      target: access
       relType: oneToMany
+      target: access
       mappedBy: target
       displayName: Access
       description: Access

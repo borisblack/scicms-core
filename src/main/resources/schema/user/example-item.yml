@@ -3,7 +3,7 @@ kind: Item
 includeTemplates:
   - defaultItemTemplate
 metadata:
-  name: example
+  name: example # item name must start with a lowercase character!
   dataSource: main # optional ('main' by default)
   tableName: examples # optional (pluralName in lowercase by default). Prefixes core_ and sec_ are not allowed
   displayName: Example # optional (name by default)
@@ -51,12 +51,12 @@ spec:
       length: 250
     product:
       type: relation
-      columnName: product_id
-      target: product
       relType: manyToOne # oneToOne, oneToMany, manyToOne, manyToMany
-#      relItem: # for manyToMany association
+      target: product # by default, id is used as the key attribute for target. But for oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
+#      intermediate: # intermediate item is used for manyToMany association and includes source and target attributes
 #      mappedBy: # in bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key
       inversedBy: parts
+      columnName: product_id
       displayName: Product
       description: Product
     partType:
@@ -117,10 +117,10 @@ spec:
       description: Superseded Date
     startSheet:
       type: relation
-      columnName: start_sheet_id
-      target: startSheet
       relType: manyToOne
+      target: startSheet
       inversedBy: parts
+      columnName: start_sheet_id
       displayName: Start Sheet
       description: Start Sheet
   indexes:

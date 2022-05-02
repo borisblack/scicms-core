@@ -26,12 +26,13 @@ class TypeResolver {
             AttrType.time -> TypeNames.TIME.nonNull(attribute.required)
             AttrType.datetime, AttrType.timestamp -> TypeNames.DATETIME.nonNull(attribute.required)
             AttrType.bool -> TypeNames.BOOLEAN.nonNull(attribute.required)
-            AttrType.array, AttrType.json, AttrType.media -> TypeNames.STRING.nonNull(attribute.required)
+            AttrType.array, AttrType.json -> TypeNames.JSON.nonNull(attribute.required)
+            AttrType.media -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.relation -> {
                 requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
                 requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
-                val capitalizedTargetItemName = attribute.target.substringBefore("(").capitalize()
+                val capitalizedTargetItemName = attribute.extractTarget().capitalize()
                 if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
@@ -57,11 +58,12 @@ class TypeResolver {
             AttrType.json,
             AttrType.media -> TypeNames.STRING_FILTER_INPUT
             AttrType.relation -> {
-                requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
                 requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
+                requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
-                val capitalizedTargetItemName = attribute.target.substringBefore("(").capitalize()
+                val capitalizedTargetItemName = attribute.extractTarget().capitalize()
                 TypeName("${capitalizedTargetItemName}FiltersInput")
+                // TypeNames.ID_FILTER_INPUT
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }

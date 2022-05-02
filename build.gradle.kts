@@ -24,7 +24,6 @@ repositories {
 
 object Constants {
     const val jacksonVersion = "2.13.2"
-    const val jdbi3Version = "3.28.0"
 }
 
 dependencies {
@@ -42,8 +41,6 @@ dependencies {
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.google.guava:guava:31.1-jre")
-    implementation("org.jdbi", "jdbi3-core", Constants.jdbi3Version)
-    implementation("org.jdbi", "jdbi3-kotlin", Constants.jdbi3Version)
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 

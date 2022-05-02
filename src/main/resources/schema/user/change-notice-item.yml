@@ -50,9 +50,9 @@ spec:
       description: Release Date
     parts:
       type: relation
-      target: part
       relType: manyToMany
-      relItem: partChange
+      target: part
+      intermediate: partChange
       mappedBy: changeNotices
       displayName: Parts
       description: Parts

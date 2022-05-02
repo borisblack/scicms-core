@@ -15,10 +15,10 @@ spec:
   attributes:
     group:
       type: relation
-      columnName: group_id
-      target: group
       relType: manyToOne
+      target: group
       inversedBy: roles
+      columnName: group_id
       displayName: Group
       description: Group
     role:

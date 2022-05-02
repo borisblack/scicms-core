@@ -40,8 +40,8 @@ spec:
       length: 250
     parts:
       type: relation
-      target: part
       relType: oneToMany
+      target: part
       mappedBy: product
       displayName: Parts
       description: Parts

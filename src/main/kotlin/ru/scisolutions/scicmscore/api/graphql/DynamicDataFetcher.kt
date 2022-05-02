@@ -31,6 +31,7 @@ class DynamicDataFetcher(
     private val dataEngine: DataEngine,
     private val responseDataFetcher: ResponseDataFetcher,
     private val relationResponseDataFetcher: RelationResponseDataFetcher,
+    private val responseCollectionDataFetcher: ResponseCollectionDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
@@ -43,7 +44,7 @@ class DynamicDataFetcher(
 
                 codeRegistryBuilder
                     .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.name), responseDataFetcher)
-                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.pluralName), ResponseCollectionDataFetcher())
+                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.pluralName), responseCollectionDataFetcher)
             }
 
         // Mutation

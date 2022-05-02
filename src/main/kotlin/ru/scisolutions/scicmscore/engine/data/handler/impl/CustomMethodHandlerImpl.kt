@@ -5,8 +5,8 @@ import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
-import ru.scisolutions.scicmscore.engine.data.model.CustomMethodInput
-import ru.scisolutions.scicmscore.engine.data.model.CustomMethodResponse
+import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.service.ItemService
 import java.lang.reflect.Modifier
 
@@ -19,7 +19,7 @@ class CustomMethodHandlerImpl(
     private val instances = mutableMapOf<Class<*>, Any>()
 
     override fun getCustomMethods(itemName: String): Set<String> {
-        val item = itemService.getItem(itemName)
+        val item = itemService.getItemOrThrow(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation")
@@ -55,7 +55,7 @@ class CustomMethodHandlerImpl(
     }
 
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
-        val item = itemService.getItem(itemName)
+        val item = itemService.getItemOrThrow(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation")

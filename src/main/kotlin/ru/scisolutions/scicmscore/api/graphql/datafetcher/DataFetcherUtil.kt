@@ -7,8 +7,9 @@ import graphql.schema.GraphQLType
 import java.util.regex.Pattern
 
 object DataFetcherUtil {
-    private val RELATION_RESPONSE_FIELD_TYPE_PATTERN = Pattern.compile("(\\w+)RelationResponse")
-    private val CUSTOM_METHOD_RESPONSE_FIELD_TYPE_PATTERN = Pattern.compile("(\\w+)CustomMethodResponse")
+    private val relationResponseFieldTypePattern = Pattern.compile("^(\\w+)RelationResponse$")
+    private val responseCollectionFieldTypePattern = Pattern.compile("^(\\w+)ResponseCollection$")
+    private val customMethodResponseFieldTypePattern = Pattern.compile("^(\\w+)CustomMethodResponse$")
 
     fun parseFieldType(fieldType: GraphQLType): String =
         when (fieldType) {
@@ -17,9 +18,11 @@ object DataFetcherUtil {
             else -> (fieldType as GraphQLNamedType).name
         }
 
-    fun extractItemNameFromRelationResponseFieldType(fieldType: String) = getFirstMatch(RELATION_RESPONSE_FIELD_TYPE_PATTERN, fieldType)
+    fun extractCapitalizedItemNameFromRelationResponseFieldType(fieldType: String) = getFirstMatch(relationResponseFieldTypePattern, fieldType)
 
-    fun extractItemNameFromCustomMethodResponseFieldType(fieldType: String) = getFirstMatch(CUSTOM_METHOD_RESPONSE_FIELD_TYPE_PATTERN, fieldType)
+    fun extractCapitalizedItemNameFromResponseCollectionFieldType(fieldType: String) = getFirstMatch(responseCollectionFieldTypePattern, fieldType)
+
+    fun extractCapitalizedItemNameFromCustomMethodResponseFieldType(fieldType: String) = getFirstMatch(customMethodResponseFieldTypePattern, fieldType)
 
     private fun getFirstMatch(pattern: Pattern, input: String): String {
         val matcher = pattern.matcher(input)

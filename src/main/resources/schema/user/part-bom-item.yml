@@ -21,17 +21,17 @@ spec:
   attributes:
     source:
       type: relation
-      columnName: source_id
-      target: part
       relType: manyToOne
+      target: part
       inversedBy: partBOM
+      columnName: source_id
       displayName: Source Part
       description: Source Part
     target:
       type: relation
-      columnName: target_id
-      target: part
       relType: manyToOne
+      target: part
+      columnName: target_id
       displayName: Target Part
       description: Target Part
     quantity:

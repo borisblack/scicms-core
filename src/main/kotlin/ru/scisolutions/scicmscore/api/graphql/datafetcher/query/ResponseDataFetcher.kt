@@ -5,7 +5,7 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.Response
+import ru.scisolutions.scicmscore.engine.data.model.response.Response
 
 @Component
 class ResponseDataFetcher(

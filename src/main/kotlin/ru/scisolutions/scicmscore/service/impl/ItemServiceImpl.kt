@@ -24,7 +24,7 @@ class ItemServiceImpl(
         return itemList.associateBy { it.name }.toMutableMap()
     }
 
-    override fun getItem(itemName: String): Item =
+    override fun getItemOrThrow(itemName: String): Item =
         items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
 
     override fun save(item: Item): Item {

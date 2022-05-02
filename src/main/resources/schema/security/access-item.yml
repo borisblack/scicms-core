@@ -24,18 +24,18 @@ spec:
       length: 50
     source:
       type: relation
-      columnName: source_id
-      target: permission
       relType: manyToOne
+      target: permission
       inversedBy: access
+      columnName: source_id
       displayName: Source Permission
       description: Source Permission
     target:
       type: relation
-      columnName: target_id
-      target: identity
       relType: manyToOne
+      target: identity
       inversedBy: access
+      columnName: target_id
       displayName: Target Identity
       description: Target Identity
   indexes:

@@ -38,7 +38,7 @@ class ItemObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
         if (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
-            val capitalizedTargetItemName = attribute.target.substringBefore("(").capitalize()
+            val capitalizedTargetItemName = attribute.extractTarget().capitalize()
 
             builder
                 .inputValueDefinition(

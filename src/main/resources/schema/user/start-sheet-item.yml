@@ -34,8 +34,8 @@ spec:
       length: 50
     parts:
       type: relation
-      target: part
       relType: oneToMany
+      target: part
       mappedBy: startSheet
       displayName: Parts
       description: Parts

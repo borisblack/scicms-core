@@ -46,8 +46,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
@@ -91,8 +89,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
@@ -159,8 +155,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
@@ -227,8 +221,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
@@ -288,8 +280,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
@@ -340,8 +330,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
@@ -392,8 +380,6 @@
             </column>
             <column name="updated_at" type="datetime"/>
             <column name="updated_by_id" type="varchar(36)"/>
-            <column name="owned_by_id" type="varchar(36)"/>
-            <column name="managed_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 

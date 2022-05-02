@@ -6,8 +6,8 @@ import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.CustomMethodInput
-import ru.scisolutions.scicmscore.engine.data.model.CustomMethodResponse
+import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
 
 @Component
 class CustomMethodDataFetcher(
@@ -16,7 +16,7 @@ class CustomMethodDataFetcher(
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<CustomMethodResponse> {
         val fieldName = dfe.field.name
         val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
-        val capitalizedItemName = DataFetcherUtil.extractItemNameFromCustomMethodResponseFieldType(fieldType)
+        val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromCustomMethodResponseFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
         val methodName = fieldName.substringBefore(capitalizedItemName)
         val result = dataEngine.callCustomMethod(itemName, methodName, CustomMethodInput(dfe.arguments[DATA_ARG_NAME]))

@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation
 import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
-import ru.scisolutions.scicmscore.engine.data.model.Response
+import ru.scisolutions.scicmscore.engine.data.model.response.Response
 
 class CreateLocalizationDataFetcher : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {

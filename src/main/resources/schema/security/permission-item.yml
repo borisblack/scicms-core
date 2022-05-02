@@ -23,8 +23,8 @@ spec:
       length: 50
     access:
       type: relation
-      target: access
       relType: oneToMany
+      target: access
       mappedBy: target
       displayName: Access
       description: Access

@@ -55,12 +55,6 @@ abstract class AbstractEntity {
     @Column(name = "updated_by_id")
     var updatedById: String? = null
 
-    @Column(name = "owned_by_id")
-    var ownedById: String? = null
-
-    @Column(name = "managed_by_id")
-    var managedById: String? = null
-
     @Column(name = "locked_by_id")
     var lockedById: String? = null
 }

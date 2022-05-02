@@ -20,7 +20,7 @@ class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaServ
     @Transactional(readOnly = true)
     override fun findByIdForRead(id: String): Media? {
         val authentication = SecurityContextHolder.getContext().authentication
-        return mediaRepository.findByIdWithACL(id, AccessUtil.READ_MASK, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+        return mediaRepository.findByIdWithACL(id, AccessUtil.readMask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 
     @Transactional(readOnly = true)

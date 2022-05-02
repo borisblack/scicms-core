@@ -15,17 +15,17 @@ spec:
   attributes:
     group:
       type: relation
-      columnName: group_id
-      target: group
       relType: manyToOne
+      target: group
       inversedBy: roles
+      columnName: group_id
       displayName: Group
       description: Group
     user:
       type: relation
-      columnName: username
-      target: user(username)
       relType: manyToOne
+      target: user(username)
+      columnName: username
       displayName: User
       description: User
   indexes:

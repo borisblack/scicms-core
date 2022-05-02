@@ -91,9 +91,9 @@ spec:
       description: Manual Versioning
     revisionPolicy:
       type: relation
-      columnName: revision_policy_id
-      target: revisionPolicy
       relType: manyToOne
+      target: revisionPolicy
+      columnName: revision_policy_id
       displayName: Revision Policy
       description: Revision Policy
     notLockable:
@@ -127,15 +127,15 @@ spec:
       length: 50
     allowedLifecycles:
       type: relation
-      target: allowedLifecycle
       relType: oneToMany
+      target: allowedLifecycle
       mappedBy: source
       displayName: Allowed Lifecycles
       description: Allowed Lifecycles
     allowedPermissions:
       type: relation
-      target: allowedPermission
       relType: oneToMany
+      target: allowedPermission
       mappedBy: source
       displayName: Allowed Permissions
       description: Allowed Permissions

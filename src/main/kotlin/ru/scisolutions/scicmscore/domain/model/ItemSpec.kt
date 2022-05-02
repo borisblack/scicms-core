@@ -17,7 +17,7 @@ data class ItemSpec(
             .map { (attrName, attribute) -> (attribute.columnName ?: attrName).lowercase() to attrName }
             .toMap()
 
-    fun getAttribute(attrName: String): Attribute =
+    fun getAttributeOrThrow(attrName: String): Attribute =
         attributes[attrName] ?: throw IllegalArgumentException("Attribute [$attrName] not found")
 
     fun merge(other: ItemSpec) = ItemSpec(
