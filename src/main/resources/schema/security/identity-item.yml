@@ -22,13 +22,11 @@ spec:
       unique: true
       length: 50
     principal:
-      type: int
+      type: bool
       columnName: principal
       displayName: Principal
       description: Principal
       required: true
-      minRange: 0
-      maxRange: 1
     access:
       type: relation
       relType: oneToMany

@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import org.hibernate.annotations.Type
 import ru.scisolutions.scicmscore.domain.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
 import javax.persistence.Column
@@ -34,25 +35,31 @@ class Item(
     @Column(name = "icon")
     var icon: String? = null,
 
-    @Column(name = "core")
+    @Column(name = "core", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var core: Boolean = false,
 
-    @Column(name = "perform_ddl")
+    @Column(name = "perform_ddl", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var performDdl: Boolean = false,
 
-    @Column(name = "versioned")
+    @Column(name = "versioned", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var versioned: Boolean = false,
 
-    @Column(name = "manual_versioning")
+    @Column(name = "manual_versioning", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var manualVersioning: Boolean = false,
 
     @Column(name = "revision_policy_id")
     var revisionPolicyId: String? = null,
 
-    @Column(name = "not_lockable")
+    @Column(name = "not_lockable", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var notLockable: Boolean = false,
 
-    @Column(name = "localized")
+    @Column(name = "localized", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var localized: Boolean = false,
 
     @Column(name = "implementation")
@@ -73,6 +80,8 @@ class Item(
     // )
     // val allowedPermissions: MutableSet<Permission> = mutableSetOf()
 ) : AbstractEntity() {
+    override fun toString(): String = "Item(name=[$name])"
+
     companion object {
         const val DEFAULT_DATASOURCE = "main"
     }

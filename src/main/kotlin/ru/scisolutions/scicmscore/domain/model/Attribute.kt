@@ -6,7 +6,7 @@ import java.util.regex.Pattern
 class Attribute(
     val type: Type,
     val relType: RelType? = null,
-    val target: String? = null, // by default, id is used as the key attribute for target. But for oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
+    val target: String? = null, // by default, id is used as the key attribute for target. But for unidirectional oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
     val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
     val mappedBy: String? = null,
     val inversedBy: String? = null,

@@ -11,7 +11,7 @@ metadata:
   pluralName: examples
   description: Examples # optional (null by default)
   icon: fas fa-swatchbook # optional (null by default)
-  core: true # optional (false by default)
+  core: false # optional (false by default)
   performDdl: false # optional (true by default)
   versioned: false # optional (false by default)
   manualVersioning: false # optional (false by default)
@@ -52,7 +52,7 @@ spec:
     product:
       type: relation
       relType: manyToOne # oneToOne, oneToMany, manyToOne, manyToMany
-      target: product # by default, id is used as the key attribute for target. But for oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
+      target: product # by default, id is used as the key attribute for target. But for unidirectional oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
 #      intermediate: # intermediate item is used for manyToMany association and includes source and target attributes
 #      mappedBy: # in bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key
       inversedBy: parts

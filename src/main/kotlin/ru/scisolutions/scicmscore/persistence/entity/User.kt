@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import org.hibernate.annotations.Type
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -13,7 +14,8 @@ class User(
    // @Column(name = "passwd", nullable = false)
    // val password: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var enabled: Boolean
 ) : AbstractEntity() {
     companion object {

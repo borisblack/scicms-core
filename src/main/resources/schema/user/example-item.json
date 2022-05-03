@@ -13,7 +13,7 @@
     "pluralName": "examples",
     "description": "Examples",
     "icon": "fas fa-swatchbook",
-    "core": true,
+    "core": false,
     "performDdl": false,
     "versioned": false,
     "manualVersioning": false,

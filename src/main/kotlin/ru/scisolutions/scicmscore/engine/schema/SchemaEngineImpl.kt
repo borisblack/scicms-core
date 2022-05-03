@@ -3,11 +3,19 @@ package ru.scisolutions.scicmscore.engine.schema
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToManyRelHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToOneRelHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.OneToManyRelHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.OneToOneRelHandler
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.model.ItemTemplate
+import ru.scisolutions.scicmscore.engine.schema.model.relation.Relation
 import ru.scisolutions.scicmscore.engine.schema.reader.ModelsReader
 import ru.scisolutions.scicmscore.engine.schema.seeder.SchemaSeeder
+import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class SchemaEngineImpl(
@@ -17,6 +25,10 @@ class SchemaEngineImpl(
     seedOnInit: Boolean,
     modelsReader: ModelsReader,
     schemaSeeder: SchemaSeeder,
+    private val oneToOneRelHandler: OneToOneRelHandler,
+    private val manyToOneRelHandler: ManyToOneRelHandler,
+    private val oneToManyRelHandler: OneToManyRelHandler,
+    private val manyToManyRelHandler: ManyToManyRelHandler
 ) : SchemaEngine {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()
     private val items = mutableMapOf<String, Item>()
@@ -72,6 +84,21 @@ class SchemaEngineImpl(
             mergedItem = mergedItem.includeTemplate(itemTemplate)
         }
         return mergedItem
+    }
+
+    override fun getAttributeRelation(item: ItemEntity, attrName: String): Relation {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+        if (attribute.type != Type.relation)
+            throw IllegalArgumentException("Attribute [$attrName] must be of relation type")
+
+        requireNotNull(attribute.relType) { "The [$attrName] attribute does not have a relType field" }
+
+        return when (attribute.relType) {
+            RelType.oneToOne -> oneToOneRelHandler.getRelation(item, attrName)
+            RelType.manyToOne -> manyToOneRelHandler.getRelation(item, attrName)
+            RelType.oneToMany -> oneToManyRelHandler.getRelation(item, attrName)
+            RelType.manyToMany -> oneToOneRelHandler.getRelation(item, attrName)
+        }
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.Column
@@ -25,12 +26,16 @@ abstract class AbstractEntity {
     @Column(name = "minor_rev")
     var minorRev: String? = null
 
-    @Column(name = "last_version", nullable = false)
+    @Column(name = "last_version", nullable = false, columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var lastVersion: Boolean = true
 
-    @Column(name = "is_current", nullable = false)
+    @Column(name = "is_current", nullable = false, columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var isCurrent: Boolean = true
 
+    @Column(columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var released: Boolean? = null
 
     @Column(name = "lifecycle_id")

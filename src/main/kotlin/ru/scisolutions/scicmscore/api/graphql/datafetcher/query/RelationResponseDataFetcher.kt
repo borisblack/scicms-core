@@ -14,17 +14,29 @@ class RelationResponseDataFetcher(
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
-        val fieldName = dfe.field.name
+        val capitalizedParentItemName = DataFetcherUtil.parseFieldType(dfe.parentType)
+        val parentItemName = capitalizedParentItemName.decapitalize()
+
         val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
         val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromRelationResponseFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
+
         val sourceItemRec: ItemRec = dfe.getSource()
+
+        val attrName = dfe.field.name
+
         val dataField = dfe.selectionSet.fields[0]
-        val fields = dataField.selectionSet.getFields("*").asSequence() // root fields
+        val selectedAttrNames = dataField.selectionSet.getFields("*").asSequence() // root fields
             .map { it.name }
             .toSet()
 
-        val result = dataEngine.getRelationResponse(itemName, fields, sourceItemRec, fieldName)
+        val result = dataEngine.getRelationResponse(
+            parentItemName,
+            itemName,
+            sourceItemRec,
+            attrName,
+            selectedAttrNames
+        )
 
         return DataFetcherResult.newResult<RelationResponse>()
             .data(result)

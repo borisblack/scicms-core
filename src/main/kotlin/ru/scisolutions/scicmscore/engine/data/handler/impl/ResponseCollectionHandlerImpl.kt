@@ -10,7 +10,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.data.db.ConditionBuilder
+import ru.scisolutions.scicmscore.engine.data.db.query.ConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
@@ -26,7 +26,7 @@ class ResponseCollectionHandlerImpl(
     private val conditionBuilder: ConditionBuilder,
     private val jdbcTemplate: JdbcTemplate
 ) : ResponseCollectionHandler {
-    override fun getResponseCollection(itemName: String, selectAttrNames: Set<String>, input: ResponseCollectionInput): ResponseCollection {
+    override fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection {
         val item = itemService.getItemOrThrow(itemName)
         val itemRecList = findAll(item, selectAttrNames, input)
 

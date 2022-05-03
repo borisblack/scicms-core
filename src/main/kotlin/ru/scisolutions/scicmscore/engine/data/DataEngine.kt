@@ -22,11 +22,17 @@ interface DataEngine {
 
     fun download(media: Media): ByteArrayResource
 
-    fun getResponse(itemName: String, selectAttrNames: Set<String>, id: String): Response
+    fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
-    fun getRelationResponse(itemName: String, selectAttrNames: Set<String>, sourceItemRec: ItemRec, attrName: String): RelationResponse
+    fun getRelationResponse(
+        parentItemName: String,
+        itemName: String,
+        sourceItemRec: ItemRec,
+        attrName: String,
+        selectAttrNames: Set<String>
+    ): RelationResponse
 
-    fun getResponseCollection(itemName: String, selectAttrNames: Set<String>, input: ResponseCollectionInput): ResponseCollection
+    fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection
 
     fun getCustomMethods(itemName: String): Set<String>
 

@@ -17,7 +17,7 @@
             <column name="passwd" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="enabled" type="boolean">
+            <column name="enabled" type="tinyint">
                 <constraints nullable="false"/>
             </column>
             <column name="generation" type="int" defaultValue="1">
@@ -27,13 +27,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_users_locale_fk" references="core_locales(name)"/>
@@ -75,13 +75,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_roles_locale_fk" references="core_locales(name)"/>
@@ -122,13 +122,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_groups_locale_fk" references="core_locales(name)"/>
@@ -170,13 +170,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_group_roles_locale_fk" references="core_locales(name)"/>
@@ -220,13 +220,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_group_members_locale_fk" references="core_locales(name)"/>
@@ -260,7 +260,7 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="principal" type="int">
+            <column name="principal" type="tinyint">
                 <constraints nullable="false"/>
             </column>
             <column name="generation" type="int" defaultValue="1">
@@ -270,13 +270,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_identities_locale_fk" references="core_locales(name)"/>
@@ -317,13 +317,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_permissions_locale_fk" references="core_locales(name)"/>
@@ -374,13 +374,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_access_locale_fk" references="core_locales(name)"/>
@@ -418,7 +418,7 @@
             <column name="target_id" type="varchar(36)">
                 <constraints nullable="false" foreignKeyName="sec_allowed_permissions_target_fk" references="sec_permissions(id)"/>
             </column>
-            <column name="is_default" type="boolean"/>
+            <column name="is_default" type="tinyint"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
@@ -426,13 +426,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="minor_rev" type="varchar(50)"/>
-            <column name="last_version" type="boolean" defaultValueBoolean="true">
+            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_current" type="boolean" defaultValueBoolean="true">
+            <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="released" type="boolean"/>
+            <column name="released" type="tinyint"/>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_allowed_permissions_locale_fk" references="core_locales(name)"/>

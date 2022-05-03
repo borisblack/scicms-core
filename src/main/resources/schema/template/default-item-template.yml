@@ -48,7 +48,7 @@ spec:
       displayName: Last Version
       description: Last Version
       required: true
-      defaultValue: true
+      defaultValue: 1
       private: true
     current:
       type: bool
@@ -56,7 +56,7 @@ spec:
       displayName: Current
       description: Current
       required: true
-      defaultValue: true
+      defaultValue: 1
       private: true
     released:
       type: bool

@@ -34,14 +34,20 @@ class DataEngineImpl(
 
     override fun download(media: Media): ByteArrayResource = mediaHandler.download(media)
 
-    override fun getResponse(itemName: String, selectAttrNames: Set<String>, id: String): Response =
-        responseHandler.getResponse(itemName, selectAttrNames, id)
+    override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+        responseHandler.getResponse(itemName, id, selectAttrNames)
 
-    override fun getRelationResponse(itemName: String, selectAttrNames: Set<String>, sourceItemRec: ItemRec, attrName: String): RelationResponse =
-        responseHandler.getRelationResponse(itemName, selectAttrNames, sourceItemRec, attrName)
+    override fun getRelationResponse(
+        parentItemName: String,
+        itemName: String,
+        sourceItemRec: ItemRec,
+        attrName: String,
+        selectAttrNames: Set<String>
+    ): RelationResponse =
+        responseHandler.getRelationResponse(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
 
-    override fun getResponseCollection(itemName: String, selectAttrNames: Set<String>, input: ResponseCollectionInput): ResponseCollection =
-        responseCollectionHandler.getResponseCollection(itemName, selectAttrNames, input)
+    override fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection =
+        responseCollectionHandler.getResponseCollection(itemName, input, selectAttrNames)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

@@ -17,9 +17,9 @@
             <column name="display_name" value="English"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" valueBoolean="true"/>
-            <column name="is_current" valueBoolean="true"/>
-            <column name="released" valueBoolean="false"/>
+            <column name="last_version" value="1"/>
+            <column name="is_current" value="1"/>
+            <column name="released" value="0"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -32,9 +32,9 @@
             <column name="display_name" value="Russian"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" valueBoolean="true"/>
-            <column name="is_current" valueBoolean="true"/>
-            <column name="released" valueBoolean="false"/>
+            <column name="last_version" value="1"/>
+            <column name="is_current" value="1"/>
+            <column name="released" value="0"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -48,9 +48,9 @@
             <column name="revisions" value="A B C D E F G H J K L M N P Q R S T U V W X Y Z"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" valueBoolean="true"/>
-            <column name="is_current" valueBoolean="true"/>
-            <column name="released" valueBoolean="false"/>
+            <column name="last_version" value="1"/>
+            <column name="is_current" value="1"/>
+            <column name="released" value="0"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -67,18 +67,18 @@
 <!--            <column name="data_source" value="main"/>-->
 <!--            <column name="table_name" value="core_items"/>-->
 <!--            <column name="icon" value="fas fa-swatchbook"/>-->
-<!--            <column name="core" valueBoolean="true"/>-->
-<!--            <column name="perform_ddl" valueBoolean="false"/>-->
-<!--            <column name="versioned" valueBoolean="false"/>-->
-<!--            <column name="manual_versioning" valueBoolean="false"/>-->
+<!--            <column name="core" value="1"/>-->
+<!--            <column name="perform_ddl" value="0"/>-->
+<!--            <column name="versioned" value="0"/>-->
+<!--            <column name="manual_versioning" value="0"/>-->
 <!--            <column name="revision_policy_id" value="${defaultRevisionPolicyId}"/>-->
-<!--            <column name="not_lockable" valueBoolean="false"/>-->
-<!--            <column name="localized" valueBoolean="false"/>-->
+<!--            <column name="not_lockable" value="0"/>-->
+<!--            <column name="localized" value="0"/>-->
 <!--            <column name="generation" value="1"/>-->
 <!--            <column name="major_rev" value="A"/>-->
-<!--            <column name="last_version" valueBoolean="true"/>-->
-<!--            <column name="is_current" valueBoolean="true"/>-->
-<!--            <column name="released" valueBoolean="false"/>-->
+<!--            <column name="last_version" value="1"/>-->
+<!--            <column name="is_current" value="1"/>-->
+<!--            <column name="released" value="0"/>-->
 <!--            <column name="permission_id" value="${defaultPermissionId}"/>-->
 <!--            <column name="created_at" valueDate="${now}"/>-->
 <!--            <column name="created_by_id" value="${rootUserId}"/>-->

@@ -19,12 +19,12 @@ class ResponseCollectionDataFetcher(
         val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromResponseCollectionFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
         val dataField = dfe.selectionSet.fields[0]
-        val fields = dataField.selectionSet.getFields("*").asSequence() // root fields
+        val selectAttrNames = dataField.selectionSet.getFields("*").asSequence() // root fields
             .map { it.name }
             .toSet()
 
         val responseCollectionInput = responseCollectionInputMapper.map(itemName, dfe.arguments)
-        val result = dataEngine.getResponseCollection(itemName, fields, responseCollectionInput)
+        val result = dataEngine.getResponseCollection(itemName, responseCollectionInput, selectAttrNames)
 
         return DataFetcherResult.newResult<ResponseCollection>()
             .data(result)

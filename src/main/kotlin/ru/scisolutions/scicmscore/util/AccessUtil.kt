@@ -36,14 +36,14 @@ object AccessUtil {
 
     fun getPermissionIdsForAdministrationStatement() = getPermissionIdsStatement(administrationMask)
 
-    fun getPermissionIdsStatement(mask: Set<Int>): String {
+    fun getPermissionIdsStatement(accessMask: Set<Int>): String {
         val authentication = SecurityContextHolder.getContext().authentication
         val username = authentication.name
         val authorities = authentication.authorities
         val roles = AuthorityUtils.authorityListToSet(authorities)
 
         return PERMISSION_IDS_SELECT_SNIPPET
-            .replace(":$MASK_PARAM_NAME", "(${mask.joinToString()})")
+            .replace(":$MASK_PARAM_NAME", "(${accessMask.joinToString()})")
             .replace(":$USERNAME_PARAM_NAME", "$QUOTE${username}$QUOTE")
             .replace(":$ROLES_PARAM_NAME", "(${roles.joinToString { "$QUOTE${it}$QUOTE" }})")
     }

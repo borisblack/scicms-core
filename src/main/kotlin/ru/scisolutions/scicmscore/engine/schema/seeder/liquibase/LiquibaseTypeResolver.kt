@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.engine.schema.seeder.liquibase
 
 import liquibase.datatype.core.BigIntType
-import liquibase.datatype.core.BooleanType
 import liquibase.datatype.core.ClobType
 import liquibase.datatype.core.DateTimeType
 import liquibase.datatype.core.DateType
@@ -11,6 +10,7 @@ import liquibase.datatype.core.FloatType
 import liquibase.datatype.core.IntType
 import liquibase.datatype.core.TimeType
 import liquibase.datatype.core.TimestampType
+import liquibase.datatype.core.TinyIntType
 import liquibase.datatype.core.VarcharType
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
@@ -41,7 +41,7 @@ class LiquibaseTypeResolver {
             Type.time -> TimeType().toString()
             Type.datetime -> DateTimeType().toString()
             Type.timestamp -> TimestampType().toString()
-            Type.bool -> BooleanType().toString()
+            Type.bool -> TinyIntType().toString()
             else -> throw IllegalArgumentException("Column [$tableName.${attribute.columnName}] has unsupported attribute type (${attribute.type})")
         }
     }
