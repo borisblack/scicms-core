@@ -4,6 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
     <changeSet id="2022-01-03-init-core-ddl" author="bchernysh">
+        <!--core_locales-->
         <createTable tableName="core_locales">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_locales_pk"/>
@@ -49,6 +50,19 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+        <createIndex tableName="core_locales" indexName="core_locales_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
+
+        <createIndex tableName="core_locales" indexName="core_locales_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_locales" indexName="core_locales_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--core_revision_policies-->
         <createTable tableName="core_revision_policies">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_revision_policies_pk"/>
@@ -96,6 +110,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--core_items-->
         <createTable tableName="core_items">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_items_pk"/>
@@ -162,9 +185,13 @@
             <column name="permission_id"/>
         </createIndex>
 
-<!--        <createIndex tableName="core_items" indexName="core_items_locale_idx">-->
-<!--            <column name="locale"/>-->
-<!--        </createIndex>-->
+        <createIndex tableName="core_items" indexName="core_items_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_items" indexName="core_items_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
 
 <!--        <createIndex tableName="core_items" indexName="core_items_lifecycle_idx">-->
 <!--            <column name="lifecycle_id"/>-->
@@ -174,6 +201,7 @@
 <!--            <column name="state"/>-->
 <!--        </createIndex>-->
 
+        <!--core_sequences-->
         <createTable tableName="core_sequences">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_sequences_pk"/>
@@ -228,6 +256,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="core_sequences" indexName="core_sequences_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_sequences" indexName="core_sequences_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--core_media-->
         <createTable tableName="core_media">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_media_pk"/>
@@ -287,6 +324,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="core_media" indexName="core_media_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_media" indexName="core_media_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--core_lifecycles-->
         <createTable tableName="core_lifecycles">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_lifecycles_pk"/>
@@ -337,6 +383,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--core_allowed_lifecycles-->
         <createTable tableName="core_allowed_lifecycles">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="core_allowed_lifecycles_pk"/>
@@ -387,6 +442,14 @@
 
         <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_permission_idx">
             <column name="permission_id"/>
+        </createIndex>
+
+        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_is_current_idx">
+            <column name="is_current"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

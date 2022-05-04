@@ -35,7 +35,8 @@ class LiquibaseIndexes(
         if (!attribute.unique && !attribute.indexed)
             throw IllegalArgumentException("The attribute [$attrName] has no index")
 
-        return if (attribute.unique) {
+        val attributeIndexes = mutableListOf<CreateIndexChange>()
+        if (attribute.unique) {
             val columnName = attribute.columnName
             if (columnName == GENERATION_COLUMN_NAME || columnName == MAJOR_REV_COLUMN_NAME || columnName == LOCALE_COLUMN_NAME)
                 throw IllegalArgumentException("The column [$columnName] cannot be unique")
@@ -44,20 +45,27 @@ class LiquibaseIndexes(
             val isLocalized = item.metadata.localized && i18nIncludeInUniqueIndex
             if (isVersioned) {
                 if (isLocalized) {
-                    listVersionedAndLocalizedUniqueIndexes(item, attribute)
+                    attributeIndexes.addAll(
+                        listVersionedAndLocalizedUniqueIndexes(item, attribute)
+                    )
                 } else {
-                    listVersionedUniqueIndexes(item, attribute)
+                    attributeIndexes.addAll(
+                        listVersionedUniqueIndexes(item, attribute)
+                    )
                 }
             } else {
                 if (isLocalized) {
-                    listOf(localizedUniqueIndex(item, attribute))
+                    attributeIndexes.add(localizedUniqueIndex(item, attribute))
                 } else {
-                    listOf(attributeIndex(item, attribute))
+                    return listOf(attributeUniqueIndex(item, attribute))
                 }
             }
-        } else {
-            listOf(attributeIndex(item, attribute))
         }
+
+        // Add non-unique indexes
+        attributeIndexes.add(attributeIndex(item, attribute))
+
+        return attributeIndexes
     }
 
     private fun listVersionedAndLocalizedUniqueIndexes(item: Item, attribute: Attribute): List<CreateIndexChange> {
@@ -70,7 +78,7 @@ class LiquibaseIndexes(
             CreateIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${attribute.columnName}_${GENERATION_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
-                this.isUnique = attribute.unique
+                this.isUnique = true
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
                     AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME },
@@ -80,7 +88,7 @@ class LiquibaseIndexes(
             CreateIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${attribute.columnName}_${MAJOR_REV_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
-                this.isUnique = attribute.unique
+                this.isUnique = true
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
                     AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME },
@@ -100,7 +108,7 @@ class LiquibaseIndexes(
             CreateIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${attribute.columnName}_${GENERATION_COLUMN_NAME}_uk"
-                this.isUnique = attribute.unique
+                this.isUnique = true
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
                     AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME }
@@ -109,7 +117,7 @@ class LiquibaseIndexes(
             CreateIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${attribute.columnName}_${MAJOR_REV_COLUMN_NAME}_uk"
-                this.isUnique = attribute.unique
+                this.isUnique = true
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
                     AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME }
@@ -135,14 +143,25 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun attributeIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun attributeUniqueIndex(item: Item, attribute: Attribute): CreateIndexChange {
         val tableName = item.metadata.tableName
-        val suffix = if (attribute.unique) "uk" else "idx"
 
         return CreateIndexChange().apply {
             this.tableName = tableName
-            this.indexName = "${tableName}_${attribute.columnName}_${suffix}"
+            this.indexName = "${tableName}_${attribute.columnName}_uk"
             this.isUnique = true
+            this.columns = mutableListOf(
+                AddColumnConfig().apply { this.name = attribute.columnName }
+            )
+        }
+    }
+
+    private fun attributeIndex(item: Item, attribute: Attribute): CreateIndexChange {
+        val tableName = item.metadata.tableName
+
+        return CreateIndexChange().apply {
+            this.tableName = tableName
+            this.indexName = "${tableName}_${attribute.columnName}_idx"
             this.columns = mutableListOf(
                 AddColumnConfig().apply { this.name = attribute.columnName }
             )

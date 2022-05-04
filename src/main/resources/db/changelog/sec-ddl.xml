@@ -4,6 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
     <changeSet id="2022-04-05-init-sec-ddl" author="bchernysh">
+        <!--sec_users-->
         <createTable tableName="sec_users">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_users_pk"/>
@@ -55,6 +56,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_users" indexName="sec_users_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_users" indexName="sec_users_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_roles-->
         <createTable tableName="sec_roles">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_roles_pk"/>
@@ -105,6 +115,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_roles" indexName="sec_roles_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_roles" indexName="sec_roles_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_groups-->
         <createTable tableName="sec_groups">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_groups_pk"/>
@@ -150,6 +169,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_groups" indexName="sec_groups_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_groups" indexName="sec_groups_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_group_roles-->
         <createTable tableName="sec_group_roles">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_group_roles_pk"/>
@@ -200,6 +228,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_group_members-->
         <createTable tableName="sec_group_members">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_group_members_pk"/>
@@ -250,6 +287,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_group_members" indexName="sec_group_members_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_group_members" indexName="sec_group_members_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_identities-->
         <createTable tableName="sec_identities">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_identities_pk"/>
@@ -300,6 +346,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_identities" indexName="sec_identities_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_identities" indexName="sec_identities_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_permissions-->
         <createTable tableName="sec_permissions">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_permissions_pk"/>
@@ -345,6 +400,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_permissions" indexName="sec_permissions_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_permissions" indexName="sec_permissions_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_access-->
         <createTable tableName="sec_access">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_access_pk"/>
@@ -404,6 +468,15 @@
             <column name="permission_id"/>
         </createIndex>
 
+        <createIndex tableName="sec_access" indexName="sec_access_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_access" indexName="sec_access_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <!--sec_allowed_permissions-->
         <createTable tableName="sec_allowed_permissions">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="sec_allowed_permissions_pk"/>
@@ -454,6 +527,14 @@
 
         <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_permission_idx">
             <column name="permission_id"/>
+        </createIndex>
+
+        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_is_current_idx">
+            <column name="is_current"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

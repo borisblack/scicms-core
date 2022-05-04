@@ -30,7 +30,7 @@ spec:
 #      defaultValue: # optional (null by default)
       required: true # optional (false by default)
       unique: true # optional (false by default). Additional columns may be added to the unique index depending on configuration parameters (versioning.include-in-unique-index and i18n.include-in-unique-index) and attributes (versioned and localized). If other logic is needed, use the indexes section
-      indexed: false # optional (false by default)
+      indexed: false # optional (false by default). For versioned or localized item non-unique index can be added on par with a composite unique index
       private: false # optional (false by default)
       length: 50 # optional (null by default) - string
 #      precision: # optional (null by default) - decimal
