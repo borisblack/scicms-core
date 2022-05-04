@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.engine.schema.handler.relation
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneUnidirectionalRelation
@@ -10,7 +9,9 @@ import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class OneToOneRelationHandler(private val itemService: ItemService) : RelationHandler {
-    override fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): OneToOneRelation {
+    override fun getAttributeRelation(item: Item, attrName: String): OneToOneRelation {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
         requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field" }
 
         val targetItem = itemService.getItemOrThrow(attribute.target)

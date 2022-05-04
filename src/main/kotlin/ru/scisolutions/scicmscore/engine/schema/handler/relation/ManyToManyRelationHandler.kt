@@ -1,14 +1,15 @@
 package ru.scisolutions.scicmscore.engine.schema.handler.relation
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class ManyToManyRelationHandler(private val itemService: ItemService) : RelationHandler {
-    override fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): ManyToManyBidirectionalRelation {
+    override fun getAttributeRelation(item: Item, attrName: String): ManyToManyBidirectionalRelation {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
         requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field" }
 
         val targetItem = itemService.getItemOrThrow(attribute.target)

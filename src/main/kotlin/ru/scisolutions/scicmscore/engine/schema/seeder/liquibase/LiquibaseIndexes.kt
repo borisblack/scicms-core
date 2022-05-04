@@ -16,7 +16,7 @@ class LiquibaseIndexes(
         // Process attributes
         for ((attrName, attribute) in item.spec.attributes) {
             if (!attribute.keyed && (attribute.unique || attribute.indexed)) {
-                list.addAll(listAttributeIndexes(item, attrName, attribute))
+                list.addAll(listAttributeIndexes(item, attrName))
             }
         }
 
@@ -28,7 +28,8 @@ class LiquibaseIndexes(
         return list
     }
 
-    private fun listAttributeIndexes(item: Item, attrName: String, attribute: Attribute): List<CreateIndexChange> {
+    private fun listAttributeIndexes(item: Item, attrName: String): List<CreateIndexChange> {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
         if (attribute.keyed)
             throw IllegalArgumentException("Keyed attribute [$attrName] is already indexed")
 

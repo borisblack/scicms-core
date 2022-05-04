@@ -4,9 +4,9 @@ import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ExcludeAttributePolicy
+import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class FiltersInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBuilder {
     override fun build(): InputObjectTypeDefinition {
@@ -33,7 +33,7 @@ class FiltersInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBui
             )
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName, attribute) }
+            .filter { (attrName, _) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName) }
             .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()

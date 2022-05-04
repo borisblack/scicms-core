@@ -6,7 +6,7 @@ spec:
   attributes:
     id:
       type: uuid
-      columnName: id
+      columnName: id # the key attribute name and its column name must be 'id'!
       displayName: ID
       description: ID
       required: true

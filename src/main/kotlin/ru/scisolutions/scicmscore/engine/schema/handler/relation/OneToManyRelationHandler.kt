@@ -1,14 +1,15 @@
 package ru.scisolutions.scicmscore.engine.schema.handler.relation
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class OneToManyRelationHandler(private val itemService: ItemService) : RelationHandler {
-    override fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): OneToManyInversedBidirectionalRelation {
+    override fun getAttributeRelation(item: Item, attrName: String): OneToManyInversedBidirectionalRelation {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
         requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field" }
 
         if (attribute.inversedBy != null && attribute.mappedBy != null)

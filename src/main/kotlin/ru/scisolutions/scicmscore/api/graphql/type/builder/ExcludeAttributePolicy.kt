@@ -1,11 +1,11 @@
 package ru.scisolutions.scicmscore.api.graphql.type.builder
 
-import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class ExcludeAttributePolicy {
-    fun excludeFromObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
+    fun excludeFromObjectType(item: Item, attrName: String): Boolean {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
         if (attribute.private)
             return false
 
@@ -18,7 +18,8 @@ class ExcludeAttributePolicy {
         return true
     }
 
-    fun excludeFromFiltersInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
+    fun excludeFromFiltersInputObjectType(item: Item, attrName: String): Boolean {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
         if (attribute.private)
             return false
 
@@ -31,7 +32,8 @@ class ExcludeAttributePolicy {
         return true
     }
 
-    fun excludeFromInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
+    fun excludeFromInputObjectType(item: Item, attrName: String): Boolean {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
         if (attribute.keyed || attribute.private)
             return false
 

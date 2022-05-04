@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.engine.schema
 
-import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.model.relation.Relation
@@ -15,5 +14,5 @@ interface SchemaEngine {
 
     fun getItems(): Map<String, Item>
 
-    fun getAttributeRelation(item: ItemEntity, attrName: String, attribute: Attribute): Relation
+    fun getAttributeRelation(item: ItemEntity, attrName: String): Relation
 }

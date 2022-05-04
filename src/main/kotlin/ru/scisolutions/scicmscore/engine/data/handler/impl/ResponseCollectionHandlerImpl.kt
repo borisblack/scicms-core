@@ -10,8 +10,10 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.data.db.query.ConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
+import ru.scisolutions.scicmscore.engine.data.db.query.FilterConditionBuilder
+import ru.scisolutions.scicmscore.engine.data.db.query.LocaleConditionBuilder
+import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
@@ -23,7 +25,9 @@ import ru.scisolutions.scicmscore.util.AccessUtil
 @Service
 class ResponseCollectionHandlerImpl(
     private val itemService: ItemService,
-    private val conditionBuilder: ConditionBuilder,
+    private val filterConditionBuilder: FilterConditionBuilder,
+    private val localeConditionBuilder: LocaleConditionBuilder,
+    private val versionConditionBuilder: VersionConditionBuilder,
     private val jdbcTemplate: JdbcTemplate
 ) : ResponseCollectionHandler {
     override fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection {
@@ -57,9 +61,20 @@ class ResponseCollectionHandlerImpl(
         val query = SelectQuery()
             .addColumns(*columns)
 
+        // Version
+        val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
+        if (versionCondition != null)
+            query.addCondition(versionCondition)
+
+        // Locale
+        val localeCondition = localeConditionBuilder.newLocaleCondition(table, item, input.locale)
+        if (localeCondition != null)
+            query.addCondition(localeCondition)
+
+        // Filters
         if (input.filters != null) {
             query.addCondition(
-                conditionBuilder.newItemCondition(schema, table, query, item, input.filters)
+                filterConditionBuilder.newFilterCondition(schema, table, query, item, input.filters)
             )
         }
 
@@ -72,6 +87,10 @@ class ResponseCollectionHandlerImpl(
 
     companion object {
         private const val PERMISSION_ID_COL_NAME = "permission_id"
+        private const val IS_CURRENT_COL_NAME = "is_current"
+        private const val MAJOR_REV_COL_NAME = "major_rev"
+        private const val LOCALE_COL_NAME = "locale"
+        private const val ALL = "all"
 
         private val logger = LoggerFactory.getLogger(ResponseCollectionHandlerImpl::class.java)
     }

@@ -10,11 +10,15 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
         val itemFiltersMap = arguments["filters"] as Map<String, Any>?
         val paginationMap = arguments["pagination"] as Map<String, Int?>?
         val sort = arguments["sort"] as List<String>?
+        val majorRev = arguments["majorRev"] as String?
+        val locale = arguments["locale"] as String?
 
         return ResponseCollectionInput(
             filters = itemFiltersMap?.let { itemFiltersInputMapper.map(itemName, it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
-            sort = sort
+            sort = sort,
+            majorRev = majorRev,
+            locale = locale
         )
     }
 }

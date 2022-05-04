@@ -29,11 +29,11 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Component
-class ConditionBuilder(
+class FilterConditionBuilder(
     private val itemService: ItemService,
     private val schemaEngine: SchemaEngine
 ) {
-    fun newItemCondition(schema: DbSchema, table: DbTable, query: SelectQuery, item: Item, itemFiltersInput: ItemFiltersInput
+    fun newFilterCondition(schema: DbSchema, table: DbTable, query: SelectQuery, item: Item, itemFiltersInput: ItemFiltersInput
     ): Condition {
         val nestedConditions = mutableListOf<Condition>()
 
@@ -46,7 +46,7 @@ class ConditionBuilder(
                 val targetTable = DbTable(schema, targetItem.tableName)
                 val idCol = DbColumn(table, ID_COL_NAME, null, null)
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
-                when (val relation = schemaEngine.getAttributeRelation(item, attrName, attribute)) {
+                when (val relation = schemaEngine.getAttributeRelation(item, attrName)) {
                     is OneToOneUnidirectionalRelation -> {
                         val col = DbColumn(table, relation.getColumnName(), null, null)
                         query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
@@ -94,7 +94,7 @@ class ConditionBuilder(
                         }
                     }
                 }
-                nestedConditions.add(newItemCondition(schema, targetTable, query, targetItem, attrFilter))
+                nestedConditions.add(newFilterCondition(schema, targetTable, query, targetItem, attrFilter))
             } else if (attrFilter is PrimitiveFilterInput) {
                 val column = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
                 nestedConditions.add(newPrimitiveCondition(table, column, attrFilter))
@@ -102,17 +102,17 @@ class ConditionBuilder(
         }
 
         itemFiltersInput.andFilterList?.let { list ->
-            val andConditions = list.map { newItemCondition(schema, table, query, item, it) }
+            val andConditions = list.map { newFilterCondition(schema, table, query, item, it) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
         }
 
         itemFiltersInput.orFilterList?.let { list ->
-            val orConditions = list.map { newItemCondition(schema, table, query, item, it) }
+            val orConditions = list.map { newFilterCondition(schema, table, query, item, it) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
         }
 
         itemFiltersInput.notFilter?.let {
-            nestedConditions.add(NotCondition(newItemCondition(schema, table, query, item, it)))
+            nestedConditions.add(NotCondition(newFilterCondition(schema, table, query, item, it)))
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())

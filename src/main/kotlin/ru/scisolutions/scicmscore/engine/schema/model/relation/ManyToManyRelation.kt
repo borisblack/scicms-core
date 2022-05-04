@@ -17,7 +17,7 @@ interface ManyToManyRelation : Relation {
     fun getIntermediateTargetColumnName(): String = getIntermediateTargetAttribute().columnName ?: INTERMEDIATE_TARGET_ATTR_NAME.lowercase()
 
     companion object {
-        const val INTERMEDIATE_SOURCE_ATTR_NAME = "source"
-        const val INTERMEDIATE_TARGET_ATTR_NAME = "target"
+        private const val INTERMEDIATE_SOURCE_ATTR_NAME = "source"
+        private const val INTERMEDIATE_TARGET_ATTR_NAME = "target"
     }
 }
