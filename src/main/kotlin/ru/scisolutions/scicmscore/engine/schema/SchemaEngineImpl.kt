@@ -3,12 +3,13 @@ package ru.scisolutions.scicmscore.engine.schema
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToManyRelHandler
-import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToOneRelHandler
-import ru.scisolutions.scicmscore.engine.schema.handler.relation.OneToManyRelHandler
-import ru.scisolutions.scicmscore.engine.schema.handler.relation.OneToOneRelHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToManyRelationHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToOneRelationHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.OneToManyRelationHandler
+import ru.scisolutions.scicmscore.engine.schema.handler.relation.OneToOneRelationHandler
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.model.ItemTemplate
@@ -25,10 +26,10 @@ class SchemaEngineImpl(
     seedOnInit: Boolean,
     modelsReader: ModelsReader,
     schemaSeeder: SchemaSeeder,
-    private val oneToOneRelHandler: OneToOneRelHandler,
-    private val manyToOneRelHandler: ManyToOneRelHandler,
-    private val oneToManyRelHandler: OneToManyRelHandler,
-    private val manyToManyRelHandler: ManyToManyRelHandler
+    private val oneToOneRelationHandler: OneToOneRelationHandler,
+    private val manyToOneRelationHandler: ManyToOneRelationHandler,
+    private val oneToManyRelationHandler: OneToManyRelationHandler,
+    private val manyToManyRelationHandler: ManyToManyRelationHandler
 ) : SchemaEngine {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()
     private val items = mutableMapOf<String, Item>()
@@ -48,18 +49,21 @@ class SchemaEngineImpl(
 
     final override fun addModel(model: AbstractModel) {
         val metadata = model.metadata
+        if(metadata.name.first().isUpperCase())
+            throw IllegalArgumentException("Model name [${metadata.name}] must start with a lowercase character")
+
         when(model) {
             is ItemTemplate -> {
-                logger.info("Validating item template [{}]", model.metadata.name)
+                logger.info("Validating item template [{}]", metadata.name)
                 itemSpecValidator.validate(model.spec)
                 itemTemplates[metadata.name] = model
             }
             is Item -> {
-                logger.info("Validating item [{}]", model.metadata.name)
+                logger.info("Validating item [{}]", metadata.name)
                 itemSpecValidator.validate(model.spec)
                 items[metadata.name] = model
             }
-            else -> throw IllegalArgumentException("${model::class} model type is not supported")
+            else -> throw IllegalArgumentException("${model::class.simpleName} model type is not supported")
         }
     }
 
@@ -86,18 +90,17 @@ class SchemaEngineImpl(
         return mergedItem
     }
 
-    override fun getAttributeRelation(item: ItemEntity, attrName: String): Relation {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+    override fun getAttributeRelation(item: ItemEntity, attrName: String, attribute: Attribute): Relation {
         if (attribute.type != Type.relation)
             throw IllegalArgumentException("Attribute [$attrName] must be of relation type")
 
         requireNotNull(attribute.relType) { "The [$attrName] attribute does not have a relType field" }
 
         return when (attribute.relType) {
-            RelType.oneToOne -> oneToOneRelHandler.getRelation(item, attrName)
-            RelType.manyToOne -> manyToOneRelHandler.getRelation(item, attrName)
-            RelType.oneToMany -> oneToManyRelHandler.getRelation(item, attrName)
-            RelType.manyToMany -> oneToOneRelHandler.getRelation(item, attrName)
+            RelType.oneToOne -> oneToOneRelationHandler.getAttributeRelation(item, attrName, attribute)
+            RelType.manyToOne -> manyToOneRelationHandler.getAttributeRelation(item, attrName, attribute)
+            RelType.oneToMany -> oneToManyRelationHandler.getAttributeRelation(item, attrName, attribute)
+            RelType.manyToMany -> manyToManyRelationHandler.getAttributeRelation(item, attrName, attribute)
         }
     }
 

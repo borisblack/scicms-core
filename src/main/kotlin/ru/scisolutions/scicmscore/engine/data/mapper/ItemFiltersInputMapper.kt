@@ -25,7 +25,7 @@ class ItemFiltersInputMapper(private val itemService: ItemService) {
                 .mapValues { (attrName, filterValue) ->
                     val attribute = item.spec.getAttributeOrThrow(attrName)
                     if (attribute.type == Type.relation)
-                        map(attribute.extractTarget(), filterValue) // recursive
+                        map(requireNotNull(attribute.target), filterValue) // recursive
                     else
                         PrimitiveFilterInput.fromMap(filterValue)
                 }

@@ -44,13 +44,13 @@ class LiquibaseIndexes(
             val isLocalized = item.metadata.localized && i18nIncludeInUniqueIndex
             if (isVersioned) {
                 if (isLocalized) {
-                    listVersionedAndLocalizedAttributeIndexes(item, attribute)
+                    listVersionedAndLocalizedUniqueIndexes(item, attribute)
                 } else {
-                    listVersionedAttributeIndexes(item, attribute)
+                    listVersionedUniqueIndexes(item, attribute)
                 }
             } else {
                 if (isLocalized) {
-                    listOf(localizedIndex(item, attribute))
+                    listOf(localizedUniqueIndex(item, attribute))
                 } else {
                     listOf(attributeIndex(item, attribute))
                 }
@@ -60,14 +60,16 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun listVersionedAndLocalizedAttributeIndexes(item: Item, attribute: Attribute): List<CreateIndexChange> {
+    private fun listVersionedAndLocalizedUniqueIndexes(item: Item, attribute: Attribute): List<CreateIndexChange> {
+        if (!attribute.unique)
+            throw IllegalArgumentException("Only the unique index needs to be versioned and localized")
+
         val tableName = item.metadata.tableName
-        val suffix = if (attribute.unique) "uk" else "idx"
 
         return listOf(
             CreateIndexChange().apply {
                 this.tableName = tableName
-                this.indexName = "${tableName}_${attribute.columnName}_${GENERATION_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_${suffix}"
+                this.indexName = "${tableName}_${attribute.columnName}_${GENERATION_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
                 this.isUnique = attribute.unique
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
@@ -77,7 +79,7 @@ class LiquibaseIndexes(
             },
             CreateIndexChange().apply {
                 this.tableName = tableName
-                this.indexName = "${tableName}_${attribute.columnName}_${MAJOR_REV_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_${suffix}"
+                this.indexName = "${tableName}_${attribute.columnName}_${MAJOR_REV_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
                 this.isUnique = attribute.unique
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
@@ -88,14 +90,16 @@ class LiquibaseIndexes(
         )
     }
 
-    private fun listVersionedAttributeIndexes(item: Item, attribute: Attribute): List<CreateIndexChange> {
+    private fun listVersionedUniqueIndexes(item: Item, attribute: Attribute): List<CreateIndexChange> {
+        if (!attribute.unique)
+            throw IllegalArgumentException("Only the unique index needs to be versioned")
+
         val tableName = item.metadata.tableName
-        val suffix = if (attribute.unique) "uk" else "idx"
 
         return listOf(
             CreateIndexChange().apply {
                 this.tableName = tableName
-                this.indexName = "${tableName}_${attribute.columnName}_${GENERATION_COLUMN_NAME}_${suffix}"
+                this.indexName = "${tableName}_${attribute.columnName}_${GENERATION_COLUMN_NAME}_uk"
                 this.isUnique = attribute.unique
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
@@ -104,7 +108,7 @@ class LiquibaseIndexes(
             },
             CreateIndexChange().apply {
                 this.tableName = tableName
-                this.indexName = "${tableName}_${attribute.columnName}_${MAJOR_REV_COLUMN_NAME}_${suffix}"
+                this.indexName = "${tableName}_${attribute.columnName}_${MAJOR_REV_COLUMN_NAME}_uk"
                 this.isUnique = attribute.unique
                 this.columns = listOf(
                     AddColumnConfig().apply { this.name = attribute.columnName },
@@ -114,13 +118,15 @@ class LiquibaseIndexes(
         )
     }
 
-    private fun localizedIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun localizedUniqueIndex(item: Item, attribute: Attribute): CreateIndexChange {
+        if (!attribute.unique)
+            throw IllegalArgumentException("Only the unique index needs to be localized")
+
         val tableName = item.metadata.tableName
-        val suffix = if (attribute.unique) "uk" else "idx"
 
         return CreateIndexChange().apply {
             this.tableName = tableName
-            this.indexName = "${tableName}_${attribute.columnName}_${LOCALE_COLUMN_NAME}_${suffix}"
+            this.indexName = "${tableName}_${attribute.columnName}_${LOCALE_COLUMN_NAME}_uk"
             this.isUnique = true
             this.columns = mutableListOf(
                 AddColumnConfig().apply { this.name = attribute.columnName },

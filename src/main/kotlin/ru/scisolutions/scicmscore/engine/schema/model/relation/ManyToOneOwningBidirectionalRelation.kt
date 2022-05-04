@@ -3,15 +3,11 @@ package ru.scisolutions.scicmscore.engine.schema.model.relation
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class ManyToOneOwningBidirectionalRelation(
-    owningItem: Item,
-    owningAttrName: String,
+    override val owningItem: Item,
+    override val owningAttrName: String,
 
-    inversedItem: Item,
-    inversedAttrName: String
-) : BidirectionalRelation(owningItem, owningAttrName, inversedItem, inversedAttrName), ManyToOneRelation {
-    val owningColumnName: String = owningAttribute.columnName ?: owningAttrName.lowercase()
-
-    val inversedKeyAttrName = owningAttribute.extractTargetKeyAttrName()
-    val inversedKeyAttribute = inversedItem.spec.getAttributeOrThrow(inversedKeyAttrName)
-    val inversedKeyColumnName = inversedKeyAttribute.columnName ?: inversedKeyAttrName.lowercase()
+    override val inversedItem: Item,
+    override val inversedAttrName: String
+) : BidirectionalRelation, ManyToOneRelation {
+    fun getOwningColumnName(): String = getOwningAttribute().columnName ?: owningAttrName.lowercase()
 }

@@ -13,14 +13,13 @@ metadata:
   performDdl: false
 spec:
   attributes:
-    user:
-      type: relation
-      relType: manyToOne
-      target: user(username)
-      inversedBy: roles
+    username:
+      type: string
       columnName: username
       displayName: User
       description: User
+      required: true
+      length: 50
     role:
       type: string
       columnName: role

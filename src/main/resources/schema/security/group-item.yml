@@ -19,6 +19,7 @@ spec:
       displayName: Group Name
       description: Group Name
       required: true
+      unique: true
       length: 50
     roles:
       type: relation
@@ -34,8 +35,3 @@ spec:
       mappedBy: group
       displayName: Members
       description: Members
-  indexes:
-    sec_groups_name_uk:
-      columns:
-        - groupName
-      unique: true

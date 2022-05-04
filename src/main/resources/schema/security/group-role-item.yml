@@ -31,6 +31,6 @@ spec:
   indexes:
     sec_group_roles_uk:
       columns:
-        - group
+        - group_id
         - role
       unique: true

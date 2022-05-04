@@ -5,13 +5,13 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 class OneToOneBidirectionalRelation(
     val isOwning: Boolean,
 
-    owningItem: Item,
-    owningAttrName: String,
+    override val owningItem: Item,
+    override val owningAttrName: String,
 
-    inversedItem: Item,
-    inversedAttrName: String
-) : BidirectionalRelation(owningItem, owningAttrName, inversedItem, inversedAttrName), OneToOneRelation {
-    val owningColumnName: String = owningAttribute.columnName ?: owningAttrName.lowercase()
+    override val inversedItem: Item,
+    override val inversedAttrName: String
+) : BidirectionalRelation, OneToOneRelation {
+    fun getOwningColumnName(): String = getOwningAttribute().columnName ?: owningAttrName.lowercase()
 
-    val inversedColumnName: String = inversedAttribute.columnName ?: inversedAttrName.lowercase()
+    fun getInversedColumnName(): String = getInversedAttribute().columnName ?: inversedAttrName.lowercase()
 }

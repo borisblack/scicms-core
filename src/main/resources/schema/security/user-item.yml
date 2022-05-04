@@ -31,13 +31,6 @@ spec:
       columnName: enabled
       displayName: Enabled
       description: Enabled
-    roles:
-      type: relation
-      relType: oneToMany
-      target: role
-      mappedBy: user
-      displayName: Roles
-      description: Roles
   indexes:
     sec_users_username_uk:
       columns:

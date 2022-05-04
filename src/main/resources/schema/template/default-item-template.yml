@@ -63,19 +63,13 @@ spec:
       columnName: released
       displayName: Released
       description: Released
-      private: true # not sure how to use it yet
-#    locale:
-#      type: relation
-#      columnName: locale
-#      target: locale(name)
-#      relType: manyToOne
-#      displayName: Locale
-#      description: Locale
+      private: true
     locale:
       type: string
       columnName: locale
       displayName: Locale
       description: Locale
+      indexed: true
       length: 50
     lifecycle:
       type: relation
@@ -130,7 +124,6 @@ spec:
       columnName: locked_by_id
       displayName: Locked By
       description: Locked By
-
   indexes:
     _permission_idx:
       columns:

@@ -32,7 +32,7 @@ class TypeResolver {
                 requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
                 requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
-                val capitalizedTargetItemName = attribute.extractTarget().capitalize()
+                val capitalizedTargetItemName = attribute.target.capitalize()
                 if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
@@ -61,7 +61,7 @@ class TypeResolver {
                 requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
                 requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
-                val capitalizedTargetItemName = attribute.extractTarget().capitalize()
+                val capitalizedTargetItemName = attribute.target.capitalize()
                 TypeName("${capitalizedTargetItemName}FiltersInput")
                 // TypeNames.ID_FILTER_INPUT
             }

@@ -34,3 +34,9 @@ spec:
       mappedBy: target
       displayName: Access
       description: Access
+  indexes:
+    sec_identities_name_principal_uk:
+      columns:
+        - name
+        - principal
+      unique: true

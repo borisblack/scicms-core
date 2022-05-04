@@ -28,17 +28,14 @@ class ResponseHandlerImpl(
         attrName: String,
         selectAttrNames: Set<String>
     ): RelationResponse {
-        val keyAttrValue = sourceItemRec[attrName] as String?
-        if (keyAttrValue == null) {
+        val id = sourceItemRec[attrName] as String?
+        if (id == null) {
             logger.debug("The attribute [$attrName] is absent in the source item, so it cannot be fetched")
             return RelationResponse()
         }
 
-        val parentItem = itemService.getItemOrThrow(parentItemName)
-        val parentAttribute = parentItem.spec.getAttributeOrThrow(attrName)
-        val keyAttrName = parentAttribute.extractTargetKeyAttrName()
         val item = itemService.getItemOrThrow(itemName)
-        val itemRec = itemRecDao.findByKeyAttrNameForRead(item, keyAttrName, keyAttrValue, selectAttrNames)
+        val itemRec = itemRecDao.findByIdForRead(item, id, selectAttrNames)
 
         return RelationResponse(itemRec)
     }

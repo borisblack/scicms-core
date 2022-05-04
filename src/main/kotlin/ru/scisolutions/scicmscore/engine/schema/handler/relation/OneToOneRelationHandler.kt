@@ -1,20 +1,19 @@
 package ru.scisolutions.scicmscore.engine.schema.handler.relation
 
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneUnidirectionalRelation
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
-@Component
-class OneToOneRelHandler(
-    private val itemService: ItemService
-) {
-    fun getRelation(item: Item, attrName: String): OneToOneRelation {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
-        val targetItemName = attribute.extractTarget()
-        val targetItem = itemService.getItemOrThrow(targetItemName)
+@Service
+class OneToOneRelationHandler(private val itemService: ItemService) : RelationHandler {
+    override fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): OneToOneRelation {
+        requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field" }
+
+        val targetItem = itemService.getItemOrThrow(attribute.target)
 
         // Validate attribute
         if (attribute.inversedBy != null && attribute.mappedBy != null)

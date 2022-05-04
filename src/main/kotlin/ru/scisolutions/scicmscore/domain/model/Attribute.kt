@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.domain.model
 
 import java.util.Objects
-import java.util.regex.Pattern
 
 class Attribute(
     val type: Type,
@@ -30,26 +29,6 @@ class Attribute(
     enum class Type { uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation }
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
-
-    fun extractTarget(): String {
-        requireNotNull(target) { "Target is null" }
-
-        val matcher = targetPattern.matcher(target)
-        if (!matcher.matches())
-            throw IllegalArgumentException("Target [$target] is invalid")
-
-        return matcher.group(1)
-    }
-
-    fun extractTargetKeyAttrName(): String {
-        requireNotNull(target) { "Target is null" }
-
-        val matcher = targetPattern.matcher(target)
-        if (!matcher.matches())
-            throw IllegalArgumentException("Target [$target] is invalid")
-
-        return matcher.group(2) ?: ID_ATTR_NAME
-    }
 
     override fun hashCode(): Int =
         Objects.hash(
@@ -108,11 +87,5 @@ class Attribute(
             scale == other.scale &&
             minRange == other.minRange &&
             maxRange == other.maxRange
-    }
-
-    companion object {
-        private const val ID_ATTR_NAME = "id"
-
-        private val targetPattern = Pattern.compile("^(\\w+)(?:\\((\\w+)\\))?$")
     }
 }

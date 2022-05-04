@@ -21,16 +21,16 @@ spec:
       columnName: group_id
       displayName: Group
       description: Group
-    user:
-      type: relation
-      relType: manyToOne
-      target: user(username)
+    username:
+      type: string
       columnName: username
       displayName: User
       description: User
+      required: true
+      length: 50
   indexes:
     sec_group_members_uk:
       columns:
-        - group
-        - user
+        - group_id
+        - username
       unique: true

@@ -113,7 +113,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="group_name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="sec_groups_name_uk"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="sec_groups_group_name_uk"/>
             </column>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>

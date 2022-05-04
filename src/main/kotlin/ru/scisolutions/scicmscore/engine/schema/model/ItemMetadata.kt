@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.model
 
 data class ItemMetadata(
-    override val name: String,
+    override val name: String, // item name must start with a lowercase character!
     val displayName: String = name,
     val singularName: String = name,
     val pluralName: String,

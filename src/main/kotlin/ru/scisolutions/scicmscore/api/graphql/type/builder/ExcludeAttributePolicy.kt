@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.api.graphql.type.builder
 
 import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class ExcludeAttributePolicy {
@@ -49,6 +50,9 @@ class ExcludeAttributePolicy {
             return false
 
         if (attrName == CREATED_AT_ATTR_NAME || attrName == CREATED_BY_ATTR_NAME || attrName == UPDATED_AT_ATTR_NAME || attrName == UPDATED_BY_ATTR_NAME)
+            return false
+
+        if (attribute.type == Type.sequence)
             return false
 
         return true

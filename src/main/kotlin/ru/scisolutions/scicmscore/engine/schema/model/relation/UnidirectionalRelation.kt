@@ -3,12 +3,12 @@ package ru.scisolutions.scicmscore.engine.schema.model.relation
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
-abstract class UnidirectionalRelation(
-    val item: Item,
-    val attrName: String,
+interface UnidirectionalRelation : Relation {
+    val item: Item
+    val attrName: String
 
     val targetItem: Item
-) : Relation {
-    val tableName = item.tableName
-    val attribute: Attribute = item.spec.getAttributeOrThrow(attrName)
+
+    fun getTableName(): String = item.tableName
+    fun getAttribute(): Attribute = item.spec.getAttributeOrThrow(attrName)
 }
