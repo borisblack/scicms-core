@@ -6,14 +6,13 @@ import com.healthmarketscience.sqlbuilder.Condition
 import com.healthmarketscience.sqlbuilder.UnaryCondition
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.config.props.I18nProps
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 @Component
 class LocaleConditionBuilder(
-    @Value("\${scicms-core.i18n.default-locale}")
-    private val defaultLocale: String
+    private val i18nProps: I18nProps
 ) {
     fun newLocaleCondition(table: DbTable, item: Item, locale: String?): Condition? {
         val localeCol = DbColumn(table, LOCALE_COL_NAME, null, null)
@@ -21,7 +20,7 @@ class LocaleConditionBuilder(
             if (locale == null) {
                 ComboCondition(
                     ComboCondition.Op.OR,
-                    BinaryCondition.equalTo(localeCol, defaultLocale),
+                    BinaryCondition.equalTo(localeCol, i18nProps.defaultLocale),
                     UnaryCondition.isNull(localeCol)
                 )
             } else if (locale != ALL_LOCALES) {
@@ -30,7 +29,7 @@ class LocaleConditionBuilder(
         } else {
             ComboCondition(
                 ComboCondition.Op.OR,
-                BinaryCondition.equalTo(localeCol, defaultLocale),
+                BinaryCondition.equalTo(localeCol, i18nProps.defaultLocale),
                 UnaryCondition.isNull(localeCol)
             )
         }

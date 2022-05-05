@@ -9,6 +9,7 @@ import java.util.regex.Pattern
 object DataFetcherUtil {
     private val relationResponseFieldTypePattern = Pattern.compile("^(\\w+)RelationResponse$")
     private val responseCollectionFieldTypePattern = Pattern.compile("^(\\w+)ResponseCollection$")
+    private val relationResponseCollectionFieldTypePattern = Pattern.compile("^(\\w+)RelationResponseCollection$")
     private val customMethodResponseFieldTypePattern = Pattern.compile("^(\\w+)CustomMethodResponse$")
 
     fun parseFieldType(fieldType: GraphQLType): String =
@@ -21,6 +22,8 @@ object DataFetcherUtil {
     fun extractCapitalizedItemNameFromRelationResponseFieldType(fieldType: String) = getFirstMatch(relationResponseFieldTypePattern, fieldType)
 
     fun extractCapitalizedItemNameFromResponseCollectionFieldType(fieldType: String) = getFirstMatch(responseCollectionFieldTypePattern, fieldType)
+
+    fun extractCapitalizedItemNameFromRelationResponseCollectionFieldType(fieldType: String) = getFirstMatch(relationResponseCollectionFieldTypePattern, fieldType)
 
     fun extractCapitalizedItemNameFromCustomMethodResponseFieldType(fieldType: String) = getFirstMatch(customMethodResponseFieldTypePattern, fieldType)
 

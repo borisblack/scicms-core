@@ -16,6 +16,7 @@ class ResponseDataFetcher(
         val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()
+            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
         val result = dataEngine.getResponse(itemName, dfe.arguments[ID_ARG_NAME] as String, selectAttrNames)
 

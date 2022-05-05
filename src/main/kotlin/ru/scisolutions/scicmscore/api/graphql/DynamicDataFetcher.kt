@@ -32,6 +32,7 @@ class DynamicDataFetcher(
     private val responseDataFetcher: ResponseDataFetcher,
     private val relationResponseDataFetcher: RelationResponseDataFetcher,
     private val responseCollectionDataFetcher: ResponseCollectionDataFetcher,
+    private val relationResponseCollectionDataFetcher: RelationResponseCollectionDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
@@ -110,7 +111,7 @@ class DynamicDataFetcher(
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseDataFetcher)
                 } else if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), RelationResponseCollectionDataFetcher())
+                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseCollectionDataFetcher)
                 }
             }
     }

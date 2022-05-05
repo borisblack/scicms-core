@@ -6,8 +6,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
 import java.nio.file.Files
 import java.nio.file.Path
@@ -17,10 +17,10 @@ import kotlin.streams.toList
 
 @Service
 class FileModelsReader(
-    @Value("\${scicms-core.schema.path}")
-    private val schemaPath: String
+    private val schemaProps: SchemaProps
 ) : ModelsReader {
     override fun read(): Collection<AbstractModel> {
+        val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")
         logger.info("Reading the models path [{}]", schemaPath)
         val models = Files.walk(Paths.get(schemaPath))
             .filter(Files::isRegularFile)

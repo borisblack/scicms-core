@@ -16,18 +16,15 @@ class RelationResponseDataFetcher(
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
         val capitalizedParentItemName = DataFetcherUtil.parseFieldType(dfe.parentType)
         val parentItemName = capitalizedParentItemName.decapitalize()
-
         val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
         val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromRelationResponseFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
-
         val sourceItemRec: ItemRec = dfe.getSource()
-
         val attrName = dfe.field.name
-
         val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()
+            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
         val result = dataEngine.getRelationResponse(
             parentItemName,

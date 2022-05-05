@@ -9,11 +9,12 @@ import liquibase.changelog.DatabaseChangeLog
 import liquibase.database.DatabaseFactory
 import liquibase.database.jvm.JdbcConnection
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.schema.seeder.ItemSeeder
+import ru.scisolutions.scicmscore.config.props.I18nProps
+import ru.scisolutions.scicmscore.config.props.VersioningProps
 import ru.scisolutions.scicmscore.engine.schema.model.Item
+import ru.scisolutions.scicmscore.engine.schema.seeder.ItemSeeder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.sql.DataSource
@@ -21,13 +22,14 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class LiquibaseItemSeeder(
-    @Value("\${scicms-core.schema.versioning.include-in-unique-index:true}")
-    private val versioningIncludeInUniqueIndex: Boolean,
-    @Value("\${scicms-core.schema.i18n.include-in-unique-index:true}")
-    private val i18nIncludeInUniqueIndex: Boolean,
+    private val versioningProps: VersioningProps,
+    private val i18nProps: I18nProps,
     private val dataSource: DataSource
 ) : ItemSeeder {
-    private val liquibaseIndexes = LiquibaseIndexes(versioningIncludeInUniqueIndex, i18nIncludeInUniqueIndex)
+    private val liquibaseIndexes = LiquibaseIndexes(
+        versioningProps.includeInUniqueIndex,
+        i18nProps.includeInUniqueIndex
+    )
 
     override fun create(item: Item) {
         val metadata = item.metadata

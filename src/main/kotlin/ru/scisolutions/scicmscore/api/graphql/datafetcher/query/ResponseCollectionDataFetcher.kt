@@ -22,6 +22,7 @@ class ResponseCollectionDataFetcher(
         val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()
+            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
         val responseCollectionInput = responseCollectionInputMapper.map(itemName, dfe.arguments)
         val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()

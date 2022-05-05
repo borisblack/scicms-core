@@ -25,6 +25,6 @@ spec:
       type: relation
       relType: oneToMany
       target: access
-      mappedBy: target
+      mappedBy: source
       displayName: Access
       description: Access

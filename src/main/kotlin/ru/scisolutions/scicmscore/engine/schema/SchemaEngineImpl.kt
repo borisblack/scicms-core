@@ -1,8 +1,8 @@
 package ru.scisolutions.scicmscore.engine.schema
 
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.schema.handler.relation.ManyToManyRelationHandler
@@ -19,10 +19,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class SchemaEngineImpl(
-    @Value("\${scicms-core.schema.read-on-init:true}")
-    readOnInit: Boolean,
-    @Value("\${scicms-core.schema.seed-on-init:true}")
-    seedOnInit: Boolean,
+    schemaProps: SchemaProps,
     modelsReader: ModelsReader,
     schemaSeeder: SchemaSeeder,
     private val oneToOneRelationHandler: OneToOneRelationHandler,
@@ -34,13 +31,13 @@ class SchemaEngineImpl(
     private val items = mutableMapOf<String, Item>()
 
     init {
-        if (readOnInit) {
+        if (schemaProps.readOnInit) {
             logger.info("Schema read flag enabled. Trying to read")
             val models = modelsReader.read()
             addModels(models)
         }
 
-        if (seedOnInit) {
+        if (schemaProps.seedOnInit) {
             logger.info("Schema seed flag enabled. Trying to seed")
             schemaSeeder.seed(getItems())
         }

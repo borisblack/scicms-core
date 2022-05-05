@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.persistence.entity.Media
 
 interface DataEngine {
@@ -38,6 +39,16 @@ interface DataEngine {
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection
+
+    fun getRelationResponseCollection(
+        parentItemName: String,
+        itemName: String,
+        sourceItemRec: ItemRec,
+        attrName: String,
+        input: ResponseCollectionInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): RelationResponseCollection
 
     fun getCustomMethods(itemName: String): Set<String>
 

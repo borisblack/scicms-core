@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.domain.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.Objects
 
 class Attribute(
@@ -29,6 +30,9 @@ class Attribute(
     enum class Type { uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation }
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
+
+    @JsonIgnore
+    fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
 
     override fun hashCode(): Int =
         Objects.hash(

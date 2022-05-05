@@ -38,6 +38,26 @@ spec:
       columnName: target_id
       displayName: Target Identity
       description: Target Identity
+    mask:
+      type: int
+      columnName: mask
+      displayName: Access Mask
+      description: Access Mask
+      required: true
+#      private: true
+      minRange: 0
+      maxRange: 31
+    beginDate:
+      type: datetime
+      columnName: begin_date
+      displayName: Begin Date
+      description: Begin Date
+      required: true
+    endDate:
+      type: datetime
+      columnName: end_date
+      displayName: End Date
+      description: End Date
   indexes:
     sec_access_source_target_uk:
       columns:

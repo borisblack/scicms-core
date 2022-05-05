@@ -7,6 +7,7 @@ import ru.scisolutions.scicmscore.engine.data.handler.ResponseHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
@@ -16,7 +17,8 @@ class ResponseHandlerImpl(
 ) : ResponseHandler {
     override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getItemOrThrow(itemName)
-        val itemRec = itemRecDao.findByIdForRead(item, id, selectAttrNames)
+        val nonCollectionAttrNames = filterNonCollection(item, selectAttrNames)
+        val itemRec = itemRecDao.findByIdForRead(item, id, nonCollectionAttrNames)
 
         return Response(itemRec)
     }
@@ -35,12 +37,24 @@ class ResponseHandlerImpl(
         }
 
         val item = itemService.getItemOrThrow(itemName)
-        val itemRec = itemRecDao.findByIdForRead(item, id, selectAttrNames)
+        val nonCollectionAttrNames = filterNonCollection(item, selectAttrNames).plus(ID_ATTR_NAME)
+        val itemRec = itemRecDao.findByIdForRead(item, id, nonCollectionAttrNames)
 
         return RelationResponse(itemRec)
     }
 
+    private fun filterNonCollection(item: Item, selectAttrNames: Set<String>): Set<String> =
+        selectAttrNames
+            .filter {
+                val attribute = item.spec.getAttributeOrThrow(it)
+                !attribute.isCollection()
+            }
+            .toSet()
+            .ifEmpty { throw IllegalArgumentException("Non-collection selection set is empty") }
+
     companion object {
+        private const val ID_ATTR_NAME = "id"
+
         private val logger = LoggerFactory.getLogger(ResponseHandlerImpl::class.java)
     }
 }

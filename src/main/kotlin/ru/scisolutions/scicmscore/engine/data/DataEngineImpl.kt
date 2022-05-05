@@ -14,6 +14,7 @@ import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
+import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.persistence.entity.Media
@@ -53,6 +54,17 @@ class DataEngineImpl(
         selectPaginationFields: Set<String>
     ): ResponseCollection =
         responseCollectionHandler.getResponseCollection(itemName, input, selectAttrNames, selectPaginationFields)
+
+    override fun getRelationResponseCollection(
+        parentItemName: String,
+        itemName: String,
+        sourceItemRec: ItemRec,
+        attrName: String,
+        input: ResponseCollectionInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): RelationResponseCollection =
+        responseCollectionHandler.getRelationResponseCollection(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 
