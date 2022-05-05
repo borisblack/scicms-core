@@ -166,6 +166,29 @@ input JSONFilterInput {
     not: JSONFilterInput
 }
 
+input ObjectFilterInput {
+    contains: Object
+    containsi: Object
+    notContains: Object
+    notContainsi: Object
+    startsWith: Object
+    endsWith: Object
+    eq: Object
+    ne: Object
+    gt: Object
+    gte: Object
+    lt: Object
+    lte: Object
+    between: [Object]
+    in: [Object]
+    notIn: [Object]
+    null: Boolean
+    notNull: Boolean
+    and: [ObjectFilterInput]
+    or: [ObjectFilterInput]
+    not: ObjectFilterInput
+}
+
 input PaginationInput {
     page: Int
     pageSize: Int
@@ -179,7 +202,7 @@ type Pagination {
     start: Int
     limit: Int
     total: Int!
-    pageCount: Int!
+    pageCount: Int
 }
 
 type ResponseCollectionMeta {

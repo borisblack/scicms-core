@@ -25,8 +25,7 @@ class RelationResponseDataFetcher(
 
         val attrName = dfe.field.name
 
-        val dataField = dfe.selectionSet.fields[0]
-        val selectedAttrNames = dataField.selectionSet.getFields("*").asSequence() // root fields
+        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()
 
@@ -35,7 +34,7 @@ class RelationResponseDataFetcher(
             itemName,
             sourceItemRec,
             attrName,
-            selectedAttrNames
+            selectAttrNames
         )
 
         return DataFetcherResult.newResult<RelationResponse>()

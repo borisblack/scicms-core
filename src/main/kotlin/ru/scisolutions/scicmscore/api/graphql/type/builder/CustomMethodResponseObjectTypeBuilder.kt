@@ -14,7 +14,7 @@ class CustomMethodResponseObjectTypeBuilder(private val item: Item) : ObjectType
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
-                    .type(TypeNames.JSON)
+                    .type(TypeNames.OBJECT)
                     .build()
             )
             .build()

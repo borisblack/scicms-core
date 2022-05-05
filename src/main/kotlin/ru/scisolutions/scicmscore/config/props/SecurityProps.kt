@@ -5,10 +5,14 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties(prefix = "scicms-core.security.jwt-token")
-class JwtTokenProps {
-    var id: String = DEFAULT_ID
-    var secret: String = DEFAULT_SECRET
-    var expirationIntervalMillis: Long = DEFAULT_EXPIRATION_INTERVAL_MILLIS
+class SecurityProps {
+    var jwtToken: JwtToken = JwtToken()
+
+    class JwtToken {
+        var id: String = DEFAULT_ID
+        var secret: String = DEFAULT_SECRET
+        var expirationIntervalMillis: Long = DEFAULT_EXPIRATION_INTERVAL_MILLIS
+    }
 
     companion object {
         const val DEFAULT_ID: String = "scisolutionsJWT"

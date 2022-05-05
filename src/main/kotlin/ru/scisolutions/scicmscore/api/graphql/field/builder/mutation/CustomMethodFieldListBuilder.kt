@@ -18,7 +18,7 @@ class CustomMethodFieldListBuilder(private val itemName: String, private val cus
                     .inputValueDefinition(
                         InputValueDefinition.newInputValueDefinition()
                             .name("data")
-                            .type(TypeNames.JSON)
+                            .type(TypeNames.OBJECT)
                             .build()
                     )
                     .build()

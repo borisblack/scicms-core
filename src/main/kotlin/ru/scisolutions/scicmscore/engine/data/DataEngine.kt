@@ -32,7 +32,12 @@ interface DataEngine {
         selectAttrNames: Set<String>
     ): RelationResponse
 
-    fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection
+    fun getResponseCollection(
+        itemName: String,
+        input: ResponseCollectionInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): ResponseCollection
 
     fun getCustomMethods(itemName: String): Set<String>
 

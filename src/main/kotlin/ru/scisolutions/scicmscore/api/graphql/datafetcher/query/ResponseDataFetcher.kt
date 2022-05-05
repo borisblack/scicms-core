@@ -13,8 +13,7 @@ class ResponseDataFetcher(
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val itemName = dfe.field.name
-        val dataField = dfe.selectionSet.fields[0]
-        val selectAttrNames = dataField.selectionSet.getFields("*").asSequence() // root fields
+        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()
 

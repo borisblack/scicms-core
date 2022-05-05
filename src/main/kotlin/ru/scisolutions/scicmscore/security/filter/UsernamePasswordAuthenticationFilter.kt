@@ -14,7 +14,7 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
-import ru.scisolutions.scicmscore.config.props.JwtTokenProps
+import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.User
 import javax.servlet.FilterChain
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse
 class UsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val jwtTokenService: JwtTokenService,
-    private val jwtTokenProps: JwtTokenProps
+    private val securityProps: SecurityProps
 ) : GenericFilterBean() {
     override fun doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) {
         req as HttpServletRequest
@@ -91,7 +91,7 @@ class UsernamePasswordAuthenticationFilter(
         val user = (authentication.principal as User).user
         val tokenResponse = TokenResponse(
             jwt = jwtToken,
-            expirationIntervalMillis = jwtTokenProps.expirationIntervalMillis,
+            expirationIntervalMillis = securityProps.jwtToken.expirationIntervalMillis,
             user = UserInfo(
                 id = user.id,
                 username = user.username,

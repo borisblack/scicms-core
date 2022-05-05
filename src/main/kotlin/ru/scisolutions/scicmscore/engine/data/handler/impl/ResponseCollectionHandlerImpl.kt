@@ -11,13 +11,16 @@ import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
+import ru.scisolutions.scicmscore.engine.data.db.Paginator
 import ru.scisolutions.scicmscore.engine.data.db.query.FilterConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.LocaleConditionBuilder
+import ru.scisolutions.scicmscore.engine.data.db.query.OrderingsParser
 import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.util.AccessUtil
@@ -28,25 +31,42 @@ class ResponseCollectionHandlerImpl(
     private val filterConditionBuilder: FilterConditionBuilder,
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val versionConditionBuilder: VersionConditionBuilder,
+    private val paginator: Paginator,
     private val jdbcTemplate: JdbcTemplate
 ) : ResponseCollectionHandler {
-    override fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection {
+    override fun getResponseCollection(
+        itemName: String,
+        input: ResponseCollectionInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): ResponseCollection {
         val item = itemService.getItemOrThrow(itemName)
-        val itemRecList = findAll(item, selectAttrNames, input)
+        val query = buildFindAllQuery(item, input, selectAttrNames)
 
-        return ResponseCollection(itemRecList)
-    }
+        val pagination = paginator.paginate(query, input.pagination, selectPaginationFields)
 
-    private fun findAll(item: Item, selectAttrNames: Set<String>, input: ResponseCollectionInput): List<ItemRec> {
-        val sql = buildFindAllSql(item, selectAttrNames, input)
+        // Sort
+        if (!input.sort.isNullOrEmpty()) {
+            val orderings = orderingsParser.parseOrderings(item, input.sort)
+            query.addCustomOrderings(*orderings.toTypedArray())
+        }
+
+        val sql = query
+            .validate()
+            .toString()
 
         logger.debug("Running SQL: {}", sql)
         val itemRecList: List<ItemRec> = jdbcTemplate.query(sql, ItemRecMapper(item))
 
-        return itemRecList
+        return ResponseCollection(
+            data = itemRecList,
+            meta = ResponseCollectionMeta(
+                pagination = pagination
+            )
+        )
     }
 
-    private fun buildFindAllSql(item: Item, selectAttrNames: Set<String>, input: ResponseCollectionInput): String {
+    private fun buildFindAllQuery(item: Item, input: ResponseCollectionInput, selectAttrNames: Set<String>): SelectQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val table = DbTable(schema, item.tableName)
@@ -82,16 +102,13 @@ class ResponseCollectionHandlerImpl(
             .addCondition(
                 InCondition(permissionIdCol, CustomSql(AccessUtil.getPermissionIdsForReadStatement()))
             )
-            .validate().toString()
+            .validate()
     }
 
     companion object {
         private const val PERMISSION_ID_COL_NAME = "permission_id"
-        private const val IS_CURRENT_COL_NAME = "is_current"
-        private const val MAJOR_REV_COL_NAME = "major_rev"
-        private const val LOCALE_COL_NAME = "locale"
-        private const val ALL = "all"
 
         private val logger = LoggerFactory.getLogger(ResponseCollectionHandlerImpl::class.java)
+        private val orderingsParser = OrderingsParser()
     }
 }

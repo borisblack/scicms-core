@@ -4,10 +4,12 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.Authentication
-import ru.scisolutions.scicmscore.config.props.JwtTokenProps
+import ru.scisolutions.scicmscore.config.props.SecurityProps
 import java.util.Date
 
-class JwtTokenService(private val jwtTokenProps: JwtTokenProps) {
+class JwtTokenService(private val securityProps: SecurityProps) {
+    private val jwtTokenProps = securityProps.jwtToken
+
     fun generateJwtToken(authentication: Authentication): String =
         Jwts.builder()
             .setId(jwtTokenProps.id)

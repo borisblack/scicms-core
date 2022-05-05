@@ -8,6 +8,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.ResponseCollectionInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
 
 @Component
 class ResponseCollectionDataFetcher(
@@ -18,13 +19,16 @@ class ResponseCollectionDataFetcher(
         val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
         val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromResponseCollectionFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
-        val dataField = dfe.selectionSet.fields[0]
-        val selectAttrNames = dataField.selectionSet.getFields("*").asSequence() // root fields
+        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()
 
         val responseCollectionInput = responseCollectionInputMapper.map(itemName, dfe.arguments)
-        val result = dataEngine.getResponseCollection(itemName, responseCollectionInput, selectAttrNames)
+        val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
+            .map { it.name }
+            .toSet()
+
+        val result = dataEngine.getResponseCollection(itemName, responseCollectionInput, selectAttrNames, selectPaginationFields)
 
         return DataFetcherResult.newResult<ResponseCollection>()
             .data(result)

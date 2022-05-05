@@ -1,4 +1,7 @@
 scicms-core:
+  data:
+    default-limit: 25
+    maz-limit: 100
   i18n:
     default-locale: en-US
     include-in-unique-index: true

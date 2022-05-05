@@ -4,5 +4,10 @@ import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInpu
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 
 interface ResponseCollectionHandler {
-    fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection
+    fun getResponseCollection(
+        itemName: String,
+        input: ResponseCollectionInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): ResponseCollection
 }

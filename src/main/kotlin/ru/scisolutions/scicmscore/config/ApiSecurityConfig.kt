@@ -12,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import ru.scisolutions.scicmscore.config.props.JwtTokenProps
+import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.security.CustomLogoutHandler
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.filter.JwtTokenAuthenticationFilter
@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @EnableWebSecurity
 class ApiSecurityConfig(
-    private val jwtTokenProps: JwtTokenProps,
+    private val securityProps: SecurityProps,
     private val usernamePasswordAuthenticationProvider: UsernamePasswordAuthenticationProvider
 ) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
@@ -69,10 +69,10 @@ class ApiSecurityConfig(
 
     @Bean
     fun usernamePasswordAuthenticationFilter(): Filter =
-        UsernamePasswordAuthenticationFilter(authenticationManager(), jwtTokenService(), jwtTokenProps)
+        UsernamePasswordAuthenticationFilter(authenticationManager(), jwtTokenService(), securityProps)
 
     @Bean
-    fun jwtTokenService(): JwtTokenService = JwtTokenService(jwtTokenProps)
+    fun jwtTokenService(): JwtTokenService = JwtTokenService(securityProps)
 
     @Bean
     fun jwtTokenAuthenticationFilter(): Filter = JwtTokenAuthenticationFilter(authenticationManager())

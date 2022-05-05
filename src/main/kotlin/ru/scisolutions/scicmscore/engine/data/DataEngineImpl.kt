@@ -46,8 +46,13 @@ class DataEngineImpl(
     ): RelationResponse =
         responseHandler.getRelationResponse(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
 
-    override fun getResponseCollection(itemName: String, input: ResponseCollectionInput, selectAttrNames: Set<String>): ResponseCollection =
-        responseCollectionHandler.getResponseCollection(itemName, input, selectAttrNames)
+    override fun getResponseCollection(
+        itemName: String,
+        input: ResponseCollectionInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): ResponseCollection =
+        responseCollectionHandler.getResponseCollection(itemName, input, selectAttrNames, selectPaginationFields)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 
