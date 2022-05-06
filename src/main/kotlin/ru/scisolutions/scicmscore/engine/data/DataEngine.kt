@@ -10,10 +10,14 @@ import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
+import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.persistence.entity.Media
 
+/**
+ * General facade for all operations with data
+ */
 interface DataEngine {
     fun me(): UserInfo?
 
@@ -45,7 +49,7 @@ interface DataEngine {
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: ResponseCollectionInput,
+        input: RelationResponseCollectionInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection

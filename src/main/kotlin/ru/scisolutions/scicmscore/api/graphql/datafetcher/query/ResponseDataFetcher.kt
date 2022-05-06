@@ -18,7 +18,8 @@ class ResponseDataFetcher(
             .toSet()
             .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
-        val result = dataEngine.getResponse(itemName, dfe.arguments[ID_ARG_NAME] as String, selectAttrNames)
+        val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null")
+        val result = dataEngine.getResponse(itemName, id, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

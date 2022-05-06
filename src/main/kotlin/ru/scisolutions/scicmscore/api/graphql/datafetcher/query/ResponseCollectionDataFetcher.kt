@@ -8,7 +8,6 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.ResponseCollectionInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
-import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
 
 @Component
 class ResponseCollectionDataFetcher(
@@ -24,7 +23,7 @@ class ResponseCollectionDataFetcher(
             .toSet()
             .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
-        val responseCollectionInput = responseCollectionInputMapper.map(itemName, dfe.arguments)
+        val responseCollectionInput = responseCollectionInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
         val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
             .map { it.name }
             .toSet()

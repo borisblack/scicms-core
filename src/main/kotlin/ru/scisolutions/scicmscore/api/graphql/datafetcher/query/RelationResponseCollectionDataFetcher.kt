@@ -23,7 +23,7 @@ class RelationResponseCollectionDataFetcher(
         val itemName = capitalizedItemName.decapitalize()
         val sourceItemRec: ItemRec = dfe.getSource()
         val attrName = dfe.field.name
-        val responseCollectionInput = responseCollectionInputMapper.map(itemName, dfe.arguments)
+        val responseCollectionInput = responseCollectionInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
         val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()

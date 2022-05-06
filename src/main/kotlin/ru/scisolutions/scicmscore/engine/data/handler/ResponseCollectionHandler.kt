@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine.data.handler
 
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
@@ -18,7 +19,7 @@ interface ResponseCollectionHandler {
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: ResponseCollectionInput,
+        input: RelationResponseCollectionInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection

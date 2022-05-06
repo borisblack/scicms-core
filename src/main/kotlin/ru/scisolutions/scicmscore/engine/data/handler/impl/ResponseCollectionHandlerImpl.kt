@@ -18,15 +18,17 @@ import ru.scisolutions.scicmscore.engine.data.db.query.OrderingsParser
 import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
+import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
-import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.util.AccessUtil
@@ -53,7 +55,7 @@ class ResponseCollectionHandlerImpl(
         // Query
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildFindAllQuery(schema, item, input, attrNames)
+        val query = buildFindAllQuery(schema, item, input.filters, attrNames)
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
 
         // Version
@@ -92,7 +94,7 @@ class ResponseCollectionHandlerImpl(
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: ResponseCollectionInput,
+        input: RelationResponseCollectionInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
@@ -102,7 +104,7 @@ class ResponseCollectionHandlerImpl(
         // Query
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildFindAllQuery(schema, item, input, attrNames)
+        val query = buildFindAllQuery(schema, item, input.filters, attrNames)
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
 
         val parentItem = itemService.getItemOrThrow(parentItemName)
@@ -167,7 +169,7 @@ class ResponseCollectionHandlerImpl(
     private fun buildFindAllQuery(
         schema: DbSchema,
         item: Item,
-        input: ResponseCollectionInput,
+        filters: ItemFiltersInput?,
         selectAttrNames: Set<String>
     ): SelectQuery {
         val table = schema.addTable(item.tableName)
@@ -183,9 +185,9 @@ class ResponseCollectionHandlerImpl(
             .addColumns(*columns)
 
         // Filters
-        if (input.filters != null) {
+        if (filters != null) {
             query.addCondition(
-                filterConditionBuilder.newFilterCondition(schema, table, query, item, input.filters)
+                filterConditionBuilder.newFilterCondition(schema, table, query, item, filters)
             )
         }
 
