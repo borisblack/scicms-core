@@ -16,7 +16,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.data.model.input.PrimitiveFilterInput
-import ru.scisolutions.scicmscore.engine.schema.SchemaEngine
+import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -31,7 +31,7 @@ import ru.scisolutions.scicmscore.service.ItemService
 @Component
 class FilterConditionBuilder(
     private val itemService: ItemService,
-    private val schemaEngine: SchemaEngine
+    private val relationManager: RelationManager
 ) {
     fun newFilterCondition(schema: DbSchema, table: DbTable, query: SelectQuery, item: Item, itemFiltersInput: ItemFiltersInput
     ): Condition {
@@ -46,7 +46,7 @@ class FilterConditionBuilder(
                 val targetTable = DbTable(schema, targetItem.tableName)
                 val idCol = DbColumn(table, ID_COL_NAME, null, null)
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
-                when (val relation = schemaEngine.getAttributeRelation(item, attrName)) {
+                when (val relation = relationManager.getAttributeRelation(item, attrName)) {
                     is OneToOneUnidirectionalRelation -> {
                         val col = DbColumn(table, relation.getColumnName(), null, null)
                         query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))

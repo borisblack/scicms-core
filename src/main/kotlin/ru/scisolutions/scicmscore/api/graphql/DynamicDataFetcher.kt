@@ -109,7 +109,7 @@ class DynamicDataFetcher(
                 if (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseDataFetcher)
-                } else if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany) {
+                } else if (attribute.isCollection()) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseCollectionDataFetcher)
                 }

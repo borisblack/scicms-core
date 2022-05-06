@@ -17,8 +17,8 @@ class ResponseHandlerImpl(
 ) : ResponseHandler {
     override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getItemOrThrow(itemName)
-        val nonCollectionAttrNames = filterNonCollection(item, selectAttrNames)
-        val itemRec = itemRecDao.findByIdForRead(item, id, nonCollectionAttrNames)
+        val attrNames = adjustAttrNames(item, selectAttrNames)
+        val itemRec = itemRecDao.findByIdForRead(item, id, attrNames)
 
         return Response(itemRec)
     }
@@ -37,20 +37,20 @@ class ResponseHandlerImpl(
         }
 
         val item = itemService.getItemOrThrow(itemName)
-        val nonCollectionAttrNames = filterNonCollection(item, selectAttrNames).plus(ID_ATTR_NAME)
-        val itemRec = itemRecDao.findByIdForRead(item, id, nonCollectionAttrNames)
+        val attrNames = adjustAttrNames(item, selectAttrNames)
+        val itemRec = itemRecDao.findByIdForRead(item, id, attrNames)
 
         return RelationResponse(itemRec)
     }
 
-    private fun filterNonCollection(item: Item, selectAttrNames: Set<String>): Set<String> =
-        selectAttrNames
+    private fun adjustAttrNames(item: Item, selectAttrNames: Set<String>): Set<String> =
+        selectAttrNames.asSequence()
             .filter {
                 val attribute = item.spec.getAttributeOrThrow(it)
                 !attribute.isCollection()
             }
+            .plus(ID_ATTR_NAME)
             .toSet()
-            .ifEmpty { throw IllegalArgumentException("Non-collection selection set is empty") }
 
     companion object {
         private const val ID_ATTR_NAME = "id"

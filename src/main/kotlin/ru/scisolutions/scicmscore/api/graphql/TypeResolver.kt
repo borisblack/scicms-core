@@ -33,7 +33,7 @@ class TypeResolver {
                 requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
                 val capitalizedTargetItemName = attribute.target.capitalize()
-                if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
+                if (attribute.isCollection())
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
                     TypeName("${capitalizedTargetItemName}RelationResponse").nonNull(attribute.required)
@@ -86,10 +86,7 @@ class TypeResolver {
                 requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
                 requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
-                if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
-                    ListType(TypeNames.ID)
-                else
-                    TypeNames.ID
+                if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }

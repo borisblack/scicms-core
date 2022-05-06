@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.engine.schema.model.Item
+import ru.scisolutions.scicmscore.engine.schema.model.Schema
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
@@ -13,7 +14,9 @@ class SchemaSeederImpl(
     private val itemService: ItemService,
     private val itemSeeder: ItemSeeder
 ) : SchemaSeeder {
-    override fun seed(items: Map<String, Item>) {
+    override fun seed(schema: Schema) {
+        val items = schema.getItemsIncludeTemplates()
+
         // Create/update items
         seedItems(items)
 

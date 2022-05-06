@@ -35,7 +35,7 @@ class ItemObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
             .name(attrName)
             .type(typeResolver.objectType(attrName, attribute))
 
-        if (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)) {
+        if (attribute.isCollection()) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
 
             val capitalizedTargetItemName = attribute.target.capitalize()

@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.engine.schema.handler.relation
+package ru.scisolutions.scicmscore.engine.schema.relation.handler
 
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
@@ -6,18 +6,17 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
-class ManyToManyRelationHandler(private val itemService: ItemService) : RelationHandler {
+class ManyToManyRelationHandler(
+    private val relationValidator: RelationValidator,
+    private val itemService: ItemService
+) : RelationHandler {
     override fun getAttributeRelation(item: Item, attrName: String): ManyToManyBidirectionalRelation {
+        relationValidator.validateAttribute(item, attrName)
+
         val attribute = item.spec.getAttributeOrThrow(attrName)
-
-        requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field" }
-
-        val targetItem = itemService.getItemOrThrow(attribute.target)
+        val targetItem = itemService.getItemOrThrow(requireNotNull(attribute.target))
 
         // Validate attribute
-        if (attribute.inversedBy != null && attribute.mappedBy != null)
-            throw IllegalStateException("Attribute has both inversedBy and mappedBy fields, which is an invalid relation state")
-
         if (attribute.inversedBy == null && attribute.mappedBy == null)
             throw IllegalStateException("Attribute does not have an inversedBy or mappedBy field, which is required for the manyToMany relationship")
 

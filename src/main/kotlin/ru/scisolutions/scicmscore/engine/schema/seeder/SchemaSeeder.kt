@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.seeder
 
-import ru.scisolutions.scicmscore.engine.schema.model.Item
+import ru.scisolutions.scicmscore.engine.schema.model.Schema
 
 interface SchemaSeeder {
-    fun seed(items: Map<String, Item>)
+    fun seed(schema: Schema)
 }

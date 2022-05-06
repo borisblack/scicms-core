@@ -1,8 +1,8 @@
-package ru.scisolutions.scicmscore.engine.schema.handler.relation
+package ru.scisolutions.scicmscore.engine.schema.relation
 
 import ru.scisolutions.scicmscore.engine.schema.model.relation.Relation
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
-interface RelationHandler {
+interface RelationManager {
     fun getAttributeRelation(item: Item, attrName: String): Relation
 }

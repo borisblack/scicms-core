@@ -22,7 +22,7 @@ import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInpu
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
-import ru.scisolutions.scicmscore.engine.schema.SchemaEngine
+import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -33,7 +33,7 @@ import ru.scisolutions.scicmscore.util.AccessUtil
 
 @Service
 class ResponseCollectionHandlerImpl(
-    private val schemaEngine: SchemaEngine,
+    private val relationManager: RelationManager,
     private val itemService: ItemService,
     private val filterConditionBuilder: FilterConditionBuilder,
     private val localeConditionBuilder: LocaleConditionBuilder,
@@ -48,12 +48,23 @@ class ResponseCollectionHandlerImpl(
         selectPaginationFields: Set<String>
     ): ResponseCollection {
         val item = itemService.getItemOrThrow(itemName)
-        val nonCollectionAttrNames = filterNonCollection(item, selectAttrNames).plus(ID_ATTR_NAME)
+        val attrNames = adjustAttrNames(item, selectAttrNames)
 
         // Query
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildFindAllQuery(schema, item, input, nonCollectionAttrNames)
+        val query = buildFindAllQuery(schema, item, input, attrNames)
+        val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
+
+        // Version
+        val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
+        if (versionCondition != null)
+            query.addCondition(versionCondition)
+
+        // Locale
+        val localeCondition = localeConditionBuilder.newLocaleCondition(table, item, input.locale)
+        if (localeCondition != null)
+            query.addCondition(localeCondition)
 
         val pagination = paginator.paginate(query, input.pagination, selectPaginationFields)
 
@@ -86,17 +97,17 @@ class ResponseCollectionHandlerImpl(
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
         val item = itemService.getItemOrThrow(itemName)
-        val nonCollectionAttrNames = filterNonCollection(item, selectAttrNames).plus(ID_ATTR_NAME)
+        val attrNames = adjustAttrNames(item, selectAttrNames)
 
         // Query
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildFindAllQuery(schema, item, input, nonCollectionAttrNames)
+        val query = buildFindAllQuery(schema, item, input, attrNames)
+        val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
 
         val parentItem = itemService.getItemOrThrow(parentItemName)
         val parentId = sourceItemRec[ID_ATTR_NAME] ?: IllegalArgumentException("Source ID not found")
-        val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
-        when (val parentRelation = schemaEngine.getAttributeRelation(parentItem, attrName)) {
+        when (val parentRelation = relationManager.getAttributeRelation(parentItem, attrName)) {
             is OneToManyInversedBidirectionalRelation -> {
                 val owningCol = DbColumn(table, parentRelation.getOwningColumnName(), null, null)
                 query.addCondition(BinaryCondition.equalTo(owningCol, parentId))
@@ -109,16 +120,16 @@ class ResponseCollectionHandlerImpl(
 
                 when (parentRelation) {
                     is ManyToManyUnidirectionalRelation -> {
-                        query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, sourceIntermediateCol))
-                        query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentId))
+                        query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, targetIntermediateCol))
+                        query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentId))
                     }
                     is ManyToManyBidirectionalRelation -> {
                         if (parentRelation.isOwning) {
-                            query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, sourceIntermediateCol))
-                            query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentId))
-                        } else {
                             query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, targetIntermediateCol))
                             query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentId))
+                        } else {
+                            query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, sourceIntermediateCol))
+                            query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentId))
                         }
                     }
                 }
@@ -144,14 +155,14 @@ class ResponseCollectionHandlerImpl(
         )
     }
 
-    private fun filterNonCollection(item: Item, selectAttrNames: Set<String>): Set<String> =
-        selectAttrNames
+    private fun adjustAttrNames(item: Item, selectAttrNames: Set<String>): Set<String> =
+        selectAttrNames.asSequence()
             .filter {
                 val attribute = item.spec.getAttributeOrThrow(it)
                 !attribute.isCollection()
             }
+            .plus(ID_ATTR_NAME)
             .toSet()
-            .ifEmpty { throw IllegalArgumentException("Non-collection selection set is empty") }
 
     private fun buildFindAllQuery(
         schema: DbSchema,
@@ -170,16 +181,6 @@ class ResponseCollectionHandlerImpl(
 
         val query = SelectQuery()
             .addColumns(*columns)
-
-        // Version
-        val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
-        if (versionCondition != null)
-            query.addCondition(versionCondition)
-
-        // Locale
-        val localeCondition = localeConditionBuilder.newLocaleCondition(table, item, input.locale)
-        if (localeCondition != null)
-            query.addCondition(localeCondition)
 
         // Filters
         if (input.filters != null) {
