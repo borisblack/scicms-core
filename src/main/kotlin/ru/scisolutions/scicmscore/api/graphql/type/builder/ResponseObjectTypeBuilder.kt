@@ -5,8 +5,8 @@ import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
-class ResponseObjectTypeBuilder(private val item: Item) : ObjectTypeBuilder {
-    override fun build(): ObjectTypeDefinition {
+class ResponseObjectTypeBuilder : ObjectTypeBuilder {
+    override fun fromItem(item: Item): ObjectTypeDefinition {
         val capitalizedItemName = item.name.capitalize()
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}Response")

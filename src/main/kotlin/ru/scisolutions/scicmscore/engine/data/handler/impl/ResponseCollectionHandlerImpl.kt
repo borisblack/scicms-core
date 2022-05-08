@@ -1,20 +1,21 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
 import com.healthmarketscience.sqlbuilder.BinaryCondition
-import com.healthmarketscience.sqlbuilder.CustomSql
 import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.SelectQuery
+import com.healthmarketscience.sqlbuilder.UnaryCondition
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import org.slf4j.LoggerFactory
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.config.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.data.db.Paginator
 import ru.scisolutions.scicmscore.engine.data.db.query.FilterConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.LocaleConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.OrderingsParser
+import ru.scisolutions.scicmscore.engine.data.db.query.ReleasedConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
@@ -31,17 +32,19 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversed
 import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
-import ru.scisolutions.scicmscore.util.AccessUtil
+import ru.scisolutions.scicmscore.service.PermissionService
 
 @Service
 class ResponseCollectionHandlerImpl(
-    private val relationManager: RelationManager,
     private val itemService: ItemService,
+    private val permissionService: PermissionService,
+    private val relationManager: RelationManager,
     private val filterConditionBuilder: FilterConditionBuilder,
-    private val localeConditionBuilder: LocaleConditionBuilder,
     private val versionConditionBuilder: VersionConditionBuilder,
+    private val releasedConditionBuilder: ReleasedConditionBuilder,
+    private val localeConditionBuilder: LocaleConditionBuilder,
     private val paginator: Paginator,
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplateMap: JdbcTemplateMap
 ) : ResponseCollectionHandler {
     override fun getResponseCollection(
         itemName: String,
@@ -49,7 +52,8 @@ class ResponseCollectionHandlerImpl(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection {
-        val item = itemService.getItemOrThrow(itemName)
+        val item = itemService.getByName(itemName)
+        val jdbcTemplate = jdbcTemplateMap.getOrThrow(item.dataSource)
         val attrNames = adjustAttrNames(item, selectAttrNames)
 
         // Query
@@ -62,6 +66,11 @@ class ResponseCollectionHandlerImpl(
         val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
         if (versionCondition != null)
             query.addCondition(versionCondition)
+
+        // Released
+        val releasedCondition = releasedConditionBuilder.newReleasedCondition(table, item, input.isReleased)
+        if (releasedCondition != null)
+            query.addCondition(releasedCondition)
 
         // Locale
         val localeCondition = localeConditionBuilder.newLocaleCondition(table, item, input.locale)
@@ -98,7 +107,8 @@ class ResponseCollectionHandlerImpl(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
-        val item = itemService.getItemOrThrow(itemName)
+        val item = itemService.getByName(itemName)
+        val jdbcTemplate = jdbcTemplateMap.getOrThrow(item.dataSource)
         val attrNames = adjustAttrNames(item, selectAttrNames)
 
         // Query
@@ -107,7 +117,7 @@ class ResponseCollectionHandlerImpl(
         val query = buildFindAllQuery(schema, item, input.filters, attrNames)
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
 
-        val parentItem = itemService.getItemOrThrow(parentItemName)
+        val parentItem = itemService.getByName(parentItemName)
         val parentId = sourceItemRec[ID_ATTR_NAME] ?: IllegalArgumentException("Source ID not found")
         when (val parentRelation = relationManager.getAttributeRelation(parentItem, attrName)) {
             is OneToManyInversedBidirectionalRelation -> {
@@ -172,8 +182,10 @@ class ResponseCollectionHandlerImpl(
         filters: ItemFiltersInput?,
         selectAttrNames: Set<String>
     ): SelectQuery {
+        val permissionIds = permissionService.findIdsForRead()
         val table = schema.addTable(item.tableName)
         val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
+        val permissionCondition = if (permissionIds.isEmpty()) UnaryCondition.isNull(permissionIdCol) else InCondition(permissionIdCol, *permissionIds.toTypedArray())
         val columns = selectAttrNames
             .map {
                 val attribute = item.spec.getAttributeOrThrow(it)
@@ -192,9 +204,7 @@ class ResponseCollectionHandlerImpl(
         }
 
         return query
-            .addCondition(
-                InCondition(permissionIdCol, CustomSql(AccessUtil.getPermissionIdsForReadStatement()))
-            )
+            .addCondition(permissionCondition)
     }
 
     companion object {

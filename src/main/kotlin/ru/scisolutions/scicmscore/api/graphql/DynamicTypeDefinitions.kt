@@ -30,61 +30,65 @@ import ru.scisolutions.scicmscore.service.ItemService
 @DgsComponent
 class DynamicTypeDefinitions(
     private val itemService: ItemService,
-    private val dataEngine: DataEngine
+    private val dataEngine: DataEngine,
+    private val itemObjectTypeBuilder: ItemObjectTypeBuilder,
+    private val filtersInputObjectTypeBuilder: FiltersInputObjectTypeBuilder,
+    private val itemInputObjectTypeBuilder: ItemInputObjectTypeBuilder
 ) {
     @DgsTypeDefinitionRegistry
     fun registry(): TypeDefinitionRegistry {
         val typeDefinitionRegistry = TypeDefinitionRegistry()
+        val items = itemService.findAll()
 
         // Fill Query
         val queryBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Query")
-        itemService.items.asSequence()
-            .filter { (_, item) -> !excludeItemPolicy.excludeFromQuery(item) }
-            .forEach { (_, item) ->
-                typeDefinitionRegistry.add(ItemObjectTypeBuilder(item).build())
-                typeDefinitionRegistry.add(ResponseObjectTypeBuilder(item).build())
-                typeDefinitionRegistry.add(RelationResponseObjectTypeBuilder(item).build())
-                typeDefinitionRegistry.add(ResponseCollectionObjectTypeBuilder(item).build())
-                typeDefinitionRegistry.add(RelationResponseCollectionObjectTypeBuilder(item).build())
-                typeDefinitionRegistry.add(FiltersInputObjectTypeBuilder(item).build()) // for filtering
-                typeDefinitionRegistry.add(ItemInputObjectTypeBuilder(item).build()) // for mutations
+        items.asSequence()
+            .filter { !excludeItemPolicy.excludeFromQuery(it) }
+            .forEach {
+                typeDefinitionRegistry.add(itemObjectTypeBuilder.fromItem(it))
+                typeDefinitionRegistry.add(ResponseObjectTypeBuilder().fromItem(it))
+                typeDefinitionRegistry.add(RelationResponseObjectTypeBuilder().fromItem(it))
+                typeDefinitionRegistry.add(ResponseCollectionObjectTypeBuilder().fromItem(it))
+                typeDefinitionRegistry.add(RelationResponseCollectionObjectTypeBuilder().fromItem(it))
+                typeDefinitionRegistry.add(filtersInputObjectTypeBuilder.fromItem(it)) // for filtering
+                typeDefinitionRegistry.add(itemInputObjectTypeBuilder.fromItem(it)) // for mutations
 
-                queryBuilder.fieldDefinition(ResponseFieldBuilder(item).build())
-                queryBuilder.fieldDefinition(ResponseCollectionFieldBuilder(item).build())
+                queryBuilder.fieldDefinition(ResponseFieldBuilder().fromItem(it))
+                queryBuilder.fieldDefinition(ResponseCollectionFieldBuilder().fromItem(it))
             }
 
         typeDefinitionRegistry.add(queryBuilder.build())
 
         // Fill Mutation
         val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
-        itemService.items.asSequence()
-            .filter { (_, item) -> !excludeItemPolicy.excludeFromMutation(item) }
-            .forEach { (itemName, item) ->
-                if (!excludeItemPolicy.excludeFromCreateMutation(item))
-                    mutationBuilder.fieldDefinition(CreateFieldBuilder(item).build())
+        items.asSequence()
+            .filter { !excludeItemPolicy.excludeFromMutation(it) }
+            .forEach {
+                if (!excludeItemPolicy.excludeFromCreateMutation(it))
+                    mutationBuilder.fieldDefinition(CreateFieldBuilder().fromItem(it))
 
-                if (item.versioned)
-                    mutationBuilder.fieldDefinition(CreateVersionFieldBuilder(item).build())
-                else if (!excludeItemPolicy.excludeFromUpdateMutation(item))
-                    mutationBuilder.fieldDefinition(UpdateFieldBuilder(item).build())
+                if (it.versioned)
+                    mutationBuilder.fieldDefinition(CreateVersionFieldBuilder().fromItem(it))
+                else if (!excludeItemPolicy.excludeFromUpdateMutation(it))
+                    mutationBuilder.fieldDefinition(UpdateFieldBuilder().fromItem(it))
 
-                if (item.localized)
-                    mutationBuilder.fieldDefinition(CreateLocalizationFieldBuilder(item).build())
+                if (it.localized)
+                    mutationBuilder.fieldDefinition(CreateLocalizationFieldBuilder().fromItem(it))
 
-                mutationBuilder.fieldDefinition(DeleteFieldBuilder(item).build())
+                mutationBuilder.fieldDefinition(DeleteFieldBuilder().fromItem(it))
 
-                if (item.versioned)
-                    mutationBuilder.fieldDefinition(PurgeFieldBuilder(item).build())
+                if (it.versioned)
+                    mutationBuilder.fieldDefinition(PurgeFieldBuilder().fromItem(it))
 
-                mutationBuilder.fieldDefinition(LockFieldBuilder(item).build())
-                mutationBuilder.fieldDefinition(UnlockFieldBuilder(item).build())
-                mutationBuilder.fieldDefinition(PromoteFieldBuilder(item).build())
+                mutationBuilder.fieldDefinition(LockFieldBuilder().fromItem(it))
+                mutationBuilder.fieldDefinition(UnlockFieldBuilder().fromItem(it))
+                mutationBuilder.fieldDefinition(PromoteFieldBuilder().fromItem(it))
 
                 // Add custom mutations
-                if (item.implementation != null) {
-                    typeDefinitionRegistry.add(CustomMethodResponseObjectTypeBuilder(item).build())
+                if (it.implementation != null) {
+                    typeDefinitionRegistry.add(CustomMethodResponseObjectTypeBuilder().fromItem(it))
 
-                    val customMutations = CustomMethodFieldListBuilder(itemName, dataEngine.getCustomMethods(itemName)).buildList()
+                    val customMutations = CustomMethodFieldListBuilder(it.name, dataEngine.getCustomMethods(it.name)).buildList()
                     customMutations.forEach { mutationBuilder.fieldDefinition(it) }
                 }
             }

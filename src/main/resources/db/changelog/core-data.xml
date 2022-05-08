@@ -19,7 +19,7 @@
             <column name="major_rev" value="A"/>
             <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="0"/>
+            <column name="released" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -34,7 +34,7 @@
             <column name="major_rev" value="A"/>
             <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="0"/>
+            <column name="released" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -50,38 +50,15 @@
             <column name="major_rev" value="A"/>
             <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="0"/>
+            <column name="released" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
-<!--        <insert tableName="core_items">-->
-<!--            <column name="id" value="24e9314f-fab9-4312-b195-6b99491d9ffd"/>-->
-<!--            <column name="config_id" value="24e9314f-fab9-4312-b195-6b99491d9ffd"/>-->
-<!--            <column name="name" value="item"/>-->
-<!--            <column name="display_name" value="Item"/>-->
-<!--            <column name="singular_name" value="Item"/>-->
-<!--            <column name="plural_name" value="items"/>-->
-<!--            <column name="description" value="Items"/>-->
-<!--            <column name="data_source" value="main"/>-->
-<!--            <column name="table_name" value="core_items"/>-->
-<!--            <column name="icon" value="fas fa-swatchbook"/>-->
-<!--            <column name="core" value="1"/>-->
-<!--            <column name="perform_ddl" value="0"/>-->
-<!--            <column name="versioned" value="0"/>-->
-<!--            <column name="manual_versioning" value="0"/>-->
-<!--            <column name="revision_policy_id" value="${defaultRevisionPolicyId}"/>-->
-<!--            <column name="not_lockable" value="0"/>-->
-<!--            <column name="localized" value="0"/>-->
-<!--            <column name="generation" value="1"/>-->
-<!--            <column name="major_rev" value="A"/>-->
-<!--            <column name="last_version" value="1"/>-->
-<!--            <column name="is_current" value="1"/>-->
-<!--            <column name="released" value="0"/>-->
-<!--            <column name="permission_id" value="${defaultPermissionId}"/>-->
-<!--            <column name="created_at" valueDate="${now}"/>-->
-<!--            <column name="created_by_id" value="${rootUserId}"/>-->
-<!--        </insert>-->
+        <insert tableName="core_items_lock">
+            <column name="id" value="1"/>
+            <column name="locked" value="0"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

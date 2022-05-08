@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.data.handler.impl
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
@@ -19,7 +20,7 @@ class CustomMethodHandlerImpl(
     private val instances = mutableMapOf<Class<*>, Any>()
 
     override fun getCustomMethods(itemName: String): Set<String> {
-        val item = itemService.getItemOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation")
@@ -55,7 +56,10 @@ class CustomMethodHandlerImpl(
     }
 
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
-        val item = itemService.getItemOrThrow(itemName)
+        val item = itemService.getByName(itemName)
+        if (itemService.findByNameForWrite(item.name) == null)
+            throw AccessDeniedException("Operation is prohibited")
+
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation")

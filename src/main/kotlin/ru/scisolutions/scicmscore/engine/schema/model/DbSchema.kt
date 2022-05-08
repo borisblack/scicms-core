@@ -1,8 +1,6 @@
 package ru.scisolutions.scicmscore.engine.schema.model
 
-import org.slf4j.LoggerFactory
-
-class Schema {
+class DbSchema {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()
     private val items = mutableMapOf<String, Item>()
 
@@ -19,21 +17,23 @@ class Schema {
 
         when(model) {
             is ItemTemplate -> {
-                logger.info("Validating item template [{}]", metadata.name)
-                model.spec.validate()
                 itemTemplates[metadata.name] = model
             }
             is Item -> {
-                logger.info("Validating item [{}]", metadata.name)
-                model.spec.validate()
                 items[metadata.name] = model
             }
             else -> throw IllegalArgumentException("${model::class.simpleName} model type is not supported")
         }
     }
 
+    fun getTemplateOrThrow(templateName: String): ItemTemplate =
+        itemTemplates[templateName] ?: throw IllegalStateException("Template [$templateName] not found")
+
+    fun getItemOrThrow(itemName: String): Item =
+        items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
+
     fun getItemIncludeTemplates(name: String): Item {
-        val itemModel = items[name] ?: throw IllegalArgumentException("Item $name not found")
+        val itemModel = getItemOrThrow(name)
         return includeTemplates(itemModel)
     }
 
@@ -43,13 +43,9 @@ class Schema {
     private fun includeTemplates(item: Item): Item {
         var mergedItem = item
         for (templateName in item.includeTemplates) {
-            val itemTemplate = itemTemplates[templateName] ?: throw IllegalStateException("Template $templateName not found")
+            val itemTemplate = getTemplateOrThrow(templateName)
             mergedItem = mergedItem.includeTemplate(itemTemplate)
         }
         return mergedItem
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(Schema::class.java)
     }
 }

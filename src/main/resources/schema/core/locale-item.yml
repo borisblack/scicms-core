@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: locale
+  dataSource: main
   tableName: core_locales
   displayName: Locale
   singularName: locale

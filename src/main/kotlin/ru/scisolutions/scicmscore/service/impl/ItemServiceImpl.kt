@@ -1,40 +1,72 @@
 package ru.scisolutions.scicmscore.service.impl
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.repository.ItemRepository
 import ru.scisolutions.scicmscore.service.ItemService
-import javax.persistence.EntityManager
+import ru.scisolutions.scicmscore.util.AccessMask
+import java.util.concurrent.TimeUnit
 
 @Service
 @Repository
 @Transactional
 class ItemServiceImpl(
-    private val em: EntityManager,
+    dataProps: DataProps,
     private val itemRepository: ItemRepository
 ) : ItemService {
-    override val items: MutableMap<String, Item> by lazy { fetchAll() }
+    private val itemCache: Cache<String, Item> = CacheBuilder.newBuilder()
+        .expireAfterWrite(dataProps.itemCacheExpirationMinutes, TimeUnit.MINUTES)
+        .build()
 
-    private fun fetchAll(): MutableMap<String, Item> {
+    @Transactional(readOnly = true)
+    override fun findAll(): Iterable<Item> {
         val itemList = itemRepository.findAll()
-        itemList.forEach { em.detach(it) }
+        itemList.forEach { itemCache.put(it.name, it) }
 
-        return itemList.associateBy { it.name }.toMutableMap()
+        return itemList
     }
 
-    override fun getItemOrThrow(itemName: String): Item =
-        items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
+    @Transactional(readOnly = true)
+    override fun findByName(name: String): Item? {
+        var item = itemCache.getIfPresent(name)
+        if (item == null)
+            item = itemRepository.findByName(name)
+
+        if (item != null)
+            itemCache.put(name, item)
+
+        return item
+    }
+
+    @Transactional(readOnly = true)
+    override fun getByName(name: String): Item = findByName(name) ?: throw IllegalArgumentException("Item [$name] not found")
+
+    @Transactional(readOnly = true)
+    override fun findByNameForWrite(name: String): Item? = findByNameWithACL(name, AccessMask.WRITE)
+
+    @Transactional(readOnly = true)
+    override fun findByNameForCreate(name: String): Item? = findByNameWithACL(name, AccessMask.CREATE)
+
+    private fun findByNameWithACL(name: String, accessMask: AccessMask): Item? {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return itemRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+    }
 
     override fun save(item: Item): Item {
         val savedItem = itemRepository.save(item)
-        this.items[item.name] = savedItem
+        itemCache.put(item.name, savedItem)
         return savedItem
     }
 
     override fun delete(item: Item) {
         itemRepository.delete(item)
-        this.items.remove(item.name)
+        itemCache.invalidate(item.name)
     }
 }

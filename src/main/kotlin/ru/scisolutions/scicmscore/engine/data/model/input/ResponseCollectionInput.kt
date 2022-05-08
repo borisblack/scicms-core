@@ -5,5 +5,6 @@ class ResponseCollectionInput(
     val pagination: PaginationInput?,
     val sort: List<String>?,
     val majorRev: String?,
+    val isReleased: Boolean?,
     val locale: String?
 )

@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: lifecycle
+  dataSource: main
   tableName: core_lifecycles
   displayName: Lifecycle
   singularName: lifecycle

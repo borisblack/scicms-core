@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: item
+  dataSource: main
   tableName: core_items
   displayName: Item
   singularName: item

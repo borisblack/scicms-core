@@ -14,7 +14,6 @@ import ru.scisolutions.scicmscore.persistence.entity.Permission
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.sql.DataSource
-import ru.scisolutions.scicmscore.persistence.entity.User as UserEntity
 
 private const val USERS_BY_USERNAME_QUERY =
     "SELECT username, passwd, enabled FROM sec_users WHERE LOWER(username) = LOWER(?)"

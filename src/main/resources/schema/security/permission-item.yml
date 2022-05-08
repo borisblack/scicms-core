@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: permission
+  dataSource: main
   tableName: sec_permissions
   displayName: Permission
   singularName: permission

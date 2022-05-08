@@ -2,12 +2,17 @@ package ru.scisolutions.scicmscore.api.graphql.type.builder.input
 
 import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
+import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ExcludeAttributePolicy
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
-class ItemInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBuilder {
-    override fun build(): InputObjectTypeDefinition {
+@Component
+class ItemInputObjectTypeBuilder(
+    private val typeResolver: TypeResolver,
+    private val excludeAttributePolicy: ExcludeAttributePolicy
+) : InputObjectTypeBuilder {
+    override fun fromItem(item: Item): InputObjectTypeDefinition {
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name("${item.name.capitalize()}Input")
 
@@ -17,17 +22,12 @@ class ItemInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBuilde
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
-                        .type(typeResolver.inputType(attrName, attribute))
+                        .type(typeResolver.inputType(item, attrName))
                         .build()
 
                 )
             }
 
         return builder.build()
-    }
-
-    companion object {
-        private val excludeAttributePolicy = ExcludeAttributePolicy()
-        private val typeResolver = TypeResolver()
     }
 }

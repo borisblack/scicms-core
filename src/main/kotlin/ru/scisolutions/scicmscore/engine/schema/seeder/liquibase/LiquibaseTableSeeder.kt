@@ -11,21 +11,21 @@ import liquibase.database.jvm.JdbcConnection
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.config.DataSourceMap
 import ru.scisolutions.scicmscore.config.props.I18nProps
 import ru.scisolutions.scicmscore.config.props.VersioningProps
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.engine.schema.seeder.ItemSeeder
+import ru.scisolutions.scicmscore.engine.schema.seeder.TableSeeder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import javax.sql.DataSource
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
-class LiquibaseItemSeeder(
-    private val versioningProps: VersioningProps,
-    private val i18nProps: I18nProps,
-    private val dataSource: DataSource
-) : ItemSeeder {
+class LiquibaseTableSeeder(
+    versioningProps: VersioningProps,
+    i18nProps: I18nProps,
+    private val dataSourceMap: DataSourceMap
+) : TableSeeder {
     private val liquibaseIndexes = LiquibaseIndexes(
         versioningProps.includeInUniqueIndex,
         i18nProps.includeInUniqueIndex
@@ -75,8 +75,9 @@ class LiquibaseItemSeeder(
         addCreateTableChange(changeSet, item) // create table
 
         // Run changelog
-        val liquibase = newLiquibase(databaseChangeLog)
+        val liquibase = newLiquibase(item.metadata.dataSource, databaseChangeLog)
         liquibase.update("")
+        liquibase.close()
     }
 
     private fun addChangeSet(databaseChangeLog: DatabaseChangeLog, id: String): ChangeSet {
@@ -121,27 +122,18 @@ class LiquibaseItemSeeder(
     private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =
         item.hashCode().toString() != itemEntity.checksum && (
             item.metadata.tableName != itemEntity.tableName ||
+                item.metadata.dataSource != itemEntity.dataSource ||
                 item.metadata.versioned != itemEntity.versioned ||
                 item.metadata.localized != itemEntity.localized ||
                 item.spec.hashCode() != itemEntity.spec.hashCode())
 
     private fun updateTable(item: Item, itemEntity: ItemEntity) {
-        val metadata = item.metadata
-
-        val databaseChangeLog = DatabaseChangeLog()
-        val changeSet = addChangeSet(databaseChangeLog, "update-${metadata.tableName}")
-
         if (isOnlyTableNameChanged(item, itemEntity)) {
-            addRenameTableChange(changeSet, itemEntity.tableName, metadata.tableName) // rename table
+            renameTable(item, itemEntity)
         } else {
-            addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
-
-            addCreateTableChange(changeSet, item) // create table
+            dropTable(itemEntity)
+            createTable(item)
         }
-
-        // Run changelog
-        val liquibase = newLiquibase(databaseChangeLog)
-        liquibase.update("")
     }
 
     private fun isOnlyTableNameChanged(item: Item, itemEntity: ItemEntity) =
@@ -150,12 +142,34 @@ class LiquibaseItemSeeder(
             item.metadata.localized == itemEntity.localized &&
             item.spec.hashCode() == itemEntity.spec.hashCode()
 
+    private fun renameTable(item: Item, itemEntity: ItemEntity) {
+        val metadata = item.metadata
+        val databaseChangeLog = DatabaseChangeLog()
+        val changeSet = addChangeSet(databaseChangeLog, "rename-${metadata.tableName}")
+        addRenameTableChange(changeSet, itemEntity.tableName, metadata.tableName) // rename table
+        val liquibase = newLiquibase(item.metadata.dataSource, databaseChangeLog)
+        liquibase.update("")
+        liquibase.close()
+    }
+
     private fun addRenameTableChange(changeSet: ChangeSet, oldTableName: String, newTableName: String) {
         val renameTableChange = RenameTableChange().apply {
             this.oldTableName = oldTableName
             this.newTableName = newTableName
         }
         changeSet.addChange(renameTableChange)
+    }
+
+    private fun dropTable(itemEntity: ItemEntity) {
+        val databaseChangeLog = DatabaseChangeLog()
+        val changeSet = addChangeSet(databaseChangeLog, "update-${itemEntity.tableName}")
+
+        addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
+
+        // Run changelog
+        val liquibase = newLiquibase(itemEntity.dataSource, databaseChangeLog)
+        liquibase.update("")
+        liquibase.close()
     }
 
     private fun addDropTableChange(changeSet: ChangeSet, tableName: String, cascade: Boolean) {
@@ -166,27 +180,20 @@ class LiquibaseItemSeeder(
         changeSet.addChange(dropTableChange)
     }
 
-    private fun dropTable(itemEntity: ItemEntity) {
-        val databaseChangeLog = DatabaseChangeLog()
-        val changeSet = addChangeSet(databaseChangeLog, "update-${itemEntity.tableName}")
+    private fun newLiquibase(dataSourceName: String, databaseChangeLog: DatabaseChangeLog): Liquibase {
+        val dataSource = dataSourceMap.getOrThrow(dataSourceName)
 
-        addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
-
-        // Run changelog
-        val liquibase = newLiquibase(databaseChangeLog)
-        liquibase.update("")
+        return Liquibase(
+            databaseChangeLog,
+            null,
+            DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
+                JdbcConnection(dataSource.connection)
+            )
+        )
     }
 
-    private fun newLiquibase(databaseChangeLog: DatabaseChangeLog) = Liquibase(
-        databaseChangeLog,
-        null,
-        DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-            JdbcConnection(dataSource.connection)
-        )
-    )
-
     companion object {
-        private val logger = LoggerFactory.getLogger(LiquibaseItemSeeder::class.java)
+        private val logger = LoggerFactory.getLogger(LiquibaseTableSeeder::class.java)
         private val liquibaseColumns = LiquibaseColumns()
     }
 }

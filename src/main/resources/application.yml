@@ -1,7 +1,24 @@
 scicms-core:
   data:
+    data-sources:
+      main:
+#        driver-class-name: oracle.jdbc.OracleDriver
+        jdbc-url: jdbc:oracle:thin:@//localhost:1521/xepdb1
+        username: scicms
+        password: scicms
+        maximum-pool-size: 5
+        minimum-idle: 1
+      aux:
+#        driver-class-name: org.postgresql.Driver
+        jdbc-url: jdbc:postgresql://localhost:5432/scicms
+        username: scicms
+        password: scicms
+        maximum-pool-size: 5
+        minimum-idle: 1
     default-limit: 25
-    maz-limit: 100
+    max-limit: 100
+    item-cache-expiration-minutes: 1440
+    permission-ids-cache-expiration-minutes: 10
   i18n:
     default-locale: en-US
     include-in-unique-index: true
@@ -31,16 +48,6 @@ server:
   port: 8079
 
 spring:
-  datasource:
-#    driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@//localhost:1521/xepdb1
-    username: scicms
-    password: scicms
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/scicms
-#    username: scicms
-#    password: scicms
-
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 

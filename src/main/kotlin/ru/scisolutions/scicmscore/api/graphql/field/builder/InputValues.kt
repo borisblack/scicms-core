@@ -6,6 +6,7 @@ import ru.scisolutions.scicmscore.api.graphql.TypeNames
 
 object InputValues {
     private const val MAJOR_REV_ATTR_NAME = "majorRev"
+    private const val RELEASED_ATTR_NAME = "released"
     private const val LOCALE_ATTR_NAME = "locale"
 
     val MAJOR_REV: InputValueDefinition =
@@ -18,6 +19,12 @@ object InputValues {
         InputValueDefinition.newInputValueDefinition()
             .name(MAJOR_REV_ATTR_NAME)
             .type(NonNullType(TypeNames.STRING))
+            .build()
+
+    val RELEASED: InputValueDefinition =
+        InputValueDefinition.newInputValueDefinition()
+            .name(RELEASED_ATTR_NAME)
+            .type(TypeNames.BOOLEAN)
             .build()
 
     val LOCALE: InputValueDefinition =

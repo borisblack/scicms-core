@@ -64,6 +64,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="sec_users" indexName="sec_users_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_users" indexName="sec_users_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--sec_roles-->
         <createTable tableName="sec_roles">
             <column name="id" type="varchar(36)">
@@ -123,6 +131,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="sec_roles" indexName="sec_roles_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_roles" indexName="sec_roles_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--sec_groups-->
         <createTable tableName="sec_groups">
             <column name="id" type="varchar(36)">
@@ -175,6 +191,14 @@
 
         <createIndex tableName="sec_groups" indexName="sec_groups_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="sec_groups" indexName="sec_groups_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_groups" indexName="sec_groups_state_idx">
+            <column name="state"/>
         </createIndex>
 
         <!--sec_group_roles-->
@@ -236,6 +260,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--sec_group_members-->
         <createTable tableName="sec_group_members">
             <column name="id" type="varchar(36)">
@@ -293,6 +325,14 @@
 
         <createIndex tableName="sec_group_members" indexName="sec_group_members_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="sec_group_members" indexName="sec_group_members_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_group_members" indexName="sec_group_members_state_idx">
+            <column name="state"/>
         </createIndex>
 
         <!--sec_identities-->
@@ -354,6 +394,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="sec_identities" indexName="sec_identities_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_identities" indexName="sec_identities_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--sec_permissions-->
         <createTable tableName="sec_permissions">
             <column name="id" type="varchar(36)">
@@ -406,6 +454,14 @@
 
         <createIndex tableName="sec_permissions" indexName="sec_permissions_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="sec_permissions" indexName="sec_permissions_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_permissions" indexName="sec_permissions_state_idx">
+            <column name="state"/>
         </createIndex>
 
         <!--sec_access-->
@@ -476,6 +532,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="sec_access" indexName="sec_access_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_access" indexName="sec_access_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--sec_allowed_permissions-->
         <createTable tableName="sec_allowed_permissions">
             <column name="id" type="varchar(36)">
@@ -535,6 +599,14 @@
 
         <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_state_idx">
+            <column name="state"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

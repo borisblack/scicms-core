@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: sequence
+  dataSource: main
   tableName: core_sequences
   displayName: Sequence
   singularName: sequence

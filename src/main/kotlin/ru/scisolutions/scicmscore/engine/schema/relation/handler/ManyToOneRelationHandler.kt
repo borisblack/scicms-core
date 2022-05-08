@@ -19,7 +19,7 @@ class ManyToOneRelationHandler(
         if (attribute.mappedBy != null)
             throw IllegalStateException("The mappedBy field cannot be set for manyToOne relation type")
 
-        val targetItem = itemService.getItemOrThrow(requireNotNull(attribute.target))
+        val targetItem = itemService.getByName(requireNotNull(attribute.target))
 
         return if (attribute.inversedBy == null) {
             ManyToOneUnidirectionalRelation(

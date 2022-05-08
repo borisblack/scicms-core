@@ -62,6 +62,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="core_locales" indexName="core_locales_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="core_locales" indexName="core_locales_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--core_revision_policies-->
         <createTable tableName="core_revision_policies">
             <column name="id" type="varchar(36)">
@@ -118,6 +126,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--core_items-->
         <createTable tableName="core_items">
             <column name="id" type="varchar(36)">
@@ -135,7 +151,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(250)"/>
-            <column name="data_source" type="varchar(50)"/>
+            <column name="data_source" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="table_name" type="varchar(50)"/>
             <column name="icon" type="varchar(50)"/>
             <column name="core" type="tinyint"/>
@@ -193,13 +211,29 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="core_items" indexName="core_items_released_idx">
+            <column name="released"/>
+        </createIndex>
+
 <!--        <createIndex tableName="core_items" indexName="core_items_lifecycle_idx">-->
 <!--            <column name="lifecycle_id"/>-->
 <!--        </createIndex>-->
 
-<!--        <createIndex tableName="core_items" indexName="core_items_state_idx">-->
-<!--            <column name="state"/>-->
-<!--        </createIndex>-->
+        <createIndex tableName="core_items" indexName="core_items_state_idx">
+            <column name="state"/>
+        </createIndex>
+
+        <!--core_items_lock-->
+        <createTable tableName="core_items_lock">
+            <column name="id" type="int">
+                <constraints primaryKey="true" primaryKeyName="core_items_lock_pk"/>
+            </column>
+            <column name="locked" type="tinyint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_at" type="datetime"/>
+            <column name="locked_by" type="varchar(255)"/>
+        </createTable>
 
         <!--core_sequences-->
         <createTable tableName="core_sequences">
@@ -262,6 +296,14 @@
 
         <createIndex tableName="core_sequences" indexName="core_sequences_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="core_sequences" indexName="core_sequences_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="core_sequences" indexName="core_sequences_state_idx">
+            <column name="state"/>
         </createIndex>
 
         <!--core_media-->
@@ -332,6 +374,14 @@
             <column name="is_current"/>
         </createIndex>
 
+        <createIndex tableName="core_media" indexName="core_media_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="core_media" indexName="core_media_state_idx">
+            <column name="state"/>
+        </createIndex>
+
         <!--core_lifecycles-->
         <createTable tableName="core_lifecycles">
             <column name="id" type="varchar(36)">
@@ -389,6 +439,14 @@
 
         <createIndex tableName="core_lifecycles" indexName="core_lifecycles_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_state_idx">
+            <column name="state"/>
         </createIndex>
 
         <!--core_allowed_lifecycles-->
@@ -450,6 +508,14 @@
 
         <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_is_current_idx">
             <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_released_idx">
+            <column name="released"/>
+        </createIndex>
+
+        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_state_idx">
+            <column name="state"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

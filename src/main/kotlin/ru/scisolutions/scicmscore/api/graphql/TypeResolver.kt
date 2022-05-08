@@ -3,16 +3,24 @@ package ru.scisolutions.scicmscore.api.graphql
 import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.domain.model.Attribute
-import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
+import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.schema.relation.handler.RelationValidator
+import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.service.ItemService
 import graphql.language.Type as GraphQLType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
 private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) NonNullType(this) else this
 
-class TypeResolver {
-    fun objectType(attrName: String, attribute: Attribute): GraphQLType<*> =
-        when (attribute.type) {
+@Component
+class TypeResolver(
+    private val itemService: ItemService,
+    private val relationValidator: RelationValidator
+) {
+    fun objectType(item: Item, attrName: String): GraphQLType<*> {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
+        return when (attribute.type) {
             AttrType.uuid -> {
                 val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.STRING
                 typeName.nonNull(attribute.required)
@@ -29,10 +37,9 @@ class TypeResolver {
             AttrType.array, AttrType.json -> TypeNames.JSON.nonNull(attribute.required)
             AttrType.media -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.relation -> {
-                requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
-                requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
+                relationValidator.validateAttribute(item, attrName)
 
-                val capitalizedTargetItemName = attribute.target.capitalize()
+                val capitalizedTargetItemName = requireNotNull(attribute.target).capitalize()
                 if (attribute.isCollection())
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
@@ -40,9 +47,12 @@ class TypeResolver {
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }
+    }
 
-    fun filterInputType(attrName: String, attribute: Attribute): GraphQLType<*> =
-        when (attribute.type) {
+    fun filterInputType(item: Item, attrName: String): GraphQLType<*> {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
+        return when (attribute.type) {
             AttrType.uuid -> if (attribute.keyed) TypeNames.ID_FILTER_INPUT else TypeNames.STRING_FILTER_INPUT
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
             AttrType.email, // TODO: Add regexp email scalar type
@@ -58,18 +68,27 @@ class TypeResolver {
             AttrType.json,
             AttrType.media -> TypeNames.STRING_FILTER_INPUT
             AttrType.relation -> {
-                requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
-                requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
+                relationValidator.validateAttribute(item, attrName)
 
-                val capitalizedTargetItemName = attribute.target.capitalize()
-                TypeName("${capitalizedTargetItemName}FiltersInput")
-                // TypeNames.ID_FILTER_INPUT
+                val targetItem = itemService.getByName(requireNotNull(attribute.target))
+                if (targetItem.dataSource == item.dataSource) {
+                    val capitalizedTargetItemName = attribute.target.capitalize()
+                    TypeName("${capitalizedTargetItemName}FiltersInput")
+                } else {
+                    if (attribute.isCollection())
+                        throw IllegalArgumentException("Filtering collections from different datasource is not supported")
+
+                    TypeNames.ID_FILTER_INPUT
+                }
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }
+    }
 
-    fun inputType(attrName: String, attribute: Attribute): GraphQLType<*> =
-        when (attribute.type) {
+    fun inputType(item: Item, attrName: String): GraphQLType<*> {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
+        return when (attribute.type) {
             AttrType.uuid -> TypeNames.STRING
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
             AttrType.email, // TODO: Add regexp email scalar type
@@ -83,11 +102,11 @@ class TypeResolver {
             AttrType.bool -> TypeNames.BOOLEAN
             AttrType.array, AttrType.json, AttrType.media -> TypeNames.STRING
             AttrType.relation -> {
-                requireNotNull(attribute.relType) { "Attribute [$attrName] has a relation type, but relType is null" }
-                requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
+                relationValidator.validateAttribute(item, attrName)
 
                 if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }
+    }
 }

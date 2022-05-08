@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: identity
+  dataSource: main
   tableName: sec_identities
   displayName: Identity
   singularName: identity

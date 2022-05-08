@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.data
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
@@ -29,6 +30,7 @@ class DataEngineImpl(
     private val mediaHandler: MediaHandler,
     private val responseHandler: ResponseHandler,
     private val responseCollectionHandler: ResponseCollectionHandler,
+    private val createHandler: CreateHandler,
     private val customMethodHandler: CustomMethodHandler
 ) : DataEngine {
     override fun me(): UserInfo? = userHandler.me()
@@ -69,6 +71,9 @@ class DataEngineImpl(
         selectPaginationFields: Set<String>
     ): RelationResponseCollection =
         responseCollectionHandler.getRelationResponseCollection(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
+
+    override fun create(itemName: String, data: Map<String, Any?>, selectAttrNames: Set<String>): Response =
+        createHandler.create(itemName, data, selectAttrNames)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

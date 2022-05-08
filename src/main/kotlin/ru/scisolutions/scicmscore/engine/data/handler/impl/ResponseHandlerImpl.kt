@@ -16,7 +16,7 @@ class ResponseHandlerImpl(
     private val itemRecDao: ItemRecDao
 ) : ResponseHandler {
     override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response {
-        val item = itemService.getItemOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         val attrNames = adjustAttrNames(item, selectAttrNames)
         val itemRec = itemRecDao.findByIdForRead(item, id, attrNames)
 
@@ -36,7 +36,7 @@ class ResponseHandlerImpl(
             return RelationResponse()
         }
 
-        val item = itemService.getItemOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         val attrNames = adjustAttrNames(item, selectAttrNames)
         val itemRec = itemRecDao.findByIdForRead(item, id, attrNames)
 

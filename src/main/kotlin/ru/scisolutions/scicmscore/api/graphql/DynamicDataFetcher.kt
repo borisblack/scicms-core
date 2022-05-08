@@ -33,40 +33,42 @@ class DynamicDataFetcher(
     private val relationResponseDataFetcher: RelationResponseDataFetcher,
     private val responseCollectionDataFetcher: ResponseCollectionDataFetcher,
     private val relationResponseCollectionDataFetcher: RelationResponseCollectionDataFetcher,
+    private val createDataFetcher: CreateDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
     fun registry(codeRegistryBuilder: GraphQLCodeRegistry.Builder, registry: TypeDefinitionRegistry): GraphQLCodeRegistry.Builder {
+        val items = itemService.findAll()
         // Query
-        itemService.items.asSequence()
-            .filter { (_, item) -> !excludeItemPolicy.excludeFromQuery(item) }
-            .forEach { (_, item) ->
-                addAttributeDataFetchers(codeRegistryBuilder, item)
+        items.asSequence()
+            .filter { !excludeItemPolicy.excludeFromQuery(it) }
+            .forEach {
+                addAttributeDataFetchers(codeRegistryBuilder, it)
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.name), responseDataFetcher)
-                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, item.pluralName), responseCollectionDataFetcher)
+                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, it.name), responseDataFetcher)
+                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, it.pluralName), responseCollectionDataFetcher)
             }
 
         // Mutation
-        itemService.items.asSequence()
-            .filter { (_, item) -> !excludeItemPolicy.excludeFromMutation(item) }
-            .forEach { (itemName, item) ->
-                val capitalizedItemName = item.name.capitalize()
+        items.asSequence()
+            .filter { !excludeItemPolicy.excludeFromMutation(it) }
+            .forEach {
+                val capitalizedItemName = it.name.capitalize()
 
-                if (!excludeItemPolicy.excludeFromCreateMutation(item))
+                if (!excludeItemPolicy.excludeFromCreateMutation(it))
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}"), CreateDataFetcher())
+                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}"), createDataFetcher)
 
-                if (item.versioned) {
+                if (it.versioned) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"), CreateVersionDataFetcher())
-                } else if (!excludeItemPolicy.excludeFromUpdateMutation(item)) {
+                } else if (!excludeItemPolicy.excludeFromUpdateMutation(it)) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "update${capitalizedItemName}"), UpdateDataFetcher())
                 }
 
-                if (item.localized) {
+                if (it.localized) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"), CreateLocalizationDataFetcher())
                 }
@@ -74,7 +76,7 @@ class DynamicDataFetcher(
                 codeRegistryBuilder
                     .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "delete${capitalizedItemName}"), DeleteDataFetcher())
 
-                if (item.versioned) {
+                if (it.versioned) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge${capitalizedItemName}"), PurgeDataFetcher())
                 }
@@ -89,8 +91,8 @@ class DynamicDataFetcher(
                     .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), PromoteDataFetcher())
 
                 // Custom methods
-                if (item.implementation != null) {
-                    val customMethodNames = dataEngine.getCustomMethods(itemName)
+                if (it.implementation != null) {
+                    val customMethodNames = dataEngine.getCustomMethods(it.name)
                     for (methodName in customMethodNames) {
                         codeRegistryBuilder
                             .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "${methodName}${capitalizedItemName}"), customMethodDataFetcher)

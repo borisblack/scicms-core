@@ -2,17 +2,17 @@ package ru.scisolutions.scicmscore.engine.data
 
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.web.multipart.MultipartFile
-import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
-import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
-import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
-import ru.scisolutions.scicmscore.engine.data.model.response.Response
-import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
+import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
+import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
+import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.persistence.entity.Media
 
 /**
@@ -53,6 +53,8 @@ interface DataEngine {
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection
+
+    fun create(itemName: String, data: Map<String, Any?>, selectAttrNames: Set<String>): Response
 
     fun getCustomMethods(itemName: String): Set<String>
 

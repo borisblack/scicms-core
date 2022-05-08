@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: role
+  dataSource: main
   tableName: sec_roles
   displayName: Role
   singularName: role

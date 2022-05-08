@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: groupMember
+  dataSource: main
   tableName: sec_group_members
   displayName: Group Member
   singularName: groupMember

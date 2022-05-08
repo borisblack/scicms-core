@@ -30,7 +30,7 @@ class Item(
     var description: String? = null,
 
     @Column(name = "data_source")
-    var dataSource: String = DEFAULT_DATASOURCE,
+    var dataSource: String,
 
     @Column(name = "icon")
     var icon: String? = null,
@@ -81,8 +81,4 @@ class Item(
     // val allowedPermissions: MutableSet<Permission> = mutableSetOf()
 ) : AbstractEntity() {
     override fun toString(): String = "Item(name=[$name])"
-
-    companion object {
-        const val DEFAULT_DATASOURCE = "main"
-    }
 }

@@ -4,7 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: example # item name must start with a lowercase character!
-  dataSource: main # optional ('main' by default)
+  dataSource: main
   tableName: examples # optional (pluralName in lowercase by default). Prefixes core_ and sec_ are not allowed
   displayName: Example # optional (name by default)
   singularName: example # optional (name by default)

@@ -66,6 +66,7 @@ spec:
       columnName: released
       displayName: Released
       description: Released
+      indexed: true
       private: true
     locale:
       type: string
@@ -86,6 +87,7 @@ spec:
       columnName: state
       displayName: Lifecycle State
       description: Lifecycle State
+      indexed: true
       length: 50
     permission:
       type: relation

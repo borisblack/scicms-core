@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.reader
 
-import ru.scisolutions.scicmscore.engine.schema.model.Schema
+import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 
 interface DbSchemaReader {
-    fun read(): Schema
+    fun read(): DbSchema
 }

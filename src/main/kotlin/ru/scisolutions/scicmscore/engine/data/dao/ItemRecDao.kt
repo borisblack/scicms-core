@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.data.dao
 
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.AccessMask
 
 interface ItemRecDao {
     fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
@@ -14,7 +15,7 @@ interface ItemRecDao {
 
     fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
 
-    fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: Set<Int>): ItemRec?
+    fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: AccessMask): ItemRec?
 
     fun findByKeyAttrNameForRead(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
 
@@ -31,6 +32,6 @@ interface ItemRecDao {
         keyAttrName: String,
         keyAttrValue: String,
         selectAttrNames: Set<String>,
-        accessMask: Set<Int>
+        accessMask: AccessMask
     ): ItemRec?
 }

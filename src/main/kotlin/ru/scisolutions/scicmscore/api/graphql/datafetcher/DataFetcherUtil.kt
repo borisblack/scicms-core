@@ -7,6 +7,7 @@ import graphql.schema.GraphQLType
 import java.util.regex.Pattern
 
 object DataFetcherUtil {
+    private val responseFieldTypePattern = Pattern.compile("^(\\w+)Response$")
     private val relationResponseFieldTypePattern = Pattern.compile("^(\\w+)RelationResponse$")
     private val responseCollectionFieldTypePattern = Pattern.compile("^(\\w+)ResponseCollection$")
     private val relationResponseCollectionFieldTypePattern = Pattern.compile("^(\\w+)RelationResponseCollection$")
@@ -18,6 +19,8 @@ object DataFetcherUtil {
             is GraphQLNonNull -> parseFieldType(fieldType.wrappedType)
             else -> (fieldType as GraphQLNamedType).name
         }
+
+    fun extractCapitalizedItemNameFromResponseFieldType(fieldType: String) = getFirstMatch(responseFieldTypePattern, fieldType)
 
     fun extractCapitalizedItemNameFromRelationResponseFieldType(fieldType: String) = getFirstMatch(relationResponseFieldTypePattern, fieldType)
 

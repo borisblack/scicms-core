@@ -7,7 +7,7 @@ data class ItemMetadata(
     val pluralName: String,
     val tableName: String = pluralName.lowercase(),
     val description: String? = null,
-    val dataSource: String?,
+    val dataSource: String,
     val icon: String? = null,
     val core: Boolean = false,
     val performDdl: Boolean = true,

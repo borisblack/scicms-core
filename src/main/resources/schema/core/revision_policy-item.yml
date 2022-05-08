@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: revisionPolicy
+  dataSource: main
   tableName: core_revision_policies
   displayName: Revision Policy
   singularName: revisionPolicy

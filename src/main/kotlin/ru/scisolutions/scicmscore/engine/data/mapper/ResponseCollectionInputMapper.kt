@@ -12,6 +12,7 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int?>?
         val sort = arguments[SORT_ARG_NAME] as List<String>?
         val majorRev = arguments[MAJOR_REV_ARG_NAME] as String?
+        val isReleased = arguments[RELEASED_ARG_NAME] as Boolean?
         val locale = arguments[LOCALE_ARG_NAME] as String?
 
         return ResponseCollectionInput(
@@ -19,6 +20,7 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
             sort = sort,
             majorRev = majorRev,
+            isReleased = isReleased,
             locale = locale
         )
     }
@@ -40,6 +42,7 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
         const val PAGINATION_ARG_NAME = "pagination"
         const val SORT_ARG_NAME = "sort"
         const val MAJOR_REV_ARG_NAME = "majorRev"
+        const val RELEASED_ARG_NAME = "released"
         const val LOCALE_ARG_NAME = "locale"
     }
 }

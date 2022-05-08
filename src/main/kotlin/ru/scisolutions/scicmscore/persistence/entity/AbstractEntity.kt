@@ -36,7 +36,7 @@ abstract class AbstractEntity {
 
     @Column(columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    var released: Boolean? = null
+    var released: Boolean? = true
 
     @Column(name = "lifecycle_id")
     var lifecycleId: String? = null

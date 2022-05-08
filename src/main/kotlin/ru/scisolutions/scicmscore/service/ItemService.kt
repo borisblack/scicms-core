@@ -3,9 +3,15 @@ package ru.scisolutions.scicmscore.service
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 interface ItemService {
-    val items: Map<String, Item>
+    fun findAll(): Iterable<Item>
 
-    fun getItemOrThrow(itemName: String): Item
+    fun findByName(name: String): Item?
+
+    fun getByName(name: String): Item
+
+    fun findByNameForWrite(name: String): Item?
+
+    fun findByNameForCreate(name: String): Item?
 
     fun save(item: Item): Item
 

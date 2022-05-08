@@ -8,7 +8,8 @@ class ItemMapper {
         val metadata = source.metadata
         val target = ItemEntity(
             name = metadata.name,
-            pluralName = metadata.pluralName
+            pluralName = metadata.pluralName,
+            dataSource = metadata.dataSource
         )
         copy(source, target)
 
@@ -24,7 +25,7 @@ class ItemMapper {
         target.pluralName = metadata.pluralName
         target.tableName = metadata.tableName
         target.description = metadata.description
-        target.dataSource = metadata.dataSource ?: ItemEntity.DEFAULT_DATASOURCE
+        target.dataSource = metadata.dataSource
         target.icon = metadata.icon
         target.core = metadata.core
         target.performDdl = metadata.performDdl

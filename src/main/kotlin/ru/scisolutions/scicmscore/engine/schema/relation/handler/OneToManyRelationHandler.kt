@@ -14,14 +14,11 @@ class OneToManyRelationHandler(
         relationValidator.validateAttribute(item, attrName)
 
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        val mappedBy = attribute.mappedBy
-            ?: throw IllegalStateException("The [$attrName] attribute does not have a mappedBy field, which is required for the oneToMany relationship")
-
-        val owningItem = itemService.getItemOrThrow(requireNotNull(attribute.target))
+        val owningItem = itemService.getByName(requireNotNull(attribute.target))
 
         return OneToManyInversedBidirectionalRelation(
             owningItem = owningItem,
-            owningAttrName = mappedBy,
+            owningAttrName = requireNotNull(attribute.mappedBy),
             inversedItem = item,
             inversedAttrName = attrName
         )

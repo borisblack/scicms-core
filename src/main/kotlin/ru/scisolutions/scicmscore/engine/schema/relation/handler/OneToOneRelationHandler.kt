@@ -16,7 +16,7 @@ class OneToOneRelationHandler(
         relationValidator.validateAttribute(item, attrName)
 
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        val targetItem = itemService.getItemOrThrow(requireNotNull(attribute.target))
+        val targetItem = itemService.getByName(requireNotNull(attribute.target))
 
         // Create context
         return if (attribute.inversedBy != null) { // owning side

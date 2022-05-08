@@ -1,9 +1,14 @@
 package ru.scisolutions.scicmscore.api.graphql.type.builder
 
+import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.service.ItemService
 
-class ExcludeAttributePolicy {
+@Component
+class ExcludeAttributePolicy(
+    private val itemService: ItemService
+) {
     fun excludeFromObjectType(item: Item, attrName: String): Boolean {
         val attribute = item.spec.getAttributeOrThrow(attrName)
         if (attribute.private)
@@ -28,6 +33,12 @@ class ExcludeAttributePolicy {
 
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
+
+        if (attribute.isCollection()) {
+            val targetItem = itemService.getByName(requireNotNull(attribute.target))
+            if (targetItem.dataSource != item.dataSource)
+                return false
+        }
 
         return true
     }

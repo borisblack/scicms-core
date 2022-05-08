@@ -14,17 +14,8 @@ class ManyToManyRelationHandler(
         relationValidator.validateAttribute(item, attrName)
 
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        val targetItem = itemService.getItemOrThrow(requireNotNull(attribute.target))
-
-        // Validate attribute
-        if (attribute.inversedBy == null && attribute.mappedBy == null)
-            throw IllegalStateException("Attribute does not have an inversedBy or mappedBy field, which is required for the manyToMany relationship")
-
-        val intermediate = attribute.intermediate
-            ?: throw IllegalStateException("Attribute does not have an intermediate field, which is required for the manyToMany relationship")
-
-        // Get and validate intermediate item
-        val intermediateItem = itemService.getItemOrThrow(intermediate)
+        val targetItem = itemService.getByName(requireNotNull(attribute.target))
+        val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
 
         // Create context
         return if (attribute.inversedBy != null) { // owning side

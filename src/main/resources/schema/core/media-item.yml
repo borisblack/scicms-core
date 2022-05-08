@@ -4,6 +4,7 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: media
+  dataSource: main
   tableName: core_media
   displayName: Media
   singularName: media

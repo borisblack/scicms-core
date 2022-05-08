@@ -4,12 +4,17 @@ import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
+import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeResolver
 import ru.scisolutions.scicmscore.api.graphql.type.builder.ExcludeAttributePolicy
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
-class FiltersInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBuilder {
-    override fun build(): InputObjectTypeDefinition {
+@Component
+class FiltersInputObjectTypeBuilder(
+    private val excludeAttributePolicy: ExcludeAttributePolicy,
+    private val typeResolver: TypeResolver
+) : InputObjectTypeBuilder {
+    override fun fromItem(item: Item): InputObjectTypeDefinition {
         val inputName = "${item.name.capitalize()}FiltersInput"
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name(inputName)
@@ -34,20 +39,15 @@ class FiltersInputObjectTypeBuilder(private val item: Item) : InputObjectTypeBui
 
         item.spec.attributes.asSequence()
             .filter { (attrName, _) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName) }
-            .forEach { (attrName, attribute) ->
+            .forEach { (attrName, _) ->
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
-                        .type(typeResolver.filterInputType(attrName, attribute))
+                        .type(typeResolver.filterInputType(item, attrName))
                         .build()
                 )
             }
 
         return builder.build()
-    }
-
-    companion object {
-        private val excludeAttributePolicy = ExcludeAttributePolicy()
-        private val typeResolver = TypeResolver()
     }
 }

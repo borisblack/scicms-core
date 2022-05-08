@@ -4,13 +4,13 @@ import graphql.language.FieldDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
-import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.api.graphql.field.builder.FieldDefinitionBuilder
 import ru.scisolutions.scicmscore.api.graphql.field.builder.InputValues
+import ru.scisolutions.scicmscore.persistence.entity.Item
 
-class ResponseCollectionFieldBuilder(private val item: Item) : FieldDefinitionBuilder {
-    override fun build(): FieldDefinition {
+class ResponseCollectionFieldBuilder : FieldDefinitionBuilder {
+    override fun fromItem(item: Item): FieldDefinition {
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name(item.pluralName)
@@ -36,6 +36,8 @@ class ResponseCollectionFieldBuilder(private val item: Item) : FieldDefinitionBu
 
         if (item.versioned)
             builder.inputValueDefinition(InputValues.MAJOR_REV)
+
+        builder.inputValueDefinition(InputValues.RELEASED)
 
         if (item.localized)
             builder.inputValueDefinition(InputValues.LOCALE)
