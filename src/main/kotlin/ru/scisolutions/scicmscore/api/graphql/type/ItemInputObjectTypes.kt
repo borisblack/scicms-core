@@ -1,20 +1,18 @@
-package ru.scisolutions.scicmscore.api.graphql.type.builder.input
+package ru.scisolutions.scicmscore.api.graphql.type
 
 import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.api.graphql.TypeResolver
-import ru.scisolutions.scicmscore.api.graphql.type.builder.ExcludeAttributePolicy
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 @Component
-class FiltersInputObjectTypeBuilder(
+class ItemInputObjectTypes(
     private val excludeAttributePolicy: ExcludeAttributePolicy,
-    private val typeResolver: TypeResolver
-) : InputObjectTypeBuilder {
-    override fun fromItem(item: Item): InputObjectTypeDefinition {
+    private val attributeTypes: AttributeTypes
+) {
+    fun filtersInput(item: Item): InputObjectTypeDefinition {
         val inputName = "${item.name.capitalize()}FiltersInput"
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name(inputName)
@@ -43,8 +41,27 @@ class FiltersInputObjectTypeBuilder(
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
-                        .type(typeResolver.filterInputType(item, attrName))
+                        .type(attributeTypes.filterInputType(item, attrName))
                         .build()
+                )
+            }
+
+        return builder.build()
+    }
+
+    fun itemInput(item: Item): InputObjectTypeDefinition {
+        val builder = InputObjectTypeDefinition.newInputObjectDefinition()
+            .name("${item.name.capitalize()}Input")
+
+        item.spec.attributes.asSequence()
+            .filter { (attrName, _) -> excludeAttributePolicy.excludeFromInputObjectType(item, attrName) }
+            .forEach { (attrName, _) ->
+                builder.inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name(attrName)
+                        .type(attributeTypes.inputType(item, attrName))
+                        .build()
+
                 )
             }
 

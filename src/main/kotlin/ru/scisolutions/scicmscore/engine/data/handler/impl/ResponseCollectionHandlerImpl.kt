@@ -45,7 +45,7 @@ class ResponseCollectionHandlerImpl(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val paginator: Paginator,
     private val jdbcTemplateMap: JdbcTemplateMap
-) : ResponseCollectionHandler {
+) : BaseHandler(), ResponseCollectionHandler {
     override fun getResponseCollection(
         itemName: String,
         input: ResponseCollectionInput,
@@ -54,7 +54,7 @@ class ResponseCollectionHandlerImpl(
     ): ResponseCollection {
         val item = itemService.getByName(itemName)
         val jdbcTemplate = jdbcTemplateMap.getOrThrow(item.dataSource)
-        val attrNames = adjustAttrNames(item, selectAttrNames)
+        val attrNames = prepareAttrNames(item, selectAttrNames)
 
         // Query
         val spec = DbSpec()
@@ -109,7 +109,7 @@ class ResponseCollectionHandlerImpl(
     ): RelationResponseCollection {
         val item = itemService.getByName(itemName)
         val jdbcTemplate = jdbcTemplateMap.getOrThrow(item.dataSource)
-        val attrNames = adjustAttrNames(item, selectAttrNames)
+        val attrNames = prepareAttrNames(item, selectAttrNames)
 
         // Query
         val spec = DbSpec()
@@ -167,15 +167,6 @@ class ResponseCollectionHandlerImpl(
         )
     }
 
-    private fun adjustAttrNames(item: Item, selectAttrNames: Set<String>): Set<String> =
-        selectAttrNames.asSequence()
-            .filter {
-                val attribute = item.spec.getAttributeOrThrow(it)
-                !attribute.isCollection()
-            }
-            .plus(ID_ATTR_NAME)
-            .toSet()
-
     private fun buildFindAllQuery(
         schema: DbSchema,
         item: Item,
@@ -208,7 +199,6 @@ class ResponseCollectionHandlerImpl(
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
         private const val ID_COL_NAME = "id"
         private const val PERMISSION_ID_COL_NAME = "permission_id"
 

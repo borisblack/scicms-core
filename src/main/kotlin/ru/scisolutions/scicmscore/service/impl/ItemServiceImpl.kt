@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.repository.ItemRepository
 import ru.scisolutions.scicmscore.service.ItemService
-import ru.scisolutions.scicmscore.util.AccessMask
+import ru.scisolutions.scicmscore.util.ACL.Mask
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -49,12 +49,12 @@ class ItemServiceImpl(
     override fun getByName(name: String): Item = findByName(name) ?: throw IllegalArgumentException("Item [$name] not found")
 
     @Transactional(readOnly = true)
-    override fun findByNameForWrite(name: String): Item? = findByNameWithACL(name, AccessMask.WRITE)
+    override fun findByNameForWrite(name: String): Item? = findByNameWithACL(name, Mask.WRITE)
 
     @Transactional(readOnly = true)
-    override fun findByNameForCreate(name: String): Item? = findByNameWithACL(name, AccessMask.CREATE)
+    override fun findByNameForCreate(name: String): Item? = findByNameWithACL(name, Mask.CREATE)
 
-    private fun findByNameWithACL(name: String, accessMask: AccessMask): Item? {
+    private fun findByNameWithACL(name: String, accessMask: Mask): Item? {
         val authentication = SecurityContextHolder.getContext().authentication
         return itemRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }

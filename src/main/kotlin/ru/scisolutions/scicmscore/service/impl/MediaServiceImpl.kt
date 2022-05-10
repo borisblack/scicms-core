@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.persistence.repository.MediaRepository
 import ru.scisolutions.scicmscore.service.MediaService
-import ru.scisolutions.scicmscore.util.AccessMask
+import ru.scisolutions.scicmscore.util.ACL.Mask
 
 @Service
 @Repository
@@ -20,7 +20,7 @@ class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaServ
     @Transactional(readOnly = true)
     override fun findByIdForRead(id: String): Media? {
         val authentication = SecurityContextHolder.getContext().authentication
-        return mediaRepository.findByIdWithACL(id, AccessMask.READ.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+        return mediaRepository.findByIdWithACL(id, Mask.READ.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 
     @Transactional(readOnly = true)

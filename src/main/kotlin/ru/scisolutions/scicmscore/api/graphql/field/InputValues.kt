@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.api.graphql.field.builder
+package ru.scisolutions.scicmscore.api.graphql.field
 
 import graphql.language.InputValueDefinition
 import graphql.language.NonNullType

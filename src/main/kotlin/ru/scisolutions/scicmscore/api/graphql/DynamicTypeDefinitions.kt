@@ -4,26 +4,10 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsTypeDefinitionRegistry
 import graphql.language.ObjectTypeExtensionDefinition
 import graphql.schema.idl.TypeDefinitionRegistry
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateLocalizationFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CreateVersionFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.CustomMethodFieldListBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.DeleteFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.LockFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.PromoteFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.PurgeFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.UnlockFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.mutation.UpdateFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.query.ResponseCollectionFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.field.builder.query.ResponseFieldBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.CustomMethodResponseObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.ItemObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.RelationResponseCollectionObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.RelationResponseObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.ResponseCollectionObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.ResponseObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.input.FiltersInputObjectTypeBuilder
-import ru.scisolutions.scicmscore.api.graphql.type.builder.input.ItemInputObjectTypeBuilder
+import ru.scisolutions.scicmscore.api.graphql.field.MutationItemFields
+import ru.scisolutions.scicmscore.api.graphql.field.QueryItemFields
+import ru.scisolutions.scicmscore.api.graphql.type.ItemInputObjectTypes
+import ru.scisolutions.scicmscore.api.graphql.type.ItemObjectTypes
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.service.ItemService
 
@@ -31,9 +15,10 @@ import ru.scisolutions.scicmscore.service.ItemService
 class DynamicTypeDefinitions(
     private val itemService: ItemService,
     private val dataEngine: DataEngine,
-    private val itemObjectTypeBuilder: ItemObjectTypeBuilder,
-    private val filtersInputObjectTypeBuilder: FiltersInputObjectTypeBuilder,
-    private val itemInputObjectTypeBuilder: ItemInputObjectTypeBuilder
+    private val itemObjectTypes: ItemObjectTypes,
+    private val itemInputObjectTypes: ItemInputObjectTypes,
+    private val queryItemFields: QueryItemFields,
+    private val mutationItemFields: MutationItemFields
 ) {
     @DgsTypeDefinitionRegistry
     fun registry(): TypeDefinitionRegistry {
@@ -45,16 +30,16 @@ class DynamicTypeDefinitions(
         items.asSequence()
             .filter { !excludeItemPolicy.excludeFromQuery(it) }
             .forEach {
-                typeDefinitionRegistry.add(itemObjectTypeBuilder.fromItem(it))
-                typeDefinitionRegistry.add(ResponseObjectTypeBuilder().fromItem(it))
-                typeDefinitionRegistry.add(RelationResponseObjectTypeBuilder().fromItem(it))
-                typeDefinitionRegistry.add(ResponseCollectionObjectTypeBuilder().fromItem(it))
-                typeDefinitionRegistry.add(RelationResponseCollectionObjectTypeBuilder().fromItem(it))
-                typeDefinitionRegistry.add(filtersInputObjectTypeBuilder.fromItem(it)) // for filtering
-                typeDefinitionRegistry.add(itemInputObjectTypeBuilder.fromItem(it)) // for mutations
+                typeDefinitionRegistry.add(itemObjectTypes.item(it))
+                typeDefinitionRegistry.add(itemObjectTypes.response(it))
+                typeDefinitionRegistry.add(itemObjectTypes.relationResponse(it))
+                typeDefinitionRegistry.add(itemObjectTypes.responseCollection(it))
+                typeDefinitionRegistry.add(itemObjectTypes.relationResponseCollection(it))
+                typeDefinitionRegistry.add(itemInputObjectTypes.filtersInput(it)) // for filtering
+                typeDefinitionRegistry.add(itemInputObjectTypes.itemInput(it)) // for mutations
 
-                queryBuilder.fieldDefinition(ResponseFieldBuilder().fromItem(it))
-                queryBuilder.fieldDefinition(ResponseCollectionFieldBuilder().fromItem(it))
+                queryBuilder.fieldDefinition(queryItemFields.item(it))
+                queryBuilder.fieldDefinition(queryItemFields.itemCollection(it))
             }
 
         typeDefinitionRegistry.add(queryBuilder.build())
@@ -65,31 +50,31 @@ class DynamicTypeDefinitions(
             .filter { !excludeItemPolicy.excludeFromMutation(it) }
             .forEach {
                 if (!excludeItemPolicy.excludeFromCreateMutation(it))
-                    mutationBuilder.fieldDefinition(CreateFieldBuilder().fromItem(it))
+                    mutationBuilder.fieldDefinition(mutationItemFields.create(it))
 
                 if (it.versioned)
-                    mutationBuilder.fieldDefinition(CreateVersionFieldBuilder().fromItem(it))
+                    mutationBuilder.fieldDefinition(mutationItemFields.createVersion(it))
                 else if (!excludeItemPolicy.excludeFromUpdateMutation(it))
-                    mutationBuilder.fieldDefinition(UpdateFieldBuilder().fromItem(it))
+                    mutationBuilder.fieldDefinition(mutationItemFields.update(it))
 
                 if (it.localized)
-                    mutationBuilder.fieldDefinition(CreateLocalizationFieldBuilder().fromItem(it))
+                    mutationBuilder.fieldDefinition(mutationItemFields.createLocalization(it))
 
-                mutationBuilder.fieldDefinition(DeleteFieldBuilder().fromItem(it))
+                mutationBuilder.fieldDefinition(mutationItemFields.delete(it))
 
                 if (it.versioned)
-                    mutationBuilder.fieldDefinition(PurgeFieldBuilder().fromItem(it))
+                    mutationBuilder.fieldDefinition(mutationItemFields.purge(it))
 
-                mutationBuilder.fieldDefinition(LockFieldBuilder().fromItem(it))
-                mutationBuilder.fieldDefinition(UnlockFieldBuilder().fromItem(it))
-                mutationBuilder.fieldDefinition(PromoteFieldBuilder().fromItem(it))
+                mutationBuilder.fieldDefinition(mutationItemFields.lock(it))
+                mutationBuilder.fieldDefinition(mutationItemFields.unlock(it))
+                mutationBuilder.fieldDefinition(mutationItemFields.promote(it))
 
                 // Add custom mutations
                 if (it.implementation != null) {
-                    typeDefinitionRegistry.add(CustomMethodResponseObjectTypeBuilder().fromItem(it))
+                    typeDefinitionRegistry.add(itemObjectTypes.customMethodResponse(it))
 
-                    val customMutations = CustomMethodFieldListBuilder(it.name, dataEngine.getCustomMethods(it.name)).buildList()
-                    customMutations.forEach { mutationBuilder.fieldDefinition(it) }
+                    val customMethods = mutationItemFields.customMethods(it, dataEngine.getCustomMethods(it.name))
+                    customMethods.forEach { method -> mutationBuilder.fieldDefinition(method) }
                 }
             }
 

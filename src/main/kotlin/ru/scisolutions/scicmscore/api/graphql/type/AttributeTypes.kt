@@ -1,9 +1,10 @@
-package ru.scisolutions.scicmscore.api.graphql
+package ru.scisolutions.scicmscore.api.graphql.type
 
 import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.engine.schema.relation.handler.RelationValidator
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
@@ -13,7 +14,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) NonNullType(this) else this
 
 @Component
-class TypeResolver(
+class AttributeTypes(
     private val itemService: ItemService,
     private val relationValidator: RelationValidator
 ) {

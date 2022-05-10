@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.repository.PermissionRepository
 import ru.scisolutions.scicmscore.service.PermissionService
-import ru.scisolutions.scicmscore.util.AccessMask
+import ru.scisolutions.scicmscore.util.ACL.Mask
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -31,21 +31,21 @@ class PermissionServiceImpl(
     fun fetchDefaultPermission(): Permission = permissionRepository.getById(Permission.DEFAULT_PERMISSION_ID)
 
     @Transactional(readOnly = true)
-    override fun findIdsForRead(): Set<String> = findIdsFor(AccessMask.READ)
+    override fun findIdsForRead(): Set<String> = findIdsFor(Mask.READ)
 
     @Transactional(readOnly = true)
-    override fun findIdsForWrite(): Set<String> = findIdsFor(AccessMask.WRITE)
+    override fun findIdsForWrite(): Set<String> = findIdsFor(Mask.WRITE)
 
     @Transactional(readOnly = true)
-    override fun findIdsForCreate(): Set<String> = findIdsFor(AccessMask.CREATE)
+    override fun findIdsForCreate(): Set<String> = findIdsFor(Mask.CREATE)
 
     @Transactional(readOnly = true)
-    override fun findIdsForDelete(): Set<String> = findIdsFor(AccessMask.DELETE)
+    override fun findIdsForDelete(): Set<String> = findIdsFor(Mask.DELETE)
 
     @Transactional(readOnly = true)
-    override fun findIdsForAdministration(): Set<String> = findIdsFor(AccessMask.ADMINISTRATION)
+    override fun findIdsForAdministration(): Set<String> = findIdsFor(Mask.ADMINISTRATION)
 
-    override fun findIdsFor(accessMask: AccessMask): Set<String> {
+    override fun findIdsFor(accessMask: Mask): Set<String> {
         val authentication = SecurityContextHolder.getContext().authentication
         return permissionIdsCache.get("${authentication.name}#${accessMask.name}") {
             permissionRepository.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
@@ -53,21 +53,21 @@ class PermissionServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun findAllForRead(): List<Permission> = findAllFor(AccessMask.READ)
+    override fun findAllForRead(): List<Permission> = findAllFor(Mask.READ)
 
     @Transactional(readOnly = true)
-    override fun findAllForWrite(): List<Permission> = findAllFor(AccessMask.WRITE)
+    override fun findAllForWrite(): List<Permission> = findAllFor(Mask.WRITE)
 
     @Transactional(readOnly = true)
-    override fun findAllForCreate(): List<Permission> = findAllFor(AccessMask.CREATE)
+    override fun findAllForCreate(): List<Permission> = findAllFor(Mask.CREATE)
 
     @Transactional(readOnly = true)
-    override fun findAllForDelete(): List<Permission> = findAllFor(AccessMask.DELETE)
+    override fun findAllForDelete(): List<Permission> = findAllFor(Mask.DELETE)
 
     @Transactional(readOnly = true)
-    override fun findAllForAdministration(): List<Permission> = findAllFor(AccessMask.ADMINISTRATION)
+    override fun findAllForAdministration(): List<Permission> = findAllFor(Mask.ADMINISTRATION)
 
-    private fun findAllFor(accessMask: AccessMask): List<Permission> {
+    private fun findAllFor(accessMask: Mask): List<Permission> {
         val authentication = SecurityContextHolder.getContext().authentication
         return permissionRepository.findAllFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }

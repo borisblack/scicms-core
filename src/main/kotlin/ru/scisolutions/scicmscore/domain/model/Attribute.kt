@@ -27,10 +27,6 @@ class Attribute(
     val minRange: Int? = null, // for int, float, decimal types
     val maxRange: Int? = null // for int, float, decimal types
 ) {
-    enum class Type { uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation }
-
-    enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
-
     @JsonIgnore
     fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
 
@@ -92,4 +88,8 @@ class Attribute(
             minRange == other.minRange &&
             maxRange == other.maxRange
     }
+
+    enum class Type { uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation }
+
+    enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
 }

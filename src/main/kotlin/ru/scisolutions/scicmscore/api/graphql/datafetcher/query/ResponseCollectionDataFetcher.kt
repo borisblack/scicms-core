@@ -4,19 +4,22 @@ import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.DataFetcherUtil
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.ResponseCollectionInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
+import java.util.regex.Pattern
 
 @Component
 class ResponseCollectionDataFetcher(
     private val responseCollectionInputMapper: ResponseCollectionInputMapper,
     private val dataEngine: DataEngine
-) : DataFetcher<DataFetcherResult<ResponseCollection>> {
+) : BaseDataFetcher(), DataFetcher<DataFetcherResult<ResponseCollection>> {
+    override fun getFieldTypePattern(): Pattern = Pattern.compile("^(\\w+)ResponseCollection$")
+
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<ResponseCollection> {
-        val fieldType = DataFetcherUtil.parseFieldType(dfe.fieldType)
-        val capitalizedItemName = DataFetcherUtil.extractCapitalizedItemNameFromResponseCollectionFieldType(fieldType)
+        val fieldType = parseFieldType(dfe.fieldType)
+        val capitalizedItemName = extractCapitalizedItemNameFromFieldType(fieldType)
         val itemName = capitalizedItemName.decapitalize()
         val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }

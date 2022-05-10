@@ -31,10 +31,14 @@ class ItemFiltersInputMapper(
                     if (attribute.type == Type.relation) {
                         relationValidator.validateAttribute(item, attrName)
                         val targetItem = itemService.getByName(requireNotNull(attribute.target))
-                        if (targetItem.dataSource == item.dataSource)
+                        if (targetItem.dataSource == item.dataSource) {
                             map(attribute.target, filterValue) // recursive
-                        else
+                        } else {
+                            if (attribute.isCollection())
+                                throw IllegalArgumentException("Filtering collections from different datasource is not supported")
+
                             PrimitiveFilterInput.fromMap(filterValue)
+                        }
                     } else
                         PrimitiveFilterInput.fromMap(filterValue)
                 }

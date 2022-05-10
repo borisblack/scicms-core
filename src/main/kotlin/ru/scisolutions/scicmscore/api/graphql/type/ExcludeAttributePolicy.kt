@@ -1,6 +1,7 @@
-package ru.scisolutions.scicmscore.api.graphql.type.builder
+package ru.scisolutions.scicmscore.api.graphql.type
 
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
@@ -38,6 +39,12 @@ class ExcludeAttributePolicy(
             val targetItem = itemService.getByName(requireNotNull(attribute.target))
             if (targetItem.dataSource != item.dataSource)
                 return false
+
+            if (attribute.relType == RelType.manyToMany) {
+                val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
+                if (intermediateItem.dataSource != item.dataSource)
+                    return false
+            }
         }
 
         return true

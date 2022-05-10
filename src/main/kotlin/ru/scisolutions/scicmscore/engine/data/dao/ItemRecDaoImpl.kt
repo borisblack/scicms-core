@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.data.db.query.QueryBuilder
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.PermissionService
-import ru.scisolutions.scicmscore.util.AccessMask
+import ru.scisolutions.scicmscore.util.ACL.Mask
 
 @Service
 class ItemRecDaoImpl(
@@ -31,30 +31,30 @@ class ItemRecDaoImpl(
     override fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
         findByKeyAttrNameForAdministration(item, ID_ATTR_NAME, id, selectAttrNames)
 
-    override fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: AccessMask): ItemRec? =
+    override fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec? =
         findByKeyAttrNameFor(item, ID_ATTR_NAME, id, selectAttrNames, accessMask)
 
     override fun findByKeyAttrNameForRead(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, AccessMask.READ)
+        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.READ)
 
     override fun findByKeyAttrNameForWrite(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, AccessMask.WRITE)
+        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.WRITE)
 
     override fun findByKeyAttrNameForCreate(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, AccessMask.CREATE)
+        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.CREATE)
 
     override fun findByKeyAttrNameForDelete(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>) =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, AccessMask.DELETE)
+        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.DELETE)
 
     override fun findByKeyAttrNameForAdministration(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, AccessMask.ADMINISTRATION)
+        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.ADMINISTRATION)
 
     override fun findByKeyAttrNameFor(
         item: Item,
         keyAttrName: String,
         keyAttrValue: String,
         selectAttrNames: Set<String>,
-        accessMask: AccessMask
+        accessMask: Mask
     ): ItemRec? {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
         val query =  queryBuilder.buildFindByKeyAttrNameQuery(item, keyAttrName, keyAttrValue, selectAttrNames, permissionIds)

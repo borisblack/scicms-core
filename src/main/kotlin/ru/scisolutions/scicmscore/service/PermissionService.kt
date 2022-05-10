@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.service
 
 import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.util.AccessMask
+import ru.scisolutions.scicmscore.util.ACL.Mask
 
 interface PermissionService {
     val defaultPermission: Permission
@@ -16,7 +16,7 @@ interface PermissionService {
 
     fun findIdsForAdministration(): Set<String>
 
-    fun findIdsFor(accessMask: AccessMask): Set<String>
+    fun findIdsFor(accessMask: Mask): Set<String>
 
     fun findAllForRead(): List<Permission>
 
