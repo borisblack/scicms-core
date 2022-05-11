@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.data.dao
 
+import com.healthmarketscience.sqlbuilder.SelectQuery
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
@@ -34,6 +35,9 @@ class ItemRecDaoImpl(
     override fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec? =
         findByKeyAttrNameFor(item, ID_ATTR_NAME, id, selectAttrNames, accessMask)
 
+    override fun findById(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
+        findByKeyAttrName(item, ID_ATTR_NAME, id, selectAttrNames)
+
     override fun findByKeyAttrNameForRead(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
         findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.READ)
 
@@ -49,15 +53,18 @@ class ItemRecDaoImpl(
     override fun findByKeyAttrNameForAdministration(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
         findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.ADMINISTRATION)
 
-    override fun findByKeyAttrNameFor(
-        item: Item,
-        keyAttrName: String,
-        keyAttrValue: String,
-        selectAttrNames: Set<String>,
-        accessMask: Mask
-    ): ItemRec? {
-        val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
+    override fun findByKeyAttrNameFor(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec? {
+        val permissionIds: Set<String> = permissionService.getIdsFor(accessMask)
         val query =  queryBuilder.buildFindByKeyAttrNameQuery(item, keyAttrName, keyAttrValue, selectAttrNames, permissionIds)
+        return findOne(item, query)
+    }
+
+    override fun findByKeyAttrName(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? {
+        val query =  queryBuilder.buildFindByKeyAttrNameQuery(item, keyAttrName, keyAttrValue, selectAttrNames)
+        return findOne(item, query)
+    }
+
+    private fun findOne(item: Item, query: SelectQuery): ItemRec? {
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
@@ -69,6 +76,30 @@ class ItemRecDaoImpl(
             }
 
         return itemRec
+    }
+
+    override fun existsById(item: Item, id: String): Boolean = countByIds(item, setOf(id)) > 0
+
+    override fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
+
+    override fun countByIds(item: Item, ids: Set<String>): Int {
+        val query = queryBuilder.buildFindByIdsQuery(item, ids)
+        return count(item, query)
+    }
+
+    override fun count(item: Item, query: SelectQuery): Int {
+        val countSQL = "SELECT COUNT(*) FROM ($query) t"
+        return jdbcTemplateMap.getOrThrow(item.dataSource).queryForObject(countSQL, Int::class.java) as Int
+    }
+
+    override fun insert(item: Item, itemRec: ItemRec) {
+        val query = queryBuilder.buildInsertQuery(item, itemRec)
+        jdbcTemplateMap.getOrThrow(item.dataSource).update(query.toString())
+    }
+
+    override fun updateById(item: Item, id: String, itemRec: ItemRec) {
+        val query = queryBuilder.buildUpdateByIdQuery(item, id, itemRec)
+        jdbcTemplateMap.getOrThrow(item.dataSource).update(query.toString())
     }
 
     companion object {

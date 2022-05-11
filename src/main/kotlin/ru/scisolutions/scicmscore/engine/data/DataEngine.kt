@@ -6,8 +6,9 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
-import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
-import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.input.ItemInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
@@ -39,7 +40,7 @@ interface DataEngine {
 
     fun getResponseCollection(
         itemName: String,
-        input: ResponseCollectionInput,
+        input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection
@@ -49,12 +50,12 @@ interface DataEngine {
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: RelationResponseCollectionInput,
+        input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection
 
-    fun create(itemName: String, data: Map<String, Any?>, selectAttrNames: Set<String>): Response
+    fun create(itemName: String, input: ItemInput, selectAttrNames: Set<String>): Response
 
     fun getCustomMethods(itemName: String): Set<String>
 

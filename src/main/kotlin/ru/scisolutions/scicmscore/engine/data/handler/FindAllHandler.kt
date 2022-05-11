@@ -1,15 +1,15 @@
 package ru.scisolutions.scicmscore.engine.data.handler
 
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
-import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 
-interface ResponseCollectionHandler {
+interface FindAllHandler {
     fun getResponseCollection(
         itemName: String,
-        input: ResponseCollectionInput,
+        input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection
@@ -19,7 +19,7 @@ interface ResponseCollectionHandler {
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: RelationResponseCollectionInput,
+        input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection

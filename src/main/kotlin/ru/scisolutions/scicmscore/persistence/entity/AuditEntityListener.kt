@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import javax.persistence.PrePersist
 import javax.persistence.PreUpdate
 
@@ -8,7 +8,7 @@ class AuditEntityListener {
     @PrePersist
     fun touchForCreate(target: Any) {
         val entity = target as AbstractEntity
-        val now = LocalDateTime.now()
+        val now = OffsetDateTime.now()
         entity.permissionId = Permission.DEFAULT_PERMISSION_ID
         entity.createdAt = now
         entity.createdById = User.ROOT_USER_ID
@@ -19,7 +19,7 @@ class AuditEntityListener {
     @PreUpdate
     fun touchForUpdate(target: Any) {
         val entity = target as AbstractEntity
-        entity.updatedAt = LocalDateTime.now()
+        entity.updatedAt = OffsetDateTime.now()
         entity.updatedById = User.ROOT_USER_ID
     }
 }

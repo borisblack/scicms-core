@@ -45,16 +45,20 @@ spec:
       columnName: initial_value
       displayName: Initial Value
       description: Initial Value
+      required: true
+      defaultValue: 0
     currentValue:
       type: int
       columnName: current_value
       displayName: Current Value
       description: Current Value
+      required: true
     step:
       type: int
       columnName: step
       displayName: Step
       description: Step
+      required: true
     padWith:
       type: string
       columnName: pad_with

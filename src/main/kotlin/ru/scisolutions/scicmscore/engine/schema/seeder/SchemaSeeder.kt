@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.schema.seeder
 
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 
-interface DbSchemaSeeder {
+interface SchemaSeeder {
     fun seedSchema()
 
     fun seedItem(item: Item)

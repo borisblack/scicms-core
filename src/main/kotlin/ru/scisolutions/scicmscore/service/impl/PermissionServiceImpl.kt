@@ -31,21 +31,22 @@ class PermissionServiceImpl(
     fun fetchDefaultPermission(): Permission = permissionRepository.getById(Permission.DEFAULT_PERMISSION_ID)
 
     @Transactional(readOnly = true)
-    override fun findIdsForRead(): Set<String> = findIdsFor(Mask.READ)
+    override fun getIdsForRead(): Set<String> = getIdsFor(Mask.READ)
 
     @Transactional(readOnly = true)
-    override fun findIdsForWrite(): Set<String> = findIdsFor(Mask.WRITE)
+    override fun getIdsForWrite(): Set<String> = getIdsFor(Mask.WRITE)
 
     @Transactional(readOnly = true)
-    override fun findIdsForCreate(): Set<String> = findIdsFor(Mask.CREATE)
+    override fun getIdsForCreate(): Set<String> = getIdsFor(Mask.CREATE)
 
     @Transactional(readOnly = true)
-    override fun findIdsForDelete(): Set<String> = findIdsFor(Mask.DELETE)
+    override fun getIdsForDelete(): Set<String> = getIdsFor(Mask.DELETE)
 
     @Transactional(readOnly = true)
-    override fun findIdsForAdministration(): Set<String> = findIdsFor(Mask.ADMINISTRATION)
+    override fun getIdsForAdministration(): Set<String> = getIdsFor(Mask.ADMINISTRATION)
 
-    override fun findIdsFor(accessMask: Mask): Set<String> {
+    @Transactional(readOnly = true)
+    override fun getIdsFor(accessMask: Mask): Set<String> {
         val authentication = SecurityContextHolder.getContext().authentication
         return permissionIdsCache.get("${authentication.name}#${accessMask.name}") {
             permissionRepository.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))

@@ -5,7 +5,8 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
-import ru.scisolutions.scicmscore.engine.schema.relation.handler.RelationValidator
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 import graphql.language.Type as GraphQLType
@@ -18,10 +19,8 @@ class AttributeTypes(
     private val itemService: ItemService,
     private val relationValidator: RelationValidator
 ) {
-    fun objectType(item: Item, attrName: String): GraphQLType<*> {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
-
-        return when (attribute.type) {
+    fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
+        when (attribute.type) {
             AttrType.uuid -> {
                 val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.STRING
                 typeName.nonNull(attribute.required)
@@ -38,7 +37,7 @@ class AttributeTypes(
             AttrType.array, AttrType.json -> TypeNames.JSON.nonNull(attribute.required)
             AttrType.media -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.relation -> {
-                relationValidator.validateAttribute(item, attrName)
+                relationValidator.validateAttribute(item, attrName, attribute)
 
                 val capitalizedTargetItemName = requireNotNull(attribute.target).capitalize()
                 if (attribute.isCollection())
@@ -48,12 +47,9 @@ class AttributeTypes(
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }
-    }
 
-    fun filterInputType(item: Item, attrName: String): GraphQLType<*> {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
-
-        return when (attribute.type) {
+    fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
+        when (attribute.type) {
             AttrType.uuid -> if (attribute.keyed) TypeNames.ID_FILTER_INPUT else TypeNames.STRING_FILTER_INPUT
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
             AttrType.email, // TODO: Add regexp email scalar type
@@ -69,7 +65,7 @@ class AttributeTypes(
             AttrType.json,
             AttrType.media -> TypeNames.STRING_FILTER_INPUT
             AttrType.relation -> {
-                relationValidator.validateAttribute(item, attrName)
+                relationValidator.validateAttribute(item, attrName, attribute)
 
                 val targetItem = itemService.getByName(requireNotNull(attribute.target))
                 if (targetItem.dataSource == item.dataSource) {
@@ -84,12 +80,9 @@ class AttributeTypes(
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }
-    }
 
-    fun inputType(item: Item, attrName: String): GraphQLType<*> {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
-
-        return when (attribute.type) {
+    fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
+        when (attribute.type) {
             AttrType.uuid -> TypeNames.STRING
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
             AttrType.email, // TODO: Add regexp email scalar type
@@ -103,11 +96,10 @@ class AttributeTypes(
             AttrType.bool -> TypeNames.BOOLEAN
             AttrType.array, AttrType.json, AttrType.media -> TypeNames.STRING
             AttrType.relation -> {
-                relationValidator.validateAttribute(item, attrName)
+                relationValidator.validateAttribute(item, attrName, attribute)
 
                 if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
             }
             else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
         }
-    }
 }

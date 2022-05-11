@@ -17,9 +17,9 @@ import kotlin.io.path.extension
 import kotlin.streams.toList
 
 @Service
-class FileDbSchemaReader(
+class FileSchemaReader(
     private val schemaProps: SchemaProps
-) : DbSchemaReader {
+) : SchemaReader {
     override fun read(): DbSchema {
         val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")
         logger.info("Reading the models path [{}]", schemaPath)
@@ -46,7 +46,7 @@ class FileDbSchemaReader(
     }
 
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(FileDbSchemaReader::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(FileSchemaReader::class.java)
 
         private val yamlMapper by lazy {
             ObjectMapper(YAMLFactory())

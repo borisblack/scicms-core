@@ -36,12 +36,12 @@ class ItemInputObjectTypes(
             )
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, _) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName) }
-            .forEach { (attrName, _) ->
+            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName, attribute) }
+            .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
-                        .type(attributeTypes.filterInputType(item, attrName))
+                        .type(attributeTypes.filterInputType(item, attrName, attribute))
                         .build()
                 )
             }
@@ -54,12 +54,12 @@ class ItemInputObjectTypes(
             .name("${item.name.capitalize()}Input")
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, _) -> excludeAttributePolicy.excludeFromInputObjectType(item, attrName) }
-            .forEach { (attrName, _) ->
+            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromInputObjectType(item, attrName, attribute) }
+            .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
-                        .type(attributeTypes.inputType(item, attrName))
+                        .type(attributeTypes.inputType(item, attrName, attribute))
                         .build()
 
                 )

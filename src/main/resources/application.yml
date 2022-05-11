@@ -19,6 +19,9 @@ scicms-core:
     max-limit: 100
     item-cache-expiration-minutes: 1440
     permission-ids-cache-expiration-minutes: 10
+    revision-policy-cache-expiration-minutes: 10
+    sequence-cache-expiration-minutes: 10
+    user-cache-expiration-minutes: 10
   i18n:
     default-locale: en-US
     include-in-unique-index: true

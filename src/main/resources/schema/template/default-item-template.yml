@@ -67,7 +67,6 @@ spec:
       displayName: Released
       description: Released
       indexed: true
-      private: true
     locale:
       type: string
       columnName: locale
@@ -96,6 +95,7 @@ spec:
       columnName: permission_id
       displayName: Permission
       description: Permission
+      required: true
       indexed: true
     createdAt:
       type: datetime

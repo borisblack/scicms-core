@@ -1,11 +1,11 @@
-package ru.scisolutions.scicmscore.engine.schema.relation.handler
+package ru.scisolutions.scicmscore.engine.schema.service.impl
 
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
+import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
@@ -14,8 +14,7 @@ class RelationValidator(
     private val dbSchema: DbSchema,
     private val itemService: ItemService
 ) {
-    fun validateAttribute(item: Item, attrName: String) {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+    fun validateAttribute(item: Item, attrName: String, attribute: Attribute) {
         validateAttribute(attrName, attribute)
         validateDataSource(item, attribute)
     }
@@ -58,8 +57,7 @@ class RelationValidator(
         }
     }
 
-    fun validateAttribute(itemEntity: ItemEntity, attrName: String) {
-        val attribute = itemEntity.spec.getAttributeOrThrow(attrName)
+    fun validateAttribute(itemEntity: ItemEntity, attrName: String, attribute: Attribute) {
         validateAttribute(attrName, attribute)
         validateDataSource(itemEntity, attribute)
     }

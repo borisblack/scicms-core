@@ -49,11 +49,11 @@ class LiquibaseTableSeeder(
             return
         }
 
-        if (isChanged(item, itemEntity)) {
+        if (isTableChanged(item, itemEntity)) {
             logger.info("Updating the table [{}]", metadata.tableName)
             updateTable(item, itemEntity)
         } else {
-            logger.info("Item [{}] is unchanged. Nothing to update", item.metadata.name)
+            logger.info("Table [{}] is unchanged. Nothing to update", item.metadata.tableName)
         }
     }
 
@@ -119,7 +119,7 @@ class LiquibaseTableSeeder(
         }
     }
 
-    private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =
+    private fun isTableChanged(item: Item, itemEntity: ItemEntity): Boolean =
         item.hashCode().toString() != itemEntity.checksum && (
             item.metadata.tableName != itemEntity.tableName ||
                 item.metadata.dataSource != itemEntity.dataSource ||

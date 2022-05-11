@@ -31,32 +31,6 @@ class MutationItemFields {
         return builder.build()
     }
 
-    fun createLocalization(item: Item): FieldDefinition {
-        if (!item.localized)
-            throw IllegalStateException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied")
-
-        val capitalizedItemName = item.name.capitalize()
-        val builder = FieldDefinition.newFieldDefinition()
-            .name("create${capitalizedItemName}Localization")
-            .type(TypeName("${capitalizedItemName}Response"))
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("id")
-                    .type(NonNullType(TypeNames.ID))
-                    .build()
-            )
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("data")
-                    .type(NonNullType(TypeName("${capitalizedItemName}Input")))
-                    .build()
-            )
-
-        builder.inputValueDefinition(InputValues.LOCALE)
-
-        return builder.build()
-    }
-
     fun createVersion(item: Item): FieldDefinition {
         if (!item.versioned)
             throw IllegalStateException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied")
@@ -83,6 +57,32 @@ class MutationItemFields {
 
         if (item.localized)
             builder.inputValueDefinition(InputValues.LOCALE)
+
+        return builder.build()
+    }
+
+    fun createLocalization(item: Item): FieldDefinition {
+        if (!item.localized)
+            throw IllegalStateException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied")
+
+        val capitalizedItemName = item.name.capitalize()
+        val builder = FieldDefinition.newFieldDefinition()
+            .name("create${capitalizedItemName}Localization")
+            .type(TypeName("${capitalizedItemName}Response"))
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("id")
+                    .type(NonNullType(TypeNames.ID))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("data")
+                    .type(NonNullType(TypeName("${capitalizedItemName}Input")))
+                    .build()
+            )
+
+        builder.inputValueDefinition(InputValues.NON_NULL_LOCALE)
 
         return builder.build()
     }

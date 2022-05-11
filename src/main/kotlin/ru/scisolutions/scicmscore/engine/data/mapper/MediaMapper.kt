@@ -2,7 +2,6 @@ package ru.scisolutions.scicmscore.engine.data.mapper
 
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.persistence.entity.Media
-import java.time.ZoneOffset
 
 class MediaMapper {
     fun map(media: Media) = MediaInfo(
@@ -12,6 +11,6 @@ class MediaMapper {
         mimetype = media.mimetype,
         checksum = media.checksum,
         // createdAt = media.createdAt.atZone(ZoneOffset.systemDefault()).toOffsetDateTime()
-        createdAt = media.createdAt.atOffset(ZoneOffset.UTC)
+        createdAt = media.createdAt
     )
 }

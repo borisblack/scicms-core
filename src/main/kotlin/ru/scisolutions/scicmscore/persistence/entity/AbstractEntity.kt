@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
 import org.hibernate.annotations.Type
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.EntityListeners
@@ -43,19 +43,19 @@ abstract class AbstractEntity {
 
     var state: String? = null
 
-    @Column(name = "permission_id")
-    var permissionId: String? = null
+    @Column(name = "permission_id", nullable = false)
+    lateinit var permissionId: String
 
     var locale: String? = null
 
     @Column(name = "created_at", nullable = false)
-    lateinit var createdAt: LocalDateTime
+    lateinit var createdAt: OffsetDateTime
 
     @Column(name = "created_by_id", nullable = false)
     lateinit var createdById: String
 
     @Column(name = "updated_at")
-    var updatedAt: LocalDateTime? = null
+    var updatedAt: OffsetDateTime? = null
 
     @Column(name = "updated_by_id")
     var updatedById: String? = null

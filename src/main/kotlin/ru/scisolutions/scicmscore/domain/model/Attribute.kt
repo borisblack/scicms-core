@@ -11,6 +11,7 @@ class Attribute(
     val mappedBy: String? = null,
     val inversedBy: String? = null,
     val enumSet: Set<String>? = null,
+    val seqName: String? = null,
     val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
     val displayName: String,
     val description: String? = null,
@@ -22,19 +23,34 @@ class Attribute(
     val indexed: Boolean = false,
     val private: Boolean = false,
     val length: Int? = null, // for string type
-    val precision: Int? = null, // for float, decimal types
-    val scale: Int? = null, // for float, decimal types
-    val minRange: Int? = null, // for int, float, decimal types
-    val maxRange: Int? = null // for int, float, decimal types
+    val precision: Int? = null, // for decimal types
+    val scale: Int? = null, // for decimal types
+    val minRange: Long? = null, // for int, long, float, double, decimal types
+    val maxRange: Long? = null // for int, long, float, double, decimal types
 ) {
     @JsonIgnore
     fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
+
+    fun validate() {
+        if (type == Type.string && length == null)
+            throw IllegalArgumentException("The length is required for the string type")
+
+        if (type == Type.enum && enumSet == null)
+            throw IllegalArgumentException("The enumSet is required for the enum type")
+
+        if (type == Type.sequence && seqName == null)
+            throw IllegalArgumentException("The seqName is required for the sequence type")
+
+        if (isCollection() && required)
+            throw IllegalArgumentException("Collection relation attribute cannot be required")
+    }
 
     override fun hashCode(): Int =
         Objects.hash(
             type.name,
             columnName,
             enumSet,
+            seqName,
             target,
             relType?.name,
             intermediate,
@@ -68,6 +84,7 @@ class Attribute(
         return type == other.type &&
             columnName == other.columnName &&
             enumSet == other.enumSet &&
+            seqName == other.seqName &&
             target == other.target &&
             relType == other.relType &&
             intermediate == other.intermediate &&
@@ -89,7 +106,10 @@ class Attribute(
             maxRange == other.maxRange
     }
 
-    enum class Type { uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation }
+    enum class Type {
+        uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime,
+        timestamp, bool, array, json, media, relation
+    }
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
 }

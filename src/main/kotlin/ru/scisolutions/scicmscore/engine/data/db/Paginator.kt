@@ -1,22 +1,23 @@
 package ru.scisolutions.scicmscore.engine.data.db
 
 import com.healthmarketscience.sqlbuilder.SelectQuery
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.DataProps
+import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.model.input.PaginationInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Pagination
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import kotlin.math.ceil
 
 @Component
 class Paginator(
     private val dataProps: DataProps,
-    private val jdbcTemplate: JdbcTemplate
+    private val itemRecDao: ItemRecDao
 ) {
-    fun paginate(query: SelectQuery, paginationInput: PaginationInput?, selectPaginationFields: Set<String>): Pagination {
+    fun paginate(item: Item, query: SelectQuery, paginationInput: PaginationInput?, selectPaginationFields: Set<String>): Pagination {
         var total: Int? = null
         if (TOTAL_FIELD_NAME in selectPaginationFields || PAGE_COUNT_FIELD_NAME in selectPaginationFields) {
-            total = fetchTotal(query.toString())
+            total = itemRecDao.count(item, query)
         }
 
         if (paginationInput != null) {
@@ -77,11 +78,6 @@ class Paginator(
             total = total,
             pageCount = null
         )
-    }
-
-    private fun fetchTotal(selectStatement: String): Int {
-        val countSQL = "SELECT COUNT(*) FROM ($selectStatement) t"
-        return jdbcTemplate.queryForObject(countSQL, Int::class.java) as Int
     }
 
     companion object {

@@ -2,12 +2,12 @@ package ru.scisolutions.scicmscore.engine.data.mapper
 
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.data.model.input.PaginationInput
-import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
-import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 
 @Component
 class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFiltersInputMapper) {
-    fun mapToResponseCollectionInput(itemName: String, arguments: Map<String, Any>): ResponseCollectionInput {
+    fun mapToResponseCollectionInput(itemName: String, arguments: Map<String, Any>): FindAllInput {
         val itemFiltersMap = arguments[FILTERS_ARG_NAME] as Map<String, Any>?
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int?>?
         val sort = arguments[SORT_ARG_NAME] as List<String>?
@@ -15,7 +15,7 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
         val isReleased = arguments[RELEASED_ARG_NAME] as Boolean?
         val locale = arguments[LOCALE_ARG_NAME] as String?
 
-        return ResponseCollectionInput(
+        return FindAllInput(
             filters = itemFiltersMap?.let { itemFiltersInputMapper.map(itemName, it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
             sort = sort,
@@ -25,12 +25,12 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
         )
     }
 
-    fun mapToRelationResponseCollectionInput(itemName: String, arguments: Map<String, Any>): RelationResponseCollectionInput {
+    fun mapToRelationResponseCollectionInput(itemName: String, arguments: Map<String, Any>): FindAllRelationInput {
         val itemFiltersMap = arguments[FILTERS_ARG_NAME] as Map<String, Any>?
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int?>?
         val sort = arguments[SORT_ARG_NAME] as List<String>?
 
-        return RelationResponseCollectionInput(
+        return FindAllRelationInput(
             filters = itemFiltersMap?.let { itemFiltersInputMapper.map(itemName, it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
             sort = sort

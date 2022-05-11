@@ -4,7 +4,7 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 
-interface ResponseHandler {
+interface FindOneHandler {
     fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
     fun getRelationResponse(

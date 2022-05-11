@@ -5,4 +5,6 @@ import ru.scisolutions.scicmscore.persistence.entity.User
 
 interface UserRepository : CrudRepository<User, String> {
     fun findByUsername(username: String): User?
+
+    fun getByUsername(username: String): User
 }

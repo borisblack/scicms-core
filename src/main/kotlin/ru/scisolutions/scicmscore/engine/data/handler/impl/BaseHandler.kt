@@ -13,6 +13,6 @@ open class BaseHandler {
             .toSet()
 
     companion object {
-        const val ID_ATTR_NAME = "id"
+        private const val ID_ATTR_NAME = "id"
     }
 }

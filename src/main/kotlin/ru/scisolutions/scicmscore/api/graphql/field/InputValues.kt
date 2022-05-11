@@ -32,4 +32,10 @@ object InputValues {
             .name(LOCALE_ATTR_NAME)
             .type(TypeNames.STRING)
             .build()
+
+    val NON_NULL_LOCALE: InputValueDefinition =
+        InputValueDefinition.newInputValueDefinition()
+            .name(LOCALE_ATTR_NAME)
+            .type(NonNullType(TypeNames.STRING))
+            .build()
 }

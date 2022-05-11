@@ -6,6 +6,7 @@ import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
 import ru.scisolutions.scicmscore.engine.data.DataEngine
+import ru.scisolutions.scicmscore.engine.data.model.input.ItemInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import java.util.regex.Pattern
 
@@ -24,8 +25,12 @@ class CreateDataFetcher(
             .toSet()
             .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
-        val data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null")
-        val result = dataEngine.create(itemName, data, selectAttrNames)
+        val input = ItemInput(
+            data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null"),
+            majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
+            locale = dfe.arguments[LOCALE_ARG_NAME] as String?
+        )
+        val result = dataEngine.create(itemName, input, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)
@@ -34,5 +39,7 @@ class CreateDataFetcher(
 
     companion object {
         private const val DATA_ARG_NAME = "data"
+        private const val MAJOR_REV_ARG_NAME = "majorRev"
+        private const val LOCALE_ARG_NAME = "locale"
     }
 }

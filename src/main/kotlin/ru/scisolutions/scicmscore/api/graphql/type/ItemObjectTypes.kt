@@ -33,7 +33,7 @@ class ItemObjectTypes(
             .description(Description(description, null, true))
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, _) -> excludeAttributePolicy.excludeFromObjectType(item, attrName) }
+            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.fieldDefinition(
                     newAttributeField(item, attrName, attribute)
@@ -46,7 +46,7 @@ class ItemObjectTypes(
     private fun newAttributeField(item: Item, attrName: String, attribute: Attribute): FieldDefinition {
         val builder = FieldDefinition.newFieldDefinition()
             .name(attrName)
-            .type(attributeTypes.objectType(item, attrName))
+            .type(attributeTypes.objectType(item, attrName, attribute))
 
         if (attribute.isCollection()) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }

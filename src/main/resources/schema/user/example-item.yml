@@ -23,6 +23,7 @@ spec:
   attributes:
     name:
       type: string  # uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation
+#      seqName: # sequence name for sequence type (null by default)
       columnName: name # optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
       displayName: Name # optional (name by default)
       description: Name # optional (null by default)

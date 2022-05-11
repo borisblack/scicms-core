@@ -26,5 +26,7 @@ class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaServ
     @Transactional(readOnly = true)
     override fun getById(id: String): Media = mediaRepository.getById(id)
 
+    override fun existsById(id: String): Boolean = mediaRepository.existsById(id)
+
     override fun save(media: Media): Media = mediaRepository.save(media)
 }

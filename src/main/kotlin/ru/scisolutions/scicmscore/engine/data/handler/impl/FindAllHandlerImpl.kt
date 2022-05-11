@@ -17,11 +17,11 @@ import ru.scisolutions.scicmscore.engine.data.db.query.LocaleConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.OrderingsParser
 import ru.scisolutions.scicmscore.engine.data.db.query.ReleasedConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
-import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
+import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
-import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
-import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
@@ -29,13 +29,13 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirec
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
-import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
+import ru.scisolutions.scicmscore.engine.schema.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.service.PermissionService
 
 @Service
-class ResponseCollectionHandlerImpl(
+class FindAllHandlerImpl(
     private val itemService: ItemService,
     private val permissionService: PermissionService,
     private val relationManager: RelationManager,
@@ -45,10 +45,10 @@ class ResponseCollectionHandlerImpl(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val paginator: Paginator,
     private val jdbcTemplateMap: JdbcTemplateMap
-) : BaseHandler(), ResponseCollectionHandler {
+) : BaseHandler(), FindAllHandler {
     override fun getResponseCollection(
         itemName: String,
-        input: ResponseCollectionInput,
+        input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection {
@@ -77,7 +77,7 @@ class ResponseCollectionHandlerImpl(
         if (localeCondition != null)
             query.addCondition(localeCondition)
 
-        val pagination = paginator.paginate(query, input.pagination, selectPaginationFields)
+        val pagination = paginator.paginate(item, query, input.pagination, selectPaginationFields)
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
@@ -103,7 +103,7 @@ class ResponseCollectionHandlerImpl(
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: RelationResponseCollectionInput,
+        input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
@@ -118,8 +118,9 @@ class ResponseCollectionHandlerImpl(
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
 
         val parentItem = itemService.getByName(parentItemName)
+        val parentAttribute = parentItem.spec.getAttributeOrThrow(attrName)
         val parentId = sourceItemRec[ID_ATTR_NAME] ?: IllegalArgumentException("Source ID not found")
-        when (val parentRelation = relationManager.getAttributeRelation(parentItem, attrName)) {
+        when (val parentRelation = relationManager.getAttributeRelation(parentItem, attrName, parentAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {
                 val owningCol = DbColumn(table, parentRelation.getOwningColumnName(), null, null)
                 query.addCondition(BinaryCondition.equalTo(owningCol, parentId))
@@ -149,7 +150,7 @@ class ResponseCollectionHandlerImpl(
             else -> throw IllegalArgumentException("Invalid relation")
         }
 
-        paginator.paginate(query, input.pagination, selectPaginationFields)
+        paginator.paginate(item, query, input.pagination, selectPaginationFields)
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
@@ -173,7 +174,7 @@ class ResponseCollectionHandlerImpl(
         filters: ItemFiltersInput?,
         selectAttrNames: Set<String>
     ): SelectQuery {
-        val permissionIds = permissionService.findIdsForRead()
+        val permissionIds = permissionService.getIdsForRead()
         val table = schema.addTable(item.tableName)
         val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
         val permissionCondition = if (permissionIds.isEmpty()) UnaryCondition.isNull(permissionIdCol) else InCondition(permissionIdCol, *permissionIds.toTypedArray())
@@ -199,10 +200,11 @@ class ResponseCollectionHandlerImpl(
     }
 
     companion object {
+        private const val ID_ATTR_NAME = "id"
         private const val ID_COL_NAME = "id"
         private const val PERMISSION_ID_COL_NAME = "permission_id"
 
-        private val logger = LoggerFactory.getLogger(ResponseCollectionHandlerImpl::class.java)
+        private val logger = LoggerFactory.getLogger(FindAllHandlerImpl::class.java)
         private val orderingsParser = OrderingsParser()
     }
 }

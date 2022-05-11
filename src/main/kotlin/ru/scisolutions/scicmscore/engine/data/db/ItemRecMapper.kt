@@ -9,7 +9,6 @@ import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.util.Base64Encoding
 import java.sql.Clob
 import java.sql.ResultSet
 import java.time.ZoneOffset
@@ -25,7 +24,7 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
             val value = when (attribute.type) {
                 Type.uuid, Type.string, Type.enum, Type.sequence, Type.email, Type.media, Type.relation -> rs.getString(i)
                 Type.text -> parseText(rs.getObject(i))
-                Type.password -> rs.getString(i) // Base64Encoding.decodeNullable(rs.getString(i))
+                Type.password -> rs.getString(i)
                 Type.int -> rs.getInt(i)
                 Type.long -> rs.getLong(i)
                 Type.float -> rs.getFloat(i)

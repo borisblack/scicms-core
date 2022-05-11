@@ -5,7 +5,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.model.input.AbstractFilterInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.data.model.input.PrimitiveFilterInput
-import ru.scisolutions.scicmscore.engine.schema.relation.handler.RelationValidator
+import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
@@ -29,7 +29,7 @@ class ItemFiltersInputMapper(
                 .mapValues { (attrName, filterValue) ->
                     val attribute = item.spec.getAttributeOrThrow(attrName)
                     if (attribute.type == Type.relation) {
-                        relationValidator.validateAttribute(item, attrName)
+                        relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemService.getByName(requireNotNull(attribute.target))
                         if (targetItem.dataSource == item.dataSource) {
                             map(attribute.target, filterValue) // recursive

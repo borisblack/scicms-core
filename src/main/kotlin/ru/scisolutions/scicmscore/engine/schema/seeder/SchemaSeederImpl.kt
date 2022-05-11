@@ -7,20 +7,21 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.engine.schema.relation.handler.RelationValidator
+import ru.scisolutions.scicmscore.engine.schema.seeder.liquibase.LiquibaseTableSeeder
+import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
 import ru.scisolutions.scicmscore.service.ItemLockService
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
-class DbSchemaSeederImpl(
+class SchemaSeederImpl(
     private val schemaProps: SchemaProps,
     private val dbSchema: DbSchema,
     private val relationValidator: RelationValidator,
     private val itemService: ItemService,
     private val itemLockService: ItemLockService,
     private val tableSeeder: TableSeeder
-) : DbSchemaSeeder {
+) : SchemaSeeder {
     private var itemsLocked: Boolean = false
 
     init {
@@ -31,8 +32,6 @@ class DbSchemaSeederImpl(
     }
 
     final override fun seedSchema() {
-        obtainLock()
-
         val items = dbSchema.getItemsIncludeTemplates()
         items.forEach { (_, item) -> seedItem(item) }
 
@@ -43,12 +42,13 @@ class DbSchemaSeederImpl(
         releaseLock()
     }
 
-    private fun obtainLock() {
+    private fun acquireLock() {
         if (!itemsLocked) {
             if (!itemLockService.lock())
-                throw IllegalStateException("Cannot obtain items lock")
+                throw IllegalStateException("Cannot acquire items lock")
 
             itemsLocked = true
+            logger.info("Successfully acquired items lock")
         }
     }
 
@@ -58,6 +58,7 @@ class DbSchemaSeederImpl(
                 throw IllegalStateException("Cannot release items lock")
 
             itemsLocked = false
+            logger.info("Successfully released items lock")
         }
     }
 
@@ -65,15 +66,13 @@ class DbSchemaSeederImpl(
         validateItem(item)
 
         var itemEntity = itemService.findByName(item.metadata.name)
-
-        // Create/update table
-        if (itemEntity == null)
-            tableSeeder.create(item) // create table
-        else
-            tableSeeder.update(item, itemEntity) // update table
-
         if (itemEntity == null) {
+            acquireLock()
+
+            tableSeeder.create(item) // create table
+
             // Add item
+            logger.info("Creating the item [{}]", item.metadata.name)
             itemEntity = itemMapper.map(item)
             // itemEntity.allowedPermissions.add(permissionService.defaultPermission)
             itemService.save(itemEntity)
@@ -86,16 +85,27 @@ class DbSchemaSeederImpl(
             // )
             // allowedPermissionService.save(defaultAllowedPermission)
         } else if (isChanged(item, itemEntity)) {
-            // Update item
+            acquireLock()
+
+            tableSeeder.update(item, itemEntity) // update table
+
+            logger.info("Updating the item [{}]", itemEntity.name)
             itemMapper.copy(item, itemEntity)
             itemService.save(itemEntity)
+        } else {
+            logger.info("Item [{}] is unchanged. Nothing to update", itemEntity.name)
         }
     }
 
     private fun validateItem(item: Item) {
+        logger.info("Validating item [${item.metadata.name}]")
         item.spec.attributes.asSequence()
             .filter { (_, attribute) -> attribute.type == Type.relation }
-            .forEach { (attrName, _) -> relationValidator.validateAttribute(item, attrName) }
+            .forEach { (attrName, attribute) ->
+                // logger.debug("Validating attribute [$attrName]")
+                attribute.validate()
+                relationValidator.validateAttribute(item, attrName, attribute)
+            }
     }
 
     private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =
@@ -117,7 +127,7 @@ class DbSchemaSeederImpl(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(DbSchemaSeederImpl::class.java)
+        private val logger = LoggerFactory.getLogger(SchemaSeederImpl::class.java)
         private val itemMapper = ItemMapper()
     }
 }

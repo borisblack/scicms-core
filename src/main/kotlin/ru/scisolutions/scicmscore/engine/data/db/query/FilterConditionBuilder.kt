@@ -16,7 +16,6 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.data.model.input.PrimitiveFilterInput
-import ru.scisolutions.scicmscore.engine.schema.relation.RelationManager
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -25,6 +24,7 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToOneUnidirec
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
@@ -46,7 +46,7 @@ class FilterConditionBuilder(
                 val targetTable = DbTable(schema, targetItem.tableName)
                 val idCol = DbColumn(table, ID_COL_NAME, null, null)
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
-                when (val relation = relationManager.getAttributeRelation(item, attrName)) {
+                when (val relation = relationManager.getAttributeRelation(item, attrName, attribute)) {
                     is OneToOneUnidirectionalRelation -> {
                         val col = DbColumn(table, relation.getColumnName(), null, null)
                         query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
@@ -146,39 +146,41 @@ class FilterConditionBuilder(
         }
 
         primitiveFilterInput.eqFilter?.let {
-            nestedConditions.add(BinaryCondition.equalTo(column, it))
+            nestedConditions.add(BinaryCondition.equalTo(column, SQL.toSqlValue(it)))
         }
 
         primitiveFilterInput.neFilter?.let {
-            nestedConditions.add(BinaryCondition.notEqualTo(column, it))
+            nestedConditions.add(BinaryCondition.notEqualTo(column, SQL.toSqlValue(it)))
         }
 
         primitiveFilterInput.gtFilter?.let {
-            nestedConditions.add(BinaryCondition.greaterThan(column, it))
+            nestedConditions.add(BinaryCondition.greaterThan(column, SQL.toSqlValue(it)))
         }
 
         primitiveFilterInput.gteFilter?.let {
-            nestedConditions.add(BinaryCondition.greaterThanOrEq(column, it))
+            nestedConditions.add(BinaryCondition.greaterThanOrEq(column, SQL.toSqlValue(it)))
         }
 
         primitiveFilterInput.ltFilter?.let {
-            nestedConditions.add(BinaryCondition.lessThan(column, it))
+            nestedConditions.add(BinaryCondition.lessThan(column, SQL.toSqlValue(it)))
         }
 
         primitiveFilterInput.lteFilter?.let {
-            nestedConditions.add(BinaryCondition.lessThanOrEq(column, it))
+            nestedConditions.add(BinaryCondition.lessThanOrEq(column, SQL.toSqlValue(it)))
         }
 
         primitiveFilterInput.betweenFilter?.let {
-            nestedConditions.add(BetweenCondition(column, it.left, it.right))
+            nestedConditions.add(BetweenCondition(column, SQL.toSqlValue(it.left), SQL.toSqlValue(it.right)))
         }
 
-        primitiveFilterInput.inFilter?.let {
-            nestedConditions.add(InCondition(column, *it.toTypedArray()))
+        primitiveFilterInput.inFilter?.let { list ->
+            val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
+            nestedConditions.add(InCondition(column, *arr))
         }
 
-        primitiveFilterInput.notInFilter?.let {
-            nestedConditions.add(NotCondition(InCondition(column, *it.toTypedArray())))
+        primitiveFilterInput.notInFilter?.let { list ->
+            val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
+            nestedConditions.add(NotCondition(InCondition(column, *arr)))
         }
 
         if (primitiveFilterInput.nullFilter == true) {

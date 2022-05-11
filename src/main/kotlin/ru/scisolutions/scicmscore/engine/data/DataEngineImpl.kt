@@ -6,15 +6,16 @@ import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
-import ru.scisolutions.scicmscore.engine.data.handler.ResponseCollectionHandler
-import ru.scisolutions.scicmscore.engine.data.handler.ResponseHandler
+import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
+import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
-import ru.scisolutions.scicmscore.engine.data.model.input.RelationResponseCollectionInput
-import ru.scisolutions.scicmscore.engine.data.model.input.ResponseCollectionInput
+import ru.scisolutions.scicmscore.engine.data.model.input.ItemInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -28,8 +29,8 @@ import ru.scisolutions.scicmscore.persistence.entity.Media
 class DataEngineImpl(
     private val userHandler: UserHandler,
     private val mediaHandler: MediaHandler,
-    private val responseHandler: ResponseHandler,
-    private val responseCollectionHandler: ResponseCollectionHandler,
+    private val findOneHandler: FindOneHandler,
+    private val findAllHandler: FindAllHandler,
     private val createHandler: CreateHandler,
     private val customMethodHandler: CustomMethodHandler
 ) : DataEngine {
@@ -42,7 +43,7 @@ class DataEngineImpl(
     override fun download(media: Media): ByteArrayResource = mediaHandler.download(media)
 
     override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response =
-        responseHandler.getResponse(itemName, id, selectAttrNames)
+        findOneHandler.getResponse(itemName, id, selectAttrNames)
 
     override fun getRelationResponse(
         parentItemName: String,
@@ -51,29 +52,29 @@ class DataEngineImpl(
         attrName: String,
         selectAttrNames: Set<String>
     ): RelationResponse =
-        responseHandler.getRelationResponse(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
+        findOneHandler.getRelationResponse(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
 
     override fun getResponseCollection(
         itemName: String,
-        input: ResponseCollectionInput,
+        input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection =
-        responseCollectionHandler.getResponseCollection(itemName, input, selectAttrNames, selectPaginationFields)
+        findAllHandler.getResponseCollection(itemName, input, selectAttrNames, selectPaginationFields)
 
     override fun getRelationResponseCollection(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
-        input: RelationResponseCollectionInput,
+        input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection =
-        responseCollectionHandler.getRelationResponseCollection(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
+        findAllHandler.getRelationResponseCollection(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
 
-    override fun create(itemName: String, data: Map<String, Any?>, selectAttrNames: Set<String>): Response =
-        createHandler.create(itemName, data, selectAttrNames)
+    override fun create(itemName: String, input: ItemInput, selectAttrNames: Set<String>): Response =
+        createHandler.create(itemName, input, selectAttrNames)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

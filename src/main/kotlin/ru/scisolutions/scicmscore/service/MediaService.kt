@@ -9,5 +9,7 @@ interface MediaService {
 
     fun getById(id: String): Media
 
+    fun existsById(id: String): Boolean
+
     fun save(media: Media): Media
 }

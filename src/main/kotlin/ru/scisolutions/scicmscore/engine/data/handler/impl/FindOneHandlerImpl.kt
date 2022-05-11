@@ -3,17 +3,17 @@ package ru.scisolutions.scicmscore.engine.data.handler.impl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.data.handler.ResponseHandler
+import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
-class ResponseHandlerImpl(
+class FindOneHandlerImpl(
     private val itemService: ItemService,
     private val itemRecDao: ItemRecDao
-) : BaseHandler(), ResponseHandler {
+) : BaseHandler(), FindOneHandler {
     override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
         val attrNames = prepareAttrNames(item, selectAttrNames)
@@ -43,6 +43,6 @@ class ResponseHandlerImpl(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(ResponseHandlerImpl::class.java)
+        private val logger = LoggerFactory.getLogger(FindOneHandlerImpl::class.java)
     }
 }
