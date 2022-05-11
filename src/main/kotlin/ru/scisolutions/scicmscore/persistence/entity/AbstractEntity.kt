@@ -43,8 +43,8 @@ abstract class AbstractEntity {
 
     var state: String? = null
 
-    @Column(name = "permission_id", nullable = false)
-    lateinit var permissionId: String
+    @Column(name = "permission_id")
+    var permissionId: String? = null
 
     var locale: String? = null
 

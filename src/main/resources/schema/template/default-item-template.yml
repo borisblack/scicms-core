@@ -95,7 +95,6 @@ spec:
       columnName: permission_id
       displayName: Permission
       description: Permission
-      required: true
       indexed: true
     createdAt:
       type: datetime

@@ -1,6 +1,8 @@
 package ru.scisolutions.scicmscore.engine.data.db.query
 
 import com.healthmarketscience.sqlbuilder.BinaryCondition
+import com.healthmarketscience.sqlbuilder.ComboCondition
+import com.healthmarketscience.sqlbuilder.ComboCondition.Op
 import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.InsertQuery
 import com.healthmarketscience.sqlbuilder.SelectQuery
@@ -35,7 +37,17 @@ class QueryBuilder {
 
         if (permissionIds != null) {
             val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
-            val permissionCondition = if (permissionIds.isEmpty()) UnaryCondition.isNull(permissionIdCol) else InCondition(permissionIdCol, *permissionIds.toTypedArray())
+            val permissionCondition =
+                if (permissionIds.isEmpty()) {
+                    UnaryCondition.isNull(permissionIdCol)
+                } else {
+                    ComboCondition(
+                        Op.OR,
+                        UnaryCondition.isNull(permissionIdCol),
+                        InCondition(permissionIdCol, *permissionIds.toTypedArray())
+                    )
+                }
+
             query.addCondition(permissionCondition)
         }
 

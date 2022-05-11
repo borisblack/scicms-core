@@ -142,7 +142,7 @@ class CreateHandlerImpl(
                 itemRecDao.updateById(relation.inversedItem, relAttrValue as String, inversedItemRec)
             }
             is ManyToManyRelation -> {
-                relAttrValue as List<*>
+                relAttrValue as Collection<*>
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
                         relAttrValue.forEach { addManyToManyRelation(relation.intermediateItem.name, itemRecId, it as String) }

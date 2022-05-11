@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
 import com.healthmarketscience.sqlbuilder.BinaryCondition
+import com.healthmarketscience.sqlbuilder.ComboCondition
 import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.UnaryCondition
@@ -177,7 +178,17 @@ class FindAllHandlerImpl(
         val permissionIds = permissionService.getIdsForRead()
         val table = schema.addTable(item.tableName)
         val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
-        val permissionCondition = if (permissionIds.isEmpty()) UnaryCondition.isNull(permissionIdCol) else InCondition(permissionIdCol, *permissionIds.toTypedArray())
+        val permissionCondition =
+            if (permissionIds.isEmpty()) {
+                UnaryCondition.isNull(permissionIdCol)
+            } else {
+                ComboCondition(
+                    ComboCondition.Op.OR,
+                    UnaryCondition.isNull(permissionIdCol),
+                    InCondition(permissionIdCol, *permissionIds.toTypedArray())
+                )
+            }
+
         val columns = selectAttrNames
             .map {
                 val attribute = item.spec.getAttributeOrThrow(it)

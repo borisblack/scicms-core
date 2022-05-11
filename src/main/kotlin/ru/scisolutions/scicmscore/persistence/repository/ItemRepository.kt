@@ -9,13 +9,13 @@ interface ItemRepository : CrudRepository<Item, String> {
     fun findByName(name: String): Item?
 
     @Query(
-        value = "SELECT * FROM core_items i WHERE i.id = :id AND i.permission_id IN (${ACL.PERMISSION_IDS_SELECT_SNIPPET})",
+        value = "SELECT * FROM core_items i WHERE i.id = :id AND (i.permission_id IS NULL OR i.permission_id IN (${ACL.PERMISSION_IDS_SELECT_SNIPPET}))",
         nativeQuery = true
     )
     fun findByIdWithACL(id: String, mask: Set<Int>, username: String, roles: Set<String>): Item?
 
     @Query(
-        value = "SELECT * FROM core_items i WHERE i.name = :name AND i.permission_id IN (${ACL.PERMISSION_IDS_SELECT_SNIPPET})",
+        value = "SELECT * FROM core_items i WHERE i.name = :name AND (i.permission_id IS NULL OR i.permission_id IN (${ACL.PERMISSION_IDS_SELECT_SNIPPET}))",
         nativeQuery = true
     )
     fun findByNameWithACL(name: String, mask: Set<Int>, username: String, roles: Set<String>): Item?

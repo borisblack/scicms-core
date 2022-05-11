@@ -32,9 +32,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_locales_locale_fk" references="core_locales(name)"/>
             </column>
@@ -100,9 +98,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_revision_policies_locale_fk" references="core_locales(name)"/>
             </column>
@@ -187,9 +183,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_items_locale_fk" references="core_locales(name)"/>
             </column>
@@ -280,9 +274,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_sequences_locale_fk" references="core_locales(name)"/>
             </column>
@@ -358,9 +350,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_media_locale_fk" references="core_locales(name)"/>
             </column>
@@ -427,9 +417,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_lifecycles_locale_fk" references="core_locales(name)"/>
             </column>
@@ -496,9 +484,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="released" type="tinyint"/>
-            <column name="permission_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_allowed_lifecycles_locale_fk" references="core_locales(name)"/>
             </column>
