@@ -19,10 +19,11 @@ class RevisionPolicyServiceImpl(
     private val revisionPolicyRepository: RevisionPolicyRepository
 ) : RevisionPolicyService {
     private val revisionPolicyCache: Cache<String, RevisionPolicy> = CacheBuilder.newBuilder()
-        .expireAfterWrite(dataProps.revisionPolicyCacheExpirationMinutes, TimeUnit.MINUTES)
+        .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
-    override val defaultRevisionPolicy: RevisionPolicy by lazy { getById(RevisionPolicy.DEFAULT_REVISION_POLICY_ID) }
+    @Transactional(readOnly = true)
+    override fun getDefaultRevisionPolicy(): RevisionPolicy = getById(RevisionPolicy.DEFAULT_REVISION_POLICY_ID)
 
     @Transactional(readOnly = true)
     override fun getById(id: String): RevisionPolicy = revisionPolicyCache.get(id) { revisionPolicyRepository.getById(id) }

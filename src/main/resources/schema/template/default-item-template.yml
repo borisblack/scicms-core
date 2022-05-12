@@ -44,14 +44,6 @@ spec:
       displayName: Minor Rev
       description: Minor Rev
       length: 50
-    lastVersion:
-      type: bool
-      columnName: last_version
-      displayName: Last Version
-      description: Last Version
-      required: true
-      defaultValue: 1
-      private: true
     current:
       type: bool
       columnName: is_current
@@ -61,12 +53,14 @@ spec:
       defaultValue: 1
       indexed: true
       private: true
-    released:
+    lastVersion:
       type: bool
-      columnName: released
-      displayName: Released
-      description: Released
-      indexed: true
+      columnName: last_version
+      displayName: Last Version
+      description: Last Version
+      required: true
+      defaultValue: 1
+      private: true
     locale:
       type: string
       columnName: locale
@@ -81,6 +75,7 @@ spec:
       columnName: lifecycle_id
       displayName: Lifecycle
       description: Lifecycle
+#      indexed: true
     state:
       type: string
       columnName: state

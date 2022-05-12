@@ -39,7 +39,14 @@ spec:
       columnName: start_state
       displayName: Start State
       description: Start State
+      required: true
       length: 50
+    implementation:
+      type: string
+      columnName: implementation
+      displayName: Implementation
+      description: Implementation
+      length: 100
     spec:
       type: json
       columnName: spec
@@ -47,3 +54,9 @@ spec:
       description: Specification
       required: true
       defaultValue: '{}'
+    checksum:
+      type: string
+      columnName: checksum
+      displayName: Checksum
+      description: Checksum
+      length: 50

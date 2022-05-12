@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.engine.data.db.Paginator
 import ru.scisolutions.scicmscore.engine.data.db.query.FilterConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.LocaleConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.OrderingsParser
-import ru.scisolutions.scicmscore.engine.data.db.query.ReleasedConditionBuilder
+import ru.scisolutions.scicmscore.engine.data.db.query.StateConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
@@ -42,7 +42,7 @@ class FindAllHandlerImpl(
     private val relationManager: RelationManager,
     private val filterConditionBuilder: FilterConditionBuilder,
     private val versionConditionBuilder: VersionConditionBuilder,
-    private val releasedConditionBuilder: ReleasedConditionBuilder,
+    private val stateConditionBuilder: StateConditionBuilder,
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val paginator: Paginator,
     private val jdbcTemplateMap: JdbcTemplateMap
@@ -68,15 +68,15 @@ class FindAllHandlerImpl(
         if (versionCondition != null)
             query.addCondition(versionCondition)
 
-        // Released
-        val releasedCondition = releasedConditionBuilder.newReleasedCondition(table, item, input.isReleased)
-        if (releasedCondition != null)
-            query.addCondition(releasedCondition)
-
         // Locale
         val localeCondition = localeConditionBuilder.newLocaleCondition(table, item, input.locale)
         if (localeCondition != null)
             query.addCondition(localeCondition)
+
+        // State
+        val stateCondition = stateConditionBuilder.newStateCondition(table, item, input.state)
+        if (stateCondition != null)
+            query.addCondition(stateCondition)
 
         val pagination = paginator.paginate(item, query, input.pagination, selectPaginationFields)
 
@@ -175,7 +175,7 @@ class FindAllHandlerImpl(
         filters: ItemFiltersInput?,
         selectAttrNames: Set<String>
     ): SelectQuery {
-        val permissionIds = permissionService.getIdsForRead()
+        val permissionIds = permissionService.findIdsForRead()
         val table = schema.addTable(item.tableName)
         val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
         val permissionCondition =

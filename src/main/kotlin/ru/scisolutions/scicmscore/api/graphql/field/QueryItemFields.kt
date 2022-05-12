@@ -58,10 +58,10 @@ class QueryItemFields {
         if (item.versioned)
             builder.inputValueDefinition(InputValues.MAJOR_REV)
 
-        builder.inputValueDefinition(InputValues.RELEASED)
-
         if (item.localized)
             builder.inputValueDefinition(InputValues.LOCALE)
+
+        builder.inputValueDefinition(InputValues.STATE)
 
         return builder.build()
     }

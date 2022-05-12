@@ -54,7 +54,7 @@ class ItemRecDaoImpl(
         findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.ADMINISTRATION)
 
     override fun findByKeyAttrNameFor(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec? {
-        val permissionIds: Set<String> = permissionService.getIdsFor(accessMask)
+        val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
         val query =  queryBuilder.buildFindByKeyAttrNameQuery(item, keyAttrName, keyAttrValue, selectAttrNames, permissionIds)
         return findOne(item, query)
     }

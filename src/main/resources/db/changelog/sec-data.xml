@@ -21,9 +21,8 @@
             <column name="enabled" value="1"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -37,9 +36,8 @@
             <column name="enabled" value="1"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -51,9 +49,8 @@
             <column name="group_name" value="Administrators"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -65,9 +62,8 @@
             <column name="group_name" value="Users"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -80,9 +76,8 @@
             <column name="role" value="ROLE_ADMIN"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -95,9 +90,8 @@
             <column name="role" value="ROLE_USER"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -110,9 +104,8 @@
             <column name="username" value="root"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -125,9 +118,8 @@
             <column name="username" value="regular"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -140,9 +132,8 @@
             <column name="principal" value="0"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -154,9 +145,8 @@
             <column name="name" value="Default Access"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -172,9 +162,8 @@
             <column name="begin_date" valueDate="${now}"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>

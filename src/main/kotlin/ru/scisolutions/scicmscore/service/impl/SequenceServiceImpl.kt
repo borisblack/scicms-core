@@ -19,7 +19,7 @@ class SequenceServiceImpl(
     private val sequenceRepository: SequenceRepository
 ) : SequenceService {
     private val sequenceCache: Cache<String, Sequence> = CacheBuilder.newBuilder()
-        .expireAfterWrite(dataProps.sequenceCacheExpirationMinutes, TimeUnit.MINUTES)
+        .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
     @Transactional(readOnly = true)

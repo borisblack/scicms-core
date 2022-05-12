@@ -6,22 +6,22 @@ import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 
 @Component
-class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFiltersInputMapper) {
+class FindAllInputMapper(private val itemFiltersInputMapper: ItemFiltersInputMapper) {
     fun mapToResponseCollectionInput(itemName: String, arguments: Map<String, Any>): FindAllInput {
         val itemFiltersMap = arguments[FILTERS_ARG_NAME] as Map<String, Any>?
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int?>?
         val sort = arguments[SORT_ARG_NAME] as List<String>?
         val majorRev = arguments[MAJOR_REV_ARG_NAME] as String?
-        val isReleased = arguments[RELEASED_ARG_NAME] as Boolean?
         val locale = arguments[LOCALE_ARG_NAME] as String?
+        val state = arguments[STATE_ARG_NAME] as String?
 
         return FindAllInput(
             filters = itemFiltersMap?.let { itemFiltersInputMapper.map(itemName, it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
             sort = sort,
             majorRev = majorRev,
-            isReleased = isReleased,
-            locale = locale
+            locale = locale,
+            state = state
         )
     }
 
@@ -42,7 +42,7 @@ class ResponseCollectionInputMapper(private val itemFiltersInputMapper: ItemFilt
         const val PAGINATION_ARG_NAME = "pagination"
         const val SORT_ARG_NAME = "sort"
         const val MAJOR_REV_ARG_NAME = "majorRev"
-        const val RELEASED_ARG_NAME = "released"
         const val LOCALE_ARG_NAME = "locale"
+        const val STATE_ARG_NAME = "state"
     }
 }

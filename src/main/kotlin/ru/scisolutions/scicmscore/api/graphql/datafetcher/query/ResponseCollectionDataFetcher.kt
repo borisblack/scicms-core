@@ -6,13 +6,13 @@ import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.mapper.ResponseCollectionInputMapper
+import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import java.util.regex.Pattern
 
 @Component
 class ResponseCollectionDataFetcher(
-    private val responseCollectionInputMapper: ResponseCollectionInputMapper,
+    private val findAllInputMapper: FindAllInputMapper,
     private val dataEngine: DataEngine
 ) : BaseDataFetcher(), DataFetcher<DataFetcherResult<ResponseCollection>> {
     override fun getFieldTypePattern(): Pattern = Pattern.compile("^(\\w+)ResponseCollection$")
@@ -26,7 +26,7 @@ class ResponseCollectionDataFetcher(
             .toSet()
             .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
 
-        val responseCollectionInput = responseCollectionInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
+        val responseCollectionInput = findAllInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
         val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
             .map { it.name }
             .toSet()

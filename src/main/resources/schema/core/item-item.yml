@@ -58,12 +58,11 @@ spec:
       description: Description
       length: 250
     dataSource:
-      type: enum
+      type: string
       columnName: data_source
-      enumSet:
-        - main
       displayName: Data Source
       description: Data Source
+      length: 50
     icon:
       type: string
       columnName: icon

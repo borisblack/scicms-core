@@ -31,9 +31,6 @@ class ExcludeAttributePolicy(
         if (!item.versioned && (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME))
             return false
 
-        if (attrName == RELEASED_ATTR_NAME)
-            return false
-
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
 
@@ -82,7 +79,6 @@ class ExcludeAttributePolicy(
     companion object {
         private const val MAJOR_REV_ATTR_NAME = "majorRev"
         private const val MINOR_REV_ATTR_NAME = "minorRev"
-        private const val RELEASED_ATTR_NAME = "released"
         private const val LOCALE_ATTR_NAME = "locale"
         private const val STATE_ATTR_NAME = "state"
         private const val CREATED_AT_ATTR_NAME = "createdAt"

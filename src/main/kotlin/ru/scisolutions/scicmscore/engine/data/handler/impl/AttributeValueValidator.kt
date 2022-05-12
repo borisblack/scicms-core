@@ -46,7 +46,7 @@ class AttributeValueValidator(
                             throw IllegalArgumentException("enumSet is required for the enum type")
 
                         if (value !in attribute.enumSet)
-                            throw IllegalArgumentException("enumSet does not contain value [$value]")
+                            throw IllegalArgumentException("Enumeration set does not contain value [$value]. Possible values: ${attribute.enumSet.joinToString()}")
                     }
                     Type.email -> {
                         if (!simpleEmailRegex.matches(value))

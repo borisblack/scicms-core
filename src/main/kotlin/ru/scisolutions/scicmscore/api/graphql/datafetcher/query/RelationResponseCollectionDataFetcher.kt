@@ -6,14 +6,14 @@ import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.mapper.ResponseCollectionInputMapper
+import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import java.util.regex.Pattern
 
 @Component
 class RelationResponseCollectionDataFetcher(
-    private val responseCollectionInputMapper: ResponseCollectionInputMapper,
+    private val findAllInputMapper: FindAllInputMapper,
     private val dataEngine: DataEngine
 ) : BaseDataFetcher(), DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun getFieldTypePattern(): Pattern = Pattern.compile("^(\\w+)RelationResponseCollection$")
@@ -26,7 +26,7 @@ class RelationResponseCollectionDataFetcher(
         val itemName = capitalizedItemName.decapitalize()
         val sourceItemRec: ItemRec = dfe.getSource()
         val attrName = dfe.field.name
-        val responseCollectionInput = responseCollectionInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
+        val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
         val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
             .map { it.name }
             .toSet()

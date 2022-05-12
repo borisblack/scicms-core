@@ -22,31 +22,29 @@ class PermissionServiceImpl(
     private val permissionRepository: PermissionRepository
 ) : PermissionService {
     private val permissionIdsCache: Cache<String, Set<String>> = CacheBuilder.newBuilder()
-        .expireAfterWrite(dataProps.permissionIdsCacheExpirationMinutes, TimeUnit.MINUTES)
+        .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
-    override val defaultPermission: Permission by lazy { fetchDefaultPermission() }
+    @Transactional(readOnly = true)
+    override fun getDefaultPermission(): Permission = permissionRepository.getById(Permission.DEFAULT_PERMISSION_ID)
 
     @Transactional(readOnly = true)
-    fun fetchDefaultPermission(): Permission = permissionRepository.getById(Permission.DEFAULT_PERMISSION_ID)
+    override fun findIdsForRead(): Set<String> = findIdsFor(Mask.READ)
 
     @Transactional(readOnly = true)
-    override fun getIdsForRead(): Set<String> = getIdsFor(Mask.READ)
+    override fun findIdsForWrite(): Set<String> = findIdsFor(Mask.WRITE)
 
     @Transactional(readOnly = true)
-    override fun getIdsForWrite(): Set<String> = getIdsFor(Mask.WRITE)
+    override fun findIdsForCreate(): Set<String> = findIdsFor(Mask.CREATE)
 
     @Transactional(readOnly = true)
-    override fun getIdsForCreate(): Set<String> = getIdsFor(Mask.CREATE)
+    override fun findIdsForDelete(): Set<String> = findIdsFor(Mask.DELETE)
 
     @Transactional(readOnly = true)
-    override fun getIdsForDelete(): Set<String> = getIdsFor(Mask.DELETE)
+    override fun findIdsForAdministration(): Set<String> = findIdsFor(Mask.ADMINISTRATION)
 
     @Transactional(readOnly = true)
-    override fun getIdsForAdministration(): Set<String> = getIdsFor(Mask.ADMINISTRATION)
-
-    @Transactional(readOnly = true)
-    override fun getIdsFor(accessMask: Mask): Set<String> {
+    override fun findIdsFor(accessMask: Mask): Set<String> {
         val authentication = SecurityContextHolder.getContext().authentication
         return permissionIdsCache.get("${authentication.name}#${accessMask.name}") {
             permissionRepository.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))

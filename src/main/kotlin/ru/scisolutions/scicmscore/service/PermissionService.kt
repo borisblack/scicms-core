@@ -4,19 +4,19 @@ import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.util.ACL.Mask
 
 interface PermissionService {
-    val defaultPermission: Permission
+    fun getDefaultPermission(): Permission
 
-    fun getIdsForRead(): Set<String>
+    fun findIdsForRead(): Set<String>
 
-    fun getIdsForWrite(): Set<String>
+    fun findIdsForWrite(): Set<String>
 
-    fun getIdsForCreate(): Set<String>
+    fun findIdsForCreate(): Set<String>
 
-    fun getIdsForDelete(): Set<String>
+    fun findIdsForDelete(): Set<String>
 
-    fun getIdsForAdministration(): Set<String>
+    fun findIdsForAdministration(): Set<String>
 
-    fun getIdsFor(accessMask: Mask): Set<String>
+    fun findIdsFor(accessMask: Mask): Set<String>
 
     fun findAllForRead(): List<Permission>
 

@@ -84,7 +84,10 @@ class AttributeTypes(
     fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
         when (attribute.type) {
             AttrType.uuid -> TypeNames.STRING
-            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
+            AttrType.string, AttrType.text -> TypeNames.STRING
+            // AttrType.enum -> TypeName("${item.name.capitalize()}${attrName.capitalize()}Enum")
+            AttrType.enum,
+            AttrType.sequence,
             AttrType.email, // TODO: Add regexp email scalar type
             AttrType.password -> TypeNames.STRING
             AttrType.int, AttrType.long -> TypeNames.INT

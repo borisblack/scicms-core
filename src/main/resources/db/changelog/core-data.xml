@@ -9,6 +9,7 @@
     <property name="defaultRevisionPolicyId" value="48fea283-2872-4ca3-8fbd-980b7654907b"/>
     <property name="rootUserId" value="0c924266-3c61-4362-81d7-9d69403fbe32"/>
     <property name="defaultPermissionId" value="6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"/>
+    <property name="defaultLifecycleId" value="ad051120-65cf-440a-8fc3-7a24ac8301d3"/>
     <changeSet id="2022-01-03-init-core-data" author="bchernysh">
         <insert tableName="core_locales">
             <column name="id" value="d81fd69a-1834-4ee5-9afa-e20151f804c5"/>
@@ -17,9 +18,8 @@
             <column name="display_name" value="English"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -32,9 +32,8 @@
             <column name="display_name" value="Russian"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
@@ -48,9 +47,24 @@
             <column name="revisions" value="A B C D E F G H J K L M N P Q R S T U V W X Y Z"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
-            <column name="last_version" value="1"/>
             <column name="is_current" value="1"/>
-            <column name="released" value="1"/>
+            <column name="last_version" value="1"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="core_lifecycles">
+            <column name="id" value="${defaultLifecycleId}"/>
+            <column name="config_id" value="${defaultLifecycleId}"/>
+            <column name="name" value="Default Lifecycle"/>
+            <column name="display_name" value="Default Lifecycle"/>
+            <column name="start_state" value="draft"/>
+            <column name="spec" value='{"states": {"draft": {"displayName": "Draft", "transitions": ["published"]}, "published": {"displayName": "Published"}}}'/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="last_version" value="1"/>
             <column name="permission_id" value="${defaultPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>

@@ -35,8 +35,12 @@ class DynamicTypeDefinitions(
                 typeDefinitionRegistry.add(itemObjectTypes.relationResponse(it))
                 typeDefinitionRegistry.add(itemObjectTypes.responseCollection(it))
                 typeDefinitionRegistry.add(itemObjectTypes.relationResponseCollection(it))
-                typeDefinitionRegistry.add(itemInputObjectTypes.filtersInput(it)) // for filtering
-                typeDefinitionRegistry.add(itemInputObjectTypes.itemInput(it)) // for mutations
+                typeDefinitionRegistry.add(itemInputObjectTypes.filtersInput(it))
+                typeDefinitionRegistry.add(itemInputObjectTypes.itemInput(it))
+
+                // itemInputObjectTypes.enumTypes(it).forEach { enumType ->
+                //     typeDefinitionRegistry.add(enumType)
+                // }
 
                 queryBuilder.fieldDefinition(queryItemFields.item(it))
                 queryBuilder.fieldDefinition(queryItemFields.itemCollection(it))

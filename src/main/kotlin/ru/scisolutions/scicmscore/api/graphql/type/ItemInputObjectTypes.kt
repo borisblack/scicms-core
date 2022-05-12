@@ -1,10 +1,14 @@
 package ru.scisolutions.scicmscore.api.graphql.type
 
+import graphql.language.EnumTypeDefinition
+import graphql.language.EnumValueDefinition
 import graphql.language.InputObjectTypeDefinition
 import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 @Component
@@ -66,5 +70,29 @@ class ItemInputObjectTypes(
             }
 
         return builder.build()
+    }
+
+    fun enumTypes(item: Item): List<EnumTypeDefinition> =
+        item.spec.attributes
+            .filter { (_, attribute) -> attribute.type == Type.enum }
+            .map { (attrName, attribute) ->
+                enumType(item, attrName, attribute)
+            }
+
+    private fun enumType(item: Item, attrName: String, attribute: Attribute): EnumTypeDefinition {
+        if (attribute.type != Type.enum)
+            throw IllegalArgumentException("Attribute [$attrName] is not enumeration")
+
+        if (attribute.enumSet.isNullOrEmpty())
+            throw IllegalArgumentException("Attribute [$attrName] enumeration set is null or empty")
+
+        return EnumTypeDefinition.newEnumTypeDefinition()
+            .name("${item.name.capitalize()}${attrName.capitalize()}Enum")
+            .enumValueDefinitions(
+                attribute.enumSet.map {
+                    EnumValueDefinition.newEnumValueDefinition().name(it).build()
+                }
+            )
+            .build()
     }
 }

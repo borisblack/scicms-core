@@ -15,10 +15,10 @@ class Item(
     var name: String,
 
     @Column(name = "display_name")
-    var displayName: String = name,
+    var displayName: String? = name,
 
     @Column(name = "singular_name")
-    var singularName: String = name,
+    var singularName: String? = name,
 
     @Column(name = "plural_name", nullable = false)
     var pluralName: String,

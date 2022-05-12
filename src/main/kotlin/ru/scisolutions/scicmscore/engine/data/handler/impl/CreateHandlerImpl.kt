@@ -15,7 +15,9 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.ItemInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
+import ru.scisolutions.scicmscore.engine.data.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.data.service.LocalizationManager
+import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.data.service.VersionManager
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
@@ -32,10 +34,12 @@ import java.util.UUID
 class CreateHandlerImpl(
     private val itemService: ItemService,
     private val attributeValueValidator: AttributeValueValidator,
-    private val auditManager: AuditManager,
+    private val sequenceManager: SequenceManager,
     private val versionManager: VersionManager,
     private val localizationManager: LocalizationManager,
-    private val sequenceManager: SequenceManager,
+    private val lifecycleManager: LifecycleManager,
+    private val permissionManager: PermissionManager,
+    private val auditManager: AuditManager,
     private val relationManager: RelationManager,
     private val itemRecDao: ItemRecDao,
 ) : CreateHandler {
@@ -54,9 +58,11 @@ class CreateHandlerImpl(
         }
 
         sequenceManager.assignSequenceAttributes(item, itemRec)
-        auditManager.assignAuditAttributes(itemRec)
         versionManager.assignVersionAttributes(item, itemRec, input.majorRev)
         localizationManager.assignLocaleAttribute(item, itemRec, input.locale)
+        lifecycleManager.assignLifecycleAttributes(item, itemRec)
+        permissionManager.assignPermissionAttribute(item, itemRec)
+        auditManager.assignAuditAttributes(itemRec)
 
         checkRequiredAttributes(item, itemRec)
 
