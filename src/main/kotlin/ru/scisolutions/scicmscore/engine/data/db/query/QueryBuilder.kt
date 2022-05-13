@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.data.db.query
 import com.healthmarketscience.sqlbuilder.BinaryCondition
 import com.healthmarketscience.sqlbuilder.ComboCondition
 import com.healthmarketscience.sqlbuilder.ComboCondition.Op
+import com.healthmarketscience.sqlbuilder.Condition
 import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.InsertQuery
 import com.healthmarketscience.sqlbuilder.SelectQuery
@@ -38,21 +39,9 @@ class QueryBuilder {
 
         query.addCondition(BinaryCondition.equalTo(idCol, id))
 
-        if (permissionIds != null) {
-            val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
-            val permissionCondition =
-                if (permissionIds.isEmpty()) {
-                    UnaryCondition.isNull(permissionIdCol)
-                } else {
-                    ComboCondition(
-                        Op.OR,
-                        UnaryCondition.isNull(permissionIdCol),
-                        InCondition(permissionIdCol, *permissionIds.toTypedArray())
-                    )
-                }
-
+        val permissionCondition = getPermissionCondition(table, permissionIds)
+        if (permissionCondition != null)
             query.addCondition(permissionCondition)
-        }
 
         return query.validate()
     }
@@ -69,23 +58,28 @@ class QueryBuilder {
             .addAllColumns()
             .addCondition(InCondition(idCol, *ids.toTypedArray()))
 
-        if (permissionIds != null) {
-            val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
-            val permissionCondition =
-                if (permissionIds.isEmpty()) {
-                    UnaryCondition.isNull(permissionIdCol)
-                } else {
-                    ComboCondition(
-                        Op.OR,
-                        UnaryCondition.isNull(permissionIdCol),
-                        InCondition(permissionIdCol, *permissionIds.toTypedArray())
-                    )
-                }
-
+        val permissionCondition = getPermissionCondition(table, permissionIds)
+        if (permissionCondition != null)
             query.addCondition(permissionCondition)
-        }
 
         return query.validate()
+    }
+
+    private fun getPermissionCondition(table: DbTable, permissionIds: Set<String>?): Condition? {
+        if (permissionIds == null)
+            return null
+
+        val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
+
+        return if (permissionIds.isEmpty()) {
+            UnaryCondition.isNull(permissionIdCol)
+        } else {
+            ComboCondition(
+                Op.OR,
+                UnaryCondition.isNull(permissionIdCol),
+                InCondition(permissionIdCol, *permissionIds.toTypedArray())
+            )
+        }
     }
 
     fun buildInsertQuery(item: Item, itemRec: ItemRec): InsertQuery {
