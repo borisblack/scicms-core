@@ -15,10 +15,10 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.PromoteDataFe
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.PurgeDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.UnlockDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.UpdateDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponseCollectionDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.RelationResponseDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseCollectionDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.ResponseDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllRelatedDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneRelatedDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneDataFetcher
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.DataEngine
@@ -29,10 +29,10 @@ import ru.scisolutions.scicmscore.service.ItemService
 class DynamicDataFetcher(
     private val itemService: ItemService,
     private val dataEngine: DataEngine,
-    private val responseDataFetcher: ResponseDataFetcher,
-    private val relationResponseDataFetcher: RelationResponseDataFetcher,
-    private val responseCollectionDataFetcher: ResponseCollectionDataFetcher,
-    private val relationResponseCollectionDataFetcher: RelationResponseCollectionDataFetcher,
+    private val findOneDataFetcher: FindOneDataFetcher,
+    private val findOneRelatedDataFetcher: FindOneRelatedDataFetcher,
+    private val findAllDataFetcher: FindAllDataFetcher,
+    private val findAllRelatedDataFetcher: FindAllRelatedDataFetcher,
     private val createDataFetcher: CreateDataFetcher,
     private val createVersionDataFetcher: CreateVersionDataFetcher,
     private val createLocalizationDataFetcher: CreateLocalizationDataFetcher,
@@ -51,8 +51,8 @@ class DynamicDataFetcher(
                 addAttributeDataFetchers(codeRegistryBuilder, it)
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, it.name), responseDataFetcher)
-                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, it.pluralName), responseCollectionDataFetcher)
+                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, it.name), findOneDataFetcher)
+                    .dataFetcher(FieldCoordinates.coordinates(QUERY_TYPE, it.pluralName), findAllDataFetcher)
             }
 
         // Mutation
@@ -117,10 +117,10 @@ class DynamicDataFetcher(
             .forEach { (attrName, attribute) ->
                 if (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseDataFetcher)
+                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findOneRelatedDataFetcher)
                 } else if (attribute.isCollection()) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), relationResponseCollectionDataFetcher)
+                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findAllRelatedDataFetcher)
                 }
             }
     }

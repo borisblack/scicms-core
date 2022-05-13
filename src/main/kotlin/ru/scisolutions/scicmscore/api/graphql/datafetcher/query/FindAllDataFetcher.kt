@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 
 @Component
-class ResponseCollectionDataFetcher(
+class FindAllDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<ResponseCollection>> {
@@ -24,7 +24,7 @@ class ResponseCollectionDataFetcher(
             .map { it.name }
             .toSet()
 
-        val result = dataEngine.getResponseCollection(itemName, responseCollectionInput, selectAttrNames, selectPaginationFields)
+        val result = dataEngine.findAll(itemName, responseCollectionInput, selectAttrNames, selectPaginationFields)
 
         return DataFetcherResult.newResult<ResponseCollection>()
             .data(result)

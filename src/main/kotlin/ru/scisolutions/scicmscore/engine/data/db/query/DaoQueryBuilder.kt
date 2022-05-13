@@ -16,7 +16,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
-class QueryBuilder {
+class DaoQueryBuilder {
     fun buildFindByIdQuery(item: Item, id: String, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()

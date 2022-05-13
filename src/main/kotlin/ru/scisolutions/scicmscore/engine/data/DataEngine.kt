@@ -31,9 +31,9 @@ interface DataEngine {
 
     fun download(media: Media): ByteArrayResource
 
-    fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response
+    fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
-    fun getRelationResponse(
+    fun findOneRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,
@@ -41,14 +41,14 @@ interface DataEngine {
         selectAttrNames: Set<String>
     ): RelationResponse
 
-    fun getResponseCollection(
+    fun findAll(
         itemName: String,
         input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection
 
-    fun getRelationResponseCollection(
+    fun findAllRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,

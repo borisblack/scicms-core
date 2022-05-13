@@ -5,9 +5,9 @@ import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 
 interface FindOneHandler {
-    fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response
+    fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
-    fun getRelationResponse(
+    fun findOneRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,

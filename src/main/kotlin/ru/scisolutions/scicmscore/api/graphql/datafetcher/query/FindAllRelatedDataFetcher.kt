@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 
 @Component
-class RelationResponseCollectionDataFetcher(
+class FindAllRelatedDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
@@ -30,7 +30,7 @@ class RelationResponseCollectionDataFetcher(
             .map { it.name }
             .toSet()
 
-        val result = dataEngine.getRelationResponseCollection(
+        val result = dataEngine.findAllRelated(
             parentItemName = parentItemName,
             itemName = itemName,
             sourceItemRec = sourceItemRec,

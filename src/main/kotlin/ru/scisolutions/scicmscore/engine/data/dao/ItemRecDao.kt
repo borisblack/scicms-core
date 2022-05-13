@@ -35,6 +35,8 @@ interface ItemRecDao {
 
     fun count(item: Item, query: SelectQuery): Int
 
+    fun findAll(item: Item, query: SelectQuery): List<ItemRec>
+
     fun insert(item: Item, itemRec: ItemRec)
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec)

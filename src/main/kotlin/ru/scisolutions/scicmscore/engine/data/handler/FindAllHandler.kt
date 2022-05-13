@@ -7,14 +7,14 @@ import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCol
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 
 interface FindAllHandler {
-    fun getResponseCollection(
+    fun findAll(
         itemName: String,
         input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection
 
-    fun getRelationResponseCollection(
+    fun findAllRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,

@@ -15,7 +15,7 @@ class FindOneHandlerImpl(
     private val itemService: ItemService,
     private val itemRecDao: ItemRecDao
 ) : FindOneHandler {
-    override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response {
+    override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val itemRec =
@@ -28,7 +28,7 @@ class FindOneHandlerImpl(
 
     private fun isOnlyId(attrNames: Set<String>): Boolean = attrNames.size == 1 && ID_ATTR_NAME in attrNames
 
-    override fun getRelationResponse(
+    override fun findOneRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,

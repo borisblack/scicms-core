@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 
 @Component
-class RelationResponseDataFetcher(
+class FindOneRelatedDataFetcher(
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
@@ -23,7 +23,7 @@ class RelationResponseDataFetcher(
         val sourceItemRec: ItemRec = dfe.getSource()
         val attrName = dfe.field.name
         val selectAttrNames = dfe.selectDataFields()
-        val result = dataEngine.getRelationResponse(
+        val result = dataEngine.findOneRelated(
             parentItemName,
             itemName,
             sourceItemRec,

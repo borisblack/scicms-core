@@ -53,27 +53,27 @@ class DataEngineImpl(
 
     override fun download(media: Media): ByteArrayResource = mediaHandler.download(media)
 
-    override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response =
-        findOneHandler.getResponse(itemName, id, selectAttrNames)
+    override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+        findOneHandler.findOne(itemName, id, selectAttrNames)
 
-    override fun getRelationResponse(
+    override fun findOneRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,
         attrName: String,
         selectAttrNames: Set<String>
     ): RelationResponse =
-        findOneHandler.getRelationResponse(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
+        findOneHandler.findOneRelated(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
 
-    override fun getResponseCollection(
+    override fun findAll(
         itemName: String,
         input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection =
-        findAllHandler.getResponseCollection(itemName, input, selectAttrNames, selectPaginationFields)
+        findAllHandler.findAll(itemName, input, selectAttrNames, selectPaginationFields)
 
-    override fun getRelationResponseCollection(
+    override fun findAllRelated(
         parentItemName: String,
         itemName: String,
         sourceItemRec: ItemRec,
@@ -82,7 +82,7 @@ class DataEngineImpl(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection =
-        findAllHandler.getRelationResponseCollection(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
+        findAllHandler.findAllRelated(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
 
     override fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response =
         createHandler.create(itemName, input, selectAttrNames)

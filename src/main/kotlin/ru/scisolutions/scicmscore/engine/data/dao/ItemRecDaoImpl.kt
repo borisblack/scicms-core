@@ -6,7 +6,7 @@ import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
-import ru.scisolutions.scicmscore.engine.data.db.query.QueryBuilder
+import ru.scisolutions.scicmscore.engine.data.db.query.DaoQueryBuilder
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
 import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
@@ -27,7 +27,7 @@ class ItemRecDaoImpl(
     private val jdbcTemplateMap: JdbcTemplateMap
 ) : ItemRecDao {
     override fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
-        val query =  queryBuilder.buildFindByIdQuery(item, id, selectAttrNames)
+        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, selectAttrNames)
         return findOne(item, query)
     }
 
@@ -51,7 +51,7 @@ class ItemRecDaoImpl(
 
     private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Mask): ItemRec? {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
-        val query =  queryBuilder.buildFindByIdQuery(item, id, selectAttrNames, permissionIds)
+        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, selectAttrNames, permissionIds)
         return findOne(item, query)
     }
 
@@ -86,13 +86,13 @@ class ItemRecDaoImpl(
     override fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
 
     private fun countByIds(item: Item, ids: Set<String>): Int {
-        val query = queryBuilder.buildFindByIdsQuery(item, ids)
+        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids)
         return count(item, query)
     }
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Mask): Int {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
-        val query = queryBuilder.buildFindByIdsQuery(item, ids, permissionIds)
+        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids, permissionIds)
         return count(item, query)
     }
 
@@ -103,8 +103,14 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).queryForObject(countSQL, Int::class.java) as Int
     }
 
+    override fun findAll(item: Item, query: SelectQuery): List<ItemRec> {
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
+    }
+
     override fun insert(item: Item, itemRec: ItemRec) {
-        val query = queryBuilder.buildInsertQuery(item, itemRec)
+        val query = daoQueryBuilder.buildInsertQuery(item, itemRec)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
@@ -124,7 +130,7 @@ class ItemRecDaoImpl(
     }
 
     override fun updateById(item: Item, id: String, itemRec: ItemRec) {
-        val query = queryBuilder.buildUpdateByIdQuery(item, id, itemRec)
+        val query = daoQueryBuilder.buildUpdateByIdQuery(item, id, itemRec)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
@@ -135,7 +141,7 @@ class ItemRecDaoImpl(
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
         val user = userService.getCurrentUser()
-        val query = queryBuilder.buildLockByIdQuery(item, id, user.id)
+        val query = daoQueryBuilder.buildLockByIdQuery(item, id, user.id)
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
@@ -160,7 +166,7 @@ class ItemRecDaoImpl(
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
         val user = userService.getCurrentUser()
-        val query = queryBuilder.buildUnlockByIdQuery(item, id, user.id)
+        val query = daoQueryBuilder.buildUnlockByIdQuery(item, id, user.id)
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
@@ -185,6 +191,6 @@ class ItemRecDaoImpl(
         private const val UNLOCK_FAIL_MSG = "Cannot unlock item %s with ID [%s]"
 
         private val logger = LoggerFactory.getLogger(ItemRecDaoImpl::class.java)
-        private val queryBuilder = QueryBuilder()
+        private val daoQueryBuilder = DaoQueryBuilder()
     }
 }
