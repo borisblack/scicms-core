@@ -113,6 +113,9 @@ class ItemRecDaoImpl(
     }
 
     override fun lockById(item: Item, id: String): Boolean {
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [${item.name}] is not lockable")
+
         val user = userService.getCurrentUser()
         val query = queryBuilder.buildLockByIdQuery(item, id, user.id)
         val sql = query.toString()
@@ -135,6 +138,9 @@ class ItemRecDaoImpl(
     }
 
     override fun unlockById(item: Item, id: String): Boolean {
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [${item.name}] is not lockable")
+
         val user = userService.getCurrentUser()
         val query = queryBuilder.buildUnlockByIdQuery(item, id, user.id)
         val sql = query.toString()

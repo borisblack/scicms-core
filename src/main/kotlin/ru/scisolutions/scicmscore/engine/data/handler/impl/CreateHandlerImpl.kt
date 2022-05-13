@@ -67,16 +67,13 @@ class CreateHandlerImpl(
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 
-        val selectData = itemRec
-            .filterKeys { it in selectAttrNames.plus(ID_ATTR_NAME) }
-            .toMutableMap()
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
         return Response(ItemRec(selectData))
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
-
         private val logger = LoggerFactory.getLogger(CreateHandlerImpl::class.java)
     }
 }

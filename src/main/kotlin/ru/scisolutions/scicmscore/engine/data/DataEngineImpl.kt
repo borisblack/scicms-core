@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.data.handler.CreateVersionHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
 import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
+import ru.scisolutions.scicmscore.engine.data.handler.LockHandler
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UpdateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
@@ -41,6 +42,7 @@ class DataEngineImpl(
     private val createVersionHandler: CreateVersionHandler,
     private val createLocalizationHandler: CreateLocalizationHandler,
     private val updateHandler: UpdateHandler,
+    private val lockHandler: LockHandler,
     private val customMethodHandler: CustomMethodHandler
 ) : DataEngine {
     override fun me(): UserInfo? = userHandler.me()
@@ -93,6 +95,12 @@ class DataEngineImpl(
 
     override fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response =
         updateHandler.update(itemName, input, selectAttrNames)
+
+    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+        lockHandler.lock(itemName, id, selectAttrNames)
+
+    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+        lockHandler.unlock(itemName, id, selectAttrNames)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

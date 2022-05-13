@@ -37,6 +37,8 @@ class DynamicDataFetcher(
     private val createVersionDataFetcher: CreateVersionDataFetcher,
     private val createLocalizationDataFetcher: CreateLocalizationDataFetcher,
     private val updateDataFetcher: UpdateDataFetcher,
+    private val lockDataFetcher: LockDataFetcher,
+    private val unlockDataFetcher: UnlockDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
@@ -84,11 +86,13 @@ class DynamicDataFetcher(
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge${capitalizedItemName}"), PurgeDataFetcher())
                 }
 
-                codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "lock${capitalizedItemName}"), LockDataFetcher())
+                if (!it.notLockable) {
+                    codeRegistryBuilder
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "lock${capitalizedItemName}"), lockDataFetcher)
 
-                codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "unlock${capitalizedItemName}"), UnlockDataFetcher())
+                    codeRegistryBuilder
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "unlock${capitalizedItemName}"), unlockDataFetcher)
+                }
 
                 codeRegistryBuilder
                     .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), PromoteDataFetcher())

@@ -46,7 +46,8 @@ class CreateVersionHandlerImpl(
         if (prevItemRec.current != true)
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is not a current version")
 
-        itemRecDao.lockByIdOrThrow(item, input.id)
+        if (!item.notLockable)
+            itemRecDao.lockByIdOrThrow(item, input.id)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
@@ -86,18 +87,16 @@ class CreateVersionHandlerImpl(
 
         // TODO: Maybe copy relations from previous version
 
-        itemRecDao.unlockByIdOrThrow(item, input.id)
+        if (!item.notLockable)
+            itemRecDao.unlockByIdOrThrow(item, input.id)
 
-        val selectData = itemRec
-            .filterKeys { it in selectAttrNames.plus(ID_ATTR_NAME) }
-            .toMutableMap()
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
         return Response(ItemRec(selectData))
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
-
         private val logger = LoggerFactory.getLogger(CreateVersionHandlerImpl::class.java)
     }
 }

@@ -39,7 +39,8 @@ class UpdateHandlerImpl(
         if (LIFECYCLE_ATTR_NAME in input.data)
             throw IllegalArgumentException("Lifecycle can be changed only by promote action")
 
-        itemRecDao.lockByIdOrThrow(item, input.id)
+        if (!item.notLockable)
+            itemRecDao.lockByIdOrThrow(item, input.id)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val mergedData = DataHandlerUtil.merge(preparedData, prevItemRec).toMutableMap()
@@ -61,17 +62,16 @@ class UpdateHandlerImpl(
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 
-        itemRecDao.unlockByIdOrThrow(item, input.id)
+        if (!item.notLockable)
+            itemRecDao.unlockByIdOrThrow(item, input.id)
 
-        val selectData = itemRec
-            .filterKeys { it in selectAttrNames.plus(ID_ATTR_NAME) }
-            .toMutableMap()
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
         return Response(ItemRec(selectData))
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
         private const val LIFECYCLE_ATTR_NAME = "lifecycle"
 
         private val logger = LoggerFactory.getLogger(UpdateHandlerImpl::class.java)

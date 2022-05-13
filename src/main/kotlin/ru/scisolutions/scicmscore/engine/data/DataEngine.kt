@@ -66,6 +66,10 @@ interface DataEngine {
 
     fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response
 
+    fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response
+
+    fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response
+
     fun getCustomMethods(itemName: String): Set<String>
 
     fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse

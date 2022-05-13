@@ -157,6 +157,9 @@ class MutationItemFields {
     }
 
     fun lock(item: Item): FieldDefinition {
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [${item.name}] is not lockable. Lock mutation cannot be applied")
+
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("lock${capitalizedItemName}")
@@ -175,6 +178,9 @@ class MutationItemFields {
     }
 
     fun unlock(item: Item): FieldDefinition {
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [${item.name}] is not lockable. Unlock mutation cannot be applied")
+
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
             .name("unlock${capitalizedItemName}")

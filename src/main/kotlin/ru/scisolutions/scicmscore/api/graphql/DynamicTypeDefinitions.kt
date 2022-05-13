@@ -69,8 +69,11 @@ class DynamicTypeDefinitions(
                 if (it.versioned)
                     mutationBuilder.fieldDefinition(mutationItemFields.purge(it))
 
-                mutationBuilder.fieldDefinition(mutationItemFields.lock(it))
-                mutationBuilder.fieldDefinition(mutationItemFields.unlock(it))
+                if (!it.notLockable) {
+                    mutationBuilder.fieldDefinition(mutationItemFields.lock(it))
+                    mutationBuilder.fieldDefinition(mutationItemFields.unlock(it))
+                }
+
                 mutationBuilder.fieldDefinition(mutationItemFields.promote(it))
 
                 // Add custom mutations

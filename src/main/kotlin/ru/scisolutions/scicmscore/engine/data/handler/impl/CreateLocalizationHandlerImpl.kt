@@ -47,7 +47,8 @@ class CreateLocalizationHandlerImpl(
         if (prevItemRec.locale == input.locale)
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] has the same locale (${input.locale})")
 
-        itemRecDao.lockByIdOrThrow(item, input.id) // lock
+        if (!item.notLockable)
+            itemRecDao.lockByIdOrThrow(item, input.id) // lock
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val filteredData = preparedData
@@ -78,17 +79,16 @@ class CreateLocalizationHandlerImpl(
 
         // TODO: Maybe copy relations from previous localization
 
-        itemRecDao.unlockByIdOrThrow(item, input.id) // unlock
+        if (!item.notLockable)
+            itemRecDao.unlockByIdOrThrow(item, input.id) // unlock
 
-        val selectData = itemRec
-            .filterKeys { it in selectAttrNames.plus(ID_ATTR_NAME) }
-            .toMutableMap()
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
         return Response(ItemRec(selectData))
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
         private const val MAJOR_REV_ATTR_NAME = "majorRev"
 
         private val logger = LoggerFactory.getLogger(CreateLocalizationHandlerImpl::class.java)
