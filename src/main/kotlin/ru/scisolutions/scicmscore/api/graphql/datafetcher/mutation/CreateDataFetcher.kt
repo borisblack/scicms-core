@@ -4,32 +4,27 @@ import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseFieldTypeRegex
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.input.ItemInput
+import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
-import java.util.regex.Pattern
 
 @Component
 class CreateDataFetcher(
     private val dataEngine: DataEngine
-) : BaseDataFetcher(), DataFetcher<DataFetcherResult<Response>> {
-    override fun getFieldTypePattern(): Pattern = responseFieldTypePattern
-
+) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
-        val fieldType = parseFieldType(dfe.fieldType)
-        val capitalizedItemName = extractCapitalizedItemNameFromFieldType(fieldType)
+        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
-        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
-            .map { it.name }
-            .toSet()
-            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
-
-        val input = ItemInput(
+        val selectAttrNames = dfe.selectDataFields()
+        val input = CreateInput(
             data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null"),
             majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
             locale = dfe.arguments[LOCALE_ARG_NAME] as String?
         )
+
         val result = dataEngine.create(itemName, input, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()

@@ -19,10 +19,11 @@ import ru.scisolutions.scicmscore.engine.data.db.query.OrderingsParser
 import ru.scisolutions.scicmscore.engine.data.db.query.StateConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.db.query.VersionConditionBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
+import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
-import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
@@ -46,7 +47,7 @@ class FindAllHandlerImpl(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val paginator: Paginator,
     private val jdbcTemplateMap: JdbcTemplateMap
-) : BaseHandler(), FindAllHandler {
+) : FindAllHandler {
     override fun getResponseCollection(
         itemName: String,
         input: FindAllInput,
@@ -55,7 +56,7 @@ class FindAllHandlerImpl(
     ): ResponseCollection {
         val item = itemService.getByName(itemName)
         val jdbcTemplate = jdbcTemplateMap.getOrThrow(item.dataSource)
-        val attrNames = prepareAttrNames(item, selectAttrNames)
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
 
         // Query
         val spec = DbSpec()
@@ -110,7 +111,7 @@ class FindAllHandlerImpl(
     ): RelationResponseCollection {
         val item = itemService.getByName(itemName)
         val jdbcTemplate = jdbcTemplateMap.getOrThrow(item.dataSource)
-        val attrNames = prepareAttrNames(item, selectAttrNames)
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
 
         // Query
         val spec = DbSpec()

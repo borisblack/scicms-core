@@ -4,28 +4,21 @@ import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
-import java.util.regex.Pattern
 
 @Component
 class ResponseCollectionDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
     private val dataEngine: DataEngine
-) : BaseDataFetcher(), DataFetcher<DataFetcherResult<ResponseCollection>> {
-    override fun getFieldTypePattern(): Pattern = Pattern.compile("^(\\w+)ResponseCollection$")
-
+) : DataFetcher<DataFetcherResult<ResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<ResponseCollection> {
-        val fieldType = parseFieldType(dfe.fieldType)
-        val capitalizedItemName = extractCapitalizedItemNameFromFieldType(fieldType)
+        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
-        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
-            .map { it.name }
-            .toSet()
-            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
-
+        val selectAttrNames = dfe.selectDataFields()
         val responseCollectionInput = findAllInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
         val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
             .map { it.name }
@@ -36,5 +29,9 @@ class ResponseCollectionDataFetcher(
         return DataFetcherResult.newResult<ResponseCollection>()
             .data(result)
             .build()
+    }
+
+    companion object {
+        private val fieldTypeRegex = "^(\\w+)ResponseCollection$".toRegex()
     }
 }

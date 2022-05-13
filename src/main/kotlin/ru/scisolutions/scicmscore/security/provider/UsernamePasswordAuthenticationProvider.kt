@@ -23,7 +23,7 @@ class UsernamePasswordAuthenticationProvider(
         val authenticated = super.authenticate(authentication)
         val principal = authenticated.principal as org.springframework.security.core.userdetails.User
         val username = principal.username
-        val userEntity = userService.findByUsername(username) ?: throw IllegalStateException("User $username not found")
+        val userEntity = userService.getByUsername(username)
         val user = User(username, principal.password, principal.authorities, userEntity)
         return UsernamePasswordAuthenticationToken(user, authenticated.credentials, user.authorities)
     }

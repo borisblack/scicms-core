@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.service.impl
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +24,10 @@ class UserServiceImpl(
         .build()
 
     @Transactional(readOnly = true)
-    override fun findByUsername(username: String): User? = userRepository.findByUsername(username)
+    override fun getCurrentUser(): User {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return getByUsername(authentication.name)
+    }
 
     @Transactional(readOnly = true)
     override fun getByUsername(username: String): User = userCache.get(username) { userRepository.getByUsername(username) }

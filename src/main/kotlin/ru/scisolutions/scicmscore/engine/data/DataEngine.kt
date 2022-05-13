@@ -5,10 +5,13 @@ import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
+import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
+import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
-import ru.scisolutions.scicmscore.engine.data.model.input.ItemInput
-import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
+import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
@@ -55,7 +58,13 @@ interface DataEngine {
         selectPaginationFields: Set<String>
     ): RelationResponseCollection
 
-    fun create(itemName: String, input: ItemInput, selectAttrNames: Set<String>): Response
+    fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response
+
+    fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response
+
+    fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response
+
+    fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response
 
     fun getCustomMethods(itemName: String): Set<String>
 

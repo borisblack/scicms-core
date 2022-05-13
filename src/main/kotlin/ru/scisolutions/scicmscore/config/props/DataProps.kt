@@ -12,6 +12,7 @@ class DataProps {
     var maxLimit: Int = MAX_LIMIT
     var cacheExpirationMinutes: Long = DEFAULT_CACHE_EXPIRATION_MINUTES
     var itemCacheExpirationMinutes: Long = DEFAULT_ITEM_CACHE_EXPIRATION_MINUTES
+    var trimStrings: Boolean = true
 
     companion object {
         private const val DEFAULT_LIMIT = 25

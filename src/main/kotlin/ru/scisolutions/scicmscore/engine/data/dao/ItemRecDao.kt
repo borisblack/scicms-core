@@ -3,36 +3,21 @@ package ru.scisolutions.scicmscore.engine.data.dao
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.util.ACL.Mask
 
 interface ItemRecDao {
-    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
+    fun findById(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
-    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
+    fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec
 
-    fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
+    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
-    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
+    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
-    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
+    fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
-    fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec?
+    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
-    fun findById(item: Item, id: String, selectAttrNames: Set<String>): ItemRec?
-
-    fun findByKeyAttrNameForRead(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
-
-    fun findByKeyAttrNameForWrite(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
-
-    fun findByKeyAttrNameForCreate(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
-
-    fun findByKeyAttrNameForDelete(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
-
-    fun findByKeyAttrNameForAdministration(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
-
-    fun findByKeyAttrNameFor(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec?
-
-    fun findByKeyAttrName(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec?
+    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
     fun existsById(item: Item, id: String): Boolean
 
@@ -44,5 +29,15 @@ interface ItemRecDao {
 
     fun insert(item: Item, itemRec: ItemRec)
 
+    fun insertWithDefaults(item: Item, itemRec: ItemRec)
+
     fun updateById(item: Item, id: String, itemRec: ItemRec)
+
+    fun lockById(item: Item, id: String): Boolean
+
+    fun lockByIdOrThrow(item: Item, id: String)
+
+    fun unlockById(item: Item, id: String): Boolean
+
+    fun unlockByIdOrThrow(item: Item, id: String)
 }

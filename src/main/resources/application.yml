@@ -19,6 +19,7 @@ scicms-core:
     max-limit: 100
     cache-expiration-minutes: 10
     item-cache-expiration-minutes: 1440
+    trim-strings: true
   i18n:
     default-locale: en-US
     include-in-unique-index: true

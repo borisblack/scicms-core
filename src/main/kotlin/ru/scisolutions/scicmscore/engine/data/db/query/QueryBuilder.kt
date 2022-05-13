@@ -16,24 +16,27 @@ import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class QueryBuilder {
-    fun buildFindByKeyAttrNameQuery(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>, permissionIds: Set<String>? = null): SelectQuery {
+    fun buildFindByIdQuery(item: Item, id: String, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val table = DbTable(schema, item.tableName)
-
-        val keyAttribute = item.spec.getAttributeOrThrow(keyAttrName)
-        val keyColName = keyAttribute.columnName ?: keyAttrName.lowercase()
-        val keyCol = DbColumn(table, keyColName, null, null)
-        val columns = selectAttrNames
-            .map {
-                val attribute = item.spec.getAttributeOrThrow(it)
-                DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
-            }
-            .toTypedArray()
-
+        val idCol = DbColumn(table, ID_COL_NAME, null, null)
         val query = SelectQuery()
-            .addColumns(*columns)
-            .addCondition(BinaryCondition.equalTo(keyCol, keyAttrValue))
+
+        if (selectAttrNames == null) {
+            query.addAllColumns()
+        } else {
+            val columns = selectAttrNames
+                .map {
+                    val attribute = item.spec.getAttributeOrThrow(it)
+                    DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
+                }
+                .toTypedArray()
+
+            query.addColumns(*columns)
+        }
+
+        query.addCondition(BinaryCondition.equalTo(idCol, id))
 
         if (permissionIds != null) {
             val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
@@ -100,8 +103,37 @@ class QueryBuilder {
         return query.validate()
     }
 
+    fun buildLockByIdQuery(item: Item, id: String, userId: String): UpdateQuery {
+        val spec = DbSpec()
+        val schema: DbSchema = spec.addDefaultSchema()
+        val table = DbTable(schema, item.tableName)
+        val idCol = DbColumn(table, ID_COL_NAME, null, null)
+        val lockedByIddCol = DbColumn(table, LOCKED_BY_ID_COL_NAME, null, null)
+        val query = UpdateQuery(table)
+            .addSetClause(lockedByIddCol, userId)
+            .addCondition(BinaryCondition.equalTo(idCol, id))
+            .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
+
+        return query.validate()
+    }
+
+    fun buildUnlockByIdQuery(item: Item, id: String, userId: String): UpdateQuery {
+        val spec = DbSpec()
+        val schema: DbSchema = spec.addDefaultSchema()
+        val table = DbTable(schema, item.tableName)
+        val idCol = DbColumn(table, ID_COL_NAME, null, null)
+        val lockedByIddCol = DbColumn(table, LOCKED_BY_ID_COL_NAME, null, null)
+        val query = UpdateQuery(table)
+            .addSetClause(lockedByIddCol, null)
+            .addCondition(BinaryCondition.equalTo(idCol, id))
+            .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
+
+        return query.validate()
+    }
+
     companion object {
         private const val ID_COL_NAME = "id"
+        private const val LOCKED_BY_ID_COL_NAME = "locked_by_id"
         private const val PERMISSION_ID_COL_NAME = "permission_id"
     }
 }

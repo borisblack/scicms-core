@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
+import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -13,14 +14,19 @@ import ru.scisolutions.scicmscore.service.ItemService
 class FindOneHandlerImpl(
     private val itemService: ItemService,
     private val itemRecDao: ItemRecDao
-) : BaseHandler(), FindOneHandler {
+) : FindOneHandler {
     override fun getResponse(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
-        val attrNames = prepareAttrNames(item, selectAttrNames)
-        val itemRec = itemRecDao.findByIdForRead(item, id, attrNames)
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val itemRec =
+            if (isOnlyId(attrNames))
+                ItemRec().apply { this.id = id }
+            else itemRecDao.findByIdForRead(item, id, attrNames)
 
         return Response(itemRec)
     }
+
+    private fun isOnlyId(attrNames: Set<String>): Boolean = attrNames.size == 1 && ID_ATTR_NAME in attrNames
 
     override fun getRelationResponse(
         parentItemName: String,
@@ -36,13 +42,17 @@ class FindOneHandlerImpl(
         }
 
         val item = itemService.getByName(itemName)
-        val attrNames = prepareAttrNames(item, selectAttrNames)
-        val itemRec = itemRecDao.findByIdForRead(item, id, attrNames)
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val itemRec =
+            if (isOnlyId(attrNames))
+                ItemRec().apply { this.id = id }
+            else itemRecDao.findByIdForRead(item, id, attrNames)
 
         return RelationResponse(itemRec)
     }
 
     companion object {
+        private const val ID_ATTR_NAME = "id"
         private val logger = LoggerFactory.getLogger(FindOneHandlerImpl::class.java)
     }
 }

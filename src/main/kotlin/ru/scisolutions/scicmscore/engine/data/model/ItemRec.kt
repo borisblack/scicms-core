@@ -23,13 +23,13 @@ class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : Muta
         get() = this[MINOR_REV_ATTR_NAME] as String?
         set(value) { this[MINOR_REV_ATTR_NAME] = value }
 
-    var lastVersion: Boolean?
-        get() = this[LAST_VERSION_ATTR_NAME] as Boolean?
-        set(value) { this[LAST_VERSION_ATTR_NAME] = value }
-
     var current: Boolean?
         get() = this[CURRENT_ATTR_NAME] as Boolean?
         set(value) { this[CURRENT_ATTR_NAME] = value }
+
+    var lastVersion: Boolean?
+        get() = this[LAST_VERSION_ATTR_NAME] as Boolean?
+        set(value) { this[LAST_VERSION_ATTR_NAME] = value }
 
     var locale: String?
         get() = this[LOCALE_ATTR_NAME] as String?

@@ -1,6 +1,12 @@
-package ru.scisolutions.scicmscore.engine.data.handler.impl
+package ru.scisolutions.scicmscore.engine.data.handler.util
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
@@ -14,12 +20,52 @@ import java.time.OffsetTime
 import java.util.UUID
 
 @Component
-class AttributeValueValidator(
+class AttributeValueHelper(
+    private val dataProps: DataProps,
     private val itemService: ItemService,
     private val mediaService: MediaService,
     private val itemRecDao: ItemRecDao
 ) {
-    fun validate(item: Item, attrName: String, attribute: Attribute, value: Any) {
+    fun prepareAttributeValues(item: Item, attributes: Map<String, Any?>): Map<String, Any?> {
+        val result = attributes
+            .filterKeys {
+                val attribute = item.spec.getAttributeOrThrow(it)
+                !attribute.private && attribute.type != Type.sequence && it !in excludeAttrNames
+            }
+            .mapValues { (attrName, value) -> prepareAttributeValue(item, attrName, value as Any) }
+
+        if (dataProps.trimStrings)
+            return result.mapValues { (attrName, value) -> if (value is String) value.trim() else value }
+
+        return result
+    }
+
+    fun prepareAttributeValue(item: Item, attrName: String, value: Any?): Any? {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+        if (value == null) {
+            if (attribute.required)
+                throw IllegalArgumentException("Item [${item.name}], attribute [${attrName}]: Value is required")
+
+            return null
+        }
+
+        validateAttributeValue(item, attrName, attribute, value)
+
+        return when (attribute.type) {
+            Type.uuid, Type.string, Type.text, Type.enum, Type.email -> value
+            Type.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
+            Type.password -> passwordEncoder.encode(value as String).toString()
+            Type.int, Type.long, Type.float, Type.double, Type.decimal -> value
+            Type.date, Type.time, Type.datetime, Type.timestamp -> value
+            Type.bool -> value
+            Type.array, Type.json -> objectMapper.writeValueAsString(value)
+            Type.media -> value
+            Type.relation -> if (attribute.isCollection()) (value as List<*>).toSet() else value
+            else -> throw IllegalArgumentException("Unsupported attribute type")
+        }
+    }
+
+    private fun validateAttributeValue(item: Item, attrName: String, attribute: Attribute, value: Any) {
         when (attribute.type) {
             Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media -> {
                 if (value !is String)
@@ -68,31 +114,31 @@ class AttributeValueValidator(
                 if (value !is Int)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
-                validateNumber(item, attrName, attribute, value)
+                validateAttributeNumberValue(item, attrName, attribute, value)
             }
             Type.long -> {
                 if (value !is Int && value !is Long)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
-                validateNumber(item, attrName, attribute, value as Number)
+                validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
             Type.float -> {
                 if (value !is Float)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
-                validateNumber(item, attrName, attribute, value)
+                validateAttributeNumberValue(item, attrName, attribute, value)
             }
             Type.double -> {
                 if (value !is Float && value !is Double)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
-                validateNumber(item, attrName, attribute, value as Number)
+                validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
             Type.decimal -> {
                 if (value !is Float && value !is Double && value !is BigDecimal)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
-                validateNumber(item, attrName, attribute, value as Number)
+                validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
             Type.date -> {
                 if (value !is LocalDate)
@@ -146,7 +192,7 @@ class AttributeValueValidator(
         }
     }
 
-    private fun validateNumber(item: Item, attrName: String, attribute: Attribute, value: Number) {
+    private fun validateAttributeNumberValue(item: Item, attrName: String, attribute: Attribute, value: Number) {
         when (value) {
             is Int -> {
                 if (attribute.minRange != null && value < attribute.minRange)
@@ -190,8 +236,17 @@ class AttributeValueValidator(
         private const val WRONG_VALUE_TYPE_MSG = "Item [%s], attribute [%s], value [%s]: Wrong value type"
         private const val VALUE_LESS_THAN_MIN_MSG = "Item [%s], attribute [%s], value [%s]: The value is less than minRange"
         private const val VALUE_MORE_THAN_MAX_MSG = "Item [%s], attribute [%s], value [%s]: The value is more than maxRange"
+        private const val MAJOR_REV_ATTR_NAME = "majorRev"
         private const val LOCALE_ATTR_NAME = "locale"
+        private const val STATE_ATTR_NAME = "state"
 
+        private val excludeAttrNames = setOf(MAJOR_REV_ATTR_NAME, LOCALE_ATTR_NAME, STATE_ATTR_NAME)
         private val simpleEmailRegex = Regex("\\w+@\\w+\\.\\w+")
+        private val passwordEncoder = BCryptPasswordEncoder()
+        private val objectMapper = jacksonObjectMapper().apply {
+            this.registerModule(JavaTimeModule())
+            this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            this.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        }
     }
 }

@@ -34,6 +34,9 @@ class DynamicDataFetcher(
     private val responseCollectionDataFetcher: ResponseCollectionDataFetcher,
     private val relationResponseCollectionDataFetcher: RelationResponseCollectionDataFetcher,
     private val createDataFetcher: CreateDataFetcher,
+    private val createVersionDataFetcher: CreateVersionDataFetcher,
+    private val createLocalizationDataFetcher: CreateLocalizationDataFetcher,
+    private val updateDataFetcher: UpdateDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
@@ -62,15 +65,15 @@ class DynamicDataFetcher(
 
                 if (it.versioned) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"), CreateVersionDataFetcher())
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"), createVersionDataFetcher)
                 } else if (!excludeItemPolicy.excludeFromUpdateMutation(it)) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "update${capitalizedItemName}"), UpdateDataFetcher())
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "update${capitalizedItemName}"), updateDataFetcher)
                 }
 
                 if (it.localized) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"), CreateLocalizationDataFetcher())
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"), createLocalizationDataFetcher)
                 }
 
                 codeRegistryBuilder

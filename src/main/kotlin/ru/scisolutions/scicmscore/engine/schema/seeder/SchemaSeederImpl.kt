@@ -7,7 +7,6 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.engine.schema.seeder.liquibase.LiquibaseTableSeeder
 import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
 import ru.scisolutions.scicmscore.service.ItemLockService
 import ru.scisolutions.scicmscore.service.ItemService
@@ -39,26 +38,20 @@ class SchemaSeederImpl(
         if (schemaProps.deleteIfAbsent)
             deleteAbsentItems(items)
 
-        releaseLock()
+        unlockOrThrow()
     }
 
-    private fun acquireLock() {
+    private fun lockOrThrow() {
         if (!itemsLocked) {
-            if (!itemLockService.lock())
-                throw IllegalStateException("Cannot acquire items lock")
-
+            itemLockService.lockOrThrow()
             itemsLocked = true
-            logger.info("Successfully acquired items lock")
         }
     }
 
-    private fun releaseLock() {
+    private fun unlockOrThrow() {
         if (itemsLocked) {
-            if (!itemLockService.unlock())
-                throw IllegalStateException("Cannot release items lock")
-
+            itemLockService.unlockOrThrow()
             itemsLocked = false
-            logger.info("Successfully released items lock")
         }
     }
 
@@ -67,7 +60,7 @@ class SchemaSeederImpl(
 
         var itemEntity = itemService.findByName(item.metadata.name)
         if (itemEntity == null) {
-            acquireLock()
+            lockOrThrow()
 
             tableSeeder.create(item) // create table
 
@@ -85,7 +78,7 @@ class SchemaSeederImpl(
             // )
             // allowedPermissionService.save(defaultAllowedPermission)
         } else if (isChanged(item, itemEntity)) {
-            acquireLock()
+            lockOrThrow()
 
             tableSeeder.update(item, itemEntity) // update table
 

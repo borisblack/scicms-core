@@ -4,31 +4,25 @@ import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.unwrapParentType
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
-import java.util.regex.Pattern
 
 @Component
 class RelationResponseDataFetcher(
     private val dataEngine: DataEngine
-) : BaseDataFetcher(), DataFetcher<DataFetcherResult<RelationResponse>> {
-    override fun getFieldTypePattern(): Pattern = Pattern.compile("^(\\w+)RelationResponse$")
-
+) : DataFetcher<DataFetcherResult<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
-        val capitalizedParentItemName = parseFieldType(dfe.parentType)
+        val capitalizedParentItemName = dfe.unwrapParentType()
         val parentItemName = capitalizedParentItemName.decapitalize()
-        val fieldType = parseFieldType(dfe.fieldType)
-        val capitalizedItemName = extractCapitalizedItemNameFromFieldType(fieldType)
+        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
         val sourceItemRec: ItemRec = dfe.getSource()
         val attrName = dfe.field.name
-        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
-            .map { it.name }
-            .toSet()
-            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
-
+        val selectAttrNames = dfe.selectDataFields()
         val result = dataEngine.getRelationResponse(
             parentItemName,
             itemName,
@@ -40,5 +34,9 @@ class RelationResponseDataFetcher(
         return DataFetcherResult.newResult<RelationResponse>()
             .data(result)
             .build()
+    }
+
+    companion object {
+        private val fieldTypeRegex = "^(\\w+)RelationResponse$".toRegex()
     }
 }

@@ -4,34 +4,28 @@ import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.BaseDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.unwrapParentType
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
-import java.util.regex.Pattern
 
 @Component
 class RelationResponseCollectionDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
     private val dataEngine: DataEngine
-) : BaseDataFetcher(), DataFetcher<DataFetcherResult<RelationResponseCollection>> {
-    override fun getFieldTypePattern(): Pattern = Pattern.compile("^(\\w+)RelationResponseCollection$")
-
+) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
-        val capitalizedParentItemName = parseFieldType(dfe.parentType)
+        val capitalizedParentItemName = dfe.unwrapParentType()
         val parentItemName = capitalizedParentItemName.decapitalize()
-        val fieldType = parseFieldType(dfe.fieldType)
-        val capitalizedItemName = extractCapitalizedItemNameFromFieldType(fieldType)
+        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
         val sourceItemRec: ItemRec = dfe.getSource()
         val attrName = dfe.field.name
         val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
-        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
-            .map { it.name }
-            .toSet()
-            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
-
+        val selectAttrNames = dfe.selectDataFields()
         val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
             .map { it.name }
             .toSet()
@@ -49,5 +43,9 @@ class RelationResponseCollectionDataFetcher(
         return DataFetcherResult.newResult<RelationResponseCollection>()
             .data(result)
             .build()
+    }
+
+    companion object {
+        private val fieldTypeRegex = "^(\\w+)RelationResponseCollection$".toRegex()
     }
 }

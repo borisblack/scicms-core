@@ -5,12 +5,12 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
+import ru.scisolutions.scicmscore.engine.data.handler.CreateVersionHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.handler.util.RelationHelper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
+import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
 import ru.scisolutions.scicmscore.engine.data.service.LifecycleManager
@@ -22,7 +22,7 @@ import ru.scisolutions.scicmscore.service.ItemService
 import java.util.UUID
 
 @Service
-class CreateHandlerImpl(
+class CreateVersionHandlerImpl(
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -33,39 +33,60 @@ class CreateHandlerImpl(
     private val auditManager: AuditManager,
     private val relationHelper: RelationHelper,
     private val itemRecDao: ItemRecDao,
-) : CreateHandler {
-    override fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response {
+) : CreateVersionHandler {
+    override fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [$itemName] is not versioned")
+
         if (itemService.findByNameForCreate(item.name) == null)
-            throw AccessDeniedException("You are not allowed to create item [$itemName]")
+            throw AccessDeniedException("You are not allowed to create version for item [$itemName]")
+
+        val prevItemRec = itemRecDao.findByIdOrThrow(item, input.id)
+        if (prevItemRec.current != true)
+            throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is not a current version")
+
+        itemRecDao.lockByIdOrThrow(item, input.id)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
-        val nonCollectionData = preparedData
-            .filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
-            .toMutableMap()
-
-        val itemRec = ItemRec(nonCollectionData).apply {
+        val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val mergedData = DataHandlerUtil.merge(filteredData, prevItemRec).toMutableMap()
+        val itemRec = ItemRec(mergedData).apply {
             id = UUID.randomUUID().toString()
-            configId = id
         }
 
         // Assign other attributes
         sequenceManager.assignSequenceAttributes(item, itemRec)
-        versionManager.assignVersionAttributes(item, itemRec, input.majorRev)
+        versionManager.assignVersionAttributes(item, prevItemRec, itemRec, input.majorRev)
         localizationManager.assignLocaleAttribute(item, itemRec, input.locale)
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
-        auditManager.assignAuditAttributes(itemRec)
+        auditManager.assignAuditAttributes(prevItemRec, itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
+        // Reset current and lastVersion flags
+        itemRecDao.updateById(
+            item,
+            input.id,
+            ItemRec().apply {
+                current = false
+                lastVersion = false
+            }
+        )
+
         itemRecDao.insert(item, itemRec) // insert
 
+        // Update relations
         relationHelper.updateRelations(
             item,
             itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
+
+        // TODO: Maybe copy relations from previous version
+
+        itemRecDao.unlockByIdOrThrow(item, input.id)
 
         val selectData = itemRec
             .filterKeys { it in selectAttrNames.plus(ID_ATTR_NAME) }
@@ -77,6 +98,6 @@ class CreateHandlerImpl(
     companion object {
         private const val ID_ATTR_NAME = "id"
 
-        private val logger = LoggerFactory.getLogger(CreateHandlerImpl::class.java)
+        private val logger = LoggerFactory.getLogger(CreateVersionHandlerImpl::class.java)
     }
 }

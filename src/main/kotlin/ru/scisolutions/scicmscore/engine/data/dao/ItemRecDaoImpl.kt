@@ -8,59 +8,50 @@ import ru.scisolutions.scicmscore.config.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.data.db.query.QueryBuilder
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.service.AuditManager
+import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
+import ru.scisolutions.scicmscore.engine.data.service.VersionManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.PermissionService
+import ru.scisolutions.scicmscore.service.UserService
 import ru.scisolutions.scicmscore.util.ACL.Mask
+import java.util.UUID
 
 @Service
 class ItemRecDaoImpl(
+    private val userService: UserService,
     private val permissionService: PermissionService,
+    private val versionManager: VersionManager,
+    private val sequenceManager: SequenceManager,
+    private val auditManager: AuditManager,
     private val jdbcTemplateMap: JdbcTemplateMap
 ) : ItemRecDao {
-    override fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameForRead(item, ID_ATTR_NAME, id, selectAttrNames)
-
-    override fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameForWrite(item, ID_ATTR_NAME, id, selectAttrNames)
-
-    override fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameForCreate(item, ID_ATTR_NAME, id, selectAttrNames)
-
-    override fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameForDelete(item, ID_ATTR_NAME, id, selectAttrNames)
-
-    override fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameForAdministration(item, ID_ATTR_NAME, id, selectAttrNames)
-
-    override fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec? =
-        findByKeyAttrNameFor(item, ID_ATTR_NAME, id, selectAttrNames, accessMask)
-
-    override fun findById(item: Item, id: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrName(item, ID_ATTR_NAME, id, selectAttrNames)
-
-    override fun findByKeyAttrNameForRead(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.READ)
-
-    override fun findByKeyAttrNameForWrite(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.WRITE)
-
-    override fun findByKeyAttrNameForCreate(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.CREATE)
-
-    override fun findByKeyAttrNameForDelete(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>) =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.DELETE)
-
-    override fun findByKeyAttrNameForAdministration(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? =
-        findByKeyAttrNameFor(item, keyAttrName, keyAttrValue, selectAttrNames, Mask.ADMINISTRATION)
-
-    override fun findByKeyAttrNameFor(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>, accessMask: Mask): ItemRec? {
-        val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
-        val query =  queryBuilder.buildFindByKeyAttrNameQuery(item, keyAttrName, keyAttrValue, selectAttrNames, permissionIds)
+    override fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
+        val query =  queryBuilder.buildFindByIdQuery(item, id, selectAttrNames)
         return findOne(item, query)
     }
 
-    override fun findByKeyAttrName(item: Item, keyAttrName: String, keyAttrValue: String, selectAttrNames: Set<String>): ItemRec? {
-        val query =  queryBuilder.buildFindByKeyAttrNameQuery(item, keyAttrName, keyAttrValue, selectAttrNames)
+    override fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec =
+        findById(item, id, selectAttrNames) ?: throw IllegalArgumentException("Item [${item.name}] with ID [$id] not found")
+
+    override fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Mask.READ)
+
+    override fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Mask.WRITE)
+
+    override fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Mask.CREATE)
+
+    override fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Mask.DELETE)
+
+    override fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Mask.ADMINISTRATION)
+
+    private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Mask): ItemRec? {
+        val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
+        val query =  queryBuilder.buildFindByIdQuery(item, id, selectAttrNames, permissionIds)
         return findOne(item, query)
     }
 
@@ -89,21 +80,85 @@ class ItemRecDaoImpl(
 
     override fun count(item: Item, query: SelectQuery): Int {
         val countSQL = "SELECT COUNT(*) FROM ($query) t"
+        logger.debug("Running SQL: {}", countSQL)
+
         return jdbcTemplateMap.getOrThrow(item.dataSource).queryForObject(countSQL, Int::class.java) as Int
     }
 
     override fun insert(item: Item, itemRec: ItemRec) {
         val query = queryBuilder.buildInsertQuery(item, itemRec)
-        jdbcTemplateMap.getOrThrow(item.dataSource).update(query.toString())
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+    }
+
+    override fun insertWithDefaults(item: Item, itemRec: ItemRec) {
+        with(itemRec) {
+            id = UUID.randomUUID().toString()
+            configId = id
+        }
+
+        sequenceManager.assignSequenceAttributes(item, itemRec)
+        versionManager.assignVersionAttributes(item, itemRec, itemRec.majorRev)
+        auditManager.assignAuditAttributes(itemRec)
+
+        insert(item, itemRec)
     }
 
     override fun updateById(item: Item, id: String, itemRec: ItemRec) {
         val query = queryBuilder.buildUpdateByIdQuery(item, id, itemRec)
-        jdbcTemplateMap.getOrThrow(item.dataSource).update(query.toString())
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+    }
+
+    override fun lockById(item: Item, id: String): Boolean {
+        val user = userService.getCurrentUser()
+        val query = queryBuilder.buildLockByIdQuery(item, id, user.id)
+        val sql = query.toString()
+
+        logger.debug("Running SQL: {}", sql)
+        val result = jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+
+        return if (result == 1) {
+            logger.info("Item [${item.name}] with ID [$id] successfully locked")
+            true
+        } else {
+            logger.warn(LOCK_FAIL_MSG.format(item.name, id))
+            false
+        }
+    }
+
+    override fun lockByIdOrThrow(item: Item, id: String) {
+        if (!lockById(item, id))
+            throw IllegalStateException(LOCK_FAIL_MSG.format(item.name, id))
+    }
+
+    override fun unlockById(item: Item, id: String): Boolean {
+        val user = userService.getCurrentUser()
+        val query = queryBuilder.buildUnlockByIdQuery(item, id, user.id)
+        val sql = query.toString()
+
+        logger.debug("Running SQL: {}", sql)
+        val result = jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+
+        return if (result == 1) {
+            logger.info("Item [${item.name}] with ID [$id] successfully unlocked")
+            true
+        } else {
+            logger.warn(UNLOCK_FAIL_MSG.format(item.name, id))
+            false
+        }
+    }
+
+    override fun unlockByIdOrThrow(item: Item, id: String) {
+        if (!unlockById(item, id))
+            throw IllegalStateException(UNLOCK_FAIL_MSG.format(item.name, id))
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
+        private const val LOCK_FAIL_MSG = "Cannot lock item %s with ID [%s]. It was locked by another user"
+        private const val UNLOCK_FAIL_MSG = "Cannot unlock item %s with ID [%s]"
 
         private val logger = LoggerFactory.getLogger(ItemRecDaoImpl::class.java)
         private val queryBuilder = QueryBuilder()

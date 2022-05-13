@@ -4,6 +4,7 @@ import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 
@@ -12,13 +13,9 @@ class ResponseDataFetcher(
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
-        val itemName = dfe.field.name
-        val selectAttrNames = dfe.selectionSet.getFields("data/*").asSequence() // root fields
-            .map { it.name }
-            .toSet()
-            .ifEmpty { throw IllegalArgumentException("Selection set is empty") }
-
+        val selectAttrNames = dfe.selectDataFields()
         val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null")
+        val itemName = dfe.field.name
         val result = dataEngine.getResponse(itemName, id, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
