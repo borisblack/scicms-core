@@ -57,7 +57,7 @@ class QueryBuilder {
         return query.validate()
     }
 
-    fun buildFindByIdsQuery(item: Item, ids: Set<String>): SelectQuery {
+    fun buildFindByIdsQuery(item: Item, ids: Set<String>, permissionIds: Set<String>? = null): SelectQuery {
         if (ids.isEmpty())
             throw IllegalArgumentException("ID set is empty")
 
@@ -68,6 +68,22 @@ class QueryBuilder {
         val query = SelectQuery()
             .addAllColumns()
             .addCondition(InCondition(idCol, *ids.toTypedArray()))
+
+        if (permissionIds != null) {
+            val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
+            val permissionCondition =
+                if (permissionIds.isEmpty()) {
+                    UnaryCondition.isNull(permissionIdCol)
+                } else {
+                    ComboCondition(
+                        Op.OR,
+                        UnaryCondition.isNull(permissionIdCol),
+                        InCondition(permissionIdCol, *permissionIds.toTypedArray())
+                    )
+                }
+
+            query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }

@@ -71,10 +71,28 @@ class ItemRecDaoImpl(
 
     override fun existsById(item: Item, id: String): Boolean = countByIds(item, setOf(id)) > 0
 
+    override fun existsByIdForRead(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.READ)
+
+    override fun existsByIdForWrite(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.WRITE)
+
+    override fun existsByIdForCreate(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.CREATE)
+
+    override fun existsByIdForDelete(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.DELETE)
+
+    override fun existsByIdForAdministration(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.ADMINISTRATION)
+
+    private fun existsByIdFor(item: Item, id: String, accessMask: Mask): Boolean = countByIdsFor(item, setOf(id), accessMask) > 0
+
     override fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
 
-    override fun countByIds(item: Item, ids: Set<String>): Int {
+    private fun countByIds(item: Item, ids: Set<String>): Int {
         val query = queryBuilder.buildFindByIdsQuery(item, ids)
+        return count(item, query)
+    }
+
+    private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Mask): Int {
+        val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
+        val query = queryBuilder.buildFindByIdsQuery(item, ids, permissionIds)
         return count(item, query)
     }
 

@@ -21,7 +21,7 @@ class LockHandlerImpl(
         if (!itemRecDao.existsById(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
 
-        if (itemRecDao.findByIdForWrite(item, id) == null) // not locked
+        if (!itemRecDao.existsByIdForWrite(item, id)) // not locked
             throw AccessDeniedException("You are not allowed to lock item [$itemName] with ID [$id]")
 
         if (item.notLockable)
@@ -42,7 +42,7 @@ class LockHandlerImpl(
         if (!itemRecDao.existsById(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
 
-        if (itemRecDao.findByIdForWrite(item, id) == null) // locked
+        if (!itemRecDao.existsByIdForWrite(item, id))
             throw AccessDeniedException("You are not allowed to unlock item [$itemName] with ID [$id]")
 
         if (item.notLockable)

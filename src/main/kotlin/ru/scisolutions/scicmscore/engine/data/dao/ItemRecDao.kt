@@ -21,9 +21,17 @@ interface ItemRecDao {
 
     fun existsById(item: Item, id: String): Boolean
 
-    fun existAllByIds(item: Item, ids: Set<String>): Boolean
+    fun existsByIdForRead(item: Item, id: String): Boolean
 
-    fun countByIds(item: Item, ids: Set<String>): Int
+    fun existsByIdForWrite(item: Item, id: String): Boolean
+
+    fun existsByIdForCreate(item: Item, id: String): Boolean
+
+    fun existsByIdForDelete(item: Item, id: String): Boolean
+
+    fun existsByIdForAdministration(item: Item, id: String): Boolean
+
+    fun existAllByIds(item: Item, ids: Set<String>): Boolean
 
     fun count(item: Item, query: SelectQuery): Int
 
