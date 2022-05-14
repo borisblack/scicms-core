@@ -12,7 +12,6 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.data.db.Paginator
-import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.ItemFiltersInput
@@ -36,7 +35,7 @@ class FindAllQueryBuilder(
     private val relationManager: RelationManager,
 ) {
     class FindAllQuery(
-        val query: SelectQuery,
+        val sql: String,
         val pagination: Pagination
     )
 
@@ -70,7 +69,7 @@ class FindAllQueryBuilder(
         }
 
         return FindAllQuery(
-            query = query.validate(),
+            sql = query.validate().toString(),
             pagination = pagination
         )
     }
@@ -117,9 +116,9 @@ class FindAllQueryBuilder(
 
     fun buildFindAllRelatedQuery(
         parentItem: Item,
+        parentId: String,
+        parentAttrName: String,
         item: Item,
-        sourceItemRec: ItemRec,
-        attrName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
@@ -128,9 +127,8 @@ class FindAllQueryBuilder(
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(schema, item, input.filters, selectAttrNames)
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
-        val parentAttribute = parentItem.spec.getAttributeOrThrow(attrName)
-        val parentId = sourceItemRec[ID_ATTR_NAME] ?: IllegalArgumentException("Source ID not found")
-        when (val parentRelation = relationManager.getAttributeRelation(parentItem, attrName, parentAttribute)) {
+        val parentAttribute = parentItem.spec.getAttributeOrThrow(parentAttrName)
+        when (val parentRelation = relationManager.getAttributeRelation(parentItem, parentAttrName, parentAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {
                 val owningCol = DbColumn(table, parentRelation.getOwningColumnName(), null, null)
                 query.addCondition(BinaryCondition.equalTo(owningCol, parentId))
@@ -186,7 +184,7 @@ class FindAllQueryBuilder(
         }
 
         return FindAllQuery(
-            query = query.validate(),
+            sql = query.validate().toString(),
             pagination = pagination
         )
     }

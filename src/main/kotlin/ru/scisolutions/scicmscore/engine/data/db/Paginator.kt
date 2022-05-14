@@ -17,7 +17,7 @@ class Paginator(
     fun paginate(item: Item, query: SelectQuery, paginationInput: PaginationInput?, selectPaginationFields: Set<String>): Pagination {
         var total: Int? = null
         if (TOTAL_FIELD_NAME in selectPaginationFields || PAGE_COUNT_FIELD_NAME in selectPaginationFields) {
-            total = itemRecDao.count(item, query)
+            total = itemRecDao.count(item, query.toString())
         }
 
         if (paginationInput != null) {

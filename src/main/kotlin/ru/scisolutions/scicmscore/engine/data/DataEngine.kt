@@ -35,9 +35,9 @@ interface DataEngine {
 
     fun findOneRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         selectAttrNames: Set<String>
     ): RelationResponse
 
@@ -50,9 +50,9 @@ interface DataEngine {
 
     fun findAllRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>

@@ -67,10 +67,11 @@ class CreateVersionHandlerImpl(
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
         // Reset current and lastVersion flags
-        itemRecDao.updateById(
-            item,
-            input.id,
-            ItemRec().apply {
+        itemRecDao.updateByAttribute(
+            item = item,
+            attrName = CONFIG_ID_ATTR_NAME,
+            attrValue = requireNotNull(itemRec.configId),
+            itemRec = ItemRec().apply {
                 current = false
                 lastVersion = false
             }
@@ -97,6 +98,8 @@ class CreateVersionHandlerImpl(
     }
 
     companion object {
+        private const val CONFIG_ID_ATTR_NAME = "configId"
+
         private val logger = LoggerFactory.getLogger(CreateVersionHandlerImpl::class.java)
     }
 }

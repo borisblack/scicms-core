@@ -16,9 +16,9 @@ interface FindAllHandler {
 
     fun findAllRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>

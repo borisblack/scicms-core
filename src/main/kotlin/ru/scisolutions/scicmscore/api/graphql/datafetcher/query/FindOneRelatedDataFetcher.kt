@@ -20,15 +20,15 @@ class FindOneRelatedDataFetcher(
         val parentItemName = capitalizedParentItemName.decapitalize()
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
-        val sourceItemRec: ItemRec = dfe.getSource()
-        val attrName = dfe.field.name
+        val parentItemRec: ItemRec = dfe.getSource()
+        val parentAttrName = dfe.field.name
         val selectAttrNames = dfe.selectDataFields()
         val result = dataEngine.findOneRelated(
-            parentItemName,
-            itemName,
-            sourceItemRec,
-            attrName,
-            selectAttrNames
+            parentItemName = parentItemName,
+            parentItemRec = parentItemRec,
+            parentAttrName = parentAttrName,
+            itemName = itemName,
+            selectAttrNames = selectAttrNames
         )
 
         return DataFetcherResult.newResult<RelationResponse>()

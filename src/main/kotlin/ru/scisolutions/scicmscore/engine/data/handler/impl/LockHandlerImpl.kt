@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.data.handler.impl
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.LockHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
@@ -14,6 +15,7 @@ import ru.scisolutions.scicmscore.service.ItemService
 class LockHandlerImpl(
     private val itemService: ItemService,
     private val itemRecDao: ItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
 ) : LockHandler {
     override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -21,7 +23,7 @@ class LockHandlerImpl(
         if (!itemRecDao.existsById(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
 
-        if (!itemRecDao.existsByIdForWrite(item, id)) // not locked
+        if (!aclItemRecDao.existsByIdForWrite(item, id)) // not locked
             throw AccessDeniedException("You are not allowed to lock item [$itemName] with ID [$id]")
 
         if (item.notLockable)
@@ -29,7 +31,7 @@ class LockHandlerImpl(
 
         itemRecDao.lockByIdOrThrow(item, id)
 
-        val itemRec = itemRecDao.findByIdForWrite(item, id) as ItemRec
+        val itemRec = aclItemRecDao.findByIdForWrite(item, id) as ItemRec
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
@@ -42,7 +44,7 @@ class LockHandlerImpl(
         if (!itemRecDao.existsById(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
 
-        if (!itemRecDao.existsByIdForWrite(item, id))
+        if (!aclItemRecDao.existsByIdForWrite(item, id))
             throw AccessDeniedException("You are not allowed to unlock item [$itemName] with ID [$id]")
 
         if (item.notLockable)
@@ -50,7 +52,7 @@ class LockHandlerImpl(
 
         itemRecDao.unlockByIdOrThrow(item, id)
 
-        val itemRec = itemRecDao.findByIdForWrite(item, id) as ItemRec
+        val itemRec = aclItemRecDao.findByIdForWrite(item, id) as ItemRec
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 

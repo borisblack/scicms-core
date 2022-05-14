@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.data.handler.impl
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.service.ItemService
 @Service
 class FindOneHandlerImpl(
     private val itemService: ItemService,
-    private val itemRecDao: ItemRecDao
+    private val aclItemRecDao: ACLItemRecDao
 ) : FindOneHandler {
     override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -21,7 +21,7 @@ class FindOneHandlerImpl(
         val itemRec =
             if (isOnlyId(attrNames))
                 ItemRec().apply { this.id = id }
-            else itemRecDao.findByIdForRead(item, id, attrNames)
+            else aclItemRecDao.findByIdForRead(item, id, attrNames)
 
         return Response(itemRec)
     }
@@ -30,14 +30,14 @@ class FindOneHandlerImpl(
 
     override fun findOneRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         selectAttrNames: Set<String>
     ): RelationResponse {
-        val id = sourceItemRec[attrName] as String?
+        val id = parentItemRec[parentAttrName] as String?
         if (id == null) {
-            logger.debug("The attribute [$attrName] is absent in the source item, so it cannot be fetched")
+            logger.debug("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
             return RelationResponse()
         }
 
@@ -46,7 +46,7 @@ class FindOneHandlerImpl(
         val itemRec =
             if (isOnlyId(attrNames))
                 ItemRec().apply { this.id = id }
-            else itemRecDao.findByIdForRead(item, id, attrNames)
+            else aclItemRecDao.findByIdForRead(item, id, attrNames)
 
         return RelationResponse(itemRec)
     }

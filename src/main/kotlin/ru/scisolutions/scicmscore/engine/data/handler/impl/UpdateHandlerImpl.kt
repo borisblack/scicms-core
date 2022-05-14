@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.UpdateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
@@ -24,6 +25,7 @@ class UpdateHandlerImpl(
     private val auditManager: AuditManager,
     private val relationHelper: RelationHelper,
     private val itemRecDao: ItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
 ) : UpdateHandler {
     override fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -33,7 +35,7 @@ class UpdateHandlerImpl(
         if (!itemRecDao.existsById(item, input.id))
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found")
 
-        val prevItemRec = itemRecDao.findByIdForWrite(item, input.id)
+        val prevItemRec = aclItemRecDao.findByIdForWrite(item, input.id)
             ?: throw AccessDeniedException("You are not allowed to update item [$itemName] with ID [${input.id}]")
 
         if (LIFECYCLE_ATTR_NAME in input.data)

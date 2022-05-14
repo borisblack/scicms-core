@@ -22,8 +22,8 @@ class FindAllRelatedDataFetcher(
         val parentItemName = capitalizedParentItemName.decapitalize()
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
-        val sourceItemRec: ItemRec = dfe.getSource()
-        val attrName = dfe.field.name
+        val parentItemRec: ItemRec = dfe.getSource()
+        val parentAttrName = dfe.field.name
         val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
         val selectAttrNames = dfe.selectDataFields()
         val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
@@ -32,9 +32,9 @@ class FindAllRelatedDataFetcher(
 
         val result = dataEngine.findAllRelated(
             parentItemName = parentItemName,
+            parentItemRec = parentItemRec,
+            parentAttrName = parentAttrName,
             itemName = itemName,
-            sourceItemRec = sourceItemRec,
-            attrName = attrName,
             input = responseCollectionInput,
             selectAttrNames = selectAttrNames,
             selectPaginationFields = selectPaginationFields

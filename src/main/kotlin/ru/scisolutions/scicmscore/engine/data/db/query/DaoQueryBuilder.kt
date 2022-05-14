@@ -96,18 +96,19 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
-    fun buildUpdateByIdQuery(item: Item, id: String, itemRec: ItemRec): UpdateQuery {
+    fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): UpdateQuery {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val table = DbTable(schema, item.tableName)
-        val idCol = DbColumn(table, ID_COL_NAME, null, null)
+        val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val query = UpdateQuery(table)
-            .addCondition(BinaryCondition.equalTo(idCol, id))
+            .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
 
-        itemRec.forEach { (attrName, value) ->
-            val attribute = item.spec.getAttributeOrThrow(attrName)
-            val column = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
-            query.addSetClause(column, SQL.toSqlValue(value))
+        itemRec.forEach { (recAttrName, recValue) ->
+            val recAttribute = item.spec.getAttributeOrThrow(recAttrName)
+            val column = DbColumn(table, recAttribute.columnName ?: recAttrName.lowercase(), null, null)
+            query.addSetClause(column, SQL.toSqlValue(recValue))
         }
 
         return query.validate()

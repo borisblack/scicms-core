@@ -28,8 +28,13 @@ class FindAllHandlerImpl(
     ): ResponseCollection {
         val item = itemService.getByName(itemName)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
-        val findAllQuery = findAllQueryBuilder.buildFindAllQuery(item, input, attrNames, selectPaginationFields)
-        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.query)
+        val findAllQuery = findAllQueryBuilder.buildFindAllQuery(
+            item = item,
+            input = input,
+            selectAttrNames = attrNames,
+            selectPaginationFields = selectPaginationFields
+        )
+        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql)
 
         return ResponseCollection(
             data = itemRecList,
@@ -41,18 +46,27 @@ class FindAllHandlerImpl(
 
     override fun findAllRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
         val item = itemService.getByName(itemName)
         val parentItem = itemService.getByName(parentItemName)
+        val parentId = parentItemRec.id ?: throw IllegalArgumentException("Parent ID not found")
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
-        val findAllQuery = findAllQueryBuilder.buildFindAllRelatedQuery(parentItem, item, sourceItemRec, attrName, input, attrNames, selectPaginationFields)
-        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.query)
+        val findAllQuery = findAllQueryBuilder.buildFindAllRelatedQuery(
+            parentItem = parentItem,
+            parentId = parentId,
+            parentAttrName = parentAttrName,
+            item = item,
+            input = input,
+            selectAttrNames = attrNames,
+            selectPaginationFields = selectPaginationFields
+        )
+        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql)
 
         return RelationResponseCollection(
             data = itemRecList

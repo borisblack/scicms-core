@@ -58,12 +58,18 @@ class DataEngineImpl(
 
     override fun findOneRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         selectAttrNames: Set<String>
     ): RelationResponse =
-        findOneHandler.findOneRelated(parentItemName, itemName, sourceItemRec, attrName, selectAttrNames)
+        findOneHandler.findOneRelated(
+            parentItemName = parentItemName,
+            parentItemRec = parentItemRec,
+            parentAttrName = parentAttrName,
+            itemName = itemName,
+            selectAttrNames = selectAttrNames
+        )
 
     override fun findAll(
         itemName: String,
@@ -71,18 +77,31 @@ class DataEngineImpl(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection =
-        findAllHandler.findAll(itemName, input, selectAttrNames, selectPaginationFields)
+        findAllHandler.findAll(
+            itemName = itemName,
+            input = input,
+            selectAttrNames = selectAttrNames,
+            selectPaginationFields = selectPaginationFields
+        )
 
     override fun findAllRelated(
         parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
         itemName: String,
-        sourceItemRec: ItemRec,
-        attrName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection =
-        findAllHandler.findAllRelated(parentItemName, itemName, sourceItemRec, attrName, input, selectAttrNames, selectPaginationFields)
+        findAllHandler.findAllRelated(
+            parentItemName = parentItemName,
+            parentItemRec = parentItemRec,
+            parentAttrName = parentAttrName,
+            itemName = itemName,
+            input = input,
+            selectAttrNames = selectAttrNames,
+            selectPaginationFields = selectPaginationFields
+        )
 
     override fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response =
         createHandler.create(itemName, input, selectAttrNames)

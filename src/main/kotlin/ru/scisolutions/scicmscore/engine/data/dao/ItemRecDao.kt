@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.engine.data.dao
 
-import com.healthmarketscience.sqlbuilder.SelectQuery
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
@@ -9,39 +8,21 @@ interface ItemRecDao {
 
     fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec
 
-    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
-
-    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
-
-    fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
-
-    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
-
-    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
-
     fun existsById(item: Item, id: String): Boolean
-
-    fun existsByIdForRead(item: Item, id: String): Boolean
-
-    fun existsByIdForWrite(item: Item, id: String): Boolean
-
-    fun existsByIdForCreate(item: Item, id: String): Boolean
-
-    fun existsByIdForDelete(item: Item, id: String): Boolean
-
-    fun existsByIdForAdministration(item: Item, id: String): Boolean
 
     fun existAllByIds(item: Item, ids: Set<String>): Boolean
 
-    fun count(item: Item, query: SelectQuery): Int
+    fun count(item: Item, sql: String): Int
 
-    fun findAll(item: Item, query: SelectQuery): List<ItemRec>
+    fun findAll(item: Item, sql: String): List<ItemRec>
 
     fun insert(item: Item, itemRec: ItemRec)
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec)
 
     fun updateById(item: Item, id: String, itemRec: ItemRec)
+
+    fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec)
 
     fun lockById(item: Item, id: String): Boolean
 
