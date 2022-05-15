@@ -62,15 +62,18 @@ class AddRelationHelper(
         }
     }
 
-    private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec) {
-        if (item.versioned) {
+    private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
+        return if (item.versioned) {
             val prevItemRec = itemRecDao.findByIdOrThrow(item, id)
             val mergedItemRec = ItemRec(Maps.merge(itemRec, prevItemRec).toMutableMap())
             itemRecDao.insertWithDefaults(item, mergedItemRec)
         } else {
             auditManager.assignUpdateAttributes(itemRec)
-            if (aclItemRecDao.updateById(item, id, itemRec) != 1)
+            val rows = aclItemRecDao.updateById(item, id, itemRec)
+            if (rows != 1)
                 logger.info("Update operation disabled for item [${item.name}] with ID [$id].")
+
+            rows
         }
     }
 

@@ -62,21 +62,17 @@ class DeleteRelationHelper(
                     DeletingStrategy.SET_NULL -> {
                         if (relation.isOwning) {
                             val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to null))
-                            auditManager.assignAuditAttributes(inversedItemRec)
-                            if (aclItemRecDao.updateById(relation.inversedItem, targetId, inversedItemRec) != 1)
-                                logger.info("Update operation disabled for item [${relation.inversedItem.name}] with ID [$targetId].")
+                            updateById(relation.inversedItem, targetId, inversedItemRec)
                         } else {
                             val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
-                            auditManager.assignAuditAttributes(owningItemRec)
-                            if (aclItemRecDao.updateById(relation.owningItem, targetId, owningItemRec) != 1)
-                                logger.info("Update operation disabled for item [${relation.owningItem.name}] with ID [$targetId].")
+                            updateById(relation.owningItem, targetId, owningItemRec)
                         }
                     }
                     DeletingStrategy.CASCADE -> {
                         val targetItem = itemService.getByName(requireNotNull(attribute.target))
                         val targetItemRec = aclItemRecDao.findByIdForDelete(targetItem, targetId)
                         if (targetItemRec == null) {
-                            logger.debug("Delete operation disabled for item [${targetItem.name}] with ID [$targetId]")
+                            logger.info("Delete operation disabled for item [${targetItem.name}] with ID [$targetId]")
                         } else {
                             logger.debug("Processing relations recursively")
                             processRelations(targetItem, targetItemRec, strategy)
@@ -89,6 +85,20 @@ class DeleteRelationHelper(
             }
             else -> {}
         }
+    }
+
+    private fun updateById(item: Item, id: String, itemRec: ItemRec): Int {
+        val rows = updateByAttribute(item, ID_ATTR_NAME, id, itemRec)
+        if (rows != 1)
+            logger.info("Update operation disabled for item [${item.name}] with ID [$id].")
+
+        return rows
+    }
+
+    private fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int {
+        auditManager.assignUpdateAttributes(itemRec)
+
+        return aclItemRecDao.updateByAttribute(item, attrName, attrValue, itemRec)
     }
 
     private fun processCollectionRelations(item: Item, itemRecId: String, strategy: DeletingStrategy) {
@@ -111,8 +121,7 @@ class DeleteRelationHelper(
                 when (strategy) {
                     DeletingStrategy.SET_NULL -> {
                         val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
-                        auditManager.assignUpdateAttributes(owningItemRec)
-                        if (aclItemRecDao.updateByAttribute(relation.owningItem, relation.owningAttrName, itemRecId, owningItemRec) != 1)
+                        if (updateByAttribute(relation.owningItem, relation.owningAttrName, itemRecId, owningItemRec) != 1)
                             logger.info("Update operation disabled for item [${relation.owningItem.name}] with ID [$itemRecId].")
                     }
                     DeletingStrategy.CASCADE -> {
@@ -145,6 +154,7 @@ class DeleteRelationHelper(
     }
 
     companion object {
+        private const val ID_ATTR_NAME = "id"
         private const val INTERMEDIATE_SOURCE_ATTR_NAME = "source"
         private const val INTERMEDIATE_TARGET_ATTR_NAME = "target"
 
