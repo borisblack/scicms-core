@@ -51,14 +51,14 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
     }
 
-    override fun insert(item: Item, itemRec: ItemRec) {
+    override fun insert(item: Item, itemRec: ItemRec): Int {
         val query = daoQueryBuilder.buildInsertQuery(item, itemRec)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
-    override fun insertWithDefaults(item: Item, itemRec: ItemRec) {
+    override fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
         with(itemRec) {
             id = UUID.randomUUID().toString()
             configId = id
@@ -68,26 +68,26 @@ class ItemRecDaoImpl(
         versionManager.assignVersionAttributes(item, itemRec, itemRec.majorRev)
         auditManager.assignAuditAttributes(itemRec)
 
-        insert(item, itemRec)
+        return insert(item, itemRec)
     }
 
-    override fun updateById(item: Item, id: String, itemRec: ItemRec) =
+    override fun updateById(item: Item, id: String, itemRec: ItemRec): Int =
         updateByAttribute(item, ID_ATTR_NAME, id, itemRec)
 
-    override fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec) {
+    override fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int {
         val query = daoQueryBuilder.buildUpdateByAttributeQuery(item, attrName, attrValue, itemRec)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
-    override fun deleteById(item: Item, id: String) = deleteByAttribute(item, ID_ATTR_NAME, id)
+    override fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ID_ATTR_NAME, id)
 
-    override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any) {
+    override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
         val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
     override fun lockById(item: Item, id: String): Boolean {

@@ -1,6 +1,8 @@
 package ru.scisolutions.scicmscore.engine.data.handler.util
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
@@ -17,7 +19,8 @@ import ru.scisolutions.scicmscore.util.Maps
 class AddRelationHelper(
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
-    private val itemRecDao: ItemRecDao
+    private val itemRecDao: ItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
 ) {
     fun processRelations(item: Item, itemRecId: String, relAttributes: Map<String, Any>) {
         relAttributes.forEach { (attrName, value) ->
@@ -66,7 +69,8 @@ class AddRelationHelper(
             itemRecDao.insertWithDefaults(item, mergedItemRec)
         } else {
             auditManager.assignUpdateAttributes(itemRec)
-            itemRecDao.updateById(item, id, itemRec)
+            if (aclItemRecDao.updateById(item, id, itemRec) != 1)
+                logger.info("Update operation disabled for item [${item.name}] with ID [$id].")
         }
     }
 
@@ -83,5 +87,7 @@ class AddRelationHelper(
     companion object {
         private const val INTERMEDIATE_SOURCE_ATTR_NAME = "source"
         private const val INTERMEDIATE_TARGET_ATTR_NAME = "target"
+
+        private val logger = LoggerFactory.getLogger(AddRelationHelper::class.java)
     }
 }

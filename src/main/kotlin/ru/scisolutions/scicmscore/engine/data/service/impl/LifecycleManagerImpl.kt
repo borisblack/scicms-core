@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.service.LifecycleManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.service.AllowedLifecycleService
 import ru.scisolutions.scicmscore.service.LifecycleService
 

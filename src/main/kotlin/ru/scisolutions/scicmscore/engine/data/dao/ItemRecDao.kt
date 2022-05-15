@@ -18,17 +18,17 @@ interface ItemRecDao {
 
     fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec>
 
-    fun insert(item: Item, itemRec: ItemRec)
+    fun insert(item: Item, itemRec: ItemRec): Int
 
-    fun insertWithDefaults(item: Item, itemRec: ItemRec)
+    fun insertWithDefaults(item: Item, itemRec: ItemRec): Int
 
-    fun updateById(item: Item, id: String, itemRec: ItemRec)
+    fun updateById(item: Item, id: String, itemRec: ItemRec): Int
 
-    fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec)
+    fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int
 
-    fun deleteById(item: Item, id: String)
+    fun deleteById(item: Item, id: String): Int
 
-    fun deleteByAttribute(item: Item, attrName: String, attrValue: Any)
+    fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int
 
     fun lockById(item: Item, id: String): Boolean
 

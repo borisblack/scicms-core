@@ -47,7 +47,7 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
-    fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any): SelectQuery {
+    fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, permissionIds: Set<String>? = null): SelectQuery {
         val attribute = item.spec.getAttributeOrThrow(attrName)
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -56,6 +56,10 @@ class DaoQueryBuilder {
         val query = SelectQuery()
             .addAllColumns()
             .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
+
+        val permissionCondition = getPermissionCondition(table, permissionIds)
+        if (permissionCondition != null)
+            query.addCondition(permissionCondition)
 
         return query.validate()
     }
@@ -110,7 +114,7 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
-    fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): UpdateQuery {
+    fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec, permissionIds: Set<String>? = null): UpdateQuery {
         val attribute = item.spec.getAttributeOrThrow(attrName)
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -125,10 +129,14 @@ class DaoQueryBuilder {
             query.addSetClause(column, SQL.toSqlValue(recValue))
         }
 
+        val permissionCondition = getPermissionCondition(table, permissionIds)
+        if (permissionCondition != null)
+            query.addCondition(permissionCondition)
+
         return query.validate()
     }
 
-    fun buildDeleteByAttributeQuery(item: Item, attrName: String, attrValue: Any): DeleteQuery {
+    fun buildDeleteByAttributeQuery(item: Item, attrName: String, attrValue: Any, permissionIds: Set<String>? = null): DeleteQuery {
         val attribute = item.spec.getAttributeOrThrow(attrName)
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -136,6 +144,10 @@ class DaoQueryBuilder {
         val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val query = DeleteQuery(table)
             .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
+
+        val permissionCondition = getPermissionCondition(table, permissionIds)
+        if (permissionCondition != null)
+            query.addCondition(permissionCondition)
 
         return query.validate()
     }

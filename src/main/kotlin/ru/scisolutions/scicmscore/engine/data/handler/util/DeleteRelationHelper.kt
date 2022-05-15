@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput.DeletingStrategy
@@ -23,7 +24,8 @@ class DeleteRelationHelper(
     private val itemService: ItemService,
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
-    private val itemRecDao: ItemRecDao
+    private val itemRecDao: ItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
 ) {
     fun processRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
         processOneToOneRelations(item, itemRec, strategy)
@@ -61,24 +63,25 @@ class DeleteRelationHelper(
                         if (relation.isOwning) {
                             val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to null))
                             auditManager.assignAuditAttributes(inversedItemRec)
-                            itemRecDao.updateById(relation.inversedItem, targetId, inversedItemRec)
+                            if (aclItemRecDao.updateById(relation.inversedItem, targetId, inversedItemRec) != 1)
+                                logger.info("Update operation disabled for item [${relation.inversedItem.name}] with ID [$targetId].")
                         } else {
                             val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
                             auditManager.assignAuditAttributes(owningItemRec)
-                            itemRecDao.updateById(relation.owningItem, targetId, owningItemRec)
+                            if (aclItemRecDao.updateById(relation.owningItem, targetId, owningItemRec) != 1)
+                                logger.info("Update operation disabled for item [${relation.owningItem.name}] with ID [$targetId].")
                         }
                     }
                     DeletingStrategy.CASCADE -> {
-                        // Recursive calls
-                        logger.debug("Processing relations recursively")
                         val targetItem = itemService.getByName(requireNotNull(attribute.target))
-                        val targetItemRec = itemRecDao.findByIdOrThrow(targetItem, targetId)
-                        processRelations( targetItem, targetItemRec, strategy)
-
-                        if (relation.isOwning) {
-                            itemRecDao.deleteById(relation.inversedItem, targetId)
+                        val targetItemRec = aclItemRecDao.findByIdForDelete(targetItem, targetId)
+                        if (targetItemRec == null) {
+                            logger.debug("Delete operation disabled for item [${targetItem.name}] with ID [$targetId]")
                         } else {
-                            itemRecDao.deleteById(relation.owningItem, targetId)
+                            logger.debug("Processing relations recursively")
+                            processRelations(targetItem, targetItemRec, strategy)
+                            if (aclItemRecDao.deleteById(targetItem, targetId) != 1)
+                                logger.info("Delete operation disabled for item [${targetItem.name}] with ID [$targetId].")
                         }
                     }
                     else -> {}
@@ -109,16 +112,17 @@ class DeleteRelationHelper(
                     DeletingStrategy.SET_NULL -> {
                         val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
                         auditManager.assignUpdateAttributes(owningItemRec)
-                        itemRecDao.updateByAttribute(relation.owningItem, relation.owningAttrName, itemRecId, owningItemRec)
+                        if (aclItemRecDao.updateByAttribute(relation.owningItem, relation.owningAttrName, itemRecId, owningItemRec) != 1)
+                            logger.info("Update operation disabled for item [${relation.owningItem.name}] with ID [$itemRecId].")
                     }
                     DeletingStrategy.CASCADE -> {
                         // Recursive calls
                         logger.debug("Processing relations recursively")
                         val targetItem = itemService.getByName(requireNotNull(relAttribute.target))
-                        val targetItemRecList = itemRecDao.findAllByAttribute(targetItem, relation.owningAttrName, itemRecId)
+                        val targetItemRecList = aclItemRecDao.findAllByAttributeForDelete(targetItem, relation.owningAttrName, itemRecId)
                         targetItemRecList.forEach { processRelations(targetItem, it, strategy) }
 
-                        itemRecDao.deleteByAttribute(relation.owningItem, relation.owningAttrName, itemRecId)
+                        aclItemRecDao.deleteByAttribute(relation.owningItem, relation.owningAttrName, itemRecId)
                     }
                     else -> {}
                 }
@@ -126,13 +130,13 @@ class DeleteRelationHelper(
             is ManyToManyRelation -> {
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
-                        itemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, itemRecId)
+                        aclItemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, itemRecId)
                     }
                     is ManyToManyBidirectionalRelation -> {
                         if (relation.isOwning)
-                            itemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, itemRecId)
+                            aclItemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, itemRecId)
                         else
-                            itemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_TARGET_ATTR_NAME, itemRecId)
+                            aclItemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_TARGET_ATTR_NAME, itemRecId)
                     }
                 }
             }

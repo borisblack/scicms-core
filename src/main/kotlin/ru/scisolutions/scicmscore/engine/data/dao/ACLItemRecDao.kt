@@ -23,4 +23,22 @@ interface ACLItemRecDao {
     fun existsByIdForDelete(item: Item, id: String): Boolean
 
     fun existsByIdForAdministration(item: Item, id: String): Boolean
+
+    fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+
+    fun findAllByAttributeForWrite(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+
+    fun findAllByAttributeForCreate(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+
+    fun findAllByAttributeForDelete(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+
+    fun findAllByAttributeForAdministration(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+
+    fun updateById(item: Item, id: String, itemRec: ItemRec): Int
+
+    fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int
+
+    fun deleteById(item: Item, id: String): Int
+
+    fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int
 }

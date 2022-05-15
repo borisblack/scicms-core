@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
+import ru.scisolutions.scicmscore.engine.data.db.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.data.db.query.DaoQueryBuilder
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
@@ -54,7 +55,53 @@ class ACLItemRecDaoImpl(
         return count(item, query.toString())
     }
 
+    override fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Mask.READ)
+
+    override fun findAllByAttributeForWrite(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Mask.WRITE)
+
+    override fun findAllByAttributeForCreate(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Mask.CREATE)
+
+    override fun findAllByAttributeForDelete(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Mask.DELETE)
+
+    override fun findAllByAttributeForAdministration(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Mask.ADMINISTRATION)
+
+    private fun findAllByAttributeFor(item: Item, attrName: String, attrValue: Any, accessMask: Mask): List<ItemRec> {
+        val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
+        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, permissionIds)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
+    }
+
+    override fun updateById(item: Item, id: String, itemRec: ItemRec): Int =
+        updateByAttribute(item, ID_ATTR_NAME, id, itemRec)
+
+    override fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int {
+        val permissionIds: Set<String> = permissionService.findIdsFor(Mask.WRITE)
+        val query = daoQueryBuilder.buildUpdateByAttributeQuery(item, attrName, attrValue, itemRec, permissionIds)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+    }
+
+    override fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ID_ATTR_NAME, id)
+
+    override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
+        val permissionIds: Set<String> = permissionService.findIdsFor(Mask.DELETE)
+        val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, permissionIds)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+    }
+
     companion object {
+        private const val ID_ATTR_NAME = "id"
+
         private val logger = LoggerFactory.getLogger(ACLItemRecDaoImpl::class.java)
         private val daoQueryBuilder = DaoQueryBuilder()
     }
