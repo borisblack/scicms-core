@@ -1,0 +1,149 @@
+package ru.scisolutions.scicmscore.engine.data.handler.util
+
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput.DeletingStrategy
+import ru.scisolutions.scicmscore.engine.data.service.AuditManager
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.service.RelationManager
+import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.service.ItemService
+
+@Component
+class DeleteRelationHelper(
+    private val itemService: ItemService,
+    private val relationManager: RelationManager,
+    private val auditManager: AuditManager,
+    private val itemRecDao: ItemRecDao
+) {
+    fun processRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
+        processOneToOneRelations(item, itemRec, strategy)
+        processCollectionRelations(item, requireNotNull(itemRec.id), strategy)
+    }
+
+    private fun processOneToOneRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
+        if (strategy == DeletingStrategy.NO_ACTION)
+            return
+
+        val oneToOneRelAttributes = itemRec
+            .filterKeys {
+                val attribute = item.spec.getAttributeOrThrow(it)
+                attribute.type == Type.relation && attribute.relType == RelType.oneToOne
+            }
+            .filterValues { it != null } as Map<String, String>
+
+
+        oneToOneRelAttributes.forEach { (attrName, targetId) ->
+            processOneToOneRelation(item, attrName, targetId, strategy)
+        }
+    }
+
+    private fun processOneToOneRelation(item: Item, relAttrName: String, targetId: String, strategy: DeletingStrategy) {
+        logger.debug("Processing oneToOne relations")
+
+        if (strategy == DeletingStrategy.NO_ACTION)
+            return
+
+        val attribute = item.spec.getAttributeOrThrow(relAttrName)
+        when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
+            is OneToOneBidirectionalRelation -> {
+                when (strategy) {
+                    DeletingStrategy.SET_NULL -> {
+                        if (relation.isOwning) {
+                            val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to null))
+                            auditManager.assignAuditAttributes(inversedItemRec)
+                            itemRecDao.updateById(relation.inversedItem, targetId, inversedItemRec)
+                        } else {
+                            val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
+                            auditManager.assignAuditAttributes(owningItemRec)
+                            itemRecDao.updateById(relation.owningItem, targetId, owningItemRec)
+                        }
+                    }
+                    DeletingStrategy.CASCADE -> {
+                        // Recursive calls
+                        logger.debug("Processing relations recursively")
+                        val targetItem = itemService.getByName(requireNotNull(attribute.target))
+                        val targetItemRec = itemRecDao.findByIdOrThrow(targetItem, targetId)
+                        processRelations( targetItem, targetItemRec, strategy)
+
+                        if (relation.isOwning) {
+                            itemRecDao.deleteById(relation.inversedItem, targetId)
+                        } else {
+                            itemRecDao.deleteById(relation.owningItem, targetId)
+                        }
+                    }
+                    else -> {}
+                }
+            }
+            else -> {}
+        }
+    }
+
+    private fun processCollectionRelations(item: Item, itemRecId: String, strategy: DeletingStrategy) {
+        logger.debug("Processing collection relations")
+        val collectionRelAttributes = item.spec.attributes.filterValues { it.isCollection() }
+        collectionRelAttributes.forEach { (attrName, attribute) ->
+            processCollectionRelation(item, itemRecId, attrName, attribute, strategy)
+        }
+    }
+
+    private fun processCollectionRelation(item: Item, itemRecId: String, relAttrName: String, relAttribute: Attribute, strategy: DeletingStrategy) {
+        if (!relAttribute.isCollection())
+            throw IllegalArgumentException("Attribute [$relAttrName] is not collection")
+
+        when (val relation = relationManager.getAttributeRelation(item, relAttrName, relAttribute)) {
+            is OneToManyInversedBidirectionalRelation -> {
+                if (strategy == DeletingStrategy.NO_ACTION)
+                    return
+
+                when (strategy) {
+                    DeletingStrategy.SET_NULL -> {
+                        val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
+                        auditManager.assignUpdateAttributes(owningItemRec)
+                        itemRecDao.updateByAttribute(relation.owningItem, relation.owningAttrName, itemRecId, owningItemRec)
+                    }
+                    DeletingStrategy.CASCADE -> {
+                        // Recursive calls
+                        logger.debug("Processing relations recursively")
+                        val targetItem = itemService.getByName(requireNotNull(relAttribute.target))
+                        val targetItemRecList = itemRecDao.findAllByAttribute(targetItem, relation.owningAttrName, itemRecId)
+                        targetItemRecList.forEach { processRelations(targetItem, it, strategy) }
+
+                        itemRecDao.deleteByAttribute(relation.owningItem, relation.owningAttrName, itemRecId)
+                    }
+                    else -> {}
+                }
+            }
+            is ManyToManyRelation -> {
+                when (relation) {
+                    is ManyToManyUnidirectionalRelation -> {
+                        itemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, itemRecId)
+                    }
+                    is ManyToManyBidirectionalRelation -> {
+                        if (relation.isOwning)
+                            itemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, itemRecId)
+                        else
+                            itemRecDao.deleteByAttribute(relation.intermediateItem, INTERMEDIATE_TARGET_ATTR_NAME, itemRecId)
+                    }
+                }
+            }
+            else -> {}
+        }
+    }
+
+    companion object {
+        private const val INTERMEDIATE_SOURCE_ATTR_NAME = "source"
+        private const val INTERMEDIATE_TARGET_ATTR_NAME = "target"
+
+        private val logger = LoggerFactory.getLogger(DeleteRelationHelper::class.java)
+    }
+}

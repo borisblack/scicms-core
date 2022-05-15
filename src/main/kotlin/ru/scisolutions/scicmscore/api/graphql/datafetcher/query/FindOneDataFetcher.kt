@@ -14,7 +14,7 @@ class FindOneDataFetcher(
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val selectAttrNames = dfe.selectDataFields()
-        val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null")
+        val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null.")
         val itemName = dfe.field.name
         val result = dataEngine.findOne(itemName, id, selectAttrNames)
 

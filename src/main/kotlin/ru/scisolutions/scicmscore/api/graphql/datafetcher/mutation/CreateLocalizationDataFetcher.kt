@@ -22,7 +22,8 @@ class CreateLocalizationDataFetcher(
         val input = CreateLocalizationInput(
             id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null"),
             data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null"),
-            locale = dfe.arguments[LOCALE_ARG_NAME] as String? ?: throw IllegalArgumentException("Locale argument is null")
+            locale = dfe.arguments[LOCALE_ARG_NAME] as String? ?: throw IllegalArgumentException("Locale argument is null"),
+            copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?
         )
 
         val result = dataEngine.createLocalization(itemName, input, selectAttrNames)
@@ -36,5 +37,6 @@ class CreateLocalizationDataFetcher(
         private const val ID_ARG_NAME = "id"
         private const val DATA_ARG_NAME = "data"
         private const val LOCALE_ARG_NAME = "locale"
+        private const val COPY_COLLECTION_RELATIONS_ARG_NAME = "copyCollectionRelations"
     }
 }

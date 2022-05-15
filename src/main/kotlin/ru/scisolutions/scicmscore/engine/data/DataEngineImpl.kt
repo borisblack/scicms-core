@@ -7,10 +7,12 @@ import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CreateLocalizationHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CreateVersionHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
+import ru.scisolutions.scicmscore.engine.data.handler.DeleteHandler
 import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.data.handler.LockHandler
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
+import ru.scisolutions.scicmscore.engine.data.handler.PurgeHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UpdateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
@@ -20,6 +22,7 @@ import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
@@ -27,7 +30,6 @@ import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
-import ru.scisolutions.scicmscore.persistence.entity.Media
 
 /**
  * General facade for all operations with data
@@ -42,6 +44,8 @@ class DataEngineImpl(
     private val createVersionHandler: CreateVersionHandler,
     private val createLocalizationHandler: CreateLocalizationHandler,
     private val updateHandler: UpdateHandler,
+    private val deleteHandler: DeleteHandler,
+    private val purgeHandler: PurgeHandler,
     private val lockHandler: LockHandler,
     private val customMethodHandler: CustomMethodHandler
 ) : DataEngine {
@@ -51,7 +55,7 @@ class DataEngineImpl(
 
     override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = mediaHandler.uploadMultiple(files)
 
-    override fun download(media: Media): ByteArrayResource = mediaHandler.download(media)
+    override fun downloadById(id: String): ByteArrayResource = mediaHandler.downloadById(id)
 
     override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response =
         findOneHandler.findOne(itemName, id, selectAttrNames)
@@ -115,6 +119,18 @@ class DataEngineImpl(
     override fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response =
         updateHandler.update(itemName, input, selectAttrNames)
 
+    override fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
+        val result = deleteHandler.delete(itemName, input, selectAttrNames)
+
+        if (itemName == MEDIA_ITEM_NAME)
+            mediaHandler.deleteById(input.id)
+
+        return result
+    }
+
+    override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =
+        purgeHandler.purge(itemName, input, selectAttrNames)
+
     override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response =
         lockHandler.lock(itemName, id, selectAttrNames)
 
@@ -125,4 +141,8 @@ class DataEngineImpl(
 
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput) =
         customMethodHandler.callCustomMethod(itemName, methodName, customMethodInput)
+
+    companion object {
+        private const val MEDIA_ITEM_NAME = "media"
+    }
 }

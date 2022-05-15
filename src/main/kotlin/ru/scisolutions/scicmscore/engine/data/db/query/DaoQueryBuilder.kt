@@ -4,6 +4,7 @@ import com.healthmarketscience.sqlbuilder.BinaryCondition
 import com.healthmarketscience.sqlbuilder.ComboCondition
 import com.healthmarketscience.sqlbuilder.ComboCondition.Op
 import com.healthmarketscience.sqlbuilder.Condition
+import com.healthmarketscience.sqlbuilder.DeleteQuery
 import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.InsertQuery
 import com.healthmarketscience.sqlbuilder.SelectQuery
@@ -42,6 +43,19 @@ class DaoQueryBuilder {
         val permissionCondition = getPermissionCondition(table, permissionIds)
         if (permissionCondition != null)
             query.addCondition(permissionCondition)
+
+        return query.validate()
+    }
+
+    fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any): SelectQuery {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val spec = DbSpec()
+        val schema: DbSchema = spec.addDefaultSchema()
+        val table = DbTable(schema, item.tableName)
+        val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
+        val query = SelectQuery()
+            .addAllColumns()
+            .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
 
         return query.validate()
     }
@@ -110,6 +124,18 @@ class DaoQueryBuilder {
             val column = DbColumn(table, recAttribute.columnName ?: recAttrName.lowercase(), null, null)
             query.addSetClause(column, SQL.toSqlValue(recValue))
         }
+
+        return query.validate()
+    }
+
+    fun buildDeleteByAttributeQuery(item: Item, attrName: String, attrValue: Any): DeleteQuery {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val spec = DbSpec()
+        val schema: DbSchema = spec.addDefaultSchema()
+        val table = DbTable(schema, item.tableName)
+        val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
+        val query = DeleteQuery(table)
+            .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
 
         return query.validate()
     }

@@ -5,6 +5,7 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseCollectionFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
@@ -16,7 +17,7 @@ class FindAllDataFetcher(
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<ResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<ResponseCollection> {
-        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
+        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseCollectionFieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
         val selectAttrNames = dfe.selectDataFields()
         val responseCollectionInput = findAllInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
@@ -29,9 +30,5 @@ class FindAllDataFetcher(
         return DataFetcherResult.newResult<ResponseCollection>()
             .data(result)
             .build()
-    }
-
-    companion object {
-        private val fieldTypeRegex = "^(\\w+)ResponseCollection$".toRegex()
     }
 }

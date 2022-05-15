@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.data.handler.util
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.service.AuditManager
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -10,48 +11,62 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversed
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.Maps
 
 @Component
-class RelationHelper(
+class AddRelationHelper(
     private val relationManager: RelationManager,
+    private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao
 ) {
-    fun updateRelations(item: Item, itemRecId: String, relAttributes: Map<String, Any>) {
+    fun processRelations(item: Item, itemRecId: String, relAttributes: Map<String, Any>) {
         relAttributes.forEach { (attrName, value) ->
-            updateRelation(item, itemRecId, attrName, value)
+            processRelation(item, itemRecId, attrName, value)
         }
     }
 
-    fun updateRelation(item: Item, itemRecId: String, relAttrName: String, relAttrValue: Any) {
+    private fun processRelation(item: Item, itemRecId: String, relAttrName: String, relAttrValue: Any) {
         val attribute = item.spec.getAttributeOrThrow(relAttrName)
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
             is OneToOneBidirectionalRelation -> {
                 if (relation.isOwning) {
                     val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to itemRecId))
-                    itemRecDao.updateById(relation.inversedItem, relAttrValue as String, inversedItemRec)
+                    updateOrInsertWithDefaults(relation.inversedItem, relAttrValue as String, inversedItemRec)
                 } else {
                     val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
-                    itemRecDao.updateById(relation.owningItem, relAttrValue as String, owningItemRec)
+                    updateOrInsertWithDefaults(relation.owningItem, relAttrValue as String, owningItemRec)
                 }
             }
             is OneToManyInversedBidirectionalRelation -> {
-                val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to itemRecId))
-                itemRecDao.updateById(relation.inversedItem, relAttrValue as String, inversedItemRec)
+                val relIds = relAttrValue as Collection<*>
+                val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
+                relIds.forEach { updateOrInsertWithDefaults(relation.owningItem, it as String, owningItemRec) }
             }
             is ManyToManyRelation -> {
-                relAttrValue as Collection<*>
+                val relIds = relAttrValue as Collection<*>
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
-                        relAttrValue.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
+                        relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
                     }
                     is ManyToManyBidirectionalRelation -> {
                         if (relation.isOwning)
-                            relAttrValue.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
+                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
                         else
-                            relAttrValue.forEach { addManyToManyRelation(relation.intermediateItem, it as String, itemRecId) }
+                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, it as String, itemRecId) }
                     }
                 }
             }
+        }
+    }
+
+    private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec) {
+        if (item.versioned) {
+            val prevItemRec = itemRecDao.findByIdOrThrow(item, id)
+            val mergedItemRec = ItemRec(Maps.merge(itemRec, prevItemRec).toMutableMap())
+            itemRecDao.insertWithDefaults(item, mergedItemRec)
+        } else {
+            auditManager.assignUpdateAttributes(itemRec)
+            itemRecDao.updateById(item, id, itemRec)
         }
     }
 

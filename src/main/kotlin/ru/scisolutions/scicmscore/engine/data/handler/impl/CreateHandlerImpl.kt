@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.data.handler.util.RelationHelper
+import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -31,7 +31,7 @@ class CreateHandlerImpl(
     private val lifecycleManager: LifecycleManager,
     private val permissionManager: PermissionManager,
     private val auditManager: AuditManager,
-    private val relationHelper: RelationHelper,
+    private val addRelationHelper: AddRelationHelper,
     private val itemRecDao: ItemRecDao,
 ) : CreateHandler {
     override fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response {
@@ -61,7 +61,7 @@ class CreateHandlerImpl(
 
         itemRecDao.insert(item, itemRec) // insert
 
-        relationHelper.updateRelations(
+        addRelationHelper.processRelations(
             item,
             itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>

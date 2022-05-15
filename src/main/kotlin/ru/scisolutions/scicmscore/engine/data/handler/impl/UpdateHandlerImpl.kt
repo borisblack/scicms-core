@@ -7,15 +7,16 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.UpdateHandler
+import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.data.handler.util.RelationHelper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
 import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.util.Maps
 
 @Service
 class UpdateHandlerImpl(
@@ -23,7 +24,7 @@ class UpdateHandlerImpl(
     private val attributeValueHelper: AttributeValueHelper,
     private val permissionManager: PermissionManager,
     private val auditManager: AuditManager,
-    private val relationHelper: RelationHelper,
+    private val addRelationHelper: AddRelationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : UpdateHandler {
@@ -45,20 +46,20 @@ class UpdateHandlerImpl(
             itemRecDao.lockByIdOrThrow(item, input.id)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
-        val mergedData = DataHandlerUtil.merge(preparedData, prevItemRec).toMutableMap()
+        val mergedData = Maps.merge(preparedData, prevItemRec).toMutableMap()
         val filteredData = mergedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
         val itemRec = ItemRec(filteredData.toMutableMap())
 
         // Assign other attributes
         permissionManager.assignPermissionAttribute(item, itemRec)
-        auditManager.assignAuditAttributes(prevItemRec, itemRec)
+        auditManager.assignUpdateAttributes(itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
         itemRecDao.updateById(item, input.id, itemRec) // insert
 
         // Update relations
-        relationHelper.updateRelations(
+        addRelationHelper.processRelations(
             item,
             itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>

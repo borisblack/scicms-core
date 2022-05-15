@@ -6,9 +6,10 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.CreateVersionHandler
+import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
+import ru.scisolutions.scicmscore.engine.data.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.data.handler.util.RelationHelper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -19,6 +20,7 @@ import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.data.service.VersionManager
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.util.Maps
 import java.util.UUID
 
 @Service
@@ -31,7 +33,8 @@ class CreateVersionHandlerImpl(
     private val lifecycleManager: LifecycleManager,
     private val permissionManager: PermissionManager,
     private val auditManager: AuditManager,
-    private val relationHelper: RelationHelper,
+    private val addRelationHelper: AddRelationHelper,
+    private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
 ) : CreateVersionHandler {
     override fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
@@ -51,7 +54,7 @@ class CreateVersionHandlerImpl(
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
-        val mergedData = DataHandlerUtil.merge(filteredData, prevItemRec).toMutableMap()
+        val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
         val itemRec = ItemRec(mergedData).apply {
             id = UUID.randomUUID().toString()
         }
@@ -62,7 +65,7 @@ class CreateVersionHandlerImpl(
         localizationManager.assignLocaleAttribute(item, itemRec, input.locale)
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
-        auditManager.assignAuditAttributes(prevItemRec, itemRec)
+        auditManager.assignUpdateAttributes(itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
@@ -80,13 +83,15 @@ class CreateVersionHandlerImpl(
         itemRecDao.insert(item, itemRec) // insert
 
         // Update relations
-        relationHelper.updateRelations(
+        addRelationHelper.processRelations(
             item,
             itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 
-        // TODO: Maybe copy relations from previous version
+        // Copy relations from previous version
+        if (input.copyCollectionRelations == true)
+            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as String)
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id)

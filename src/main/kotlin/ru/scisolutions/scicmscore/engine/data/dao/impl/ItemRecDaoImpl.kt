@@ -44,6 +44,13 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
     }
 
+    override fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
+        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
+    }
+
     override fun insert(item: Item, itemRec: ItemRec) {
         val query = daoQueryBuilder.buildInsertQuery(item, itemRec)
         val sql = query.toString()
@@ -69,6 +76,15 @@ class ItemRecDaoImpl(
 
     override fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec) {
         val query = daoQueryBuilder.buildUpdateByAttributeQuery(item, attrName, attrValue, itemRec)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+    }
+
+    override fun deleteById(item: Item, id: String) = deleteByAttribute(item, ID_ATTR_NAME, id)
+
+    override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any) {
+        val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)

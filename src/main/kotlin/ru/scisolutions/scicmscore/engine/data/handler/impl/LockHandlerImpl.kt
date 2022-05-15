@@ -19,15 +19,14 @@ class LockHandlerImpl(
 ) : LockHandler {
     override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [$itemName] is not lockable")
 
         if (!itemRecDao.existsById(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
 
         if (!aclItemRecDao.existsByIdForWrite(item, id)) // not locked
             throw AccessDeniedException("You are not allowed to lock item [$itemName] with ID [$id]")
-
-        if (item.notLockable)
-            throw IllegalArgumentException("Item [$itemName] is not lockable")
 
         itemRecDao.lockByIdOrThrow(item, id)
 
@@ -40,15 +39,14 @@ class LockHandlerImpl(
 
     override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [$itemName] is not lockable")
 
         if (!itemRecDao.existsById(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
 
         if (!aclItemRecDao.existsByIdForWrite(item, id))
             throw AccessDeniedException("You are not allowed to unlock item [$itemName] with ID [$id]")
-
-        if (item.notLockable)
-            throw IllegalArgumentException("Item [$itemName] is not lockable")
 
         itemRecDao.unlockByIdOrThrow(item, id)
 

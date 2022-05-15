@@ -49,7 +49,7 @@ class ItemObjectTypes(
             .type(attributeTypes.objectType(item, attrName, attribute))
 
         if (attribute.isCollection()) {
-            requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null" }
+            requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null." }
 
             val capitalizedTargetItemName = attribute.target.capitalize()
 

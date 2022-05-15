@@ -5,6 +5,17 @@ scalar Object
 scalar JSON
 scalar Upload
 
+enum DeletingStrategy {
+    "Do not touch related items"
+    NO_ACTION,
+
+    "Set null for corresponding attributes in related items"
+    SET_NULL,
+
+    "Cascade delete related items"
+    CASCADE
+}
+
 input IDFilterInput {
     contains: ID
     containsi: ID

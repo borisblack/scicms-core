@@ -24,4 +24,6 @@ object TypeNames {
     val TIME_FILTER_INPUT = TypeName("TimeFilterInput")
     val DATETIME_FILTER_INPUT = TypeName("DateTimeFilterInput")
     val JSON_FILTER_INPUT = TypeName("JSONFilterInput")
+
+    val DELETING_STRATEGY = TypeName("DeletingStrategy")
 }

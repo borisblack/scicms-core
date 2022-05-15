@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
@@ -29,7 +30,7 @@ interface DataEngine {
 
     fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo>
 
-    fun download(media: Media): ByteArrayResource
+    fun downloadById(id: String): ByteArrayResource
 
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
@@ -65,6 +66,10 @@ interface DataEngine {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response
 
     fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response
+
+    fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response
+
+    fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection
 
     fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response
 

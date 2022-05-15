@@ -24,15 +24,12 @@ class AuditManagerImpl(
         }
     }
 
-    override fun assignAuditAttributes(prevItemRec: ItemRec, itemRec: ItemRec) {
-        val now = OffsetDateTime.now()
+    override fun assignUpdateAttributes(itemRec: ItemRec) {
         val username = SecurityContextHolder.getContext().authentication.name
         val currentUser = userService.getByUsername(username)
 
         with(itemRec) {
-            createdAt = prevItemRec.createdAt ?: now
-            createdBy = prevItemRec.createdBy ?: currentUser.id
-            updatedAt = now
+            updatedAt = OffsetDateTime.now()
             updatedBy = currentUser.id
         }
     }

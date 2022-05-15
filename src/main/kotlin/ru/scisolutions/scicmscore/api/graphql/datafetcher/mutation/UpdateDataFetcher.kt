@@ -20,8 +20,8 @@ class UpdateDataFetcher(
         val itemName = capitalizedItemName.decapitalize()
         val selectAttrNames = dfe.selectDataFields()
         val input = UpdateInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null"),
-            data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null"),
+            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+            data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null."),
         )
 
         val result = dataEngine.update(itemName, input, selectAttrNames)

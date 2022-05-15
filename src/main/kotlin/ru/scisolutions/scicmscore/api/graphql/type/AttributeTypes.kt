@@ -45,7 +45,7 @@ class AttributeTypes(
                 else
                     TypeName("${capitalizedTargetItemName}RelationResponse").nonNull(attribute.required)
             }
-            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
+            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type}).")
         }
 
     fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
@@ -73,12 +73,12 @@ class AttributeTypes(
                     TypeName("${capitalizedTargetItemName}FiltersInput")
                 } else {
                     if (attribute.isCollection())
-                        throw IllegalArgumentException("Filtering collections from different datasource is not supported")
+                        throw IllegalArgumentException("Filtering collections from different datasource is not supported.")
 
                     TypeNames.ID_FILTER_INPUT
                 }
             }
-            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
+            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type}).")
         }
 
     fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
@@ -103,6 +103,6 @@ class AttributeTypes(
 
                 if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
             }
-            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type})")
+            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type}).")
         }
 }

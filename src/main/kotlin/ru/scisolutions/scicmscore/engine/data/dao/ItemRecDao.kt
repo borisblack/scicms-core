@@ -16,6 +16,8 @@ interface ItemRecDao {
 
     fun findAll(item: Item, sql: String): List<ItemRec>
 
+    fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+
     fun insert(item: Item, itemRec: ItemRec)
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec)
@@ -23,6 +25,10 @@ interface ItemRecDao {
     fun updateById(item: Item, id: String, itemRec: ItemRec)
 
     fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec)
+
+    fun deleteById(item: Item, id: String)
+
+    fun deleteByAttribute(item: Item, attrName: String, attrValue: Any)
 
     fun lockById(item: Item, id: String): Boolean
 

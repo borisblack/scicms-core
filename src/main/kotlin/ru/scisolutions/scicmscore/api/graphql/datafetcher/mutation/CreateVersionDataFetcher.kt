@@ -20,10 +20,11 @@ class CreateVersionDataFetcher(
         val itemName = capitalizedItemName.decapitalize()
         val selectAttrNames = dfe.selectDataFields()
         val input = CreateVersionInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null"),
+            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
             data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("Data argument is null"),
             majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
-            locale = dfe.arguments[LOCALE_ARG_NAME] as String?
+            locale = dfe.arguments[LOCALE_ARG_NAME] as String?,
+            copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?
         )
 
         val result = dataEngine.createVersion(itemName, input, selectAttrNames)
@@ -38,5 +39,6 @@ class CreateVersionDataFetcher(
         private const val DATA_ARG_NAME = "data"
         private const val MAJOR_REV_ARG_NAME = "majorRev"
         private const val LOCALE_ARG_NAME = "locale"
+        private const val COPY_COLLECTION_RELATIONS_ARG_NAME = "copyCollectionRelations"
     }
 }

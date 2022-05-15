@@ -17,7 +17,7 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("data")
+                    .name(DATA_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeName("${capitalizedItemName}Input")))
                     .build()
             )
@@ -33,7 +33,7 @@ class MutationItemFields {
 
     fun createVersion(item: Item): FieldDefinition {
         if (!item.versioned)
-            throw IllegalStateException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied")
+            throw IllegalStateException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied.")
 
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
@@ -41,14 +41,20 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("data")
+                    .name(DATA_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeName("${capitalizedItemName}Input")))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("copyCollectionRelations")
+                    .type(TypeNames.BOOLEAN)
                     .build()
             )
 
@@ -63,7 +69,7 @@ class MutationItemFields {
 
     fun createLocalization(item: Item): FieldDefinition {
         if (!item.localized)
-            throw IllegalStateException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied")
+            throw IllegalStateException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied.")
 
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
@@ -71,14 +77,20 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("data")
+                    .name(DATA_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeName("${capitalizedItemName}Input")))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("copyCollectionRelations")
+                    .type(TypeNames.BOOLEAN)
                     .build()
             )
 
@@ -89,7 +101,7 @@ class MutationItemFields {
 
     fun update(item: Item): FieldDefinition {
         if (item.versioned)
-            throw IllegalStateException("Item [${item.name}] is versioned. Update mutation cannot be applied")
+            throw IllegalStateException("Item [${item.name}] is versioned. Update mutation cannot be applied.")
 
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
@@ -97,13 +109,13 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("data")
+                    .name(DATA_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeName("${capitalizedItemName}Input")))
                     .build()
             )
@@ -121,8 +133,14 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("deletingStrategy")
+                    .type(NonNullType(TypeNames.DELETING_STRATEGY))
                     .build()
             )
 
@@ -137,7 +155,7 @@ class MutationItemFields {
 
     fun purge(item: Item): FieldDefinition {
         if (!item.versioned)
-            throw IllegalStateException("Item [${item.name}] is not versioned. Purge mutation cannot be applied")
+            throw IllegalStateException("Item [${item.name}] is not versioned. Purge mutation cannot be applied.")
 
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
@@ -145,8 +163,14 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}ResponseCollection"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
+                    .build()
+            )
+            .inputValueDefinition(
+                InputValueDefinition.newInputValueDefinition()
+                    .name("deletingStrategy")
+                    .type(NonNullType(TypeNames.DELETING_STRATEGY))
                     .build()
             )
 
@@ -158,7 +182,7 @@ class MutationItemFields {
 
     fun lock(item: Item): FieldDefinition {
         if (item.notLockable)
-            throw IllegalArgumentException("Item [${item.name}] is not lockable. Lock mutation cannot be applied")
+            throw IllegalArgumentException("Item [${item.name}] is not lockable. Lock mutation cannot be applied.")
 
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
@@ -166,7 +190,7 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
                     .build()
             )
@@ -179,7 +203,7 @@ class MutationItemFields {
 
     fun unlock(item: Item): FieldDefinition {
         if (item.notLockable)
-            throw IllegalArgumentException("Item [${item.name}] is not lockable. Unlock mutation cannot be applied")
+            throw IllegalArgumentException("Item [${item.name}] is not lockable. Unlock mutation cannot be applied.")
 
         val capitalizedItemName = item.name.capitalize()
         val builder = FieldDefinition.newFieldDefinition()
@@ -187,7 +211,7 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
                     .build()
             )
@@ -205,7 +229,7 @@ class MutationItemFields {
             .type(TypeName("${capitalizedItemName}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
-                    .name("id")
+                    .name(ID_INPUT_VALUE_NAME)
                     .type(NonNullType(TypeNames.ID))
                     .build()
             )
@@ -232,7 +256,7 @@ class MutationItemFields {
                     .type(TypeName("${capitalizedItemName}CustomMethodResponse"))
                     .inputValueDefinition(
                         InputValueDefinition.newInputValueDefinition()
-                            .name("data")
+                            .name(DATA_INPUT_VALUE_NAME)
                             .type(TypeNames.OBJECT)
                             .build()
                     )
@@ -241,5 +265,10 @@ class MutationItemFields {
         }
 
         return fields.toList()
+    }
+
+    companion object {
+        private const val ID_INPUT_VALUE_NAME = "id"
+        private const val DATA_INPUT_VALUE_NAME = "data"
     }
 }

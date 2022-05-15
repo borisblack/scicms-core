@@ -21,7 +21,8 @@ class FindOneHandlerImpl(
         val itemRec =
             if (isOnlyId(attrNames))
                 ItemRec().apply { this.id = id }
-            else aclItemRecDao.findByIdForRead(item, id, attrNames)
+            else
+                aclItemRecDao.findByIdForRead(item, id, attrNames)
 
         return Response(itemRec)
     }
@@ -46,7 +47,8 @@ class FindOneHandlerImpl(
         val itemRec =
             if (isOnlyId(attrNames))
                 ItemRec().apply { this.id = id }
-            else aclItemRecDao.findByIdForRead(item, id, attrNames)
+            else
+                aclItemRecDao.findByIdForRead(item, id, attrNames)
 
         return RelationResponse(itemRec)
     }

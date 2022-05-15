@@ -40,7 +40,7 @@ class FilterConditionBuilder(
         itemFiltersInput.attributeFilters.forEach { (attrName, attrFilter) ->
             val attribute = item.spec.getAttributeOrThrow(attrName)
             if (attrFilter is ItemFiltersInput) {
-                requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field" }
+                requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field." }
 
                 val targetItem = itemService.getByName(attribute.target)
                 val targetTable = DbTable(schema, targetItem.tableName)

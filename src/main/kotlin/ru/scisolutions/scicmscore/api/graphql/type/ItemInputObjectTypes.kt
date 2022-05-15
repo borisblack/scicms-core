@@ -81,10 +81,10 @@ class ItemInputObjectTypes(
 
     private fun enumType(item: Item, attrName: String, attribute: Attribute): EnumTypeDefinition {
         if (attribute.type != Type.enum)
-            throw IllegalArgumentException("Attribute [$attrName] is not enumeration")
+            throw IllegalArgumentException("Attribute [$attrName] is not enumeration.")
 
         if (attribute.enumSet.isNullOrEmpty())
-            throw IllegalArgumentException("Attribute [$attrName] enumeration set is null or empty")
+            throw IllegalArgumentException("Attribute [$attrName] enumeration set is null or empty.")
 
         return EnumTypeDefinition.newEnumTypeDefinition()
             .name("${item.name.capitalize()}${attrName.capitalize()}Enum")

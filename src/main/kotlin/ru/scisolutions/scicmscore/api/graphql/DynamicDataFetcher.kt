@@ -15,10 +15,10 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.PromoteDataFe
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.PurgeDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.UnlockDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.mutation.UpdateDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllRelatedDataFetcher
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneRelatedDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllRelatedDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneDataFetcher
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneRelatedDataFetcher
 import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.DataEngine
@@ -37,8 +37,11 @@ class DynamicDataFetcher(
     private val createVersionDataFetcher: CreateVersionDataFetcher,
     private val createLocalizationDataFetcher: CreateLocalizationDataFetcher,
     private val updateDataFetcher: UpdateDataFetcher,
+    private val deleteDataFetcher: DeleteDataFetcher,
+    private val purgeDataFetcher: PurgeDataFetcher,
     private val lockDataFetcher: LockDataFetcher,
     private val unlockDataFetcher: UnlockDataFetcher,
+    private val promoteDataFetcher: PromoteDataFetcher,
     private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
@@ -79,11 +82,11 @@ class DynamicDataFetcher(
                 }
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "delete${capitalizedItemName}"), DeleteDataFetcher())
+                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "delete${capitalizedItemName}"), deleteDataFetcher)
 
                 if (it.versioned) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge${capitalizedItemName}"), PurgeDataFetcher())
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge${capitalizedItemName}"), purgeDataFetcher)
                 }
 
                 if (!it.notLockable) {
@@ -95,7 +98,7 @@ class DynamicDataFetcher(
                 }
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), PromoteDataFetcher())
+                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), promoteDataFetcher)
 
                 // Custom methods
                 if (it.implementation != null) {

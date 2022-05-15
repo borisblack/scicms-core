@@ -18,9 +18,14 @@ class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaServ
     override fun findById(id: String): Media? = mediaRepository.findById(id).orElse(null)
 
     @Transactional(readOnly = true)
-    override fun findByIdForRead(id: String): Media? {
+    override fun findByIdForRead(id: String): Media? = findByIdFor(id, Mask.READ)
+
+    @Transactional(readOnly = true)
+    override fun findByIdForDelete(id: String): Media? = findByIdFor(id, Mask.DELETE)
+
+    private fun findByIdFor(id: String, accessMask: Mask): Media? {
         val authentication = SecurityContextHolder.getContext().authentication
-        return mediaRepository.findByIdWithACL(id, Mask.READ.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+        return mediaRepository.findByIdWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 
     @Transactional(readOnly = true)

@@ -4,12 +4,13 @@ import com.google.common.hash.Hashing
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
-import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.data.mapper.MediaMapper
+import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.service.MediaService
 import java.io.File
@@ -73,14 +74,26 @@ class LocalMediaHandler(
     override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> =
         files.map { upload(it) }
 
-    override fun download(media: Media): ByteArrayResource {
+    override fun downloadById(id: String): ByteArrayResource {
+        if (!mediaService.existsById(id))
+            throw IllegalArgumentException("Media with ID [$id] not found")
+
+        val media = mediaService.findByIdForRead(id)
+            ?: throw AccessDeniedException("You are not allowed to download media with ID [$id]")
+
         val fullPath = buildFullPath(media.path)
         val data = Files.readAllBytes(Paths.get(fullPath))
 
         return ByteArrayResource(data)
     }
 
-    override fun delete(media: Media) {
+    override fun deleteById(id: String) {
+        if (!mediaService.existsById(id))
+            throw IllegalArgumentException("Media with ID [$id] not found")
+
+        val media = mediaService.findByIdForDelete(id)
+            ?: throw AccessDeniedException("You are not allowed to delete media with ID [$id]")
+
         val fullPath = buildFullPath(media.path)
         Files.delete(Paths.get(fullPath))
     }

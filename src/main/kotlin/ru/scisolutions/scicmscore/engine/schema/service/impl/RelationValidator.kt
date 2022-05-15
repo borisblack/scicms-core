@@ -23,15 +23,15 @@ class RelationValidator(
         if (attribute.type != Type.relation)
             throw IllegalArgumentException("Unsupported attribute type")
 
-        requireNotNull(attribute.relType) { "The [$attrName] attribute has a relation type, but relType is null" }
-        requireNotNull(attribute.target) { "The [$attrName] attribute has a relation type, but target is null" }
+        requireNotNull(attribute.relType) { "The [$attrName] attribute has a relation type, but relType is null." }
+        requireNotNull(attribute.target) { "The [$attrName] attribute has a relation type, but target is null." }
 
         if (attribute.inversedBy != null && attribute.mappedBy != null)
-            throw IllegalStateException("The [$attrName] attribute has both inversedBy and mappedBy fields, which is an invalid relation state")
+            throw IllegalStateException("The [$attrName] attribute has both inversedBy and mappedBy fields, which is an invalid relation state.")
 
         if (attribute.relType == RelType.oneToMany) {
             requireNotNull(attribute.mappedBy) {
-                "The [$attrName] attribute does not have a mappedBy field, which is required for the oneToMany relationship"
+                "The [$attrName] attribute does not have a mappedBy field, which is required for the oneToMany relationship."
             }
         }
 

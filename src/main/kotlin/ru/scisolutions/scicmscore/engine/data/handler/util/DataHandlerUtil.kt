@@ -22,9 +22,4 @@ object DataHandlerUtil {
                     throw IllegalArgumentException("Attribute [$attrName] is required")
             }
     }
-
-    fun merge(source: Map<String, Any?>, target: Map<String, Any?>) =
-        target.mapValues { (key, value) ->
-            if (key in source) source[key] else value
-        }
 }
