@@ -61,9 +61,15 @@ class DeleteRelationHelper(
                 when (strategy) {
                     DeletingStrategy.SET_NULL -> {
                         if (relation.isOwning) {
+                            if (relation.getInversedAttribute().required)
+                                throw IllegalStateException("The [${relation.inversedAttrName}] is required in item [${relation.inversedItem.name}], so it cannot be cleared.")
+
                             val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to null))
                             updateById(relation.inversedItem, targetId, inversedItemRec)
                         } else {
+                            if (relation.getOwningAttribute().required)
+                                throw IllegalStateException("The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.")
+
                             val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
                             updateById(relation.owningItem, targetId, owningItemRec)
                         }
@@ -120,6 +126,9 @@ class DeleteRelationHelper(
 
                 when (strategy) {
                     DeletingStrategy.SET_NULL -> {
+                        if (relation.getOwningAttribute().required)
+                            throw IllegalStateException("The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.")
+
                         val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
                         if (updateByAttribute(relation.owningItem, relation.owningAttrName, itemRecId, owningItemRec) != 1)
                             logger.info("Update operation disabled for item [${relation.owningItem.name}] with ID [$itemRecId].")

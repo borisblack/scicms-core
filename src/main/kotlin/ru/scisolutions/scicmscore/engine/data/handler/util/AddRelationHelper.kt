@@ -13,10 +13,12 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversed
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 
 @Component
 class AddRelationHelper(
+    private val itemService: ItemService,
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
@@ -63,17 +65,22 @@ class AddRelationHelper(
     }
 
     private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
-        return if (item.versioned) {
+        if (item.versioned) {
+            if (itemService.findByNameForCreate(item.name) == null) {
+                logger.info("Create operation disabled for item [${item.name}].")
+                return 0
+            }
+
             val prevItemRec = itemRecDao.findByIdOrThrow(item, id)
             val mergedItemRec = ItemRec(Maps.merge(itemRec, prevItemRec).toMutableMap())
-            itemRecDao.insertWithDefaults(item, mergedItemRec)
+            return itemRecDao.insertWithDefaults(item, mergedItemRec)
         } else {
             auditManager.assignUpdateAttributes(itemRec)
             val rows = aclItemRecDao.updateById(item, id, itemRec)
             if (rows != 1)
                 logger.info("Update operation disabled for item [${item.name}] with ID [$id].")
 
-            rows
+            return rows
         }
     }
 
