@@ -12,13 +12,13 @@ import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
-import ru.scisolutions.scicmscore.persistence.entity.Media
 
 /**
  * General facade for all operations with data
@@ -74,6 +74,8 @@ interface DataEngine {
     fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
     fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response
+
+    fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response
 
     fun getCustomMethods(itemName: String): Set<String>
 

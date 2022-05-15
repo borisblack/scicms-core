@@ -12,6 +12,7 @@ import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.data.handler.LockHandler
 import ru.scisolutions.scicmscore.engine.data.handler.MediaHandler
+import ru.scisolutions.scicmscore.engine.data.handler.PromoteHandler
 import ru.scisolutions.scicmscore.engine.data.handler.PurgeHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UpdateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
@@ -25,6 +26,7 @@ import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
+import ru.scisolutions.scicmscore.engine.data.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
@@ -47,6 +49,7 @@ class DataEngineImpl(
     private val deleteHandler: DeleteHandler,
     private val purgeHandler: PurgeHandler,
     private val lockHandler: LockHandler,
+    private val promoteHandler: PromoteHandler,
     private val customMethodHandler: CustomMethodHandler
 ) : DataEngine {
     override fun me(): UserInfo? = userHandler.me()
@@ -136,6 +139,9 @@ class DataEngineImpl(
 
     override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response =
         lockHandler.unlock(itemName, id, selectAttrNames)
+
+    override fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response =
+        promoteHandler.promote(itemName, input, selectAttrNames)
 
     override fun getCustomMethods(itemName: String): Set<String> = customMethodHandler.getCustomMethods(itemName)
 

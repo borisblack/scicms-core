@@ -18,7 +18,7 @@ class UnlockDataFetcher(
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
         val itemName = capitalizedItemName.decapitalize()
         val selectAttrNames = dfe.selectDataFields()
-        val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null")
+        val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null.")
         val result = dataEngine.unlock(itemName, id, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()

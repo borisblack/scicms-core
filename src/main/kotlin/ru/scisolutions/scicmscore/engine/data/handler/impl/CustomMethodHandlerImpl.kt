@@ -1,5 +1,7 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
@@ -16,14 +18,14 @@ class CustomMethodHandlerImpl(
     private val itemService: ItemService,
     private val applicationContext: ApplicationContext
 ) : CustomMethodHandler {
-    private val classes = mutableMapOf<String, Class<*>>()
-    private val instances = mutableMapOf<Class<*>, Any>()
+    private val classCache: Cache<String, Class<*>> = CacheBuilder.newBuilder().build()
+    private val instanceCache: Cache<Class<*>, Any> = CacheBuilder.newBuilder().build()
 
     override fun getCustomMethods(itemName: String): Set<String> {
         val item = itemService.getByName(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
-            throw IllegalStateException("Item [$itemName] has no implementation")
+            throw IllegalArgumentException("Item [$itemName] has no implementation")
 
         val clazz = getClass(implementation)
 
@@ -47,13 +49,7 @@ class CustomMethodHandlerImpl(
             .toSet()
     }
 
-    private fun getClass(className: String): Class<*> {
-        if (className !in classes) {
-            classes[className] = Class.forName(className)
-        }
-
-        return classes[className] as Class<*>
-    }
+    private fun getClass(className: String): Class<*> = classCache.get(className) { Class.forName(className) }
 
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
         val item = itemService.getByName(itemName)
@@ -75,16 +71,12 @@ class CustomMethodHandlerImpl(
         return customMethod.invoke(instance, customMethodInput) as CustomMethodResponse
     }
 
-    private fun getInstance(clazz: Class<*>): Any {
-        if (clazz !in instances) {
-            instances[clazz] = try {
-                applicationContext.getBean(clazz)
-            } catch (e: BeansException) {
-                clazz.getConstructor().newInstance()
-            }
+    private fun getInstance(clazz: Class<*>): Any = instanceCache.get(clazz) {
+        try {
+            applicationContext.getBean(clazz)
+        } catch (e: BeansException) {
+            clazz.getConstructor().newInstance()
         }
-
-        return instances[clazz] as Any
     }
 
     companion object {

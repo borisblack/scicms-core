@@ -29,6 +29,9 @@ class UpdateHandlerImpl(
     private val aclItemRecDao: ACLItemRecDao
 ) : UpdateHandler {
     override fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response {
+        if (itemName in disabledItemNames)
+            throw IllegalArgumentException("Item [$itemName] cannot be updated.")
+
         val item = itemService.getByName(itemName)
         if (item.versioned)
             throw IllegalArgumentException("Item [$itemName] is versioned and cannot be updated")
@@ -56,7 +59,7 @@ class UpdateHandlerImpl(
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
-        itemRecDao.updateById(item, input.id, itemRec) // insert
+        itemRecDao.updateById(item, input.id, itemRec) // update
 
         // Update relations
         addRelationHelper.processRelations(
@@ -75,8 +78,10 @@ class UpdateHandlerImpl(
     }
 
     companion object {
+        private const val ITEM_ITEM_NAME = "item"
         private const val LIFECYCLE_ATTR_NAME = "lifecycle"
 
+        private val disabledItemNames = setOf(ITEM_ITEM_NAME)
         private val logger = LoggerFactory.getLogger(UpdateHandlerImpl::class.java)
     }
 }

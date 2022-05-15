@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
+import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -35,6 +35,9 @@ class CreateHandlerImpl(
     private val itemRecDao: ItemRecDao,
 ) : CreateHandler {
     override fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response {
+        if (itemName in disabledItemNames)
+            throw IllegalArgumentException("Item [$itemName] cannot be created.")
+
         val item = itemService.getByName(itemName)
         if (itemService.findByNameForCreate(item.name) == null)
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
@@ -74,6 +77,9 @@ class CreateHandlerImpl(
     }
 
     companion object {
+        private const val ITEM_ITEM_NAME = "item"
+
+        private val disabledItemNames = setOf(ITEM_ITEM_NAME)
         private val logger = LoggerFactory.getLogger(CreateHandlerImpl::class.java)
     }
 }
