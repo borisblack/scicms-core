@@ -34,6 +34,12 @@ spec:
       displayName: Description
       description: Description
       length: 250
+    icon:
+      type: string
+      columnName: icon
+      displayName: Icon
+      description: Icon
+      length: 50
     startState:
       type: string
       columnName: start_state

@@ -4,6 +4,6 @@ import java.awt.Point
 
 data class State(
     val displayName: String,
-    val transitions: Set<String> = emptySet(),
+    val transitions: Map<String, Transition> = emptyMap(),
     val point: Point = Point()
 )

@@ -32,7 +32,6 @@ class Item(
     @Column(name = "data_source")
     var dataSource: String,
 
-    @Column(name = "icon")
     var icon: String? = null,
 
     @Column(name = "core", columnDefinition = "TINYINT")

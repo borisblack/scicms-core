@@ -58,7 +58,7 @@
             <column name="display_name" value="Default Lifecycle"/>
             <column name="start_state" value="draft"/>
             <column name="implementation" value="ru.scisolutions.userimpl.lifecycle.DefaultLifecycleImpl"/>
-            <column name="spec" value='{"states": {"draft": {"displayName": "Draft", "transitions": ["published"]}, "published": {"displayName": "Published"}}}'/>
+            <column name="spec" value='{"states": {"draft": {"displayName": "Draft", "transitions": {"published": {}}}, "published": {"displayName": "Published"}}}'/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>

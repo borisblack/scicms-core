@@ -380,6 +380,7 @@
             </column>
             <column name="display_name" type="varchar(50)"/>
             <column name="description" type="varchar(250)"/>
+            <column name="icon" type="varchar(50)"/>
             <column name="start_state" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

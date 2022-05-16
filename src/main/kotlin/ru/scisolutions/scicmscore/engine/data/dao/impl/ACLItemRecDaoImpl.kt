@@ -79,8 +79,6 @@ class ACLItemRecDaoImpl(
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
-
         private val logger = LoggerFactory.getLogger(ACLItemRecDaoImpl::class.java)
         private val daoQueryBuilder = DaoQueryBuilder()
     }

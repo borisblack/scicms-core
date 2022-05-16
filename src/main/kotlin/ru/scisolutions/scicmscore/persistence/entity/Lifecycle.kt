@@ -17,6 +17,7 @@ class Lifecycle(
     var displayName: String? = name,
 
     var description: String? = null,
+    var icon: String? = null,
 
     @Column(name = "start_state", nullable = false)
     var startState: String,
