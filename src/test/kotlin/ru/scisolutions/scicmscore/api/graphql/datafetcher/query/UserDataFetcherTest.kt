@@ -10,10 +10,16 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import ru.scisolutions.scicmscore.api.graphql.CustomScalarsRegistration
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 
-@SpringBootTest(classes = [DgsAutoConfiguration::class, DgsExtendedScalarsAutoConfiguration::class, UserDataFetcher::class])
+@SpringBootTest(classes = [
+    DgsAutoConfiguration::class,
+    DgsExtendedScalarsAutoConfiguration::class,
+    CustomScalarsRegistration::class,
+    UserDataFetcher::class
+])
 class UserDataFetcherTest {
     @Autowired
     private lateinit var dgsQueryExecutor: DgsQueryExecutor

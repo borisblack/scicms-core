@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
 import org.slf4j.LoggerFactory
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
@@ -36,11 +35,8 @@ class UpdateHandlerImpl(
         if (item.versioned)
             throw IllegalArgumentException("Item [$itemName] is versioned and cannot be updated")
 
-        if (!itemRecDao.existsById(item, input.id))
-            throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found")
-
         val prevItemRec = aclItemRecDao.findByIdForWrite(item, input.id)
-            ?: throw AccessDeniedException("You are not allowed to update item [$itemName] with ID [${input.id}]")
+            ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found")
 
         if (LIFECYCLE_ATTR_NAME in input.data)
             throw IllegalArgumentException("Lifecycle can be changed only by promote action")

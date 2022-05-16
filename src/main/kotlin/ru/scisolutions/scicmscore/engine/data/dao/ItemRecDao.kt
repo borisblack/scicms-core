@@ -30,11 +30,19 @@ interface ItemRecDao {
 
     fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int
 
+    fun deleteVersionedById(item: Item, id: String): Int
+
+    fun deleteVersionedByAttribute(item: Item, attrName: String, attrValue: Any): Int
+
     fun lockById(item: Item, id: String): Boolean
 
     fun lockByIdOrThrow(item: Item, id: String)
 
+    fun lockByAttribute(item: Item, attrName: String, attrValue: Any): Int
+
     fun unlockById(item: Item, id: String): Boolean
 
     fun unlockByIdOrThrow(item: Item, id: String)
+
+    fun unlockByAttribute(item: Item, attrName: String, attrValue: Any): Int
 }

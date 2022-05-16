@@ -31,9 +31,6 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_users_locale_fk" references="core_locales(name)"/>
@@ -93,9 +90,6 @@
             </column>
             <column name="minor_rev" type="varchar(50)"/>
             <column name="is_current" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
             <column name="permission_id" type="varchar(36)"/>
@@ -158,9 +152,6 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_groups_locale_fk" references="core_locales(name)"/>
@@ -220,9 +211,6 @@
             </column>
             <column name="minor_rev" type="varchar(50)"/>
             <column name="is_current" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
             <column name="permission_id" type="varchar(36)"/>
@@ -288,9 +276,6 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_group_members_locale_fk" references="core_locales(name)"/>
@@ -354,9 +339,6 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_identities_locale_fk" references="core_locales(name)"/>
@@ -415,9 +397,6 @@
             </column>
             <column name="minor_rev" type="varchar(50)"/>
             <column name="is_current" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
             <column name="permission_id" type="varchar(36)"/>
@@ -490,9 +469,6 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_access_locale_fk" references="core_locales(name)"/>
@@ -556,9 +532,6 @@
             </column>
             <column name="minor_rev" type="varchar(50)"/>
             <column name="is_current" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_version" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
             <column name="permission_id" type="varchar(36)"/>

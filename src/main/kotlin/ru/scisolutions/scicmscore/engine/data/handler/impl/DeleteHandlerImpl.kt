@@ -50,9 +50,8 @@ class DeleteHandlerImpl(
 
         deleteRelationHelper.processRelations(item, itemRec, input.deletingStrategy) // process relations
 
-        updateCurrent(item, itemRec)  // if current version
+        deleteById(item, input.id) // delete
 
-        itemRecDao.deleteById(item, input.id) // delete
         logger.info("Item [$itemName] with ID [${input.id}] deleted.")
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
@@ -61,32 +60,17 @@ class DeleteHandlerImpl(
         return Response(ItemRec(selectData))
     }
 
-    private fun updateCurrent(item: Item, itemRec: ItemRec) {
-        if (!item.versioned || itemRec.current != true)
-            return
-
-        logger.debug("Versioned item [${item.name}] with ID ${itemRec.id} is current. Updating group before deleting")
-        val itemRecsWithinGroup = itemRecDao.findAllByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String)
-        val lastItemRec = itemRecsWithinGroup
-            .filter { it.id != itemRec.id && it.locale == itemRec.locale }
-            .maxByOrNull { it.generation as Int }
-
-        if (lastItemRec != null) {
-            logger.debug("Setting current flag for the last versioned item [${item.name}] with ID ${lastItemRec.id}")
-            lastItemRec.current = true
-            lastItemRec.lastVersion = true
-            itemRecDao.updateById(item, lastItemRec.id as String, lastItemRec)
-        } else {
-            logger.debug("There are no another items [${item.name}] within group.")
-        }
-    }
+    private fun deleteById(item: Item, id: String): Int =
+        if (item.versioned)
+            itemRecDao.deleteVersionedById(item, id)
+        else
+            itemRecDao.deleteById(item, id)
 
     companion object {
         private const val ITEM_ITEM_NAME = "item"
         private const val REVISION_POLICY_ITEM_NAME = "revisionPolicy"
         private const val LIFECYCLE_ITEM_NAME = "lifecycle"
         private const val PERMISSION_ITEM_NAME = "permission"
-        private const val CONFIG_ID_ATTR_NAME = "configId"
 
         private val disabledItemNames = setOf(ITEM_ITEM_NAME)
         private val logger = LoggerFactory.getLogger(DeleteHandlerImpl::class.java)

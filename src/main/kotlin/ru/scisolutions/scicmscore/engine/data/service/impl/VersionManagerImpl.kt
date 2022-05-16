@@ -24,7 +24,6 @@ class VersionManagerImpl(private val revisionPolicyService: RevisionPolicyServic
         with(itemRec) {
             generation = 1
             current = true
-            lastVersion = true
         }
     }
 
@@ -47,7 +46,6 @@ class VersionManagerImpl(private val revisionPolicyService: RevisionPolicyServic
         with(itemRec) {
             generation = requireNotNull(prevItemRec.generation) + 1
             current = true
-            lastVersion = true
         }
     }
 }

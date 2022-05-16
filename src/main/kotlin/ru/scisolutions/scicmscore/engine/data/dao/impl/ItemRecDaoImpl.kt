@@ -90,18 +90,97 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
+    override fun deleteVersionedById(item: Item, id: String): Int {
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [${item.name}] is not versioned")
+
+        val itemRec = findByIdOrThrow(item, id)
+
+        if (!item.notLockable)
+            lockByIdOrThrow(item, id)
+
+        val rows = deleteById(item, itemRec.id as String)
+        if (itemRec.current == true) {
+            logger.debug("Versioned item [${item.name}] with ID [${itemRec.id}] is current. Updating group before deleting")
+            assignNewCurrent(item, itemRec)
+        }
+
+        if (!item.notLockable)
+            unlockById(item, id)
+
+        return rows
+    }
+
+    override fun deleteVersionedByAttribute(item: Item, attrName: String, attrValue: Any): Int {
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [${item.name}] is not versioned")
+
+        val itemsToDelete = findAllByAttribute(item, attrName, attrValue)
+
+        // Lock
+        if (!item.notLockable) {
+            val lockedRows = lockByAttribute(item, attrName, attrValue)
+            if (lockedRows != itemsToDelete.size) {
+                unlockByAttribute(item, attrName, attrValue)
+                throw IllegalStateException("Failed to lock deleting items")
+            }
+        }
+
+        itemsToDelete.forEach {
+            deleteById(item, it.id as String)
+            if (it.current == true) {
+                logger.debug("Versioned item [${item.name}] with ID [${it.id}] is current. Updating group before deleting")
+                assignNewCurrent(item, it)
+            }
+        }
+
+        // Unlock
+        if (!item.notLockable)
+            unlockByAttribute(item, attrName, attrValue)
+
+        return itemsToDelete.size
+    }
+
+    private fun assignNewCurrent(item: Item, deletedItemRec: ItemRec) {
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [${item.name}] is not versioned")
+
+        if (deletedItemRec.current != true)
+            throw IllegalArgumentException("Item [${item.name}] with ID [${deletedItemRec.id}] is not current")
+
+        val group = findAllByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+        if (!item.notLockable) {
+            val lockedRows = lockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+            if (lockedRows != group.size) {
+                unlockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+                throw IllegalStateException("Failed to lock items group")
+            }
+        }
+        val lastItemRec = group
+            .filter { it.id != deletedItemRec.id && it.locale == deletedItemRec.locale }
+            .maxByOrNull { it.generation as Int }
+
+        if (lastItemRec != null) {
+            logger.debug("Setting current flag for the last versioned item [${item.name}] with ID ${lastItemRec.id}")
+            lastItemRec.current = true
+            auditManager.assignUpdateAttributes(lastItemRec)
+            updateById(item, lastItemRec.id as String, lastItemRec)
+        } else {
+            logger.debug("There are no another items [${item.name}] within group.")
+        }
+
+        if (!item.notLockable)
+            unlockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+    }
+
+    override fun lockByIdOrThrow(item: Item, id: String) {
+        if (!lockById(item, id))
+            throw IllegalStateException(LOCK_FAIL_MSG.format(item.name, id))
+    }
+
     override fun lockById(item: Item, id: String): Boolean {
-        if (item.notLockable)
-            throw IllegalArgumentException("Item [${item.name}] is not lockable")
-
-        val user = userService.getCurrentUser()
-        val query = daoQueryBuilder.buildLockByIdQuery(item, id, user.id)
-        val sql = query.toString()
-
-        logger.debug("Running SQL: {}", sql)
-        val result = jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
-
-        return if (result == 1) {
+        val rows = lockByAttribute(item, ID_ATTR_NAME, id)
+        return if (rows == 1) {
             logger.info("Item [${item.name}] with ID [$id] successfully locked")
             true
         } else {
@@ -110,23 +189,29 @@ class ItemRecDaoImpl(
         }
     }
 
-    override fun lockByIdOrThrow(item: Item, id: String) {
-        if (!lockById(item, id))
-            throw IllegalStateException(LOCK_FAIL_MSG.format(item.name, id))
+    override fun lockByAttribute(item: Item, attrName: String, attrValue: Any): Int {
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [${item.name}] is not lockable")
+
+        val user = userService.getCurrentUser()
+        val query = daoQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id)
+        val sql = query.toString()
+
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+    }
+
+    override fun unlockByIdOrThrow(item: Item, id: String) {
+        if (!unlockById(item, id))
+            throw IllegalStateException(UNLOCK_FAIL_MSG.format(item.name, id))
     }
 
     override fun unlockById(item: Item, id: String): Boolean {
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
-        val user = userService.getCurrentUser()
-        val query = daoQueryBuilder.buildUnlockByIdQuery(item, id, user.id)
-        val sql = query.toString()
-
-        logger.debug("Running SQL: {}", sql)
-        val result = jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
-
-        return if (result == 1) {
+        val rows = unlockByAttribute(item, ID_ATTR_NAME, id)
+        return if (rows == 1) {
             logger.info("Item [${item.name}] with ID [$id] successfully unlocked")
             true
         } else {
@@ -135,13 +220,21 @@ class ItemRecDaoImpl(
         }
     }
 
-    override fun unlockByIdOrThrow(item: Item, id: String) {
-        if (!unlockById(item, id))
-            throw IllegalStateException(UNLOCK_FAIL_MSG.format(item.name, id))
+    override fun unlockByAttribute(item: Item, attrName: String, attrValue: Any): Int {
+        if (item.notLockable)
+            throw IllegalArgumentException("Item [${item.name}] is not lockable")
+
+        val user = userService.getCurrentUser()
+        val query = daoQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id)
+        val sql = query.toString()
+
+        logger.debug("Running SQL: {}", sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
     companion object {
         private const val ID_ATTR_NAME = "id"
+        private const val CONFIG_ID_ATTR_NAME = "configId"
         private const val LOCK_FAIL_MSG = "Cannot lock item %s with ID [%s]. It was locked by another user"
         private const val UNLOCK_FAIL_MSG = "Cannot unlock item %s with ID [%s]"
 

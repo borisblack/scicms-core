@@ -19,9 +19,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 
 class DaoQueryBuilder {
     fun buildFindByIdQuery(item: Item, id: String, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
+        val table = createTable(item)
         val idCol = DbColumn(table, ID_COL_NAME, null, null)
         val query = SelectQuery()
 
@@ -47,11 +45,15 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
+    private fun createTable(item: Item): DbTable {
+        val spec = DbSpec()
+        val schema = spec.addDefaultSchema()
+        return DbTable(schema, item.tableName)
+    }
+
     fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, permissionIds: Set<String>? = null): SelectQuery {
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
+        val table = createTable(item)
         val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val query = SelectQuery()
             .addAllColumns()
@@ -68,9 +70,7 @@ class DaoQueryBuilder {
         if (ids.isEmpty())
             throw IllegalArgumentException("ID set is empty")
 
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
+        val table = createTable(item)
         val idCol = DbColumn(table, ID_COL_NAME, null, null)
         val query = SelectQuery()
             .addAllColumns()
@@ -101,9 +101,7 @@ class DaoQueryBuilder {
     }
 
     fun buildInsertQuery(item: Item, itemRec: ItemRec): InsertQuery {
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
+        val table = createTable(item)
         val query = InsertQuery(table)
         itemRec.forEach { (attrName, value) ->
             val attribute = item.spec.getAttributeOrThrow(attrName)
@@ -116,9 +114,7 @@ class DaoQueryBuilder {
 
     fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec, permissionIds: Set<String>? = null): UpdateQuery {
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
+        val table = createTable(item)
         val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val query = UpdateQuery(table)
             .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
@@ -138,9 +134,7 @@ class DaoQueryBuilder {
 
     fun buildDeleteByAttributeQuery(item: Item, attrName: String, attrValue: Any, permissionIds: Set<String>? = null): DeleteQuery {
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
+        val table = createTable(item)
         val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val query = DeleteQuery(table)
             .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
@@ -152,29 +146,27 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
-    fun buildLockByIdQuery(item: Item, id: String, userId: String): UpdateQuery {
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
-        val idCol = DbColumn(table, ID_COL_NAME, null, null)
+    fun buildLockByAttributeQuery(item: Item, attrName: String, attrValue: Any, userId: String): UpdateQuery {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val table = createTable(item)
+        val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val lockedByIddCol = DbColumn(table, LOCKED_BY_ID_COL_NAME, null, null)
         val query = UpdateQuery(table)
             .addSetClause(lockedByIddCol, userId)
-            .addCondition(BinaryCondition.equalTo(idCol, id))
+            .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
             .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
 
         return query.validate()
     }
 
-    fun buildUnlockByIdQuery(item: Item, id: String, userId: String): UpdateQuery {
-        val spec = DbSpec()
-        val schema: DbSchema = spec.addDefaultSchema()
-        val table = DbTable(schema, item.tableName)
-        val idCol = DbColumn(table, ID_COL_NAME, null, null)
+    fun buildUnlockByAttributeQuery(item: Item, attrName: String, attrValue: Any, userId: String): UpdateQuery {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val table = createTable(item)
+        val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val lockedByIddCol = DbColumn(table, LOCKED_BY_ID_COL_NAME, null, null)
         val query = UpdateQuery(table)
             .addSetClause(lockedByIddCol, null)
-            .addCondition(BinaryCondition.equalTo(idCol, id))
+            .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
             .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
 
         return query.validate()

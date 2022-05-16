@@ -22,11 +22,8 @@ class LockHandlerImpl(
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 
-        if (!itemRecDao.existsById(item, id))
+        if (!aclItemRecDao.existsByIdForWrite(item, id))
             throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
-
-        if (!aclItemRecDao.existsByIdForWrite(item, id)) // not locked
-            throw AccessDeniedException("You are not allowed to lock item [$itemName] with ID [$id]")
 
         itemRecDao.lockByIdOrThrow(item, id)
 

@@ -67,7 +67,7 @@ class AddRelationHelper(
     private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
         if (item.versioned) {
             if (itemService.findByNameForCreate(item.name) == null) {
-                logger.info("Create operation disabled for item [${item.name}].")
+                logger.warn("Create operation disabled for item [${item.name}].")
                 return 0
             }
 
@@ -75,22 +75,27 @@ class AddRelationHelper(
             val mergedItemRec = ItemRec(Maps.merge(itemRec, prevItemRec).toMutableMap())
             return itemRecDao.insertWithDefaults(item, mergedItemRec)
         } else {
-            auditManager.assignUpdateAttributes(itemRec)
-            val rows = aclItemRecDao.updateById(item, id, itemRec)
-            if (rows != 1)
-                logger.info("Update operation disabled for item [${item.name}] with ID [$id].")
+            if (!aclItemRecDao.existsByIdForWrite(item, id)) {
+                logger.warn("Update operation disabled for item [${item.name}] with ID [$id].")
+                return 0
+            }
 
-            return rows
+            auditManager.assignUpdateAttributes(itemRec)
+            return itemRecDao.updateById(item, id, itemRec)
         }
     }
 
     private fun addManyToManyRelation(intermediateItem: Item, sourceId: String, targetId: String) {
-        val intermediateItemRec = ItemRec(
-            mutableMapOf(
-                INTERMEDIATE_SOURCE_ATTR_NAME to sourceId,
-                INTERMEDIATE_TARGET_ATTR_NAME to targetId
-            )
-        )
+        if (itemService.findByNameForCreate(intermediateItem.name) == null) {
+            logger.warn("Create operation disabled for item [${intermediateItem.name}].")
+            return
+        }
+
+        val intermediateItemRec = ItemRec(mutableMapOf(
+            INTERMEDIATE_SOURCE_ATTR_NAME to sourceId,
+            INTERMEDIATE_TARGET_ATTR_NAME to targetId
+        ))
+
         itemRecDao.insertWithDefaults(intermediateItem, intermediateItemRec)
     }
 

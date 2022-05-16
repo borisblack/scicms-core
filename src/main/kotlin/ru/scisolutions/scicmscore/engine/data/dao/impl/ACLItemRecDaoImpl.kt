@@ -78,27 +78,6 @@ class ACLItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
     }
 
-    override fun updateById(item: Item, id: String, itemRec: ItemRec): Int =
-        updateByAttribute(item, ID_ATTR_NAME, id, itemRec)
-
-    override fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int {
-        val permissionIds: Set<String> = permissionService.findIdsFor(Mask.WRITE)
-        val query = daoQueryBuilder.buildUpdateByAttributeQuery(item, attrName, attrValue, itemRec, permissionIds)
-        val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
-    }
-
-    override fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ID_ATTR_NAME, id)
-
-    override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
-        val permissionIds: Set<String> = permissionService.findIdsFor(Mask.DELETE)
-        val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, permissionIds)
-        val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
-    }
-
     companion object {
         private const val ID_ATTR_NAME = "id"
 

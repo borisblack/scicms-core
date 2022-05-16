@@ -71,7 +71,7 @@ class CopyRelationHelper(
 
     private fun insertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
         if (itemService.findByNameForCreate(item.name) == null) {
-            logger.info("Create operation disabled for item [${item.name}].")
+            logger.warn("Create operation disabled for item [${item.name}].")
             return 0
         }
 

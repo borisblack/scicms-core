@@ -5,7 +5,6 @@ import com.google.common.cache.CacheBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
@@ -34,11 +33,9 @@ class PromoteHandlerImpl(
 
     override fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
-        if (!itemRecDao.existsById(item, input.id))
-            throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
 
         val itemRec = aclItemRecDao.findByIdForWrite(item, input.id)
-            ?: throw AccessDeniedException("You are not allowed to promote item [$itemName] with ID [${input.id}].")
+            ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)

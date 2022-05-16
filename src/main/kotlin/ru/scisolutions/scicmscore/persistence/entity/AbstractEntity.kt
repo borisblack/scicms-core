@@ -30,10 +30,6 @@ abstract class AbstractEntity {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     var isCurrent: Boolean = true
 
-    @Column(name = "last_version", nullable = false, columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    var lastVersion: Boolean = true
-
     @Column(name = "lifecycle_id")
     var lifecycleId: String? = null
 

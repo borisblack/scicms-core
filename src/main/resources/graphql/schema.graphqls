@@ -4,6 +4,7 @@ scalar DateTime
 scalar Object
 scalar JSON
 scalar Upload
+scalar Email
 
 enum DeletingStrategy {
     "Do not touch related items"

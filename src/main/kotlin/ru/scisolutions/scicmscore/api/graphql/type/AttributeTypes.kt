@@ -25,8 +25,11 @@ class AttributeTypes(
                 val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.STRING
                 typeName.nonNull(attribute.required)
             }
-            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
-            AttrType.email, // TODO: Add regexp email scalar type
+            AttrType.string,
+            AttrType.text,
+            AttrType.enum,
+            AttrType.sequence -> TypeNames.STRING.nonNull(attribute.required)
+            AttrType.email -> TypeNames.EMAIL.nonNull(attribute.required)
             AttrType.password -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.int, AttrType.long -> TypeNames.INT.nonNull(attribute.required)
             AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT.nonNull(attribute.required)
@@ -51,8 +54,11 @@ class AttributeTypes(
     fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
         when (attribute.type) {
             AttrType.uuid -> if (attribute.keyed) TypeNames.ID_FILTER_INPUT else TypeNames.STRING_FILTER_INPUT
-            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence,
-            AttrType.email, // TODO: Add regexp email scalar type
+            AttrType.string,
+            AttrType.text,
+            AttrType.enum,
+            AttrType.sequence,
+            AttrType.email,
             AttrType.password -> TypeNames.STRING_FILTER_INPUT
             AttrType.int, AttrType.long -> TypeNames.INT_FILTER_INPUT
             AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT_FILTER_INPUT
@@ -87,8 +93,8 @@ class AttributeTypes(
             AttrType.string, AttrType.text -> TypeNames.STRING
             // AttrType.enum -> TypeName("${item.name.capitalize()}${attrName.capitalize()}Enum")
             AttrType.enum,
-            AttrType.sequence,
-            AttrType.email, // TODO: Add regexp email scalar type
+            AttrType.sequence -> TypeNames.STRING
+            AttrType.email -> TypeNames.EMAIL
             AttrType.password -> TypeNames.STRING
             AttrType.int, AttrType.long -> TypeNames.INT
             AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT

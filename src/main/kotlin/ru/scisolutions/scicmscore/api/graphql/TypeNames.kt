@@ -14,6 +14,7 @@ object TypeNames {
     val OBJECT = TypeName("Object")
     val JSON = TypeName("JSON")
     val UPLOAD = TypeName("Upload")
+    val EMAIL = TypeName("Email")
 
     val ID_FILTER_INPUT = TypeName("IDFilterInput")
     val INT_FILTER_INPUT = TypeName("IntFilterInput")

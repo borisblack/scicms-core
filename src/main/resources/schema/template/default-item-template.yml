@@ -53,14 +53,6 @@ spec:
       defaultValue: 1
       indexed: true
       private: true
-    lastVersion:
-      type: bool
-      columnName: last_version
-      displayName: Last Version
-      description: Last Version
-      required: true
-      defaultValue: 1
-      private: true
     locale:
       type: string
       columnName: locale

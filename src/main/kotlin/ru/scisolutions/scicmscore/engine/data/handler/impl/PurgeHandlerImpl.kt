@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
 import org.slf4j.LoggerFactory
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
@@ -25,11 +24,8 @@ class PurgeHandlerImpl(
         if (!item.versioned)
             throw IllegalArgumentException("Item [$itemName] is not versioned so it cannot be purged")
 
-        if (!itemRecDao.existsById(item, input.id))
-            throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
-
         val itemRec = aclItemRecDao.findByIdForDelete(item, input.id)
-            ?: throw AccessDeniedException("You are not allowed to purge item [$itemName] with ID [${input.id}].")
+            ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)

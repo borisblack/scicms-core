@@ -69,14 +69,13 @@ class CreateVersionHandlerImpl(
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
-        // Reset current and lastVersion flags
+        // Reset current flag
         itemRecDao.updateByAttribute(
             item = item,
             attrName = CONFIG_ID_ATTR_NAME,
             attrValue = requireNotNull(itemRec.configId),
             itemRec = ItemRec().apply {
                 current = false
-                lastVersion = false
             }
         )
 

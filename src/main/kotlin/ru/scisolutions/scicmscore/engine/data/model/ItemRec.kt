@@ -27,10 +27,6 @@ class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : Muta
         get() = this[CURRENT_ATTR_NAME] as Boolean?
         set(value) { this[CURRENT_ATTR_NAME] = value }
 
-    var lastVersion: Boolean?
-        get() = this[LAST_VERSION_ATTR_NAME] as Boolean?
-        set(value) { this[LAST_VERSION_ATTR_NAME] = value }
-
     var locale: String?
         get() = this[LOCALE_ATTR_NAME] as String?
         set(value) { this[LOCALE_ATTR_NAME] = value }
@@ -73,7 +69,6 @@ class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : Muta
         const val GENERATION_ATTR_NAME = "generation"
         const val MAJOR_REV_ATTR_NAME = "majorRev"
         const val MINOR_REV_ATTR_NAME = "minorRev"
-        const val LAST_VERSION_ATTR_NAME = "lastVersion"
         const val CURRENT_ATTR_NAME = "current"
         const val LOCALE_ATTR_NAME = "locale"
         const val LIFECYCLE_ATTR_NAME = "lifecycle"
