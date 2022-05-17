@@ -4,8 +4,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
     <property name="now" value="sysdate" dbms="oracle"/>
-    <property name="now" value="now()" dbms="mysql"/>
-    <property name="now" value="now()" dbms="postgresql"/>
+    <property name="now" value="now()" dbms="postgresql,mysql,h2"/>
+    <property name="now" value="getdate()" dbms="mssql"/>
     <property name="adminGroupId" value="ec024ec7-7a24-4578-bd0a-074108aef96a"/>
     <property name="userGroupId" value="f84ce926-bff0-4d82-8a6b-499291dfce9a"/>
     <property name="rootUserId" value="0c924266-3c61-4362-81d7-9d69403fbe32"/>
