@@ -3,41 +3,33 @@ kind: Item
 includeTemplates:
   - defaultItemTemplate
 metadata:
-  name: example # item name must start with a lowercase character!
+  name: example
   dataSource: main
-  tableName: examples # optional (pluralName in lowercase by default). Prefixes core_ and sec_ are not allowed
-  displayName: Example # optional (name by default)
-  singularName: example # optional (name by default)
+  tableName: examples
+  displayName: Example
+  singularName: example
   pluralName: examples
-  description: Examples # optional (null by default)
-  icon: fas fa-swatchbook # optional (null by default)
-  core: false # optional (false by default)
-  performDdl: false # optional (true by default)
-  versioned: false # optional (false by default)
-  manualVersioning: false # optional (false by default)
-#  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b # optional (null by default)
-  notLockable: false # optional (false by default)
-  localized: false # optional (false by default)
-  implementation: ru.scisolutions.userimpl.item.ExampleItemImplementation  # optional (null by default)
+  description: Examples
+  icon: fas fa-swatchbook
+  core: false
+  performDdl: false
+  versioned: false
+  manualVersioning: false
+  localized: false
+  notLockable: false
+  implementation: ru.scisolutions.userimpl.item.ExampleItemImplementation
 spec:
   attributes:
     name:
-      type: string  # uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime, timestamp, bool, array, json, media, relation
-#      seqName: # sequence name for sequence type (null by default)
-      columnName: name # optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
-      displayName: Name # optional (name by default)
-      description: Name # optional (null by default)
-#      pattern: # optional (null by default) - string
-#      defaultValue: # optional (null by default)
-      required: true # optional (false by default)
-      unique: true # optional (false by default). Additional columns may be added to the unique index depending on configuration parameters (versioning.include-in-unique-index and i18n.include-in-unique-index) and attributes (versioned and localized). If other logic is needed, use the indexes section
-      indexed: false # optional (false by default). For versioned or localized item non-unique index can be added on par with a composite unique index
-      private: false # optional (false by default)
-      length: 50 # optional (null by default) - string
-#      precision: # optional (null by default) - decimal
-#      scale: # optional (null by default) - decimal
-#      minRange: # optional (null by default) - int, long, float, double, decimal
-#      maxRange: # optional (null by default) - int, long, float, double, decimal
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      indexed: false
+      private: false
+      length: 50
     displayName:
       type: string
       columnName: display_name
@@ -52,10 +44,8 @@ spec:
       length: 250
     product:
       type: relation
-      relType: manyToOne # oneToOne, oneToMany, manyToOne, manyToMany
-      target: product # by default, id is used as the key attribute for target. But for unidirectional oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
-#      intermediate: # intermediate item is used for manyToMany association and includes source and target attributes
-#      mappedBy: # in bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key
+      relType: manyToOne
+      target: product
       inversedBy: parts
       columnName: product_id
       displayName: Product
@@ -125,7 +115,7 @@ spec:
       displayName: Start Sheet
       description: Start Sheet
   indexes:
-    examples_name_uk: # if the index name begins with _, it will be prefixed by the tableName
-      columns: # the index will be created with the specified columns only (without additional version or locale columns)
+    examples_name_uk:
+      columns:
         - name
       unique: true

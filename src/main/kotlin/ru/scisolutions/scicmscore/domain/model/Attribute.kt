@@ -5,23 +5,23 @@ import java.util.Objects
 
 class Attribute(
     val type: Type,
+    val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
+    val displayName: String? = null,
+    val description: String? = null,
+    val enumSet: Set<String>? = null,
+    val seqName: String? = null,
     val relType: RelType? = null,
-    val target: String? = null, // by default, id is used as the key attribute for target. But for unidirectional oneToOne and manyToOne relations another key attribute can be specified in brackets, for example, product(code)
+    val target: String? = null,
     val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
     val mappedBy: String? = null,
     val inversedBy: String? = null,
-    val enumSet: Set<String>? = null,
-    val seqName: String? = null,
-    val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
-    val displayName: String,
-    val description: String? = null,
-    val pattern: String? = null, // for string type
-    val defaultValue: String? = null,
     val required: Boolean = false,
+    val defaultValue: String? = null,
     val keyed: Boolean = false, // primary key, only for internal use!
     val unique: Boolean = false,
     val indexed: Boolean = false,
     val private: Boolean = false,
+    val pattern: String? = null, // for string type
     val length: Int? = null, // for string type
     val precision: Int? = null, // for decimal types
     val scale: Int? = null, // for decimal types

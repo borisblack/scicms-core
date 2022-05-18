@@ -14,6 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.extension
+import kotlin.io.path.name
 import kotlin.streams.toList
 
 @Service
@@ -25,6 +26,7 @@ class FileSchemaReader(
         logger.info("Reading the models path [{}]", schemaPath)
         val models = Files.walk(Paths.get(schemaPath))
             .filter(Files::isRegularFile)
+            .filter { !it.name.endsWith("schema.json") }
             .map { readModel(it) }
             .toList()
 

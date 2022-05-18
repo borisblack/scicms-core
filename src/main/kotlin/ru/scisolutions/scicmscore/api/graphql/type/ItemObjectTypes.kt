@@ -46,6 +46,7 @@ class ItemObjectTypes(
     private fun newAttributeField(item: Item, attrName: String, attribute: Attribute): FieldDefinition {
         val builder = FieldDefinition.newFieldDefinition()
             .name(attrName)
+            .description(Description(attribute.description?.trim(), null, true))
             .type(attributeTypes.objectType(item, attrName, attribute))
 
         if (attribute.isCollection()) {

@@ -17,9 +17,8 @@
     "performDdl": false,
     "versioned": false,
     "manualVersioning": false,
-    "revisionPolicy": null,
-    "notLockable": false,
     "localized": false,
+    "notLockable": false,
     "implementation": "ru.scisolutions.userimpl.item.ExampleItemImplementation"
   },
   "spec": {

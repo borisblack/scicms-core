@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "item.schema.json",
+  "title": "Item",
+  "description": "Schema Item",
+  "type": "object",
+  "properties": {
+    "coreVersion": {
+      "description": "Core version",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Model kind (Item)",
+      "type": "string",
+      "enum": ["Item"]
+    },
+    "includeTemplates": {
+      "description": "Included templates",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "description": "Item metadata",
+      "$ref": "#/definitions/Metadata"
+    },
+    "spec": {
+      "description": "Item specification",
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "description": "Item attributes",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/Attribute"
+          }
+        },
+        "indexes": {
+          "description": "Item indexes. If the index name begins with _, it will be prefixed by the table name",
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/Index"
+          }
+        }
+      }
+    }
+  },
+  "required": ["coreVersion", "kind", "metadata", "spec"],
+  "definitions": {
+    "Metadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Item name starting with a lowercase character (required)",
+          "type": "string"
+        },
+        "dataSource": {
+          "description": "Data source name (required)",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Display name (optional, name is used by default)",
+          "type": "string"
+        },
+        "singularName": {
+          "description": "Singular name (optional, name is used by default)",
+          "type": "string"
+        },
+        "pluralName": {
+          "description": "Plural name (required)",
+          "type": "string"
+        },
+        "tableName": {
+          "description": "Table name (optional, pluralName in lowercase is used by default). Prefixes core_ and sec_ are not allowed",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description (optional, null by default)",
+          "type": "string"
+        },
+        "icon": {
+          "description": "Icon name (optional, null by default)",
+          "type": "string"
+        },
+        "core": {
+          "description": "Core flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "performDdl": {
+          "description": "DDL operation performing flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "versioned": {
+          "description": "Versioning flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "manualVersioning": {
+          "description": "Manual versioning flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "localized": {
+          "description": "Localization flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "revisionPolicy": {
+          "description": "Revision policy ID (optional, null by default)",
+          "type": "string"
+        },
+        "notLockable": {
+          "description": "Disabling lock/unlock flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "implementation": {
+          "description": "Implementation class (optional, null by default)",
+          "type": "string"
+        }
+      },
+      "required": ["name", "dataSource", "pluralName"]
+    },
+    "Attribute": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "Attribute type (required)",
+          "type": "string",
+          "enum": [
+            "uuid", "string", "text", "enum", "sequence", "email", "password", "int", "long", "float", "double",
+            "decimal", "date", "time", "datetime", "timestamp", "bool", "array", "json", "media", "relation"
+          ]
+        },
+        "columnName": {
+          "description": "Column name (optional, lowercase attribute name is used in database by default). Can be null for oneToMany and manyToMany relations",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Display name (optional, null by default)",
+          "type": "string"
+        },
+        "description": {
+          "description": "Description (optional, null by default)",
+          "type": "string"
+        },
+        "seqName": {
+          "description": "Sequence name (required for sequence type)",
+          "type": "string"
+        },
+        "enumSet": {
+          "description": "Enumeration entries (required for enum type)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "target": {
+          "description": "Target item name (required for relation type)",
+          "type": "string"
+        },
+        "intermediate": {
+          "description": "Intermediate item name (required for manyToMany relation type). Intermediate item includes source and target attributes",
+          "type": "string"
+        },
+        "mappedBy": {
+          "description": "In bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key",
+          "type": "string"
+        },
+        "inversedBy": {
+          "description": "In bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key",
+          "type": "string"
+        },
+        "required": {
+          "description": "Mandatory flag (optional, false by default)",
+          "type": "boolean"
+        },
+        "defaultValue": {
+          "description": "Default value (optional, null by default)",
+          "type": "string"
+        },
+        "unique": {
+          "description": "Uniqueness flag (optional, false by default). Additional columns may be added to the unique index depending on configuration parameters (versioning.include-in-unique-index and i18n.include-in-unique-index) and attributes (versioned and localized). If other logic is needed, use the indexes section",
+          "type": "boolean"
+        },
+        "indexed": {
+          "description": "Uniqueness flag (optional, false by default). For versioned or localized item non-unique index can be added on par with a composite unique index",
+          "type": "boolean"
+        },
+        "private": {
+          "description": "Privacy flag",
+          "type": "boolean"
+        },
+        "pattern": {
+          "description": "Regex pattern (optional, null by default). For string type",
+          "type": "string"
+        },
+        "length": {
+          "description": "String length (optional, null by default). For string type",
+          "type": "integer"
+        },
+        "precision": {
+          "description": "Precision (optional, null by default). For decimal type",
+          "type": "integer"
+        },
+        "scale": {
+          "description": "Scale (optional, null by default). For decimal type",
+          "type": "integer"
+        },
+        "minRange": {
+          "description": "Minimum range (optional, null by default). For int, long, float, double and decimal types",
+          "type": "number"
+        },
+        "maxRange": {
+          "description": "Maximum range (optional, null by default). For int, long, float, double and decimal types",
+          "type": "number"
+        }
+      },
+      "required": ["type"]
+    },
+    "Index": {
+      "type": "object",
+      "properties": {
+        "columns": {
+          "description": "Index columns. The index will be created with the specified columns only (without additional version or locale columns)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unique": {
+          "description": "Uniqueness flag (optional, false by default)",
+          "type": "boolean"
+        }
+      },
+      "required": ["columns"]
+    }
+  }
+}
