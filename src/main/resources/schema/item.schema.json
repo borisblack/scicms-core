@@ -158,6 +158,11 @@
             "type": "string"
           }
         },
+        "relType": {
+          "description": "Relation type (required for relation type)",
+          "type": "string",
+          "enum": ["oneToOne", "manyToOne", "oneToMany", "manyToMany"]
+        },
         "target": {
           "description": "Target item name (required for relation type)",
           "type": "string"
