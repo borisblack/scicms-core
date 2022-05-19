@@ -17,9 +17,10 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 
 class LiquibaseTypeResolver {
-    fun getType(item: Item, attribute: Attribute): String {
+    fun getType(item: Item, attrName: String, attribute: Attribute): String {
         val tableName = item.metadata.tableName
-        itemAttributeValidator.validate(item, attribute)
+        val columnName = attribute.columnName ?: attrName.lowercase()
+        itemColumnValidator.validate(item, attrName, attribute)
 
         return when (attribute.type) {
             Type.uuid, Type.media -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
@@ -34,15 +35,14 @@ class LiquibaseTypeResolver {
                 DecimalType().apply {
                     addParameter(attribute.precision)
                     addParameter(attribute.scale)
-                }
-                    .toString()
+                }.toString()
             }
             Type.date -> DateType().toString()
             Type.time -> TimeType().toString()
             Type.datetime -> DateTimeType().toString()
             Type.timestamp -> TimestampType().toString()
             Type.bool -> TinyIntType().toString()
-            else -> throw IllegalArgumentException("Column [$tableName.${attribute.columnName}] has unsupported attribute type (${attribute.type})")
+            else -> throw IllegalArgumentException("Column [${tableName}.${columnName}] has unsupported attribute type (${attribute.type})")
         }
     }
 
@@ -50,6 +50,6 @@ class LiquibaseTypeResolver {
         private const val DEFAULT_STRING_LENGTH = 50
         private const val UUID_STRING_LENGTH = 36
 
-        private val itemAttributeValidator = ItemAttributeValidator()
+        private val itemColumnValidator = ItemColumnValidator()
     }
 }

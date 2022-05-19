@@ -17,7 +17,7 @@ class Attribute(
     val inversedBy: String? = null,
     val required: Boolean = false,
     val defaultValue: String? = null,
-    val keyed: Boolean = false, // primary key, only for internal use!
+    val keyed: Boolean = false, // primary key, used only for id attribute
     val unique: Boolean = false,
     val indexed: Boolean = false,
     val private: Boolean = false,
@@ -32,17 +32,36 @@ class Attribute(
     fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
 
     fun validate() {
-        if (type == Type.string && length == null)
-            throw IllegalArgumentException("The length is required for the string type")
+        when (type) {
+            Type.string -> {
+                if (length == null || length <= 0)
+                    throw IllegalArgumentException("Invalid string length (${length})")
+            }
+            Type.enum -> {
+                if (enumSet == null)
+                    throw IllegalArgumentException("The enumSet is required for the enum type")
+            }
+            Type.sequence -> {
+                if (seqName == null)
+                    throw IllegalArgumentException("The seqName is required for the sequence type")
+            }
+            Type.int, Type.long, Type.float, Type.double -> {
+                if (minRange != null && maxRange != null && minRange > maxRange)
+                    throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
+            }
+            Type.decimal -> {
+                if (precision == null || precision <= 0 || scale == null || scale < 0)
+                    throw IllegalArgumentException("Invalid precision and/or scale (${precision}, ${scale})")
 
-        if (type == Type.enum && enumSet == null)
-            throw IllegalArgumentException("The enumSet is required for the enum type")
-
-        if (type == Type.sequence && seqName == null)
-            throw IllegalArgumentException("The seqName is required for the sequence type")
-
-        if (isCollection() && required)
-            throw IllegalArgumentException("Collection relation attribute cannot be required")
+                if (minRange != null && maxRange != null && minRange > maxRange)
+                    throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
+            }
+            Type.relation -> {
+                if (isCollection() && required)
+                    throw IllegalArgumentException("Collection relation attribute cannot be required")
+            }
+            else -> {}
+        }
     }
 
     override fun hashCode(): Int =

@@ -15,10 +15,10 @@ metadata:
   performDdl: true
   versioned: true
   manualVersioning: false
-#  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b # optional (null by default)
+#  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b
   notLockable: false
   localized: true
-  implementation: ru.scisolutions.userimpl.item.PartItemImpl # optional (null by default)
+  implementation: ru.scisolutions.userimpl.item.PartItemImpl
 spec:
   attributes:
     name:

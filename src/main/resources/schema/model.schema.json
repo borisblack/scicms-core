@@ -1,18 +1,19 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "item.schema.json",
-  "title": "Item",
-  "description": "Schema Item",
+  "$id": "model.schema.json",
+  "title": "Model",
+  "description": "Schema Model",
   "type": "object",
   "properties": {
     "coreVersion": {
       "description": "Core version",
-      "type": "string"
+      "type": "string",
+      "enum": ["v1"]
     },
     "kind": {
-      "description": "Model kind (Item)",
+      "description": "Model kind",
       "type": "string",
-      "enum": ["Item"]
+      "enum": ["Item", "ItemTemplate"]
     },
     "includeTemplates": {
       "description": "Included templates",
@@ -22,7 +23,7 @@
       }
     },
     "metadata": {
-      "description": "Item metadata",
+      "description": "Model metadata",
       "$ref": "#/definitions/Metadata"
     },
     "spec": {
@@ -49,9 +50,11 @@
             "$ref": "#/definitions/Index"
           }
         }
-      }
+      },
+      "additionalProperties": false
     }
   },
+  "additionalProperties": false,
   "required": ["coreVersion", "kind", "metadata", "spec"],
   "definitions": {
     "Metadata": {
@@ -59,35 +62,51 @@
       "properties": {
         "name": {
           "description": "Item name starting with a lowercase character (required)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "dataSource": {
           "description": "Data source name (required)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "displayName": {
           "description": "Display name (optional, name is used by default)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "singularName": {
           "description": "Singular name (optional, name is used by default)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "pluralName": {
           "description": "Plural name (required)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "tableName": {
           "description": "Table name (optional, pluralName in lowercase is used by default). Prefixes core_ and sec_ are not allowed",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "description": {
           "description": "Description (optional, null by default)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
         },
         "icon": {
           "description": "Icon name (optional, null by default)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "core": {
           "description": "Core flag (optional, false by default)",
@@ -122,7 +141,8 @@
           "type": "string"
         }
       },
-      "required": ["name", "dataSource", "pluralName"]
+      "additionalProperties": false,
+      "required": ["name"]
     },
     "Attribute": {
       "type": "object",
@@ -137,26 +157,37 @@
         },
         "columnName": {
           "description": "Column name (optional, lowercase attribute name is used in database by default). Can be null for oneToMany and manyToMany relations",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "displayName": {
           "description": "Display name (optional, null by default)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "description": {
           "description": "Description (optional, null by default)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 250
         },
         "seqName": {
           "description": "Sequence name (required for sequence type)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "enumSet": {
           "description": "Enumeration entries (required for enum type)",
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "minItems": 1
         },
         "relType": {
           "description": "Relation type (required for relation type)",
@@ -165,19 +196,31 @@
         },
         "target": {
           "description": "Target item name (required for relation type)",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "intermediate": {
           "description": "Intermediate item name (required for manyToMany relation type). Intermediate item includes source and target attributes",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "mappedBy": {
           "description": "In bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "inversedBy": {
           "description": "In bidirectional relations, the owning side declares the inversedBy key while the inversed side declares the mappedBy key",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "keyed": {
+          "description": "Primary key flag (used only for id attribute)",
+          "type": "boolean"
         },
         "required": {
           "description": "Mandatory flag (optional, false by default)",
@@ -185,7 +228,9 @@
         },
         "defaultValue": {
           "description": "Default value (optional, null by default)",
-          "type": "string"
+          "type": ["string", "number", "boolean"],
+          "minLength": 1,
+          "maxLength": 50
         },
         "unique": {
           "description": "Uniqueness flag (optional, false by default). Additional columns may be added to the unique index depending on configuration parameters (versioning.include-in-unique-index and i18n.include-in-unique-index) and attributes (versioned and localized). If other logic is needed, use the indexes section",
@@ -201,19 +246,24 @@
         },
         "pattern": {
           "description": "Regex pattern (optional, null by default). For string type",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
         },
         "length": {
           "description": "String length (optional, null by default). For string type",
-          "type": "integer"
+          "type": "integer",
+          "minimum": 1
         },
         "precision": {
           "description": "Precision (optional, null by default). For decimal type",
-          "type": "integer"
+          "type": "integer",
+          "minimum": 0
         },
         "scale": {
           "description": "Scale (optional, null by default). For decimal type",
-          "type": "integer"
+          "type": "integer",
+          "minimum": 0
         },
         "minRange": {
           "description": "Minimum range (optional, null by default). For int, long, float, double and decimal types",
@@ -224,6 +274,7 @@
           "type": "number"
         }
       },
+      "additionalProperties": false,
       "required": ["type"]
     },
     "Index": {
@@ -233,14 +284,18 @@
           "description": "Index columns. The index will be created with the specified columns only (without additional version or locale columns)",
           "type": "array",
           "items": {
-            "type": "string"
-          }
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "minItems": 1
         },
         "unique": {
           "description": "Uniqueness flag (optional, false by default)",
           "type": "boolean"
         }
       },
+      "additionalProperties": false,
       "required": ["columns"]
     }
   }
