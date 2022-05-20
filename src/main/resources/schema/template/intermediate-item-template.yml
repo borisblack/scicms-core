@@ -1,7 +1,7 @@
 coreVersion: v1
 kind: ItemTemplate
 metadata:
-  name: defaultRelTemplate
+  name: intermediateItemTemplate
 spec:
   attributes:
     sortOrder:
