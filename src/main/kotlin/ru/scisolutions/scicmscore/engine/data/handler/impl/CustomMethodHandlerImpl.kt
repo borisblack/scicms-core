@@ -25,7 +25,7 @@ class CustomMethodHandlerImpl(
         val item = itemService.getByName(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
-            throw IllegalArgumentException("Item [$itemName] has no implementation")
+            throw IllegalArgumentException("Item [$itemName] has no implementation.")
 
         val clazz = getClass(implementation)
 
@@ -54,18 +54,18 @@ class CustomMethodHandlerImpl(
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
         val item = itemService.getByName(itemName)
         if (itemService.findByNameForWrite(item.name) == null)
-            throw AccessDeniedException("Operation is prohibited")
+            throw AccessDeniedException("You are not allowed to call custom method.")
 
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
-            throw IllegalStateException("Item [$itemName] has no implementation")
+            throw IllegalStateException("Item [$itemName] has no implementation.")
 
         val clazz = getClass(implementation)
         val customMethod = clazz.getMethod(methodName, CustomMethodInput::class.java)
-            ?: throw IllegalStateException("Method [$methodName] with valid signature not found")
+            ?: throw IllegalStateException("Method [$methodName] with valid signature not found.")
 
         if (customMethod.returnType != CustomMethodResponse::class.java)
-            throw IllegalArgumentException("Method [${clazz.simpleName}#${customMethod.name}] has invalid signature")
+            throw IllegalArgumentException("Method [${clazz.simpleName}#${customMethod.name}] has invalid signature.")
 
         val instance = getInstance(clazz)
         return customMethod.invoke(instance, customMethodInput) as CustomMethodResponse

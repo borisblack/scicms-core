@@ -8,5 +8,5 @@ class User(
     username: String,
     password: String,
     authorities: Collection<GrantedAuthority>,
-    val user: UserEntity
+    val user: UserEntity? = null
 ) : User(username, password, authorities)

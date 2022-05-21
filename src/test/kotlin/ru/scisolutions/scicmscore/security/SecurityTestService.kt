@@ -6,21 +6,21 @@ import org.springframework.stereotype.Service
 
 @Service
 class SecurityTestService {
-    @PreAuthorize("hasRole('ROLE_ADMIN_TEST')")
+    @PreAuthorize("hasRole('ROLE_TEST_ADMIN')")
     fun testHasRoleAdmin(): Boolean {
-        logger.info("Access granted to hasRole('ROLE_ADMIN_TEST')")
+        logger.info("Access granted to hasRole('ROLE_TEST_ADMIN')")
         return true
     }
 
-    @PreAuthorize("hasRole('ROLE_USER_TEST')")
+    @PreAuthorize("hasRole('ROLE_TEST_USER')")
     fun testHasRoleUser(): Boolean {
-        logger.info("Access granted to hasRole('ROLE_USER_TEST')")
+        logger.info("Access granted to hasRole('ROLE_TEST_USER')")
         return true
     }
 
-    @PreAuthorize("hasRole('ROLE_GROUP_TEST')")
+    @PreAuthorize("hasRole('ROLE_TEST_GROUP')")
     fun testHasRoleGroup(): Boolean {
-        logger.info("Access granted to hasRole('ROLE_GROUP_TEST')")
+        logger.info("Access granted to hasRole('ROLE_TEST_GROUP')")
         return true
     }
 

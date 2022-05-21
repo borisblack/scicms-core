@@ -1,27 +1,20 @@
 package ru.scisolutions.scicmscore.security.service
 
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 
 interface UserGroupManager {
-    /**
-     * Creates the user and adds him to the group.
-     */
-    fun createUser(username: String, groupName: String)
-
-    /**
+        /**
      * Creates the user.
      */
-    fun createUser(username: String, password: String, enabled: Boolean, authorities: Collection<String>)
+    fun createUser(username: String, rawPassword: String, authorities: Set<String>)
 
     /**
-     * Creates the user, adds him to the group and authenticate.
+     * Creates the user and adds him to the groups.
      */
-    fun createAndAuthenticateUser(username: String, groupName: String)
+    fun createUserInGroups(username: String, rawPassword: String, groupNames: Set<String>)
 
-    /**
-     * Creates the user with authority.
-     */
-    fun createUserWithAuthority(username: String, authority: String)
+    fun loadUserByUsername(username: String): UserDetails
 
     fun createGroup(groupName: String, authorities: Collection<String>)
 

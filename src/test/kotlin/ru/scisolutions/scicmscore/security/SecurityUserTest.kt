@@ -22,26 +22,26 @@ class SecurityUserTest {
 
     @BeforeEach
     fun setup() {
-        userGroupManager.createUserWithAuthority(USER_TEST, ROLE_USER_TEST)
-        user = customUserDetailsManager.loadUserByUsername(USER_TEST)
-        userGroupManager.setAuthentication(USER_TEST)
+        userGroupManager.createUser(TEST_USERNAME, TEST_USERNAME, setOf(ROLE_TEST_USER))
+        user = customUserDetailsManager.loadUserByUsername(TEST_USERNAME)
+        userGroupManager.setAuthentication(TEST_USERNAME)
     }
 
     @AfterEach
     fun tearDown() {
-        customUserDetailsManager.deleteUser(USER_TEST)
+        customUserDetailsManager.deleteUser(TEST_USERNAME)
     }
 
     @Test
     fun checkUser() {
         Assertions.assertNotNull(user)
         Assertions.assertTrue(user is UserDetails)
-        val roleUserTest = SimpleGrantedAuthority(ROLE_USER_TEST)
+        val roleUserTest = SimpleGrantedAuthority(ROLE_TEST_USER)
         Assertions.assertTrue((user as UserDetails).authorities.contains(roleUserTest))
     }
 
     companion object {
-        private const val USER_TEST = "test"
-        private const val ROLE_USER_TEST = "ROLE_USER_TEST"
+        private const val TEST_USERNAME = "test"
+        private const val ROLE_TEST_USER = "ROLE_TEST_USER"
     }
 }

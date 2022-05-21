@@ -4,9 +4,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties(prefix = "scicms-core.security.jwt-token")
+@ConfigurationProperties(prefix = "scicms-core.security")
 class SecurityProps {
     var jwtToken: JwtToken = JwtToken()
+    var registrationDisabled: Boolean = false
 
     class JwtToken {
         var id: String = DEFAULT_ID

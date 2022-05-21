@@ -38,6 +38,7 @@ scicms-core:
       id: scisolutionsJWT
       secret: scisolutionsSecretKey
       expiration-interval-millis: 1_800_000
+    registration-disabled: false
   versioning:
     include-in-unique-index: true
 
@@ -46,11 +47,18 @@ dgs:
     schema-locations: classpath*:graphql/**/*.graphql*
 
 server:
+  error:
+    include-stacktrace: on_param
   port: 8079
 
 spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  mail:
+    host: ''
+    port: 25
+    username: ''
+    password: ''
 
 logging:
   file:

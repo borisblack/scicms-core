@@ -11,98 +11,10 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
 import ru.scisolutions.scicmscore.persistence.entity.Permission
+import ru.scisolutions.scicmscore.persistence.entity.User
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.sql.DataSource
-
-private const val USERS_BY_USERNAME_QUERY =
-    "SELECT username, passwd, enabled FROM sec_users WHERE LOWER(username) = LOWER(?)"
-
-private const val AUTHORITIES_BY_USERNAME_QUERY = """
-    SELECT u.username, r.role
-    FROM sec_users u
-        INNER JOIN sec_roles r ON u.username = r.username
-    WHERE u.username = ?"""
-
-private const val GROUP_AUTHORITIES_BY_USERNAME_QUERY = """
-    SELECT g.id, g.group_name, gr.role
-    FROM sec_groups g
-        INNER JOIN sec_group_members gm ON g.id = gm.group_id
-        INNER JOIN sec_group_roles gr ON g.id = gr.group_id
-    WHERE gm.username = ?"""
-
-private const val CREATE_USER_SQL = """
-    INSERT INTO sec_users (
-        id, config_id, username, passwd, enabled, generation, major_rev, is_current, permission_id,
-        created_at, created_by_id, updated_at, updated_by_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-
-private const val DELETE_USER_SQL = "DELETE FROM sec_users WHERE LOWER(username) = LOWER(?)"
-
-private const val UPDATE_USER_SQL = "UPDATE sec_users SET passwd = ?, enabled = ? WHERE LOWER(username) = LOWER(?)"
-
-private const val INSERT_AUTHORITY_SQL = """
-    INSERT INTO sec_roles (
-        id, config_id, username, role, generation, major_rev, is_current, permission_id,
-        created_at, created_by_id, updated_at, updated_by_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-
-private const val DELETE_USER_AUTHORITIES_SQL = "DELETE FROM sec_roles WHERE username = ?"
-
-private const val USER_EXISTS_SQL = "SELECT username FROM sec_users WHERE LOWER(username) = LOWER(?)"
-
-private const val CHANGE_PASSWORD_SQL = "UPDATE sec_uses SET passwd = ? WHERE LOWER(username) = LOWER(?)"
-
-private const val FIND_GROUPS_SQL = "SELECT group_name FROM sec_groups"
-
-private const val FIND_USERS_IN_GROUP_SQL = """
-    SELECT username FROM sec_group_members gm, sec_groups g
-    WHERE gm.group_id = g.id AND g.group_name = ?"""
-
-private const val INSERT_GROUP_SQL = """
-    INSERT INTO sec_groups (
-        id, config_id, group_name, generation, major_rev, is_current, permission_id,
-        created_at, created_by_id, updated_at, updated_by_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-
-private const val FIND_GROUP_ID_SQL = "SELECT id FROM sec_groups WHERE group_name = ?"
-
-private const val INSERT_GROUP_AUTHORITY_SQL = """
-    INSERT INTO sec_group_roles (
-        id, config_id, group_id, role, generation, major_rev, is_current, permission_id,
-        created_at, created_by_id, updated_at, updated_by_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-
-private const val DELETE_GROUP_SQL = "DELETE FROM sec_groups WHERE id = ?"
-
-private const val DELETE_GROUP_AUTHORITIES_SQL = "DELETE FROM sec_group_roles WHERE group_id = ?"
-
-private const val DELETE_GROUP_MEMBERS_SQL = "DELETE FROM sec_group_members WHERE group_id = ?"
-
-private const val RENAME_GROUP_SQL = "UPDATE sec_groups set group_name = ? WHERE group_name = ?"
-
-private const val INSERT_GROUP_MEMBER_SQL = """
-    INSERT INTO sec_group_members (
-        id, config_id, group_id, username, generation, major_rev, is_current, permission_id,
-        created_at, created_by_id, updated_at, updated_by_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-
-private const val DELETE_GROUP_MEMBER_SQL =
-    "DELETE FROM sec_group_members WHERE group_id = ? AND LOWER(username) = LOWER(?)"
-
-private const val GROUP_AUTHORITIES_QUERY_SQL = """
-    SELECT g.id, g.group_name, gr.role
-    FROM sec_groups g
-        INNER JOIN sec_group_roles gr ON g.id = gr.group_id
-    WHERE g.group_name = ?"""
-
-private const val DELETE_GROUP_AUTHORITY_SQL = "DELETE FROM sec_group_roles WHERE group_id = ? AND role = ?"
-
-private const val DEFAULT_GENERATION = 1
-private const val DEFAULT_MAJOR_REV = "A"
-private const val DEFAULT_IS_CURRENT = true
-private const val DEFAULT_PERMISSION_ID = Permission.DEFAULT_PERMISSION_ID
-private const val ROOT_USER_ID = ru.scisolutions.scicmscore.persistence.entity.User.ROOT_USER_ID
 
 @Component
 class CustomUserDetailsManager(
@@ -304,20 +216,20 @@ class CustomUserDetailsManager(
     }
 
     @Throws(UsernameNotFoundException::class)
-    fun loadUserByUsername(username: String, enableAuthorities: Boolean, enableGroups: Boolean): UserDetails {
+    fun loadUserByUsername(username: String, enableAuthorities: Boolean?, enableGroups: Boolean?): UserDetails {
         val users = loadUsersByUsername(username)
         if (users.size == 0) {
             logger.debug("Query returned no results for user '$username'")
             throw UsernameNotFoundException(
-                messages.getMessage("JdbcDaoImpl.notFound", arrayOf<Any>(username), "Username {0} not found")
+                messages.getMessage("JdbcDaoImpl.notFound", arrayOf(username), "Username {0} not found")
             )
         }
         val user = users[0] // contains no GrantedAuthority[]
         val dbAuthsSet: MutableSet<GrantedAuthority> = HashSet()
-        if (enableAuthorities) {
+        if (enableAuthorities == true || (enableAuthorities == null && this.enableAuthorities)) {
             dbAuthsSet.addAll(loadUserAuthorities(user.username))
         }
-        if (enableGroups) {
+        if (enableGroups == true || (enableGroups == null && this.enableGroups)) {
             dbAuthsSet.addAll(loadGroupAuthorities(user.username))
         }
         val dbAuths: List<GrantedAuthority> = ArrayList(dbAuthsSet)
@@ -326,7 +238,7 @@ class CustomUserDetailsManager(
             logger.debug("User '$username' has no authorities and will be treated as 'not found'")
             throw UsernameNotFoundException(
                 messages.getMessage(
-                    "JdbcDaoImpl.noAuthority", arrayOf<Any>(username), "User {0} has no GrantedAuthority"
+                    "JdbcDaoImpl.noAuthority", arrayOf(username), "User {0} has no GrantedAuthority"
                 )
             )
         }
@@ -345,5 +257,96 @@ class CustomUserDetailsManager(
 
     private fun deleteUserAuthorities(username: String) {
         jdbcTemplate!!.update(deleteUserAuthoritiesSql, username)
+    }
+
+    companion object {
+        private const val USERS_BY_USERNAME_QUERY =
+            "SELECT username, passwd, enabled FROM sec_users WHERE LOWER(username) = LOWER(?)"
+
+        private const val AUTHORITIES_BY_USERNAME_QUERY = """
+            SELECT u.username, r.role
+            FROM sec_users u
+                INNER JOIN sec_roles r ON u.username = r.username
+            WHERE u.username = ?"""
+
+        private const val GROUP_AUTHORITIES_BY_USERNAME_QUERY = """
+            SELECT g.id, g.group_name, gr.role
+            FROM sec_groups g
+                INNER JOIN sec_group_members gm ON g.id = gm.group_id
+                INNER JOIN sec_group_roles gr ON g.id = gr.group_id
+            WHERE gm.username = ?"""
+
+        private const val CREATE_USER_SQL = """
+            INSERT INTO sec_users (
+                id, config_id, username, passwd, enabled, generation, major_rev, is_current, permission_id,
+                created_at, created_by_id, updated_at, updated_by_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
+        private const val DELETE_USER_SQL = "DELETE FROM sec_users WHERE LOWER(username) = LOWER(?)"
+
+        private const val UPDATE_USER_SQL = "UPDATE sec_users SET passwd = ?, enabled = ? WHERE LOWER(username) = LOWER(?)"
+
+        private const val INSERT_AUTHORITY_SQL = """
+            INSERT INTO sec_roles (
+                id, config_id, username, role, generation, major_rev, is_current, permission_id,
+                created_at, created_by_id, updated_at, updated_by_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
+        private const val DELETE_USER_AUTHORITIES_SQL = "DELETE FROM sec_roles WHERE username = ?"
+
+        private const val USER_EXISTS_SQL = "SELECT username FROM sec_users WHERE LOWER(username) = LOWER(?)"
+
+        private const val CHANGE_PASSWORD_SQL = "UPDATE sec_uses SET passwd = ? WHERE LOWER(username) = LOWER(?)"
+
+        private const val FIND_GROUPS_SQL = "SELECT group_name FROM sec_groups"
+
+        private const val FIND_USERS_IN_GROUP_SQL = """
+            SELECT username FROM sec_group_members gm, sec_groups g
+            WHERE gm.group_id = g.id AND g.group_name = ?"""
+
+        private const val INSERT_GROUP_SQL = """
+            INSERT INTO sec_groups (
+                id, config_id, group_name, generation, major_rev, is_current, permission_id,
+                created_at, created_by_id, updated_at, updated_by_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
+        private const val FIND_GROUP_ID_SQL = "SELECT id FROM sec_groups WHERE group_name = ?"
+
+        private const val INSERT_GROUP_AUTHORITY_SQL = """
+            INSERT INTO sec_group_roles (
+                id, config_id, group_id, role, generation, major_rev, is_current, permission_id,
+                created_at, created_by_id, updated_at, updated_by_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
+        private const val DELETE_GROUP_SQL = "DELETE FROM sec_groups WHERE id = ?"
+
+        private const val DELETE_GROUP_AUTHORITIES_SQL = "DELETE FROM sec_group_roles WHERE group_id = ?"
+
+        private const val DELETE_GROUP_MEMBERS_SQL = "DELETE FROM sec_group_members WHERE group_id = ?"
+
+        private const val RENAME_GROUP_SQL = "UPDATE sec_groups set group_name = ? WHERE group_name = ?"
+
+        private const val INSERT_GROUP_MEMBER_SQL = """
+            INSERT INTO sec_group_members (
+                id, config_id, group_id, username, generation, major_rev, is_current, permission_id,
+                created_at, created_by_id, updated_at, updated_by_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
+        private const val DELETE_GROUP_MEMBER_SQL =
+            "DELETE FROM sec_group_members WHERE group_id = ? AND LOWER(username) = LOWER(?)"
+
+        private const val GROUP_AUTHORITIES_QUERY_SQL = """
+            SELECT g.id, g.group_name, gr.role
+            FROM sec_groups g
+                INNER JOIN sec_group_roles gr ON g.id = gr.group_id
+            WHERE g.group_name = ?"""
+
+        private const val DELETE_GROUP_AUTHORITY_SQL = "DELETE FROM sec_group_roles WHERE group_id = ? AND role = ?"
+
+        private const val DEFAULT_GENERATION = 1
+        private const val DEFAULT_MAJOR_REV = "A"
+        private const val DEFAULT_IS_CURRENT = true
+        private const val DEFAULT_PERMISSION_ID = Permission.DEFAULT_PERMISSION_ID
+        private const val ROOT_USER_ID = User.ROOT_USER_ID
     }
 }

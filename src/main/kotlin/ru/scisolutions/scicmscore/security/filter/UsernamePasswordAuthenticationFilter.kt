@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
 import ru.scisolutions.scicmscore.config.props.SecurityProps
+import ru.scisolutions.scicmscore.domain.model.AuthRequest
+import ru.scisolutions.scicmscore.domain.model.TokenResponse
+import ru.scisolutions.scicmscore.domain.model.UserInfo
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.User
 import javax.servlet.FilterChain
@@ -68,7 +71,10 @@ class UsernamePasswordAuthenticationFilter(
         SecurityContextHolder.getContext().authentication = resultAuthentication
 
         // Create JWT token
-        val jwtToken = jwtTokenService.generateJwtToken(resultAuthentication)
+        val jwtToken = jwtTokenService.generateJwtToken(
+            resultAuthentication.name,
+            AuthorityUtils.authorityListToSet(resultAuthentication.authorities)
+        )
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
 
@@ -87,8 +93,7 @@ class UsernamePasswordAuthenticationFilter(
     }
 
     private fun sendJWTTokenResponse(req: HttpServletRequest, res: HttpServletResponse, jwtToken: String, authentication: Authentication) {
-        val claims = jwtTokenService.parseToken(jwtToken)
-        val user = (authentication.principal as User).user
+        val user = (authentication.principal as User).user ?: throw IllegalArgumentException("Authentication has not user entity")
         val tokenResponse = TokenResponse(
             jwt = jwtToken,
             expirationIntervalMillis = securityProps.jwtToken.expirationIntervalMillis,
@@ -105,26 +110,6 @@ class UsernamePasswordAuthenticationFilter(
 //        res.addHeader("Access-Control-Allow-Origin", req.getHeader("Origin") ?: "*")
         res.writer.print(jsonResponse)
     }
-
-    /**
-     * Strapi compatible DTO
-     */
-    private class AuthRequest(
-        val identifier: String,
-        val password: String
-    )
-
-    private class TokenResponse(
-        val jwt: String,
-        val user: UserInfo,
-        val expirationIntervalMillis: Long
-    )
-
-    private class UserInfo(
-        val id: String,
-        val username: String,
-        val roles: Set<String>
-    )
 
     companion object {
         private val pathHelper = UrlPathHelper()

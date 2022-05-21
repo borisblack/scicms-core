@@ -3,21 +3,17 @@ package ru.scisolutions.scicmscore.security
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.springframework.security.core.Authentication
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import java.util.Date
 
 class JwtTokenService(private val securityProps: SecurityProps) {
     private val jwtTokenProps = securityProps.jwtToken
 
-    fun generateJwtToken(authentication: Authentication): String =
+    fun generateJwtToken(subject: String, authorities: Set<String>): String =
         Jwts.builder()
             .setId(jwtTokenProps.id)
-            .setSubject(authentication.name)
-            .claim(
-                "authorities",
-                authentication.authorities.map { it.authority }
-            )
+            .setSubject(subject)
+            .claim("authorities", authorities)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + jwtTokenProps.expirationIntervalMillis))
             .signWith(SignatureAlgorithm.HS512, jwtTokenProps.secret.toByteArray())
