@@ -26,6 +26,7 @@ spec:
       columnName: source_id
       displayName: Source Part
       description: Source Part
+      indexed: true
     target:
       type: relation
       relType: manyToOne
@@ -33,6 +34,7 @@ spec:
       columnName: target_id
       displayName: Target Change Notice
       description: Target Change Notice
+      indexed: true
   indexes:
     _source_target_uk:
       columns:

@@ -27,6 +27,7 @@ spec:
       columnName: source_id
       displayName: Source Part
       description: Source Part
+      indexed: true
     target:
       type: relation
       relType: manyToOne
@@ -34,6 +35,7 @@ spec:
       columnName: target_id
       displayName: Target Part
       description: Target Part
+      indexed: true
     quantity:
       type: float
       columnName: quantity
