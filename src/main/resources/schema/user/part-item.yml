@@ -36,6 +36,7 @@ spec:
       displayName: Display Name
       description: Display Name
       length: 50
+      width: 120
     description:
       type: string
       columnName: description

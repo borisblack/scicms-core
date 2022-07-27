@@ -278,6 +278,10 @@
         "maxRange": {
           "description": "Maximum range (optional, null by default). For int, long, float, double and decimal types",
           "type": "number"
+        },
+        "width": {
+          "description": "Column width in UI (optional, null by default)",
+          "type": "number"
         }
       },
       "additionalProperties": false,
