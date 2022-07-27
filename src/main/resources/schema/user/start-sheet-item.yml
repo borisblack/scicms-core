@@ -7,6 +7,7 @@ metadata:
   dataSource: main
   tableName: start_sheets
   displayName: Start Sheet
+  displayAttrName: name
   singularName: startSheet
   pluralName: startSheets
   description: Start Sheets

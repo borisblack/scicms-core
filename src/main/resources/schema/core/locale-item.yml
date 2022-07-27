@@ -7,6 +7,7 @@ metadata:
   dataSource: main
   tableName: core_locales
   displayName: Locale
+  displayAttrName: name
   singularName: locale
   pluralName: locales
   description: Locales

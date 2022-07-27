@@ -7,6 +7,7 @@ metadata:
   dataSource: main
   tableName: sec_identities
   displayName: Identity
+  displayAttrName: name
   singularName: identity
   pluralName: identities
   description: Identities

@@ -78,6 +78,12 @@
           "minLength": 1,
           "maxLength": 50
         },
+        "displayAttrName": {
+          "description": "Display attribute name (optional, id is used by default)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
         "singularName": {
           "description": "Singular name (optional, name is used by default)",
           "type": "string",

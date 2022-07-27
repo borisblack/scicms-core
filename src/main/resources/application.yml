@@ -37,7 +37,7 @@ scicms-core:
     jwt-token:
       id: scisolutionsJWT
       secret: scisolutionsSecretKey
-      expiration-interval-millis: 1_800_000
+      expiration-interval-millis: 86_400_000
     registration-disabled: false
   versioning:
     include-in-unique-index: true

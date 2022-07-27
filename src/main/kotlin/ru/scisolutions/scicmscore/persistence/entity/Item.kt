@@ -17,6 +17,9 @@ class Item(
     @Column(name = "display_name")
     var displayName: String? = name,
 
+    @Column(name = "display_attr_name")
+    var displayAttrName: String? = name,
+
     @Column(name = "singular_name")
     var singularName: String? = name,
 

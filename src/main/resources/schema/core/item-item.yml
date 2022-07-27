@@ -7,6 +7,7 @@ metadata:
   dataSource: main
   tableName: core_items
   displayName: Item
+  displayAttrName: name
   singularName: item
   pluralName: items
   description: Items
@@ -37,6 +38,12 @@ spec:
       columnName: display_name
       displayName: Display Name
       description: Display Name
+      length: 50
+    displayAttrName:
+      type: string
+      columnName: display_attr_name
+      displayName: Display Attribute Name
+      description: Display Attribute Name
       length: 50
     singularName:
       type: string
@@ -76,7 +83,7 @@ spec:
       description: Core
     performDdl:
       type: bool
-      columnName: perform_ddl_create
+      columnName: perform_ddl
       displayName: Perform DDL Create
       description: Perform DDL Create
     versioned:

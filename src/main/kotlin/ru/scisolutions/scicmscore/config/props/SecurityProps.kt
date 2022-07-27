@@ -18,6 +18,6 @@ class SecurityProps {
     companion object {
         const val DEFAULT_ID: String = "scisolutionsJWT"
         const val DEFAULT_SECRET: String = "scisolutionsSecretKey"
-        const val DEFAULT_EXPIRATION_INTERVAL_MILLIS: Long = 1_800_000
+        const val DEFAULT_EXPIRATION_INTERVAL_MILLIS: Long = 86_400_000
     }
 }
