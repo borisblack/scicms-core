@@ -27,6 +27,7 @@ spec:
       columnName: passwd
       displayName: Password
       description: Password
+      private: true
       length: 50
     enabled:
       type: bool

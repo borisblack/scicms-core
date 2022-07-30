@@ -126,6 +126,7 @@ spec:
       description: Specification
       required: true
       defaultValue: '{}'
+      hidden: true
     checksum:
       type: string
       columnName: checksum

@@ -11,6 +11,7 @@ spec:
       description: ID
       required: true
       keyed: true
+      hidden: true
     configId:
       type: uuid
       columnName: config_id
@@ -38,12 +39,14 @@ spec:
       indexed: true
       defaultValue: A
       length: 50
+      hidden: true
     minorRev:
       type: string
       columnName: minor_rev
       displayName: Minor Rev
       description: Minor Rev
       length: 50
+      hidden: true
     current:
       type: bool
       columnName: is_current
@@ -60,6 +63,7 @@ spec:
       description: Locale
       indexed: true
       length: 50
+      hidden: true
     lifecycle:
       type: relation
       relType: manyToOne
@@ -68,6 +72,7 @@ spec:
       displayName: Lifecycle
       description: Lifecycle
 #      indexed: true
+      hidden: true
     state:
       type: string
       columnName: state
@@ -75,6 +80,7 @@ spec:
       description: Lifecycle State
       indexed: true
       length: 50
+      hidden: true
     permission:
       type: relation
       relType: manyToOne
@@ -83,12 +89,14 @@ spec:
       displayName: Permission
       description: Permission
       indexed: true
+      hidden: true
     createdAt:
       type: datetime
       columnName: created_at
       displayName: Created At
       description: Created At
       required: true
+      hidden: true
     createdBy:
       type: relation
       relType: manyToOne
@@ -97,11 +105,13 @@ spec:
       displayName: Created By
       description: Created By
       required: true
+      hidden: true
     updatedAt:
       type: datetime
       columnName: updated_at
       displayName: Updated At
       description: Updated At
+      hidden: true
     updatedBy:
       type: relation
       relType: manyToOne
@@ -109,6 +119,7 @@ spec:
       columnName: updated_by_id
       displayName: Updated By
       description: Updated By
+      hidden: true
     lockedBy:
       type: relation
       relType: manyToOne
@@ -116,3 +127,4 @@ spec:
       columnName: locked_by_id
       displayName: Locked By
       description: Locked By
+      hidden: true

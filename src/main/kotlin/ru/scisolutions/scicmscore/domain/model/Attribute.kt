@@ -27,6 +27,7 @@ class Attribute(
     val scale: Int? = null, // for decimal types
     val minRange: Long? = null, // for int, long, float, double, decimal types
     val maxRange: Long? = null, // for int, long, float, double, decimal types
+    val hidden: Boolean? = null, // hide column in UI
     val width: Int? = null // column width in UI
 ) {
     @JsonIgnore
@@ -90,6 +91,7 @@ class Attribute(
             scale,
             minRange,
             maxRange,
+            hidden,
             width
         )
 
@@ -125,6 +127,7 @@ class Attribute(
             scale == other.scale &&
             minRange == other.minRange &&
             maxRange == other.maxRange &&
+            hidden == other.hidden &&
             width == other.width
     }
 
