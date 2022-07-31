@@ -19,6 +19,6 @@ class OrderingsParser {
     }
 
     companion object {
-        private val sortFieldPattern = Pattern.compile("^(\\w+)(?:\\s+(asc|desc))?$", Pattern.CASE_INSENSITIVE)
+        private val sortFieldPattern = Pattern.compile("^(\\w+)(?::(asc|desc))?$", Pattern.CASE_INSENSITIVE)
     }
 }
