@@ -12,6 +12,7 @@
     <property name="regularUserId" value="8ee059eb-bfe7-471b-9b90-a0537b7db1c8"/>
     <property name="defaultPermissionId" value="6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"/>
     <property name="adminRoleIdentityId" value="c666c861-3be0-4a97-a49d-15296fc37870"/>
+    <property name="userRoleIdentityId" value="e7501f6f-db02-49d1-b02f-d9ef70316a7d"/>
     <changeSet id="2022-04-05-init-sec-data" author="bchernysh">
         <insert tableName="sec_users">
             <column name="id" value="${rootUserId}"/>
@@ -130,6 +131,19 @@
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
 
+        <insert tableName="sec_identities">
+            <column name="id" value="${userRoleIdentityId}"/>
+            <column name="config_id" value="${userRoleIdentityId}"/>
+            <column name="name" value="ROLE_USER"/>
+            <column name="principal" value="0"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
         <insert tableName="sec_permissions">
             <column name="id" value="${defaultPermissionId}"/>
             <column name="config_id" value="${defaultPermissionId}"/>
@@ -149,6 +163,22 @@
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${adminRoleIdentityId}"/>
             <column name="mask" value="31"/>
+            <column name="begin_date" valueDate="${now}"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_access">
+            <column name="id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
+            <column name="config_id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
+            <column name="sort_order" value="200"/>
+            <column name="source_id" value="${defaultPermissionId}"/>
+            <column name="target_id" value="${userRoleIdentityId}"/>
+            <column name="mask" value="1"/>
             <column name="begin_date" valueDate="${now}"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
