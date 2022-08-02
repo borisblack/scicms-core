@@ -11,7 +11,7 @@ metadata:
   singularName: part
   pluralName: parts
   description: Parts
-  icon: fas fa-swatchbook
+  icon: TagOutlined
   core: true
   performDdl: true
   versioned: true

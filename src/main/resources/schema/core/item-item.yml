@@ -10,6 +10,7 @@ metadata:
   displayAttrName: name
   singularName: item
   pluralName: items
+  icon: DatabaseOutlined
   description: Items
   core: true
   performDdl: false

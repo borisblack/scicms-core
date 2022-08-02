@@ -12,7 +12,7 @@
     "singularName": "example",
     "pluralName": "examples",
     "description": "Examples",
-    "icon": "fas fa-swatchbook",
+    "icon": "TagOutlined",
     "core": false,
     "performDdl": false,
     "versioned": false,

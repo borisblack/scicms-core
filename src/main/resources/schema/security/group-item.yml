@@ -10,6 +10,7 @@ metadata:
   displayAttrName: groupName
   singularName: group
   pluralName: groups
+  icon: TeamOutlined
   description: Groups
   core: true
   performDdl: false
