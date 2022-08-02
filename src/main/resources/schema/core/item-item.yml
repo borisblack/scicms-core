@@ -46,6 +46,7 @@ spec:
       displayName: Display Attribute Name
       description: Display Attribute Name
       length: 50
+      width: 180
     singularName:
       type: string
       columnName: singular_name
