@@ -8,6 +8,7 @@ metadata:
   dataSource: main
   tableName: sec_access
   displayName: Access
+  displayAttrName: displayName
   singularName: access
   pluralName: accesses
   description: Access

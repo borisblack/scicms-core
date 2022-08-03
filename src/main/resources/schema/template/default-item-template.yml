@@ -12,6 +12,7 @@ spec:
       required: true
       keyed: true
       hidden: true
+      width: 290
     configId:
       type: uuid
       columnName: config_id
@@ -21,6 +22,7 @@ spec:
       unique: true
       indexed: true
       private: true
+      width: 290
     generation:
       type: int
       columnName: generation
