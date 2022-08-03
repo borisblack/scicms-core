@@ -1,4 +1,4 @@
-package ru.scisolutions.userimpl.lifecycle
+package ru.scisolutions.customimpl.lifecycle
 
 import org.slf4j.LoggerFactory
 import ru.scisolutions.scicmscore.engine.schema.model.Promotable

@@ -19,7 +19,7 @@
     "manualVersioning": false,
     "localized": false,
     "notLockable": false,
-    "implementation": "ru.scisolutions.userimpl.item.ExampleItemImplementation"
+    "implementation": "ru.scisolutions.customimpl.item.ExampleItemImplementation"
   },
   "spec": {
     "attributes": {

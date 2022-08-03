@@ -1,4 +1,4 @@
-package ru.scisolutions.userimpl.item
+package ru.scisolutions.customimpl.item
 
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse

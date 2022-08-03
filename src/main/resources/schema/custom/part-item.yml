@@ -3,21 +3,23 @@ kind: Item
 includeTemplates:
   - defaultItemTemplate
 metadata:
-  name: example
+  name: part
   dataSource: main
-  tableName: examples
-  displayName: Example
-  singularName: example
-  pluralName: examples
-  description: Examples
+  tableName: parts
+  displayName: Part
+  displayAttrName: name
+  singularName: part
+  pluralName: parts
+  description: Parts
   icon: TagOutlined
-  core: false
-  performDdl: false
-  versioned: false
+  core: true
+  performDdl: true
+  versioned: true
   manualVersioning: false
-  localized: false
+#  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b
   notLockable: false
-  implementation: ru.scisolutions.userimpl.item.ExampleItemImplementation
+  localized: true
+  implementation: ru.scisolutions.customimpl.item.PartItemImpl
 spec:
   attributes:
     name:
@@ -25,17 +27,16 @@ spec:
       columnName: name
       displayName: Name
       description: Name
+      length: 50
       required: true
       unique: true
-      indexed: false
-      private: false
-      length: 50
     displayName:
       type: string
       columnName: display_name
       displayName: Display Name
       description: Display Name
       length: 50
+      width: 200
     description:
       type: string
       columnName: description
@@ -54,25 +55,27 @@ spec:
       type: enum
       columnName: part_type
       enumSet:
-        - Assembly
-        - Part
+        - Сборка
+        - Компонент
+        - Материал
+        - Программа
       displayName: Part Type
       description: Part Type
     ownershipType:
       type: enum
       columnName: ownership_type
       enumSet:
-        - Manufactured
-        - Borrowed
-        - Bought
+        - Разработанное
+        - Заимствованное
+        - Покупное
       displayName: Ownership Type
       description: Ownership Type
     units:
       type: enum
       columnName: units
       enumSet:
-        - pcs
-        - kg
+        - Шт
+        - Кг
       displayName: Units
       description: Units
     cost:
@@ -106,6 +109,20 @@ spec:
       columnName: superseded_date
       displayName: Superseded Date
       description: Superseded Date
+    ownedBy:
+      type: relation
+      relType: manyToOne
+      target: user
+      columnName: owned_by_id
+      displayName: Owned By
+      description: Owned By
+    managedBy:
+      type: relation
+      relType: manyToOne
+      target: user
+      columnName: managed_by_id
+      displayName: Managed By
+      description: Managed By
     startSheet:
       type: relation
       relType: manyToOne
@@ -114,8 +131,18 @@ spec:
       columnName: start_sheet_id
       displayName: Start Sheet
       description: Start Sheet
-  indexes:
-    examples_name_uk:
-      columns:
-        - name
-      unique: true
+    changeNotices:
+      type: relation
+      relType: manyToMany
+      target: changeNotice
+      intermediate: partChange
+      inversedBy: parts
+      displayName: Change Notices
+      description: Change Notices
+    partBOM:
+      type: relation
+      relType: oneToMany
+      target: partBOM
+      mappedBy: source
+      displayName: Part BOM
+      description: Part BOM
