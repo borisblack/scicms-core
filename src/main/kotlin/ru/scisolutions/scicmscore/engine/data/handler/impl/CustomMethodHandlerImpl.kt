@@ -8,6 +8,8 @@ import ru.scisolutions.scicmscore.engine.data.model.CreateHook
 import ru.scisolutions.scicmscore.engine.data.model.CreateLocalizationHook
 import ru.scisolutions.scicmscore.engine.data.model.CreateVersionHook
 import ru.scisolutions.scicmscore.engine.data.model.DeleteHook
+import ru.scisolutions.scicmscore.engine.data.model.FindAllHook
+import ru.scisolutions.scicmscore.engine.data.model.FindOneHook
 import ru.scisolutions.scicmscore.engine.data.model.LockHook
 import ru.scisolutions.scicmscore.engine.data.model.PurgeHook
 import ru.scisolutions.scicmscore.engine.data.model.UpdateHook
@@ -91,6 +93,10 @@ class CustomMethodHandlerImpl(
             LOCK_METHOD_NAME,
             UNLOCK_METHOD_NAME,
             PROMOTE_METHOD_NAME,
+            FindOneHook::beforeFindOne.name,
+            FindOneHook::afterFindOne.name,
+            FindAllHook::beforeFindAll.name,
+            FindAllHook::afterFindAll.name,
             CreateHook::beforeCreate.name,
             CreateHook::afterCreate.name,
             CreateVersionHook::beforeCreateVersion.name,

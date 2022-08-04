@@ -5,18 +5,26 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.data.model.FindOneHook
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class FindOneHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao
 ) : FindOneHandler {
     override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, FindOneHook::class.java)
+        implInstance?.beforeFindOne(itemName, id)
+
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val itemRec =
             if (isOnlyId(attrNames))
@@ -24,7 +32,11 @@ class FindOneHandlerImpl(
             else
                 aclItemRecDao.findByIdForRead(item, id, attrNames)
 
-        return Response(itemRec)
+        val response = Response(itemRec)
+
+        implInstance?.afterFindOne(itemName,response)
+
+        return response
     }
 
     private fun isOnlyId(attrNames: Set<String>): Boolean = attrNames.size == 1 && ID_ATTR_NAME in attrNames

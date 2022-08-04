@@ -6,16 +6,19 @@ import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.db.query.FindAllQueryBuilder
 import ru.scisolutions.scicmscore.engine.data.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.data.model.FindAllHook
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.data.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollectionMeta
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class FindAllHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val findAllQueryBuilder: FindAllQueryBuilder,
     private val itemRecDao: ItemRecDao
@@ -27,6 +30,11 @@ class FindAllHandlerImpl(
         selectPaginationFields: Set<String>
     ): ResponseCollection {
         val item = itemService.getByName(itemName)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, FindAllHook::class.java)
+        implInstance?.beforeFindAll(itemName, input)
+
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val findAllQuery = findAllQueryBuilder.buildFindAllQuery(
             item = item,
@@ -36,12 +44,16 @@ class FindAllHandlerImpl(
         )
         val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql)
 
-        return ResponseCollection(
+        val response = ResponseCollection(
             data = itemRecList,
             meta = ResponseCollectionMeta(
                 pagination = findAllQuery.pagination
             )
         )
+
+        implInstance?.afterFindAll(itemName, response)
+
+        return response
     }
 
     override fun findAllRelated(
