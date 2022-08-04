@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.mapper
 
 import ru.scisolutions.scicmscore.engine.schema.model.Item
+import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 class ItemMapper {
@@ -35,7 +36,7 @@ class ItemMapper {
         target.localized = metadata.localized
         target.revisionPolicyId = metadata.revisionPolicy
         target.lifecycleId = metadata.lifecycle
-        target.permissionId = metadata.permission
+        target.permissionId = metadata.permission ?: Permission.DEFAULT_PERMISSION_ID
         target.implementation = metadata.implementation
         target.notLockable = metadata.notLockable
         target.spec = source.spec

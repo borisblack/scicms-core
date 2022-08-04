@@ -10,9 +10,6 @@ class AuditEntityListener {
         val entity = target as AbstractEntity
         val now = OffsetDateTime.now()
 
-        if (entity.permissionId == null)
-            entity.permissionId = Permission.DEFAULT_PERMISSION_ID
-
         entity.createdAt = now
         entity.createdById = User.ROOT_USER_ID
         entity.updatedAt = now

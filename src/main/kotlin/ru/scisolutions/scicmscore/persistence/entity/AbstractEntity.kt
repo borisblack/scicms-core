@@ -36,7 +36,7 @@ abstract class AbstractEntity {
     var state: String? = null
 
     @Column(name = "permission_id")
-    var permissionId: String? = Permission.DEFAULT_PERMISSION_ID
+    var permissionId: String? = null
 
     var locale: String? = null
 
