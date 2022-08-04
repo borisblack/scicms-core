@@ -32,10 +32,12 @@ class ItemMapper {
         target.performDdl = metadata.performDdl
         target.versioned = metadata.versioned
         target.manualVersioning = metadata.manualVersioning
-        target.revisionPolicyId = metadata.revisionPolicy
-        target.notLockable = metadata.notLockable
         target.localized = metadata.localized
+        target.revisionPolicyId = metadata.revisionPolicy
+        target.lifecycleId = metadata.lifecycle
+        target.permissionId = metadata.permission
         target.implementation = metadata.implementation
+        target.notLockable = metadata.notLockable
         target.spec = source.spec
         target.checksum = source.hashCode().toString()
     }

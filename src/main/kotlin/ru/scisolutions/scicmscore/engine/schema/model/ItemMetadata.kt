@@ -14,8 +14,10 @@ data class ItemMetadata(
     val performDdl: Boolean = true,
     val versioned: Boolean = false,
     val manualVersioning: Boolean = false,
-    val revisionPolicy: String? = null,
-    val notLockable: Boolean = false,
     val localized: Boolean = false,
-    val implementation: String? = null
+    val revisionPolicy: String? = null,
+    val lifecycle: String? = null,
+    val permission: String? = null,
+    val implementation: String? = null,
+    val notLockable: Boolean = false
 ) : BaseMetadata(name)

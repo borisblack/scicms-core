@@ -1,33 +1,34 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
 import org.slf4j.LoggerFactory
-import org.springframework.beans.BeansException
-import org.springframework.context.ApplicationContext
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.handler.CustomMethodHandler
+import ru.scisolutions.scicmscore.engine.data.model.CreateHook
+import ru.scisolutions.scicmscore.engine.data.model.CreateLocalizationHook
+import ru.scisolutions.scicmscore.engine.data.model.CreateVersionHook
+import ru.scisolutions.scicmscore.engine.data.model.DeleteHook
+import ru.scisolutions.scicmscore.engine.data.model.LockHook
+import ru.scisolutions.scicmscore.engine.data.model.PurgeHook
+import ru.scisolutions.scicmscore.engine.data.model.UpdateHook
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 import java.lang.reflect.Modifier
 
 @Service
 class CustomMethodHandlerImpl(
-    private val itemService: ItemService,
-    private val applicationContext: ApplicationContext
+    private val classService: ClassService,
+    private val itemService: ItemService
 ) : CustomMethodHandler {
-    private val classCache: Cache<String, Class<*>> = CacheBuilder.newBuilder().build()
-    private val instanceCache: Cache<Class<*>, Any> = CacheBuilder.newBuilder().build()
-
     override fun getCustomMethods(itemName: String): Set<String> {
         val item = itemService.getByName(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalArgumentException("Item [$itemName] has no implementation.")
 
-        val clazz = getClass(implementation)
+        val clazz = classService.getClass(implementation)
 
         return clazz.declaredMethods.asSequence()
             .filter { Modifier.isPublic(it.modifiers) }
@@ -49,8 +50,6 @@ class CustomMethodHandlerImpl(
             .toSet()
     }
 
-    private fun getClass(className: String): Class<*> = classCache.get(className) { Class.forName(className) }
-
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
         val item = itemService.getByName(itemName)
         if (itemService.findByNameForWrite(item.name) == null)
@@ -60,27 +59,21 @@ class CustomMethodHandlerImpl(
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation.")
 
-        val clazz = getClass(implementation)
+        val clazz = classService.getClass(implementation)
         val customMethod = clazz.getMethod(methodName, CustomMethodInput::class.java)
             ?: throw IllegalStateException("Method [$methodName] with valid signature not found.")
 
         if (customMethod.returnType != CustomMethodResponse::class.java)
             throw IllegalArgumentException("Method [${clazz.simpleName}#${customMethod.name}] has invalid signature.")
 
-        val instance = getInstance(clazz)
+        val instance = classService.getInstance(clazz)
         return customMethod.invoke(instance, customMethodInput) as CustomMethodResponse
-    }
-
-    private fun getInstance(clazz: Class<*>): Any = instanceCache.get(clazz) {
-        try {
-            applicationContext.getBean(clazz)
-        } catch (e: BeansException) {
-            clazz.getConstructor().newInstance()
-        }
     }
 
     companion object {
         private const val CREATE_METHOD_NAME = "create"
+        private const val CREATE_VERSION_METHOD_NAME = "createVersion"
+        private const val CREATE_LOCALIZATION_METHOD_NAME = "createLocalization"
         private const val UPDATE_METHOD_NAME = "update"
         private const val DELETE_METHOD_NAME = "delete"
         private const val PURGE_METHOD_NAME = "purge"
@@ -90,12 +83,30 @@ class CustomMethodHandlerImpl(
 
         private val reservedMethodNames = setOf(
             CREATE_METHOD_NAME,
+            CREATE_VERSION_METHOD_NAME,
+            CREATE_LOCALIZATION_METHOD_NAME,
             UPDATE_METHOD_NAME,
             DELETE_METHOD_NAME,
             PURGE_METHOD_NAME,
             LOCK_METHOD_NAME,
             UNLOCK_METHOD_NAME,
-            PROMOTE_METHOD_NAME
+            PROMOTE_METHOD_NAME,
+            CreateHook::beforeCreate.name,
+            CreateHook::afterCreate.name,
+            CreateVersionHook::beforeCreateVersion.name,
+            CreateVersionHook::afterCreateVersion.name,
+            CreateLocalizationHook::beforeCreateLocalization.name,
+            CreateLocalizationHook::afterCreateLocalization.name,
+            UpdateHook::beforeUpdate.name,
+            UpdateHook::afterUpdate.name,
+            DeleteHook::beforeDelete.name,
+            DeleteHook::afterDelete.name,
+            PurgeHook::beforePurge.name,
+            PurgeHook::afterPurge.name,
+            LockHook::beforeLock.name,
+            LockHook::afterLock.name,
+            LockHook::beforeUnlock.name,
+            LockHook::afterUnlock.name
         )
 
         private val logger = LoggerFactory.getLogger(CustomMethodHandlerImpl::class.java)

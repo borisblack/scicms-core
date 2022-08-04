@@ -99,6 +99,11 @@ class SchemaSeederImpl(
                 attribute.validate()
                 relationValidator.validateAttribute(item, attrName, attribute)
             }
+
+        // Check if item implementation exists
+        if (item.metadata.implementation != null) {
+            Class.forName(item.metadata.implementation)
+        }
     }
 
     private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =

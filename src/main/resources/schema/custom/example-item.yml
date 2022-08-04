@@ -17,7 +17,6 @@ metadata:
   manualVersioning: false
   localized: false
   notLockable: false
-  implementation: ru.scisolutions.customimpl.item.ExampleItemImplementation
 spec:
   attributes:
     name:

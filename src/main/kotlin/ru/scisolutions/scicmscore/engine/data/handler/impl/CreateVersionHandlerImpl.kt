@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.data.model.CreateVersionHook
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -19,12 +20,14 @@ import ru.scisolutions.scicmscore.engine.data.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.data.service.VersionManager
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 import java.util.UUID
 
 @Service
 class CreateVersionHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -51,6 +54,10 @@ class CreateVersionHandlerImpl(
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, CreateVersionHook::class.java)
+        implInstance?.beforeCreateVersion(itemName, input)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
@@ -98,7 +105,11 @@ class CreateVersionHandlerImpl(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        return Response(ItemRec(selectData))
+        val response = Response(ItemRec(selectData))
+
+        implInstance?.afterCreateVersion(itemName, response)
+
+        return response
     }
 
     companion object {

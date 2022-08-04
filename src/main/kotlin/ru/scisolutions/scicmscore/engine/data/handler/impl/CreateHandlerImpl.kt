@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.data.model.CreateHook
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -18,11 +19,13 @@ import ru.scisolutions.scicmscore.engine.data.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.data.service.VersionManager
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 import java.util.UUID
 
 @Service
 class CreateHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -41,6 +44,10 @@ class CreateHandlerImpl(
         val item = itemService.getByName(itemName)
         if (itemService.findByNameForCreate(item.name) == null)
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
+        implInstance?.beforeCreate(itemName, input)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val nonCollectionData = preparedData
@@ -73,7 +80,11 @@ class CreateHandlerImpl(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        return Response(ItemRec(selectData))
+        val response = Response(ItemRec(selectData))
+
+        implInstance?.afterCreate(itemName, response)
+
+        return response
     }
 
     companion object {

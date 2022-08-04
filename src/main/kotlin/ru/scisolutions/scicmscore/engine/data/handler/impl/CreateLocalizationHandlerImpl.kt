@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.data.model.CreateLocalizationHook
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -18,12 +19,14 @@ import ru.scisolutions.scicmscore.engine.data.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.data.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.data.service.SequenceManager
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 import java.util.UUID
 
 @Service
 class CreateLocalizationHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -52,6 +55,10 @@ class CreateLocalizationHandlerImpl(
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id) // lock
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
+        implInstance?.beforeCreateLocalization(itemName, input)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val filteredData = preparedData
@@ -90,7 +97,11 @@ class CreateLocalizationHandlerImpl(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        return Response(ItemRec(selectData))
+        val response = Response(ItemRec(selectData))
+
+        implInstance?.afterCreateLocalization(itemName, response)
+
+        return response
     }
 
     companion object {

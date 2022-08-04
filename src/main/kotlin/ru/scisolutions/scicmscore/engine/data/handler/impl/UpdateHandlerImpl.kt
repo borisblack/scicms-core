@@ -10,15 +10,18 @@ import ru.scisolutions.scicmscore.engine.data.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.model.UpdateHook
 import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
 import ru.scisolutions.scicmscore.engine.data.service.PermissionManager
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 
 @Service
 class UpdateHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val permissionManager: PermissionManager,
@@ -43,6 +46,10 @@ class UpdateHandlerImpl(
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, UpdateHook::class.java)
+        implInstance?.beforeUpdate(itemName, input)
 
         val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
         val mergedData = Maps.merge(preparedData, prevItemRec).toMutableMap()
@@ -70,7 +77,11 @@ class UpdateHandlerImpl(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        return Response(ItemRec(selectData))
+        val response = Response(ItemRec(selectData))
+
+        implInstance?.afterUpdate(itemName, response)
+
+        return response
     }
 
     companion object {

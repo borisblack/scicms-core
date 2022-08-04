@@ -8,6 +8,7 @@ import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.DeleteHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.handler.util.DeleteRelationHelper
+import ru.scisolutions.scicmscore.engine.data.model.DeleteHook
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
@@ -15,10 +16,12 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class DeleteHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val itemRecDao: ItemRecDao,
@@ -48,6 +51,10 @@ class DeleteHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, DeleteHook::class.java)
+        implInstance?.beforeDelete(itemName, input)
+
         deleteRelationHelper.processRelations(item, itemRec, input.deletingStrategy) // process relations
 
         deleteById(item, input.id) // delete
@@ -57,7 +64,11 @@ class DeleteHandlerImpl(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        return Response(ItemRec(selectData))
+        val response = Response(ItemRec(selectData))
+
+        implInstance?.afterDelete(itemName, response)
+
+        return response
     }
 
     private fun deleteById(item: Item, id: String): Int =

@@ -1,36 +1,30 @@
 package ru.scisolutions.scicmscore.engine.data.handler.impl
 
-import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
 import org.slf4j.LoggerFactory
-import org.springframework.beans.BeansException
-import org.springframework.context.ApplicationContext
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.data.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.data.handler.PromoteHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.model.Promotable
 import ru.scisolutions.scicmscore.engine.data.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.data.model.response.Response
 import ru.scisolutions.scicmscore.engine.data.service.AuditManager
-import ru.scisolutions.scicmscore.engine.schema.model.Promotable
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.service.LifecycleService
 
 @Service
 class PromoteHandlerImpl(
-    private val applicationContext: ApplicationContext,
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val lifecycleService: LifecycleService,
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : PromoteHandler {
-    private val classCache: Cache<String, Class<*>> = CacheBuilder.newBuilder().build()
-    private val instanceCache: Cache<Class<*>, Any> = CacheBuilder.newBuilder().build()
-
     override fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
 
@@ -80,21 +74,11 @@ class PromoteHandlerImpl(
         if (implementation.isNullOrBlank())
             throw IllegalArgumentException("Lifecycle [${lifecycle.name}] has no implementation.")
 
-        val clazz = getClass(implementation)
+        val clazz = classService.getClass(implementation)
         return if (Promotable::class.java.isAssignableFrom(clazz))
-            getInstance(clazz) as Promotable
+            classService.getInstance(clazz) as Promotable
         else
             throw IllegalStateException("Class [${clazz.simpleName}] does not implement [${Promotable::class.simpleName}] interface.")
-    }
-
-    private fun getClass(className: String): Class<*> = classCache.get(className) { Class.forName(className) }
-
-    private fun getInstance(clazz: Class<*>): Any = instanceCache.get(clazz) {
-        try {
-            applicationContext.getBean(clazz)
-        } catch (e: BeansException) {
-            clazz.getConstructor().newInstance()
-        }
     }
 
     companion object {

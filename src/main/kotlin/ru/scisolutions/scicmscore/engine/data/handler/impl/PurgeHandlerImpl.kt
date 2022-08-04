@@ -8,12 +8,15 @@ import ru.scisolutions.scicmscore.engine.data.handler.PurgeHandler
 import ru.scisolutions.scicmscore.engine.data.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.data.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
+import ru.scisolutions.scicmscore.engine.data.model.PurgeHook
 import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
 class PurgeHandlerImpl(
+    private val classService: ClassService,
     private val itemService: ItemService,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val itemRecDao: ItemRecDao,
@@ -29,6 +32,10 @@ class PurgeHandlerImpl(
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, PurgeHook::class.java)
+        implInstance?.beforePurge(itemName, input)
 
         val itemRecsToPurge = itemRecDao.findAllByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String)
         logger.info("${itemRecsToPurge.size} item(s) will be purged")
@@ -48,9 +55,13 @@ class PurgeHandlerImpl(
                 ItemRec(selectData.toMutableMap())
             }
 
-        return ResponseCollection(
+        val response = ResponseCollection(
             data = result
         )
+
+        implInstance?.afterPurge(itemName, response)
+
+        return response
     }
 
     companion object {
