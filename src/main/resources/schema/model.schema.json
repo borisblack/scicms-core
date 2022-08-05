@@ -287,11 +287,11 @@
           "description": "Maximum range (optional, null by default). For int, long, float, double and decimal types",
           "type": "number"
         },
-        "hidden": {
+        "colHidden": {
           "description": "Hide column in UI (optional, null by default)",
           "type": "boolean"
         },
-        "width": {
+        "colWidth": {
           "description": "Column width in UI (optional, null by default)",
           "type": "number"
         }

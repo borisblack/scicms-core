@@ -61,7 +61,7 @@ spec:
       description: Specification
       required: true
       defaultValue: '{}'
-      hidden: true
+      colHidden: true
     checksum:
       type: string
       columnName: checksum

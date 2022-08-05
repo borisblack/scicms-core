@@ -11,8 +11,8 @@ spec:
       description: ID
       required: true
       keyed: true
-      hidden: true
-      width: 290
+      colHidden: true
+      colWidth: 290
     configId:
       type: uuid
       columnName: config_id
@@ -22,7 +22,7 @@ spec:
       unique: true
       indexed: true
       private: true
-      width: 290
+      colWidth: 290
     generation:
       type: int
       columnName: generation
@@ -41,14 +41,14 @@ spec:
       indexed: true
       defaultValue: A
       length: 50
-      hidden: true
+      colHidden: true
     minorRev:
       type: string
       columnName: minor_rev
       displayName: Minor Rev
       description: Minor Rev
       length: 50
-      hidden: true
+      colHidden: true
     current:
       type: bool
       columnName: is_current
@@ -65,7 +65,7 @@ spec:
       description: Locale
       indexed: true
       length: 50
-      hidden: true
+      colHidden: true
     lifecycle:
       type: relation
       relType: manyToOne
@@ -74,7 +74,7 @@ spec:
       displayName: Lifecycle
       description: Lifecycle
 #      indexed: true
-      hidden: true
+      colHidden: true
     state:
       type: string
       columnName: state
@@ -82,7 +82,7 @@ spec:
       description: Lifecycle State
       indexed: true
       length: 50
-      hidden: true
+      colHidden: true
     permission:
       type: relation
       relType: manyToOne
@@ -91,14 +91,14 @@ spec:
       displayName: Permission
       description: Permission
       indexed: true
-      hidden: true
+      colHidden: true
     createdAt:
       type: datetime
       columnName: created_at
       displayName: Created At
       description: Created At
       required: true
-      hidden: true
+      colHidden: true
     createdBy:
       type: relation
       relType: manyToOne
@@ -107,13 +107,13 @@ spec:
       displayName: Created By
       description: Created By
       required: true
-      hidden: true
+      colHidden: true
     updatedAt:
       type: datetime
       columnName: updated_at
       displayName: Updated At
       description: Updated At
-      hidden: true
+      colHidden: true
     updatedBy:
       type: relation
       relType: manyToOne
@@ -121,7 +121,7 @@ spec:
       columnName: updated_by_id
       displayName: Updated By
       description: Updated By
-      hidden: true
+      colHidden: true
     lockedBy:
       type: relation
       relType: manyToOne
@@ -129,4 +129,4 @@ spec:
       columnName: locked_by_id
       displayName: Locked By
       description: Locked By
-      hidden: true
+      colHidden: true

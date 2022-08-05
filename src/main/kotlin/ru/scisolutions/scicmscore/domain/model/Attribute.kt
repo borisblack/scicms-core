@@ -27,8 +27,8 @@ class Attribute(
     val scale: Int? = null, // for decimal types
     val minRange: Long? = null, // for int, long, float, double, decimal types
     val maxRange: Long? = null, // for int, long, float, double, decimal types
-    val hidden: Boolean? = null, // hide column in UI
-    val width: Int? = null // column width in UI
+    val colHidden: Boolean? = null, // hide column in UI
+    val colWidth: Int? = null // column width in UI
 ) {
     @JsonIgnore
     fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
@@ -91,8 +91,8 @@ class Attribute(
             scale,
             minRange,
             maxRange,
-            hidden,
-            width
+            colHidden,
+            colWidth
         )
 
     override fun equals(other: Any?): Boolean {
@@ -127,8 +127,8 @@ class Attribute(
             scale == other.scale &&
             minRange == other.minRange &&
             maxRange == other.maxRange &&
-            hidden == other.hidden &&
-            width == other.width
+            colHidden == other.colHidden &&
+            colWidth == other.colWidth
     }
 
     enum class Type {

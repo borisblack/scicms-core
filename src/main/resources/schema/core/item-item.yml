@@ -46,7 +46,7 @@ spec:
       displayName: Display Attribute Name
       description: Display Attribute Name
       length: 50
-      width: 180
+      colWidth: 190
     singularName:
       type: string
       columnName: singular_name
@@ -88,6 +88,7 @@ spec:
       columnName: perform_ddl
       displayName: Perform DDL Create
       description: Perform DDL Create
+      colWidth: 170
     versioned:
       type: bool
       columnName: versioned
@@ -98,6 +99,7 @@ spec:
       columnName: manual_versioning
       displayName: Manual Versioning
       description: Manual Versioning
+      colWidth: 160
     revisionPolicy:
       type: relation
       relType: manyToOne
@@ -121,6 +123,7 @@ spec:
       displayName: Implementation
       description: Implementation
       length: 100
+      colWidth: 150
     spec:
       type: json
       columnName: spec
@@ -128,7 +131,7 @@ spec:
       description: Specification
       required: true
       defaultValue: '{}'
-      hidden: true
+      colHidden: true
     checksum:
       type: string
       columnName: checksum
