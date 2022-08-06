@@ -221,8 +221,8 @@
             <column name="locked" type="tinyint">
                 <constraints nullable="false"/>
             </column>
-            <column name="locked_at" type="datetime"/>
             <column name="locked_by" type="varchar(255)"/>
+            <column name="lock_until" type="datetime"/>
         </createTable>
 
         <!--core_sequences-->

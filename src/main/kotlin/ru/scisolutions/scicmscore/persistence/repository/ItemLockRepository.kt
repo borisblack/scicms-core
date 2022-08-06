@@ -4,21 +4,22 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import ru.scisolutions.scicmscore.persistence.entity.ItemLock
+import java.time.LocalDateTime
 
 interface ItemLockRepository : CrudRepository<ItemLock, String> {
     @Modifying
     @Query(
         "update ItemLock l " +
-        "set l.locked = true, l.lockedAt = current_timestamp, l.lockedBy = :lockedBy " +
-        "where l.id = 1 and (l.locked = false or (l.locked = true and l.lockedBy = :lockedBy))"
+        "set l.locked = true, l.lockedBy = :lockedBy, l.lockUntil = :lockUntil " +
+        "where l.id = 1 and (l.locked = false or l.lockedBy = :lockedBy)"
     )
-    fun lock(lockedBy: String): Int
+    fun lock(lockedBy: String, lockUntil: LocalDateTime): Int
 
     @Modifying
     @Query(
         "update ItemLock l " +
-        "set l.locked = false, l.lockedAt = null, l.lockedBy = null " +
-        "where l.id = 1 and (l.locked = false or (l.locked = true and l.lockedBy = :lockedBy))"
+        "set l.locked = false, l.lockedBy = null, l.lockUntil = null " +
+        "where l.id = 1 and (l.locked = false or l.lockedBy = :lockedBy or l.lockUntil < current_timestamp)"
     )
     fun unlock(lockedBy: String): Int
 }

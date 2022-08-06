@@ -17,9 +17,9 @@ class ItemLock(
     @Type(type = "org.hibernate.type.NumericBooleanType")
     var locked: Boolean,
 
-    @Column(name = "locked_at")
-    var lockedAt: LocalDateTime?,
-
     @Column(name = "locked_by")
-    var lockedBy: String?
+    var lockedBy: String?,
+
+    @Column(name = "lock_until")
+    var lockUntil: LocalDateTime?
 )
