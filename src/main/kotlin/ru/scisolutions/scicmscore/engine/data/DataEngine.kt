@@ -2,9 +2,9 @@ package ru.scisolutions.scicmscore.engine.data
 
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.web.multipart.MultipartFile
+import ru.scisolutions.scicmscore.domain.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
-import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput

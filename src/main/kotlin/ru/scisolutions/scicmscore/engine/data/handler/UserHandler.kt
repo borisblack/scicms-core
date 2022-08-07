@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.data.handler
 
-import ru.scisolutions.scicmscore.engine.data.model.UserInfo
+import ru.scisolutions.scicmscore.domain.model.UserInfo
 
 interface UserHandler {
     fun me(): UserInfo?

@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.data
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import ru.scisolutions.scicmscore.domain.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CreateLocalizationHandler
 import ru.scisolutions.scicmscore.engine.data.handler.CreateVersionHandler
@@ -18,7 +19,6 @@ import ru.scisolutions.scicmscore.engine.data.handler.UpdateHandler
 import ru.scisolutions.scicmscore.engine.data.handler.UserHandler
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
-import ru.scisolutions.scicmscore.engine.data.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.data.model.input.CreateVersionInput
