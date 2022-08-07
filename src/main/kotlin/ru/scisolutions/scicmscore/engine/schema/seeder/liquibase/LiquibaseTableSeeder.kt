@@ -42,16 +42,16 @@ class LiquibaseTableSeeder(
         createTable(item)
     }
 
-    override fun update(item: Item, itemEntity: ItemEntity) {
+    override fun update(item: Item, existingItemEntity: ItemEntity) {
         val metadata = item.metadata
         if (!metadata.performDdl) {
             logger.info("Item [{}]: DDL performing flag is disabled. Updating skipped", metadata.name)
             return
         }
 
-        if (isTableChanged(item, itemEntity)) {
+        if (isTableChanged(item, existingItemEntity)) {
             logger.info("Updating the table [{}]", metadata.tableName)
-            updateTable(item, itemEntity)
+            updateTable(item, existingItemEntity)
         } else {
             logger.info("Table [{}] is unchanged. Nothing to update", item.metadata.tableName)
         }
@@ -119,13 +119,14 @@ class LiquibaseTableSeeder(
         }
     }
 
-    private fun isTableChanged(item: Item, itemEntity: ItemEntity): Boolean =
-        item.hashCode().toString() != itemEntity.checksum && (
-            item.metadata.tableName != itemEntity.tableName ||
-                item.metadata.dataSource != itemEntity.dataSource ||
-                item.metadata.versioned != itemEntity.versioned ||
-                item.metadata.localized != itemEntity.localized ||
-                item.spec.hashCode() != itemEntity.spec.hashCode())
+    private fun isTableChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
+        (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash && (
+            item.metadata.tableName != existingItemEntity.tableName
+                || item.metadata.dataSource != existingItemEntity.dataSource
+                || item.metadata.versioned != existingItemEntity.versioned
+                || item.metadata.localized != existingItemEntity.localized
+                || item.spec.hashCode() != existingItemEntity.spec.hashCode()
+            )
 
     private fun updateTable(item: Item, itemEntity: ItemEntity) {
         if (isOnlyTableNameChanged(item, itemEntity)) {

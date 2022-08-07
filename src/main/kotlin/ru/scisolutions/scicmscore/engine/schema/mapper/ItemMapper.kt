@@ -40,6 +40,11 @@ class ItemMapper {
         target.implementation = metadata.implementation
         target.notLockable = metadata.notLockable
         target.spec = source.spec
-        target.checksum = source.hashCode().toString()
+
+        // Update the checksum only if it's a change from a file
+        if (source.checksum != null)
+            target.checksum = source.checksum
+
+        target.hash = source.hashCode().toString()
     }
 }

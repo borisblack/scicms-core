@@ -11,7 +11,7 @@ interface ItemLockRepository : CrudRepository<ItemLock, String> {
     @Query(
         "update ItemLock l " +
         "set l.locked = true, l.lockedBy = :lockedBy, l.lockUntil = :lockUntil " +
-        "where l.id = 1 and (l.locked = false or l.lockedBy = :lockedBy)"
+        "where l.id = 1 and (l.locked = false or l.lockedBy = :lockedBy or l.lockUntil < current_timestamp)"
     )
     fun lock(lockedBy: String, lockUntil: LocalDateTime): Int
 

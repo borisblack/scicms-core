@@ -162,6 +162,7 @@
             <column name="implementation" type="varchar(100)"/>
             <column name="spec" type="text" defaultValue="{}"/>
             <column name="checksum" type="varchar(50)"/>
+            <column name="hash" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
@@ -388,6 +389,7 @@
             <column name="implementation" type="varchar(100)"/>
             <column name="spec" type="text" defaultValue="{}"/>
             <column name="checksum" type="varchar(50)"/>
+            <column name="hash" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>

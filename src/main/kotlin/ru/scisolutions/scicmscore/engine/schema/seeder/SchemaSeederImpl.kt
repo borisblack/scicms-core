@@ -67,16 +67,8 @@ class SchemaSeederImpl(
             // Add item
             logger.info("Creating the item [{}]", item.metadata.name)
             itemEntity = itemMapper.map(item)
-            // itemEntity.allowedPermissions.add(permissionService.defaultPermission)
-            itemService.save(itemEntity)
 
-            // Add default allowed permission
-            // val defaultAllowedPermission = AllowedPermission(
-            //     sourceId = itemEntity.id,
-            //     targetId = Permission.DEFAULT_PERMISSION_ID,
-            //     isDefault = true
-            // )
-            // allowedPermissionService.save(defaultAllowedPermission)
+            itemService.save(itemEntity)
         } else if (isChanged(item, itemEntity)) {
             lockOrThrow()
 
@@ -106,8 +98,8 @@ class SchemaSeederImpl(
         }
     }
 
-    private fun isChanged(item: Item, itemEntity: ItemEntity): Boolean =
-        item.hashCode().toString() != itemEntity.checksum
+    private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
+        (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash
 
     private fun deleteAbsentItems(items: Map<String, Item>) {
         val itemEntities = itemService.findAll()

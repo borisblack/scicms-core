@@ -28,6 +28,7 @@ class Lifecycle(
     var spec: LifecycleSpec = LifecycleSpec(),
 
     var checksum: String? = null,
+    var hash: String? = null,
 ) : AbstractEntity() {
     override fun toString(): String = "Lifecycle(name=[$name])"
 

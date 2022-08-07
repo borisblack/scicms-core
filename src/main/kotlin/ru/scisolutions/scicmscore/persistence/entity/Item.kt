@@ -29,7 +29,6 @@ class Item(
     @Column(name = "table_name")
     var tableName: String = pluralName.lowercase(),
 
-    @Column
     var description: String? = null,
 
     @Column(name = "data_source")
@@ -67,12 +66,11 @@ class Item(
     @Column(name = "implementation")
     var implementation: String? = null,
 
-    @Column
     @Convert(converter = ItemSpecConverter::class)
     var spec: ItemSpec = ItemSpec(),
 
-    @Column
     var checksum: String? = null,
+    var hash: String? = null,
 
     // @ManyToMany(cascade = [CascadeType.ALL])
     // @JoinTable(

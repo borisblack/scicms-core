@@ -4,14 +4,16 @@ import ru.scisolutions.scicmscore.domain.model.ItemSpec
 
 data class Item(
     override val coreVersion: String,
-    val includeTemplates: Set<String>,
     override val metadata: ItemMetadata,
+    override var checksum: String?,
+    val includeTemplates: Set<String>,
     val spec: ItemSpec
-) : AbstractModel(coreVersion, metadata) {
+) : AbstractModel(coreVersion, metadata, checksum) {
     fun includeTemplate(itemTemplate: ItemTemplate) = Item(
         coreVersion = this.coreVersion,
-        includeTemplates = this.includeTemplates,
         metadata = this.metadata,
+        checksum = this.checksum,
+        includeTemplates = this.includeTemplates,
         spec = this.spec.merge(itemTemplate.spec)
     )
 

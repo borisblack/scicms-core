@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.schema.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
@@ -14,5 +15,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 ])
 abstract class AbstractModel(
     open val coreVersion: String,
-    open val metadata: BaseMetadata
+    open val metadata: BaseMetadata,
+
+    @JsonIgnore
+    open var checksum: String? = null
 )
