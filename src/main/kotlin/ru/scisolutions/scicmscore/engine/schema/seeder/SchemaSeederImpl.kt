@@ -3,26 +3,21 @@ package ru.scisolutions.scicmscore.engine.schema.seeder
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
-import ru.scisolutions.scicmscore.domain.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
+import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
 import ru.scisolutions.scicmscore.service.ItemLockService
 import ru.scisolutions.scicmscore.service.ItemService
-import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class SchemaSeederImpl(
     private val schemaProps: SchemaProps,
     private val dbSchema: DbSchema,
-    private val relationValidator: RelationValidator,
     private val itemService: ItemService,
     private val itemLockService: ItemLockService,
-    private val tableSeeder: TableSeeder
+    private val tableSeeder: TableSeeder,
+    private val modelsApplier: ModelsApplier
 ) : SchemaSeeder {
-    private var itemsLocked: Boolean = false
-
     init {
         if (schemaProps.seedOnInit) {
             logger.info("Schema seed flag enabled. Trying to seed")
@@ -31,93 +26,29 @@ class SchemaSeederImpl(
     }
 
     final override fun seedSchema() {
+        itemLockService.lockOrThrow()
+
         val items = dbSchema.getItemsIncludeTemplates()
-        items.forEach { (_, item) -> seedItem(item) }
+        items.forEach { (_, item) -> modelsApplier.apply(item) }
 
         // Delete absent items
         if (schemaProps.deleteIfAbsent)
             deleteAbsentItems(items)
 
-        unlockOrThrow()
+        itemLockService.unlockOrThrow()
     }
-
-    private fun lockOrThrow() {
-        if (!itemsLocked) {
-            itemLockService.lockOrThrow()
-            itemsLocked = true
-        }
-    }
-
-    private fun unlockOrThrow() {
-        if (itemsLocked) {
-            itemLockService.unlockOrThrow()
-            itemsLocked = false
-        }
-    }
-
-    private fun seedItem(item: Item) {
-        validateItem(item)
-
-        var itemEntity = itemService.findByName(item.metadata.name)
-        if (itemEntity == null) {
-            lockOrThrow()
-
-            tableSeeder.create(item) // create table
-
-            // Add item
-            logger.info("Creating the item [{}]", item.metadata.name)
-            itemEntity = itemMapper.map(item)
-
-            itemService.save(itemEntity)
-        } else if (isChanged(item, itemEntity)) {
-            lockOrThrow()
-
-            tableSeeder.update(item, itemEntity) // update table
-
-            logger.info("Updating the item [{}]", itemEntity.name)
-            itemMapper.copy(item, itemEntity)
-            itemService.save(itemEntity)
-        } else {
-            logger.info("Item [{}] is unchanged. Nothing to update", itemEntity.name)
-        }
-    }
-
-    private fun validateItem(item: Item) {
-        logger.info("Validating item [${item.metadata.name}]")
-        item.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Type.relation }
-            .forEach { (attrName, attribute) ->
-                // logger.debug("Validating attribute [$attrName]")
-                attribute.validate()
-                relationValidator.validateAttribute(item, attrName, attribute)
-            }
-
-        // Check if item implementation exists
-        if (item.metadata.implementation != null) {
-            Class.forName(item.metadata.implementation)
-        }
-    }
-
-    private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
-        (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash
 
     private fun deleteAbsentItems(items: Map<String, Item>) {
         val itemEntities = itemService.findAll()
-        val itemsToDelete = mutableListOf<ItemEntity>()
-        for (itemEntity in itemEntities) {
-            if (itemEntity.name !in items) {
-                tableSeeder.delete(itemEntity) // drop table
-                itemsToDelete.add(itemEntity)
+        itemEntities
+            .filter { it.name !in items }
+            .forEach {
+                tableSeeder.delete(it)
+                itemService.delete(it)
             }
-        }
-
-        // Delete items
-        for (itemEntity in itemsToDelete)
-            itemService.delete(itemEntity)
     }
 
     companion object {
         private val logger = LoggerFactory.getLogger(SchemaSeederImpl::class.java)
-        private val itemMapper = ItemMapper()
     }
 }

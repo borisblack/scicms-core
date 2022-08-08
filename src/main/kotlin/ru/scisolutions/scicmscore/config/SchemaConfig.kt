@@ -17,8 +17,9 @@ class SchemaConfig(
         if (schemaProps.readOnInit) {
             logger.info("Schema read flag enabled. Trying to read")
             schemaReader.read()
-        } else
+        } else {
             DbSchema()
+        }
 
     companion object {
         private val logger = LoggerFactory.getLogger(SchemaConfig::class.java)

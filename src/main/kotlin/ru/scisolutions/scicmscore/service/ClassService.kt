@@ -5,5 +5,5 @@ interface ClassService {
 
     fun <T> getInstance(clazz: Class<T>): T
 
-    fun <T> getCastInstance(className: String?, targetClass: Class<T>): T?
+    fun <T> getCastInstance(className: String?, castType: Class<T>): T?
 }

@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import ru.scisolutions.scicmscore.api.graphql.CustomScalarsRegistration
+import ru.scisolutions.scicmscore.domain.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.UserInfo
+import java.util.UUID
 
 @SpringBootTest(classes = [
     DgsAutoConfiguration::class,
@@ -31,6 +32,7 @@ class UserDataFetcherTest {
     fun before() {
         Mockito.`when`(dataEngine.me()).thenAnswer {
             UserInfo(
+                id = UUID.randomUUID().toString(),
                 username = TEST_USER,
                 roles = setOf(ROLE_TEST)
             )

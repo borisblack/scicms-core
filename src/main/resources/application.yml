@@ -33,7 +33,7 @@ scicms-core:
     read-on-init: true
     seed-on-init: true
     delete-if-absent: false
-    item-lock-duration-seconds: 300
+    item-lock-lock-duration-seconds: 300
     try-recreate-attributes: true
   security:
     jwt-token:
