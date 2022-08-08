@@ -12,10 +12,15 @@ class ModelsApplierImpl : ModelsApplier {
     }
 
     override fun apply(model: AbstractModel) {
+        var isApplied = false
         for (applier in appliers) {
             if (applier.supports(model::class.java)) {
                 applier.apply(model)
+                isApplied = true
             }
         }
+
+        if (!isApplied)
+            throw UnsupportedOperationException("Unsupported model [${model.metadata.name}]")
     }
 }
