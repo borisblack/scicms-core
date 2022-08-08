@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.schema.seeder.liquibase
 
 import liquibase.change.AddColumnConfig
 import liquibase.change.core.CreateIndexChange
+import org.slf4j.LoggerFactory
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Index
 import ru.scisolutions.scicmscore.engine.schema.model.Item
@@ -22,19 +23,25 @@ class LiquibaseIndexes(
 
         // Process indexes
         for ((indexName, index) in item.spec.indexes) {
-            list.add(index(item, indexName, index))
+            list.add(indexFromIndex(item, indexName, index))
         }
 
         return list
     }
 
-    private fun listAttributeIndexes(item: Item, attrName: String): List<CreateIndexChange> {
+    fun listAttributeIndexes(item: Item, attrName: String): List<CreateIndexChange> {
         val attribute = item.spec.getAttributeOrThrow(attrName)
-        if (attribute.keyed)
-            throw IllegalArgumentException("Keyed attribute [$attrName] is already indexed")
+        if (attribute.keyed) {
+            // throw IllegalArgumentException("Keyed attribute [$attrName] is already indexed")
+            logger.debug("Keyed attribute [{}] is already indexed", attrName)
+            return emptyList()
+        }
 
-        if (!attribute.unique && !attribute.indexed)
-            throw IllegalArgumentException("The attribute [$attrName] has no index")
+        if (!attribute.unique && !attribute.indexed) {
+            // throw IllegalArgumentException("The attribute [$attrName] has no index")
+            logger.debug("The attribute [{}] has no index", attrName)
+            return emptyList()
+        }
 
         val attributeIndexes = mutableListOf<CreateIndexChange>()
         if (attribute.unique) {
@@ -56,15 +63,15 @@ class LiquibaseIndexes(
                 }
             } else {
                 if (isLocalized) {
-                    attributeIndexes.add(localizedUniqueIndex(item, attribute))
+                    attributeIndexes.add(localizedUniqueIndexFromAttribute(item, attribute))
                 } else {
-                    return listOf(attributeUniqueIndex(item, attribute))
+                    return listOf(uniqueIndexFromAttribute(item, attribute))
                 }
             }
         }
 
         // Add non-unique indexes
-        attributeIndexes.add(attributeIndex(item, attribute))
+        attributeIndexes.add(indexFromAttribute(item, attribute))
 
         return attributeIndexes
     }
@@ -127,7 +134,7 @@ class LiquibaseIndexes(
         )
     }
 
-    private fun localizedUniqueIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun localizedUniqueIndexFromAttribute(item: Item, attribute: Attribute): CreateIndexChange {
         if (!attribute.unique)
             throw IllegalArgumentException("Only the unique index needs to be localized")
 
@@ -144,7 +151,7 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun attributeUniqueIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun uniqueIndexFromAttribute(item: Item, attribute: Attribute): CreateIndexChange {
         val tableName = item.metadata.tableName
 
         return CreateIndexChange().apply {
@@ -157,7 +164,7 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun attributeIndex(item: Item, attribute: Attribute): CreateIndexChange {
+    private fun indexFromAttribute(item: Item, attribute: Attribute): CreateIndexChange {
         val tableName = item.metadata.tableName
 
         return CreateIndexChange().apply {
@@ -169,7 +176,7 @@ class LiquibaseIndexes(
         }
     }
 
-    private fun index(item: Item, indexName: String, index: Index): CreateIndexChange {
+    fun indexFromIndex(item: Item, indexName: String, index: Index): CreateIndexChange {
         val tableName = item.metadata.tableName
 
         return CreateIndexChange().apply {
@@ -186,5 +193,7 @@ class LiquibaseIndexes(
         private const val GENERATION_COLUMN_NAME = "generation"
         private const val MAJOR_REV_COLUMN_NAME = "major_rev"
         private const val LOCALE_COLUMN_NAME = "locale"
+
+        private val logger = LoggerFactory.getLogger(LiquibaseIndexes::class.java)
     }
 }

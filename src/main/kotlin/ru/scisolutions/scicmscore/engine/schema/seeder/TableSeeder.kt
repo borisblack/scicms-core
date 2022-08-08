@@ -8,5 +8,5 @@ interface TableSeeder {
 
     fun update(item: Item, existingItemEntity: ItemEntity)
 
-    fun delete(itemEntity: ItemEntity)
+    fun delete(existingItemEntity: ItemEntity)
 }

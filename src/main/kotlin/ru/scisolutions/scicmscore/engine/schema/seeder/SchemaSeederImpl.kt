@@ -55,7 +55,7 @@ class SchemaSeederImpl(
         }
     }
 
-    override fun seedItem(item: Item) {
+    private fun seedItem(item: Item) {
         validateItem(item)
 
         var itemEntity = itemService.findByName(item.metadata.name)

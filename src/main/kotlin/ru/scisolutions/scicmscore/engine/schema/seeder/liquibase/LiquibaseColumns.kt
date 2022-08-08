@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.schema.seeder.liquibase
 
+import liquibase.change.AddColumnConfig
 import liquibase.change.ColumnConfig
 import liquibase.change.ConstraintsConfig
 import ru.scisolutions.scicmscore.domain.model.Attribute
@@ -12,14 +13,22 @@ class LiquibaseColumns {
             .map { (attrName, attribute) -> getColumn(item, attrName, attribute) }
             .toList()
 
-    private fun getColumn(item: Item, attrName: String, attribute: Attribute) = ColumnConfig().apply {
-        this.name = attribute.columnName ?: attrName.lowercase()
-        this.type = typeResolver.getType(item, attrName, attribute)
+    fun getColumn(item: Item, attrName: String, attribute: Attribute) = ColumnConfig().apply {
+        applyColumnConfig(this, item, attrName, attribute)
+    }
+
+    fun getAddColumn(item: Item, attrName: String, attribute: Attribute) = AddColumnConfig().apply {
+        applyColumnConfig(this, item, attrName, attribute)
+    }
+
+    private fun applyColumnConfig(columnConfig: ColumnConfig, item: Item, attrName: String, attribute: Attribute) {
+        columnConfig.name = attribute.columnName ?: attrName.lowercase()
+        columnConfig.type = typeResolver.getType(item, attrName, attribute)
 
         if (attribute.defaultValue != null)
-            this.defaultValue = attribute.defaultValue
+            columnConfig.defaultValue = attribute.defaultValue
 
-        this.constraints = ConstraintsConfig().apply {
+        columnConfig.constraints = ConstraintsConfig().apply {
             this.isNullable = !attribute.required
 
             if (attribute.keyed) {

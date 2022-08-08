@@ -4,6 +4,4 @@ import ru.scisolutions.scicmscore.engine.schema.model.Item
 
 interface SchemaSeeder {
     fun seedSchema()
-
-    fun seedItem(item: Item)
 }

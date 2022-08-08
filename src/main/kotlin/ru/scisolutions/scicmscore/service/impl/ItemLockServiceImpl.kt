@@ -20,7 +20,7 @@ class ItemLockServiceImpl(
     private val hostName = InetAddress.getLocalHost().hostName
 
     override fun lock(): Boolean {
-        val lockResult = itemLockRepository.lock(hostName, LocalDateTime.now().plusSeconds(schemaProps.itemsLockDurationSeconds))
+        val lockResult = itemLockRepository.lock(hostName, LocalDateTime.now().plusSeconds(schemaProps.itemLockDurationSeconds))
 
         return if (lockResult == 1) {
             logger.debug("Successfully acquired ItemLock lock")
