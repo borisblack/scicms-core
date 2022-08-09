@@ -18,6 +18,8 @@ class ModelController(
 ) {
     @PostMapping("/apply")
     fun apply(@RequestBody model: AbstractModel) {
+        model.checksum = null
+
         itemLockService.lockOrThrow()
         modelsApplier.apply(model)
         itemLockService.unlockOrThrow()

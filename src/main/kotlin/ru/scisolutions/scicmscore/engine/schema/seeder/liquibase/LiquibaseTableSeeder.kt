@@ -52,7 +52,7 @@ class LiquibaseTableSeeder(
     override fun update(item: Item, existingItemEntity: ItemEntity) {
         val metadata = item.metadata
         if (!metadata.performDdl) {
-            logger.info(" DDL performing flag is disabled for item [{}]. Updating skipped", metadata.name)
+            logger.info("DDL performing flag is disabled for item [{}]. Updating skipped", metadata.name)
             return
         }
 

@@ -34,7 +34,7 @@ class FileSchemaReader(
         logger.info("Read {} models", models.size)
 
         val dbSchema = DbSchema()
-        dbSchema.addModels(models)
+        dbSchema.putModels(models)
 
         return dbSchema
     }

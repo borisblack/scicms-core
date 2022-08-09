@@ -4,13 +4,13 @@ class DbSchema {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()
     private val items = mutableMapOf<String, Item>()
 
-    fun addModels(models: Collection<AbstractModel>) {
+    fun putModels(models: Collection<AbstractModel>) {
         for (model in models) {
-            addModel(model)
+            putModel(model)
         }
     }
 
-    fun addModel(model: AbstractModel) {
+    fun putModel(model: AbstractModel) {
         val metadata = model.metadata
         if(metadata.name.first().isUpperCase())
             throw IllegalArgumentException("Model name [${metadata.name}] must start with a lowercase character")
@@ -26,8 +26,10 @@ class DbSchema {
         }
     }
 
-    fun getTemplateOrThrow(templateName: String): ItemTemplate =
+    private fun getTemplateOrThrow(templateName: String): ItemTemplate =
         itemTemplates[templateName] ?: throw IllegalStateException("Template [$templateName] not found")
+
+    fun getItem(itemName: String): Item? = items[itemName]
 
     fun getItemOrThrow(itemName: String): Item =
         items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
@@ -37,10 +39,12 @@ class DbSchema {
         return includeTemplates(itemModel)
     }
 
+    fun getItems() = items.toMap()
+
     fun getItemsIncludeTemplates(): Map<String, Item> =
         items.mapValues { (_, value) -> includeTemplates(value) }
 
-    private fun includeTemplates(item: Item): Item {
+    fun includeTemplates(item: Item): Item {
         var mergedItem = item
         for (templateName in item.includeTemplates) {
             val itemTemplate = getTemplateOrThrow(templateName)

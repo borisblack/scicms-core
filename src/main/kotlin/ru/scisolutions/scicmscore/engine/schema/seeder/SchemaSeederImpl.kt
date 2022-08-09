@@ -28,7 +28,7 @@ class SchemaSeederImpl(
     final override fun seedSchema() {
         itemLockService.lockOrThrow()
 
-        val items = dbSchema.getItemsIncludeTemplates()
+        val items = dbSchema.getItems()
         items.forEach { (_, item) -> modelsApplier.apply(item) }
 
         // Delete absent items

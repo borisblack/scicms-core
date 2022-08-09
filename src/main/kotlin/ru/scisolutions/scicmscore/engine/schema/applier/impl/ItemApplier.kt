@@ -6,6 +6,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
+import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.seeder.TableSeeder
 import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
@@ -15,6 +16,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class ItemApplier(
+    private val dbSchema: DbSchema,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
     private val itemLockService: ItemLockService,
@@ -26,28 +28,35 @@ class ItemApplier(
         if (model !is Item)
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
 
-        validateItem(model)
+        val item = dbSchema.includeTemplates(model)
 
-        var itemEntity = itemService.findByName(model.metadata.name)
+        validateItem(item)
+
+        var itemEntity = itemService.findByName(item.metadata.name)
         if (itemEntity == null) {
             // itemLockService.lockOrThrow()
 
-            tableSeeder.create(model) // create table
+            tableSeeder.create(item) // create table
 
             // Add item
-            logger.info("Creating the item [{}]", model.metadata.name)
-            itemEntity = itemMapper.map(model)
+            logger.info("Creating the item [{}]", item.metadata.name)
+            itemEntity = itemMapper.map(item)
 
             itemService.save(itemEntity)
 
             // itemLockService.unlockOrThrow()
-        } else if (isChanged(model, itemEntity)) {
+        } else if (isChanged(item, itemEntity)) {
+            if (item.metadata.core && item.checksum == null) {
+                logger.warn("Core item [{}] can be updated only from file", item.metadata.name)
+                return
+            }
+
             // itemLockService.lockOrThrow()
 
-            tableSeeder.update(model, itemEntity) // update table
+            tableSeeder.update(item, itemEntity) // update table
 
             logger.info("Updating the item [{}]", itemEntity.name)
-            itemMapper.copy(model, itemEntity)
+            itemMapper.copy(item, itemEntity)
             itemService.save(itemEntity)
 
             // itemLockService.unlockOrThrow()
