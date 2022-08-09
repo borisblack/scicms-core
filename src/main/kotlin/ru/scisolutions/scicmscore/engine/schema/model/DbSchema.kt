@@ -26,23 +26,25 @@ class DbSchema {
         }
     }
 
-    private fun getTemplateOrThrow(templateName: String): ItemTemplate =
+    fun getTemplate(templateName: String): ItemTemplate? = itemTemplates[templateName]
+
+    fun getTemplateOrThrow(templateName: String): ItemTemplate =
         itemTemplates[templateName] ?: throw IllegalStateException("Template [$templateName] not found")
 
     fun getItem(itemName: String): Item? = items[itemName]
 
     fun getItemOrThrow(itemName: String): Item =
-        items[itemName] ?: throw IllegalArgumentException("Item [$itemName] not found")
+        getItem(itemName) ?: throw IllegalArgumentException("Item [$itemName] not found")
 
-    fun getItemIncludeTemplates(name: String): Item {
-        val itemModel = getItemOrThrow(name)
-        return includeTemplates(itemModel)
+    fun getItemIncludeTemplates(name: String): Item? {
+        val item = getItem(name) ?: return null
+        return includeTemplates(item)
     }
 
-    fun getItems() = items.toMap()
-
-    fun getItemsIncludeTemplates(): Map<String, Item> =
-        items.mapValues { (_, value) -> includeTemplates(value) }
+    fun getItemIncludeTemplatesOrThrow(name: String): Item {
+        val item = getItemOrThrow(name)
+        return includeTemplates(item)
+    }
 
     fun includeTemplates(item: Item): Item {
         var mergedItem = item
@@ -52,4 +54,9 @@ class DbSchema {
         }
         return mergedItem
     }
+
+    fun getItems() = items.toMap()
+
+    fun getItemsIncludeTemplates(): Map<String, Item> =
+        items.mapValues { (_, value) -> includeTemplates(value) }
 }
