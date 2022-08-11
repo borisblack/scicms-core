@@ -31,6 +31,10 @@ class DbSchema {
     fun getTemplateOrThrow(templateName: String): ItemTemplate =
         itemTemplates[templateName] ?: throw IllegalStateException("Template [$templateName] not found")
 
+    fun getTemplates(): Map<String, ItemTemplate> = itemTemplates.toMap()
+
+    fun listTemplates(): List<ItemTemplate> = itemTemplates.values.toList()
+
     fun getItem(itemName: String): Item? = items[itemName]
 
     fun getItemOrThrow(itemName: String): Item =
@@ -55,8 +59,12 @@ class DbSchema {
         return mergedItem
     }
 
-    fun getItems() = items.toMap()
+    fun getItems(): Map<String, Item> = items.toMap()
 
     fun getItemsIncludeTemplates(): Map<String, Item> =
         items.mapValues { (_, value) -> includeTemplates(value) }
+
+    fun listItems(): List<Item> = items.values.toList()
+
+    fun listItemsIncludeTemplates(): List<Item> = getItemsIncludeTemplates().values.toList()
 }

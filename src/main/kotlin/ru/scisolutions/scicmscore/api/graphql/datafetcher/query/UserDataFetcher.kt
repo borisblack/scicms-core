@@ -6,9 +6,7 @@ import ru.scisolutions.scicmscore.domain.model.UserInfo
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 
 @DgsComponent
-class UserDataFetcher(
-    private val dataEngine: DataEngine
-) {
+class UserDataFetcher(private val dataEngine: DataEngine) {
     @DgsQuery
     fun me(): UserInfo? = dataEngine.me()
 }
