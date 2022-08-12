@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: part
+  displayName: Part
+  pluralName: parts
+  displayPluralName: Parts
   dataSource: main
   tableName: parts
-  displayName: Part
-  displayAttrName: name
-  pluralName: parts
+  titleAttribute: name
   description: Parts
   icon: TagOutlined
   core: true

@@ -29,6 +29,7 @@ data class Item(
 
         return coreVersion == other.coreVersion &&
             metadata == other.metadata &&
+            // checksum == other.checksum && // ignore
             includeTemplates == other.includeTemplates &&
             spec == other.spec
     }
@@ -37,6 +38,7 @@ data class Item(
         Objects.hash(
             coreVersion,
             metadata,
+            // checksum, // ignore
             includeTemplates,
             spec
         )

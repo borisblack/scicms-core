@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine.schema.applier.impl
 
 import org.slf4j.LoggerFactory
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelApplier
@@ -10,8 +11,8 @@ import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.seeder.TableSeeder
 import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
-import ru.scisolutions.scicmscore.service.SchemaLockService
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.service.SchemaLockService
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
@@ -32,26 +33,32 @@ class ItemApplier(
 
         validateItem(item)
 
-        var itemEntity = itemService.findByName(item.metadata.name)
+        val itemName = item.metadata.name
+        var itemEntity = itemService.findByName(itemName)
         if (itemEntity == null) {
-            // itemLockService.lockOrThrow()
+            // schemaLockService.lockOrThrow()
+
+            if (item.checksum == null && itemService.findByNameForCreate(itemName) == null) {
+                schemaLockService.unlockOrThrow()
+                throw AccessDeniedException("You has no CREATE permission for [$itemName] item")
+            }
 
             tableSeeder.create(item) // create table
 
             // Add item
-            logger.info("Creating the item [{}]", item.metadata.name)
+            logger.info("Creating the item [{}]", itemName)
             itemEntity = itemMapper.map(item)
 
             itemService.save(itemEntity)
 
-            // itemLockService.unlockOrThrow()
+            // schemaLockService.unlockOrThrow()
         } else if (isChanged(item, itemEntity)) {
-            if (item.metadata.core && item.checksum == null) {
-                logger.warn("Core item [{}] can be updated only from file", item.metadata.name)
-                return
-            }
+            // schemaLockService.lockOrThrow()
 
-            // itemLockService.lockOrThrow()
+            if (itemService.findByNameForWrite(itemName) == null) {
+                schemaLockService.unlockOrThrow()
+                throw AccessDeniedException("You has no WRITE permission for [$itemName] item")
+            }
 
             tableSeeder.update(item, itemEntity) // update table
 
@@ -59,7 +66,7 @@ class ItemApplier(
             itemMapper.copy(item, itemEntity)
             itemService.save(itemEntity)
 
-            // itemLockService.unlockOrThrow()
+            // schemaLockService.unlockOrThrow()
         } else {
             logger.info("Item [{}] is unchanged. Nothing to update", itemEntity.name)
         }

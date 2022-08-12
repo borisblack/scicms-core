@@ -22,11 +22,12 @@ class ItemMapper {
         
         target.name = metadata.name
         target.displayName = metadata.displayName
-        target.displayAttrName = metadata.displayAttrName
         target.pluralName = metadata.pluralName
-        target.tableName = metadata.tableName
-        target.description = metadata.description
+        target.displayPluralName = metadata.displayPluralName
         target.dataSource = metadata.dataSource
+        target.tableName = metadata.tableName
+        target.titleAttribute = metadata.titleAttribute
+        target.description = metadata.description
         target.icon = metadata.icon
         target.core = metadata.core
         target.performDdl = metadata.performDdl

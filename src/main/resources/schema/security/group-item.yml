@@ -4,13 +4,14 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: group
+  displayName: Group
+  pluralName: groups
+  displayPluralName: Groups
   dataSource: main
   tableName: sec_groups
-  displayName: Group
-  displayAttrName: groupName
-  pluralName: groups
-  icon: TeamOutlined
+  titleAttribute: groupName
   description: Groups
+  icon: TeamOutlined
   core: true
   performDdl: false
 spec:

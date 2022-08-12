@@ -5,10 +5,11 @@ includeTemplates:
   - intermediateItemTemplate
 metadata:
   name: partChange
-  dataSource: main
-  tableName: part_changes
   displayName: Part Change
   pluralName: partChanges
+  displayPluralName: Part Changes
+  dataSource: main
+  tableName: part_changes
   description: Part Changes
   core: false
   performDdl: true

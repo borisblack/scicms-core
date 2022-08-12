@@ -66,26 +66,32 @@
           "minLength": 1,
           "maxLength": 50
         },
-        "dataSource": {
-          "description": "Data source name (required)",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 50
-        },
         "displayName": {
           "description": "Display name (optional, name is used by default)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
         },
-        "displayAttrName": {
-          "description": "Display attribute name (optional, 'id' is used by default)",
+        "pluralName": {
+          "description": "Plural name (required)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
         },
-        "pluralName": {
-          "description": "Plural name (required)",
+        "displayPluralName": {
+          "description": "Display plural name (optional, pluralName is used by default)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "titleAttribute": {
+          "description": "Title attribute name (optional, 'id' is used by default)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "dataSource": {
+          "description": "Data source name (required)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50

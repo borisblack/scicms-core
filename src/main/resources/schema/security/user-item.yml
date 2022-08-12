@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: user
+  displayName: User
+  pluralName: users
+  displayPluralName: Users
+  titleAttribute: username
   dataSource: main
   tableName: sec_users
-  displayName: User
-  displayAttrName: username
-  pluralName: users
   icon: UserOutlined
   description: Users
   core: true

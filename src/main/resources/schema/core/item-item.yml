@@ -4,13 +4,14 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: item
+  displayName: Item
+  pluralName: items
+  displayPluralName: Items
   dataSource: main
   tableName: core_items
-  displayName: Item
-  displayAttrName: name
-  pluralName: items
-  icon: DatabaseOutlined
+  titleAttribute: displayName
   description: Items
+  icon: DatabaseOutlined
   core: true
   performDdl: false
 #  versioned: false
@@ -27,25 +28,13 @@ spec:
       required: true
       unique: true
       length: 50
-    tableName:
-      type: string
-      columnName: table_name
-      displayName: Table Name
-      description: Table Name
-      length: 50
     displayName:
       type: string
       columnName: display_name
       displayName: Display Name
       description: Display Name
+      required: true
       length: 50
-    displayAttrName:
-      type: string
-      columnName: display_attr_name
-      displayName: Display Attribute Name
-      description: Display Attribute Name
-      length: 50
-      colWidth: 190
     pluralName:
       type: string
       columnName: plural_name
@@ -53,18 +42,41 @@ spec:
       description: Plural Name
       required: true
       length: 50
+    displayPluralName:
+      type: string
+      columnName: display_plural_name
+      displayName: Display Plural Name
+      description: Display Plural Name
+      required: true
+      length: 50
+      colWidth: 170
+    titleAttribute:
+      type: string
+      columnName: title_attribute
+      displayName: Title Attribute Name
+      description: Title Attribute Name
+      required: true
+      length: 50
+      colWidth: 180
+    dataSource:
+      type: string
+      columnName: data_source
+      displayName: Data Source
+      description: Data Source
+      required: true
+      length: 50
+    tableName:
+      type: string
+      columnName: table_name
+      displayName: Table Name
+      description: Table Name
+      length: 50
     description:
       type: string
       columnName: description
       displayName: Description
       description: Description
       length: 250
-    dataSource:
-      type: string
-      columnName: data_source
-      displayName: Data Source
-      description: Data Source
-      length: 50
     icon:
       type: string
       columnName: icon

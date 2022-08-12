@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: startSheet
+  displayName: Start Sheet
+  pluralName: startSheets
+  displayPluralName: Start Sheets
   dataSource: main
   tableName: start_sheets
-  displayName: Start Sheet
-  displayAttrName: name
-  pluralName: startSheets
+  titleAttribute: name
   description: Start Sheets
   core: false
   performDdl: true

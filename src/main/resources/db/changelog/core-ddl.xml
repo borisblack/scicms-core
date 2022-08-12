@@ -138,16 +138,25 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_items_name_uk"/>
             </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="display_attr_name" type="varchar(50)"/>
+            <column name="display_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="plural_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="varchar(250)"/>
+            <column name="display_plural_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
             <column name="data_source" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="table_name" type="varchar(50)"/>
+            <column name="table_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title_attribute" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(250)"/>
             <column name="icon" type="varchar(50)"/>
             <column name="core" type="tinyint"/>
             <column name="perform_ddl" type="tinyint"/>

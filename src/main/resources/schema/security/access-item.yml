@@ -5,11 +5,12 @@ includeTemplates:
   - intermediateItemTemplate
 metadata:
   name: access
+  displayName: Access
+  pluralName: accesses
+  displayPluralName: Accesses
   dataSource: main
   tableName: sec_access
-  displayName: Access
-  displayAttrName: displayName
-  pluralName: accesses
+  titleAttribute: displayName
   description: Access
   core: true
   performDdl: false

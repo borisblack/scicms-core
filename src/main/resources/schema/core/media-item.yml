@@ -4,10 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: media
-  dataSource: main
-  tableName: core_media
   displayName: Media
   pluralName: medias
+  displayPluralName: Medias
+  dataSource: main
+  tableName: core_media
+  titleAttribute: filename
   description: Media
   core: true
   performDdl: false

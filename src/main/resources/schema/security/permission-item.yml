@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: permission
+  displayName: Permission
+  pluralName: permissions
+  displayPluralName: Permissions
   dataSource: main
   tableName: sec_permissions
-  displayName: Permission
-  displayAttrName: name
-  pluralName: permissions
+  titleAttribute: name
   description: Permission
   core: true
   performDdl: false

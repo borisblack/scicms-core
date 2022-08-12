@@ -4,10 +4,11 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: role
-  dataSource: main
-  tableName: sec_roles
   displayName: Role
   pluralName: roles
+  displayPluralName: Roles
+  dataSource: main
+  tableName: sec_roles
   description: Roles
   core: true
   performDdl: false

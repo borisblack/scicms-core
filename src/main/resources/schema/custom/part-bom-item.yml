@@ -5,10 +5,11 @@ includeTemplates:
   - intermediateItemTemplate
 metadata:
   name: partBOM
-  dataSource: main
-  tableName: part_bom
   displayName: Part BOM
   pluralName: partBOMs
+  displayPluralName: Part BOM
+  dataSource: main
+  tableName: part_bom
   description: Part BOM
   core: false
   performDdl: true

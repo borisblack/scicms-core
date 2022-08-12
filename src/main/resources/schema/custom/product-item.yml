@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: product
+  displayName: Product
+  pluralName: products
+  displayPluralName: Products
   dataSource: aux
   tableName: products
-  displayName: Product
-  displayAttrName: name
-  pluralName: products
+  titleAttribute: name
   description: Products
   core: false
   performDdl: true

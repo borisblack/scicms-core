@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: locale
+  displayName: Locale
+  pluralName: locales
+  displayPluralName: Locales
   dataSource: main
   tableName: core_locales
-  displayName: Locale
-  displayAttrName: name
-  pluralName: locales
+  titleAttribute: name
   description: Locales
   core: true
   performDdl: false

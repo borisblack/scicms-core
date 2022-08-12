@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: identity
+  displayName: Identity
+  pluralName: identities
+  displayPluralName: Identities
+  titleAttribute: name
   dataSource: main
   tableName: sec_identities
-  displayName: Identity
-  displayAttrName: name
-  pluralName: identities
   description: Identities
   core: true
   performDdl: false

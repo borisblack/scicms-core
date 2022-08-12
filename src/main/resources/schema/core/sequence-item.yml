@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: sequence
+  displayName: Sequence
+  pluralName: sequences
+  displayPluralName: Sequences
   dataSource: main
   tableName: core_sequences
-  displayName: Sequence
-  displayAttrName: name
-  pluralName: sequences
+  titleAttribute: name
   description: Sequences
   core: true
   performDdl: false

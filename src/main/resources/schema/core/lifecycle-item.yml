@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: lifecycle
+  displayName: Lifecycle
+  pluralName: lifecycles
+  displayPluralName: Lifecycles
   dataSource: main
   tableName: core_lifecycles
-  displayName: Lifecycle
-  displayAttrName: name
-  pluralName: lifecycles
+  titleAttribute: name
   description: Lifecycles
   core: true
   performDdl: false

@@ -5,10 +5,11 @@ includeTemplates:
   - intermediateItemTemplate
 metadata:
   name: allowedLifecycle
-  dataSource: main
-  tableName: core_allowed_lifecycles
   displayName: Allowed Lifecycle
   pluralName: allowedLifecycles
+  displayPluralName: Allowed Lifecycles
+  dataSource: main
+  tableName: core_allowed_lifecycles
   description: Allowed Lifecycles
   core: true
   performDdl: false

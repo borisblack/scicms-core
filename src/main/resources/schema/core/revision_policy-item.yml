@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: revisionPolicy
+  displayName: Revision Policy
+  pluralName: revisionPolicies
+  displayPluralName: Revision Policies
   dataSource: main
   tableName: core_revision_policies
-  displayName: Revision Policy
-  displayAttrName: name
-  pluralName: revisionPolicies
+  titleAttribute: name
   description: Revision Policies
   core: true
   performDdl: false

@@ -6,8 +6,8 @@ import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.service.SchemaLockService
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.service.SchemaLockService
 
 @Service
 class SchemaSeederImpl(
@@ -29,6 +29,7 @@ class SchemaSeederImpl(
         schemaLockService.lockOrThrow()
 
         val items = dbSchema.getItems()
+
         items.forEach { (_, item) -> modelsApplier.apply(item) }
 
         // Delete absent items

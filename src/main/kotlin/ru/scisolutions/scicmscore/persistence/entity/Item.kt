@@ -14,22 +14,25 @@ class Item(
     @Column(nullable = false)
     var name: String,
 
-    @Column(name = "display_name")
-    var displayName: String? = name,
-
-    @Column(name = "display_attr_name")
-    var displayAttrName: String? = null,
+    @Column(name = "display_name", nullable = false)
+    var displayName: String = name,
 
     @Column(name = "plural_name", nullable = false)
     var pluralName: String,
 
-    @Column(name = "table_name")
-    var tableName: String = pluralName.lowercase(),
+    @Column(name = "display_plural_name", nullable = false)
+    var displayPluralName: String = pluralName,
+
+    @Column(name = "data_source", nullable = false)
+    var dataSource: String,
+
+    @Column(name = "table_name", nullable = false)
+    var tableName: String = whitespaceRegex.replace(pluralName.lowercase(), "_"),
+
+    @Column(name = "title_attribute", nullable = false)
+    var titleAttribute: String = ID_ATTR_NAME,
 
     var description: String? = null,
-
-    @Column(name = "data_source")
-    var dataSource: String,
 
     var icon: String? = null,
 
@@ -78,4 +81,10 @@ class Item(
     // val allowedPermissions: MutableSet<Permission> = mutableSetOf()
 ) : AbstractEntity() {
     override fun toString(): String = "Item(name=[$name])"
+
+    companion object {
+        private const val ID_ATTR_NAME = "id"
+
+        private val whitespaceRegex = "\\s+".toRegex()
+    }
 }

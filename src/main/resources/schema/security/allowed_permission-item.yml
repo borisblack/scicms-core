@@ -5,10 +5,11 @@ includeTemplates:
   - intermediateItemTemplate
 metadata:
   name: allowedPermission
-  dataSource: main
-  tableName: sec_allowed_permissions
   displayName: Allowed Permission
   pluralName: allowedPermissions
+  displayPluralName: Allowed Permissions
+  dataSource: main
+  tableName: sec_allowed_permissions
   description: Allowed Permissions
   core: true
   performDdl: false

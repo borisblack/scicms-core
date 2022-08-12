@@ -4,11 +4,12 @@ includeTemplates:
   - defaultItemTemplate
 metadata:
   name: changeNotice
+  displayName: Change Notice
+  pluralName: changeNotices
+  displayPluralName: Change Notices
   dataSource: main
   tableName: change_notices
-  displayName: Change Notice
-  displayAttrName: displayName
-  pluralName: changeNotices
+  titleAttribute: displayName
   description: Change Notices
   core: false
   performDdl: true
