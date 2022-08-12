@@ -55,7 +55,7 @@ class ItemApplier(
         } else if (isChanged(item, itemEntity)) {
             // schemaLockService.lockOrThrow()
 
-            if (itemService.findByNameForWrite(itemName) == null) {
+            if (item.checksum == null && itemService.findByNameForWrite(itemName) == null) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You has no WRITE permission for [$itemName] item")
             }

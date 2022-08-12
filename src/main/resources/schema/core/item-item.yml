@@ -11,13 +11,9 @@ metadata:
   tableName: core_items
   titleAttribute: displayName
   description: Items
-  icon: DatabaseOutlined
+  icon: AppstoreOutlined
   core: true
   performDdl: false
-#  versioned: false
-#  manualVersioning: false
-#  notLockable: false
-#  localized: false
 spec:
   attributes:
     name:
