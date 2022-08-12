@@ -23,7 +23,6 @@ class ItemMapper {
         target.name = metadata.name
         target.displayName = metadata.displayName
         target.displayAttrName = metadata.displayAttrName
-        target.singularName = metadata.singularName
         target.pluralName = metadata.pluralName
         target.tableName = metadata.tableName
         target.description = metadata.description

@@ -8,7 +8,6 @@ metadata:
   tableName: change_notices
   displayName: Change Notice
   displayAttrName: displayName
-  singularName: changeNotice
   pluralName: changeNotices
   description: Change Notices
   core: false

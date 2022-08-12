@@ -8,8 +8,8 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "core_items_lock")
-class ItemLock(
+@Table(name = "core_schema_lock")
+class SchemaLock(
     @Id
     var id: Int?,
 

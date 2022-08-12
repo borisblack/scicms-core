@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.unwrapParentType
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
+import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class FindOneRelatedDataFetcher(
@@ -17,9 +18,9 @@ class FindOneRelatedDataFetcher(
 ) : DataFetcher<DataFetcherResult<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
         val capitalizedParentItemName = dfe.unwrapParentType()
-        val parentItemName = capitalizedParentItemName.decapitalize()
+        val parentItemName = capitalizedParentItemName.lowerFirst()
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
-        val itemName = capitalizedItemName.decapitalize()
+        val itemName = capitalizedItemName.lowerFirst()
         val parentItemRec: ItemRec = dfe.getSource()
         val parentAttrName = dfe.field.name
         val selectAttrNames = dfe.selectDataFields()

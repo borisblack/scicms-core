@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.seeder.TableSeeder
 import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
-import ru.scisolutions.scicmscore.service.ItemLockService
+import ru.scisolutions.scicmscore.service.SchemaLockService
 import ru.scisolutions.scicmscore.service.ItemService
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
@@ -19,7 +19,7 @@ class ItemApplier(
     private val dbSchema: DbSchema,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
-    private val itemLockService: ItemLockService,
+    private val schemaLockService: SchemaLockService,
     private val relationValidator: RelationValidator
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java

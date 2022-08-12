@@ -20,9 +20,6 @@ class Item(
     @Column(name = "display_attr_name")
     var displayAttrName: String? = null,
 
-    @Column(name = "singular_name")
-    var singularName: String? = name,
-
     @Column(name = "plural_name", nullable = false)
     var pluralName: String,
 

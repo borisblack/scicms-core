@@ -7,7 +7,6 @@ metadata:
   dataSource: main
   tableName: sec_group_roles
   displayName: Group Role
-  singularName: groupRole
   pluralName: groupRoles
   description: Group Roles
   core: true

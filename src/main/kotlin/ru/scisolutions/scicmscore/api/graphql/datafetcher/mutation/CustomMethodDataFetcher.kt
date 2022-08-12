@@ -8,6 +8,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItem
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.data.model.response.CustomMethodResponse
+import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class CustomMethodDataFetcher(
@@ -15,7 +16,7 @@ class CustomMethodDataFetcher(
 ) : DataFetcher<DataFetcherResult<CustomMethodResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<CustomMethodResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
-        val itemName = capitalizedItemName.decapitalize()
+        val itemName = capitalizedItemName.lowerFirst()
         val methodName = dfe.field.name.substringBefore(capitalizedItemName)
         val result = dataEngine.callCustomMethod(itemName, methodName, CustomMethodInput(dfe.arguments[DATA_ARG_NAME]))
 

@@ -7,7 +7,6 @@ metadata:
   dataSource: main
   tableName: examples
   displayName: Example
-  singularName: example
   pluralName: examples
   description: Examples
   icon: TagOutlined

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.upperFirst
 
 @Component
 class ItemInputObjectTypes(
@@ -17,7 +18,7 @@ class ItemInputObjectTypes(
     private val attributeTypes: AttributeTypes
 ) {
     fun filtersInput(item: Item): InputObjectTypeDefinition {
-        val inputName = "${item.name.capitalize()}FiltersInput"
+        val inputName = "${item.name.upperFirst()}FiltersInput"
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
             .name(inputName)
             .inputValueDefinition(
@@ -55,7 +56,7 @@ class ItemInputObjectTypes(
 
     fun itemInput(item: Item): InputObjectTypeDefinition {
         val builder = InputObjectTypeDefinition.newInputObjectDefinition()
-            .name("${item.name.capitalize()}Input")
+            .name("${item.name.upperFirst()}Input")
 
         item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromInputObjectType(item, attrName, attribute) }
@@ -87,7 +88,7 @@ class ItemInputObjectTypes(
             throw IllegalArgumentException("Attribute [$attrName] enumeration set is null or empty.")
 
         return EnumTypeDefinition.newEnumTypeDefinition()
-            .name("${item.name.capitalize()}${attrName.capitalize()}Enum")
+            .name("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
             .enumValueDefinitions(
                 attribute.enumSet.map {
                     EnumValueDefinition.newEnumValueDefinition().name(it).build()

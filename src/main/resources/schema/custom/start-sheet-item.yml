@@ -8,7 +8,6 @@ metadata:
   tableName: start_sheets
   displayName: Start Sheet
   displayAttrName: name
-  singularName: startSheet
   pluralName: startSheets
   description: Start Sheets
   core: false

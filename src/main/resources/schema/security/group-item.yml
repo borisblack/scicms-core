@@ -8,7 +8,6 @@ metadata:
   tableName: sec_groups
   displayName: Group
   displayAttrName: groupName
-  singularName: group
   pluralName: groups
   icon: TeamOutlined
   description: Groups

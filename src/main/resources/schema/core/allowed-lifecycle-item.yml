@@ -8,7 +8,6 @@ metadata:
   dataSource: main
   tableName: core_allowed_lifecycles
   displayName: Allowed Lifecycle
-  singularName: allowedLifecycle
   pluralName: allowedLifecycles
   description: Allowed Lifecycles
   core: true

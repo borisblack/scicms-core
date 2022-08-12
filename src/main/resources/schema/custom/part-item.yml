@@ -8,7 +8,6 @@ metadata:
   tableName: parts
   displayName: Part
   displayAttrName: name
-  singularName: part
   pluralName: parts
   description: Parts
   icon: TagOutlined

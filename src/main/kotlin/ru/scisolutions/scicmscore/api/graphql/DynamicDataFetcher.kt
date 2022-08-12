@@ -24,6 +24,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.util.upperFirst
 
 @DgsComponent
 class DynamicDataFetcher(
@@ -62,7 +63,7 @@ class DynamicDataFetcher(
         items.asSequence()
             .filter { !excludeItemPolicy.excludeFromMutation(it) }
             .forEach {
-                val capitalizedItemName = it.name.capitalize()
+                val capitalizedItemName = it.name.upperFirst()
 
                 if (!excludeItemPolicy.excludeFromCreateMutation(it))
                 codeRegistryBuilder
@@ -114,7 +115,7 @@ class DynamicDataFetcher(
     }
 
     private fun addAttributeDataFetchers(codeRegistryBuilder: GraphQLCodeRegistry.Builder, item: Item) {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         item.spec.attributes.asSequence()
             .filter { (_, attribute) -> attribute.type == Type.relation }
             .forEach { (attrName, attribute) ->

@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.service
 
-interface ItemLockService {
+interface SchemaLockService {
     fun lock(): Boolean
 
     fun lockOrThrow()

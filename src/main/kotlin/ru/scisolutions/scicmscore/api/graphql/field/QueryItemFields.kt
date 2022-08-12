@@ -8,13 +8,14 @@ import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.upperFirst
 
 @Component
 class QueryItemFields {
     fun item(item: Item): FieldDefinition {
         val builder = FieldDefinition.newFieldDefinition()
             .name(item.name)
-            .type(TypeName("${item.name.capitalize()}Response"))
+            .type(TypeName("${item.name.upperFirst()}Response"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
@@ -32,7 +33,7 @@ class QueryItemFields {
     }
 
     fun itemCollection(item: Item): FieldDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name(item.pluralName)
             .type(TypeName("${capitalizedItemName}ResponseCollection"))

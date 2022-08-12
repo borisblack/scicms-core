@@ -79,13 +79,7 @@
           "maxLength": 50
         },
         "displayAttrName": {
-          "description": "Display attribute name (optional, id is used by default)",
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 50
-        },
-        "singularName": {
-          "description": "Singular name (optional, name is used by default)",
+          "description": "Display attribute name (optional, 'id' is used by default)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
@@ -97,7 +91,7 @@
           "maxLength": 50
         },
         "tableName": {
-          "description": "Table name (optional, pluralName in lowercase is used by default). Prefixes core_ and sec_ are not allowed",
+          "description": "Table name (optional, pluralName in lowercase with whitespaces replaced by _ is used by default). Prefixes core_ and sec_ are not allowed",
           "type": "string",
           "minLength": 1,
           "maxLength": 50

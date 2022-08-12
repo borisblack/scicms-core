@@ -8,7 +8,6 @@ metadata:
   dataSource: main
   tableName: sec_allowed_permissions
   displayName: Allowed Permission
-  singularName: allowedPermission
   pluralName: allowedPermissions
   description: Allowed Permissions
   core: true

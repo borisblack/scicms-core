@@ -8,7 +8,6 @@ metadata:
   tableName: core_sequences
   displayName: Sequence
   displayAttrName: name
-  singularName: sequence
   pluralName: sequences
   description: Sequences
   core: true

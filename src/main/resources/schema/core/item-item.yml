@@ -8,7 +8,6 @@ metadata:
   tableName: core_items
   displayName: Item
   displayAttrName: name
-  singularName: item
   pluralName: items
   icon: DatabaseOutlined
   description: Items
@@ -47,12 +46,6 @@ spec:
       description: Display Attribute Name
       length: 50
       colWidth: 190
-    singularName:
-      type: string
-      columnName: singular_name
-      displayName: Singular Name
-      description: Singular Name
-      length: 50
     pluralName:
       type: string
       columnName: plural_name

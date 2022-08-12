@@ -1,12 +1,11 @@
 package ru.scisolutions.scicmscore.engine.schema.model
 
 data class ItemMetadata(
-    override val name: String, // item name must start with a lowercase character!
+    override val name: String,
     val displayName: String = name,
     val displayAttrName: String? = null,
-    val singularName: String = name,
     val pluralName: String,
-    val tableName: String = pluralName.lowercase(),
+    val tableName: String = whitespaceRegex.replace(pluralName.lowercase(), "_"),
     val description: String? = null,
     val dataSource: String,
     val icon: String? = null,
@@ -20,4 +19,8 @@ data class ItemMetadata(
     val permission: String? = null,
     val implementation: String? = null,
     val notLockable: Boolean = false
-) : BaseMetadata(name)
+) : BaseMetadata(name) {
+    companion object {
+        private val whitespaceRegex = "\\s+".toRegex()
+    }
+}

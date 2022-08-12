@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.data.DataEngine
 import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.data.model.ItemRec
 import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
+import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class FindAllRelatedDataFetcher(
@@ -19,9 +20,9 @@ class FindAllRelatedDataFetcher(
 ) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
         val capitalizedParentItemName = dfe.unwrapParentType()
-        val parentItemName = capitalizedParentItemName.decapitalize()
+        val parentItemName = capitalizedParentItemName.lowerFirst()
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
-        val itemName = capitalizedItemName.decapitalize()
+        val itemName = capitalizedItemName.lowerFirst()
         val parentItemRec: ItemRec = dfe.getSource()
         val parentAttrName = dfe.field.name
         val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)

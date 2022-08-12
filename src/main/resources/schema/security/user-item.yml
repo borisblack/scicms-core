@@ -8,7 +8,6 @@ metadata:
   tableName: sec_users
   displayName: User
   displayAttrName: username
-  singularName: user
   pluralName: users
   icon: UserOutlined
   description: Users

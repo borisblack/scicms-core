@@ -7,11 +7,12 @@ import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.upperFirst
 
 @Component
 class MutationItemFields {
     fun create(item: Item): FieldDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("create${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -35,7 +36,7 @@ class MutationItemFields {
         if (!item.versioned)
             throw IllegalStateException("Item [${item.name}] is not versioned. CreateVersion mutation cannot be applied.")
 
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("create${capitalizedItemName}Version")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -71,7 +72,7 @@ class MutationItemFields {
         if (!item.localized)
             throw IllegalStateException("Item [${item.name}] is not localized. CreateLocalization mutation cannot be applied.")
 
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("create${capitalizedItemName}Localization")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -103,7 +104,7 @@ class MutationItemFields {
         if (item.versioned)
             throw IllegalStateException("Item [${item.name}] is versioned. Update mutation cannot be applied.")
 
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("update${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -127,7 +128,7 @@ class MutationItemFields {
     }
 
     fun delete(item: Item): FieldDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("delete${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -157,7 +158,7 @@ class MutationItemFields {
         if (!item.versioned)
             throw IllegalStateException("Item [${item.name}] is not versioned. Purge mutation cannot be applied.")
 
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("purge${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}ResponseCollection"))
@@ -184,7 +185,7 @@ class MutationItemFields {
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable. Lock mutation cannot be applied.")
 
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("lock${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -205,7 +206,7 @@ class MutationItemFields {
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable. Unlock mutation cannot be applied.")
 
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("unlock${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -223,7 +224,7 @@ class MutationItemFields {
     }
 
     fun promote(item: Item): FieldDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("promote${capitalizedItemName}")
             .type(TypeName("${capitalizedItemName}Response"))
@@ -248,7 +249,7 @@ class MutationItemFields {
 
     fun customMethods(item: Item, customMethodNames: Set<String>): List<FieldDefinition> {
         val fields = mutableListOf<FieldDefinition>()
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
         for (methodName in customMethodNames) {
             fields.add(
                 FieldDefinition.newFieldDefinition()

@@ -8,7 +8,6 @@ metadata:
   dataSource: main
   tableName: part_changes
   displayName: Part Change
-  singularName: partChange
   pluralName: partChanges
   description: Part Changes
   core: false

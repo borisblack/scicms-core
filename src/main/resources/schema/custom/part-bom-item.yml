@@ -8,7 +8,6 @@ metadata:
   dataSource: main
   tableName: part_bom
   displayName: Part BOM
-  singularName: partBOM
   pluralName: partBOMs
   description: Part BOM
   core: false

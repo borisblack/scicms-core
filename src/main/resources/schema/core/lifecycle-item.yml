@@ -8,7 +8,6 @@ metadata:
   tableName: core_lifecycles
   displayName: Lifecycle
   displayAttrName: name
-  singularName: lifecycle
   pluralName: lifecycles
   description: Lifecycles
   core: true

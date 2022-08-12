@@ -7,7 +7,6 @@ metadata:
   dataSource: main
   tableName: core_media
   displayName: Media
-  singularName: media
   pluralName: medias
   description: Media
   core: true

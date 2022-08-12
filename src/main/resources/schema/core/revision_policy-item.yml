@@ -8,7 +8,6 @@ metadata:
   tableName: core_revision_policies
   displayName: Revision Policy
   displayAttrName: name
-  singularName: revisionPolicy
   pluralName: revisionPolicies
   description: Revision Policies
   core: true

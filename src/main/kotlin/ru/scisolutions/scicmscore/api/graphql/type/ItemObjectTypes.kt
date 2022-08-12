@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.util.upperFirst
 
 @Component
 class ItemObjectTypes(
@@ -29,7 +30,7 @@ class ItemObjectTypes(
             }
 
         val builder = ObjectTypeDefinition.newObjectTypeDefinition()
-            .name(item.name.capitalize())
+            .name(item.name.upperFirst())
             .description(Description(description, null, true))
 
         item.spec.attributes.asSequence()
@@ -52,7 +53,7 @@ class ItemObjectTypes(
         if (attribute.isCollection()) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null." }
 
-            val capitalizedTargetItemName = attribute.target.capitalize()
+            val capitalizedTargetItemName = attribute.target.upperFirst()
 
             builder
                 .inputValueDefinition(
@@ -79,7 +80,7 @@ class ItemObjectTypes(
     }
 
     fun response(item: Item): ObjectTypeDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
 
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}Response")
@@ -93,7 +94,7 @@ class ItemObjectTypes(
     }
 
     fun relationResponse(item: Item): ObjectTypeDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
 
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}RelationResponse")
@@ -107,7 +108,7 @@ class ItemObjectTypes(
     }
 
     fun responseCollection(item: Item): ObjectTypeDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
 
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}ResponseCollection")
@@ -133,7 +134,7 @@ class ItemObjectTypes(
     }
 
     fun relationResponseCollection(item: Item): ObjectTypeDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
 
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}RelationResponseCollection")
@@ -153,7 +154,7 @@ class ItemObjectTypes(
     }
 
     fun customMethodResponse(item: Item): ObjectTypeDefinition {
-        val capitalizedItemName = item.name.capitalize()
+        val capitalizedItemName = item.name.upperFirst()
 
         return ObjectTypeDefinition.newObjectTypeDefinition()
             .name("${capitalizedItemName}CustomMethodResponse")

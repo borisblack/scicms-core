@@ -7,7 +7,6 @@ metadata:
   dataSource: main
   tableName: sec_group_members
   displayName: Group Member
-  singularName: groupMember
   pluralName: groupMembers
   description: Group Members
   core: true

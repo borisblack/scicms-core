@@ -8,7 +8,6 @@ metadata:
   tableName: sec_permissions
   displayName: Permission
   displayAttrName: name
-  singularName: permission
   pluralName: permissions
   description: Permission
   core: true

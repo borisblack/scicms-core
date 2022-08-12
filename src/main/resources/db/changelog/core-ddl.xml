@@ -140,7 +140,6 @@
             </column>
             <column name="display_name" type="varchar(50)"/>
             <column name="display_attr_name" type="varchar(50)"/>
-            <column name="singular_name" type="varchar(50)"/>
             <column name="plural_name" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
@@ -213,18 +212,6 @@
         <createIndex tableName="core_items" indexName="core_items_state_idx">
             <column name="state"/>
         </createIndex>
-
-        <!--core_items_lock-->
-        <createTable tableName="core_items_lock">
-            <column name="id" type="int">
-                <constraints primaryKey="true" primaryKeyName="core_items_lock_pk"/>
-            </column>
-            <column name="locked" type="tinyint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="locked_by" type="varchar(255)"/>
-            <column name="lock_until" type="datetime"/>
-        </createTable>
 
         <!--core_sequences-->
         <createTable tableName="core_sequences">
@@ -501,5 +488,17 @@
         <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_state_idx">
             <column name="state"/>
         </createIndex>
+
+        <!--core_schema_lock-->
+        <createTable tableName="core_schema_lock">
+            <column name="id" type="int">
+                <constraints primaryKey="true" primaryKeyName="core_schema_lock_pk"/>
+            </column>
+            <column name="locked" type="tinyint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by" type="varchar(255)"/>
+            <column name="lock_until" type="datetime"/>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

@@ -6,7 +6,7 @@ import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
 import ru.scisolutions.scicmscore.engine.schema.model.Item
-import ru.scisolutions.scicmscore.service.ItemLockService
+import ru.scisolutions.scicmscore.service.SchemaLockService
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Service
@@ -14,7 +14,7 @@ class SchemaSeederImpl(
     private val schemaProps: SchemaProps,
     private val dbSchema: DbSchema,
     private val itemService: ItemService,
-    private val itemLockService: ItemLockService,
+    private val schemaLockService: SchemaLockService,
     private val tableSeeder: TableSeeder,
     private val modelsApplier: ModelsApplier
 ) : SchemaSeeder {
@@ -26,7 +26,7 @@ class SchemaSeederImpl(
     }
 
     final override fun seedSchema() {
-        itemLockService.lockOrThrow()
+        schemaLockService.lockOrThrow()
 
         val items = dbSchema.getItems()
         items.forEach { (_, item) -> modelsApplier.apply(item) }
@@ -35,7 +35,7 @@ class SchemaSeederImpl(
         if (schemaProps.deleteIfAbsent)
             deleteAbsentItems(items)
 
-        itemLockService.unlockOrThrow()
+        schemaLockService.unlockOrThrow()
     }
 
     private fun deleteAbsentItems(items: Map<String, Item>) {

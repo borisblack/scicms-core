@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
 import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
@@ -42,13 +43,12 @@ class AttributeTypes(
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
-                val capitalizedTargetItemName = requireNotNull(attribute.target).capitalize()
+                val capitalizedTargetItemName = requireNotNull(attribute.target).upperFirst()
                 if (attribute.isCollection())
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
                 else
                     TypeName("${capitalizedTargetItemName}RelationResponse").nonNull(attribute.required)
             }
-            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type}).")
         }
 
     fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
@@ -75,7 +75,7 @@ class AttributeTypes(
 
                 val targetItem = itemService.getByName(requireNotNull(attribute.target))
                 if (targetItem.dataSource == item.dataSource) {
-                    val capitalizedTargetItemName = attribute.target.capitalize()
+                    val capitalizedTargetItemName = attribute.target.upperFirst()
                     TypeName("${capitalizedTargetItemName}FiltersInput")
                 } else {
                     if (attribute.isCollection())
@@ -84,14 +84,13 @@ class AttributeTypes(
                     TypeNames.ID_FILTER_INPUT
                 }
             }
-            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type}).")
         }
 
     fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
         when (attribute.type) {
             AttrType.uuid -> TypeNames.STRING
             AttrType.string, AttrType.text -> TypeNames.STRING
-            // AttrType.enum -> TypeName("${item.name.capitalize()}${attrName.capitalize()}Enum")
+            // AttrType.enum -> TypeName("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
             AttrType.enum,
             AttrType.sequence -> TypeNames.STRING
             AttrType.email -> TypeNames.EMAIL
@@ -109,6 +108,5 @@ class AttributeTypes(
 
                 if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
             }
-            else -> throw IllegalArgumentException("Attribute [$attrName] has unsupported type (${attribute.type}).")
         }
 }

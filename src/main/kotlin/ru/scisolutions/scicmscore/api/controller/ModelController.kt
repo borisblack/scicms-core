@@ -7,22 +7,22 @@ import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.api.graphql.ReloadIndicator
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
-import ru.scisolutions.scicmscore.service.ItemLockService
+import ru.scisolutions.scicmscore.service.SchemaLockService
 
 @RestController
 @RequestMapping("/api/model")
 class ModelController(
     private val modelsApplier: ModelsApplier,
-    private val itemLockService: ItemLockService,
+    private val schemaLockService: SchemaLockService,
     private val reloadIndicator: ReloadIndicator
 ) {
     @PostMapping("/apply")
     fun apply(@RequestBody model: AbstractModel) {
         model.checksum = null
 
-        itemLockService.lockOrThrow()
+        schemaLockService.lockOrThrow()
         modelsApplier.apply(model)
-        itemLockService.unlockOrThrow()
+        schemaLockService.unlockOrThrow()
 
         reloadIndicator.setNeedReloadOnce(true)
     }
