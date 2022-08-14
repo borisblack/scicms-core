@@ -12,6 +12,7 @@ import ru.scisolutions.scicmscore.domain.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.data.dao.ItemRecDao
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.service.LocationService
 import ru.scisolutions.scicmscore.service.MediaService
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -24,6 +25,7 @@ class AttributeValueHelper(
     private val dataProps: DataProps,
     private val itemService: ItemService,
     private val mediaService: MediaService,
+    private val locationService: LocationService,
     private val itemRecDao: ItemRecDao
 ) {
     fun prepareAttributeValues(item: Item, attributes: Map<String, Any?>): Map<String, Any?> {
@@ -59,15 +61,14 @@ class AttributeValueHelper(
             Type.date, Type.time, Type.datetime, Type.timestamp -> value
             Type.bool -> value
             Type.array, Type.json -> objectMapper.writeValueAsString(value)
-            Type.media -> value
+            Type.media, Type.location -> value
             Type.relation -> if (attribute.isCollection()) (value as List<*>).toSet() else value
-            else -> throw IllegalArgumentException("Unsupported attribute type")
         }
     }
 
     private fun validateAttributeValue(item: Item, attrName: String, attribute: Attribute, value: Any) {
         when (attribute.type) {
-            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media -> {
+            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media, Type.location -> {
                 if (value !is String)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
@@ -105,6 +106,10 @@ class AttributeValueHelper(
                     Type.media -> {
                         if (!mediaService.existsById(value))
                             throw IllegalArgumentException("Media with ID [$value] does not exist")
+                    }
+                    Type.location -> {
+                        if (!locationService.existsById(value))
+                            throw IllegalArgumentException("Location with ID [$value] does not exist")
                     }
                     else -> throw IllegalArgumentException("Unsupported attribute type")
                 }
@@ -188,7 +193,6 @@ class AttributeValueHelper(
                         throw IllegalArgumentException("Item [${attribute.target}] with ID [$value] does not exist")
                 }
             }
-            else -> throw IllegalArgumentException("Unsupported attribute type")
         }
     }
 

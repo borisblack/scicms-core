@@ -19,8 +19,8 @@ class FindAllRelatedDataFetcher(
     private val dataEngine: DataEngine
 ) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
-        val capitalizedParentItemName = dfe.unwrapParentType()
-        val parentItemName = capitalizedParentItemName.lowerFirst()
+        val parentType = dfe.unwrapParentType()
+        val parentItemName = parentType.lowerFirst()
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val parentItemRec: ItemRec = dfe.getSource()

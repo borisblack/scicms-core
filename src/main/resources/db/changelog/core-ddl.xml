@@ -16,8 +16,6 @@
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_locales_name_uk"/>
             </column>
             <column name="display_name" type="varchar(50)"/>
-            <column name="core" type="tinyint"/>
-            <column name="spec" type="text" defaultValue="{}"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
@@ -362,6 +360,68 @@
 <!--        </createIndex>-->
 
         <createIndex tableName="core_media" indexName="core_media_state_idx">
+            <column name="state"/>
+        </createIndex>
+
+        <!--core_locations-->
+        <createTable tableName="core_locations">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="core_locations_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="varchar(50)"/>
+            <column name="latitude" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="is_current" type="tinyint" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_locations_locale_fk" references="core_locales(name)"/>
+            </column>
+            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <createIndex tableName="core_locations" indexName="core_locations_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
+
+        <createIndex tableName="core_locations" indexName="core_locations_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_locations" indexName="core_locations_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+<!--        <createIndex tableName="core_locations" indexName="core_locations_lifecycle_idx">-->
+<!--            <column name="lifecycle_id"/>-->
+<!--        </createIndex>-->
+
+        <createIndex tableName="core_locations" indexName="core_locations_state_idx">
             <column name="state"/>
         </createIndex>
 

@@ -89,7 +89,8 @@ class ItemApplier(
     }
 
     private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
-        (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash
+        (item.checksum == null || item.checksum != existingItemEntity.checksum) &&
+            item.hashCode().toString() != existingItemEntity.hash
 
     companion object {
         private val logger = LoggerFactory.getLogger(ItemApplier::class.java)

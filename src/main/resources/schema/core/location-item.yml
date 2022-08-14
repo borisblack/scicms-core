@@ -1,0 +1,34 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - defaultItemTemplate
+metadata:
+  name: location
+  displayName: Location
+  pluralName: locations
+  displayPluralName: Locations
+  dataSource: main
+  tableName: core_locations
+  description: Locations
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+    latitude:
+      type: decimal
+      columnName: latitude
+      displayName: Latitude
+      description: Latitude
+      required: true
+    longitude:
+      type: decimal
+      columnName: longitude
+      displayName: Longitude
+      description: Longitude
+      required: true

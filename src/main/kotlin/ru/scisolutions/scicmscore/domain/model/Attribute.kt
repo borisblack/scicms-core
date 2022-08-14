@@ -27,8 +27,10 @@ class Attribute(
     val scale: Int? = null, // for decimal types
     val minRange: Long? = null, // for int, long, float, double, decimal types
     val maxRange: Long? = null, // for int, long, float, double, decimal types
-    val colHidden: Boolean? = null, // hide column in UI
-    val colWidth: Int? = null // column width in UI
+    val colHidden: Boolean? = null, // hide column in UI table
+    val colWidth: Int? = null, // column width in UI table
+    val fieldHidden: Boolean? = null, // hide field in UI form
+    val fieldWidth: Int? = null // field width in UI form
 ) {
     @JsonIgnore
     fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
@@ -92,7 +94,9 @@ class Attribute(
             minRange,
             maxRange,
             colHidden,
-            colWidth
+            colWidth,
+            fieldWidth,
+            fieldHidden
         )
 
     override fun equals(other: Any?): Boolean {
@@ -128,12 +132,14 @@ class Attribute(
             minRange == other.minRange &&
             maxRange == other.maxRange &&
             colHidden == other.colHidden &&
-            colWidth == other.colWidth
+            colWidth == other.colWidth &&
+            fieldHidden == other.fieldHidden &&
+            fieldWidth == other.fieldWidth
     }
 
     enum class Type {
         uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime,
-        timestamp, bool, array, json, media, relation
+        timestamp, bool, array, json, media, location, relation
     }
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }

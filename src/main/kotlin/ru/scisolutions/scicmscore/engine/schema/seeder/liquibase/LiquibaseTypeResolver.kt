@@ -18,15 +18,13 @@ import ru.scisolutions.scicmscore.engine.schema.model.Item
 
 class LiquibaseTypeResolver {
     fun getType(item: Item, attrName: String, attribute: Attribute): String {
-        val tableName = item.metadata.tableName
-        val columnName = attribute.columnName ?: attrName.lowercase()
         itemColumnValidator.validate(item, attrName, attribute)
 
         return when (attribute.type) {
-            Type.uuid, Type.media -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
+            Type.uuid, Type.media, Type.location, Type.relation -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
             Type.string -> VarcharType().apply { addParameter(attribute.length) }.toString()
             Type.text, Type.array, Type.json -> ClobType().toString()
-            Type.enum, Type.sequence, Type.email, Type.password, Type.relation -> VarcharType().apply { addParameter(DEFAULT_STRING_LENGTH) }.toString()
+            Type.enum, Type.sequence, Type.email, Type.password -> VarcharType().apply { addParameter(DEFAULT_STRING_LENGTH) }.toString()
             Type.int -> IntType().toString()
             Type.long -> BigIntType().toString()
             Type.float -> FloatType().toString()
@@ -42,7 +40,6 @@ class LiquibaseTypeResolver {
             Type.datetime -> DateTimeType().toString()
             Type.timestamp -> TimestampType().toString()
             Type.bool -> TinyIntType().toString()
-            else -> throw IllegalArgumentException("Column [${tableName}.${columnName}] has unsupported attribute type (${attribute.type})")
         }
     }
 

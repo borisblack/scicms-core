@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      fieldWidth: 250
     displayName:
       type: string
       columnName: display_name
@@ -38,6 +39,7 @@ spec:
       description: Plural Name
       required: true
       length: 50
+      fieldWidth: 250
     displayPluralName:
       type: string
       columnName: display_plural_name
@@ -54,6 +56,7 @@ spec:
       required: true
       length: 50
       colWidth: 180
+      fieldWidth: 250
     dataSource:
       type: string
       columnName: data_source
@@ -61,12 +64,14 @@ spec:
       description: Data Source
       required: true
       length: 50
+      fieldWidth: 250
     tableName:
       type: string
       columnName: table_name
       displayName: Table Name
       description: Table Name
       length: 50
+      fieldWidth: 250
     description:
       type: string
       columnName: description
@@ -79,6 +84,7 @@ spec:
       displayName: Icon
       description: Icon
       length: 50
+      fieldWidth: 250
     core:
       type: bool
       columnName: core
@@ -133,6 +139,7 @@ spec:
       required: true
       defaultValue: '{}'
       colHidden: true
+      fieldHidden: true
     checksum:
       type: string
       columnName: checksum

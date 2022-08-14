@@ -288,11 +288,19 @@
           "type": "number"
         },
         "colHidden": {
-          "description": "Hide column in UI (optional, null by default)",
+          "description": "Hide column in UI table (optional, null by default)",
           "type": "boolean"
         },
         "colWidth": {
-          "description": "Column width in UI (optional, null by default)",
+          "description": "Column width in UI table (optional, null by default)",
+          "type": "number"
+        },
+        "fieldHidden": {
+          "description": "Hide field in UI form (optional, null by default)",
+          "type": "boolean"
+        },
+        "fieldWidth": {
+          "description": "Field width in UI form (optional, null by default)",
           "type": "number"
         }
       },

@@ -26,10 +26,7 @@ class AttributeTypes(
                 val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.STRING
                 typeName.nonNull(attribute.required)
             }
-            AttrType.string,
-            AttrType.text,
-            AttrType.enum,
-            AttrType.sequence -> TypeNames.STRING.nonNull(attribute.required)
+            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.email -> TypeNames.EMAIL.nonNull(attribute.required)
             AttrType.password -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.int, AttrType.long -> TypeNames.INT.nonNull(attribute.required)
@@ -39,7 +36,7 @@ class AttributeTypes(
             AttrType.datetime, AttrType.timestamp -> TypeNames.DATETIME.nonNull(attribute.required)
             AttrType.bool -> TypeNames.BOOLEAN.nonNull(attribute.required)
             AttrType.array, AttrType.json -> TypeNames.JSON.nonNull(attribute.required)
-            AttrType.media -> TypeNames.STRING.nonNull(attribute.required)
+            AttrType.media, AttrType.location -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
@@ -54,12 +51,7 @@ class AttributeTypes(
     fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
         when (attribute.type) {
             AttrType.uuid -> if (attribute.keyed) TypeNames.ID_FILTER_INPUT else TypeNames.STRING_FILTER_INPUT
-            AttrType.string,
-            AttrType.text,
-            AttrType.enum,
-            AttrType.sequence,
-            AttrType.email,
-            AttrType.password -> TypeNames.STRING_FILTER_INPUT
+            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence, AttrType.email, AttrType.password -> TypeNames.STRING_FILTER_INPUT
             AttrType.int, AttrType.long -> TypeNames.INT_FILTER_INPUT
             AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT_FILTER_INPUT
             AttrType.date -> TypeNames.DATE_FILTER_INPUT
@@ -67,9 +59,8 @@ class AttributeTypes(
             AttrType.datetime -> TypeNames.DATETIME_FILTER_INPUT
             AttrType.timestamp -> TypeNames.DATETIME_FILTER_INPUT
             AttrType.bool -> TypeNames.BOOLEAN_FILTER_INPUT
-            AttrType.array,
-            AttrType.json,
-            AttrType.media -> TypeNames.STRING_FILTER_INPUT
+            AttrType.array, AttrType.json -> TypeNames.STRING_FILTER_INPUT
+            AttrType.media, AttrType.location -> TypeNames.ID_FILTER_INPUT
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
@@ -91,8 +82,7 @@ class AttributeTypes(
             AttrType.uuid -> TypeNames.STRING
             AttrType.string, AttrType.text -> TypeNames.STRING
             // AttrType.enum -> TypeName("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
-            AttrType.enum,
-            AttrType.sequence -> TypeNames.STRING
+            AttrType.enum, AttrType.sequence -> TypeNames.STRING
             AttrType.email -> TypeNames.EMAIL
             AttrType.password -> TypeNames.STRING
             AttrType.int, AttrType.long -> TypeNames.INT
@@ -102,7 +92,7 @@ class AttributeTypes(
             AttrType.datetime -> TypeNames.DATETIME
             AttrType.timestamp -> TypeNames.DATETIME
             AttrType.bool -> TypeNames.BOOLEAN
-            AttrType.array, AttrType.json, AttrType.media -> TypeNames.STRING
+            AttrType.array, AttrType.json, AttrType.media, AttrType.location -> TypeNames.STRING
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
