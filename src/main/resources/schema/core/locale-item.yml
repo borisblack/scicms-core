@@ -11,6 +11,7 @@ metadata:
   tableName: core_locales
   titleAttribute: name
   description: Locales
+  icon: ZhihuOutlined
   core: true
   performDdl: false
 spec:

@@ -96,6 +96,16 @@ spec:
       displayName: Perform DDL Create
       description: Perform DDL Create
       colWidth: 170
+    notLockable:
+      type: bool
+      columnName: not_lockable
+      displayName: Not Lockable
+      description: Not Lockable
+    localized:
+      type: bool
+      columnName: localized
+      displayName: Localized
+      description: Localized
     versioned:
       type: bool
       columnName: versioned
@@ -114,16 +124,6 @@ spec:
       columnName: revision_policy_id
       displayName: Revision Policy
       description: Revision Policy
-    notLockable:
-      type: bool
-      columnName: not_lockable
-      displayName: Not Lockable
-      description: Not Lockable
-    localized:
-      type: bool
-      columnName: localized
-      displayName: Localized
-      description: Localized
     implementation:
       type: string
       columnName: implementation
@@ -145,6 +145,7 @@ spec:
       columnName: checksum
       displayName: Checksum
       description: Checksum
+      private: true
       length: 50
     allowedLifecycles:
       type: relation

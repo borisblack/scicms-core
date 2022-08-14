@@ -11,6 +11,7 @@ metadata:
   tableName: core_lifecycles
   titleAttribute: name
   description: Lifecycles
+  icon: InteractionOutlined
   core: true
   performDdl: false
 spec:

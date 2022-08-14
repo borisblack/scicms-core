@@ -10,6 +10,7 @@ metadata:
   dataSource: main
   tableName: core_locations
   description: Locations
+  icon: AimOutlined
   core: true
   performDdl: false
 spec:

@@ -6,11 +6,12 @@ metadata:
   name: media
   displayName: Media
   pluralName: medias
-  displayPluralName: Medias
+  displayPluralName: Media
   dataSource: main
   tableName: core_media
   titleAttribute: filename
   description: Media
+  icon: FileImageOutlined
   core: true
   performDdl: false
 spec:

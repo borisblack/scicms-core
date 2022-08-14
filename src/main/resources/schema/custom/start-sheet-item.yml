@@ -11,6 +11,7 @@ metadata:
   tableName: start_sheets
   titleAttribute: name
   description: Start Sheets
+  icon: FileDoneOutlined
   core: false
   performDdl: true
   versioned: true

@@ -109,6 +109,16 @@ spec:
       columnName: superseded_date
       displayName: Superseded Date
       description: Superseded Date
+    d:
+      type: date
+      columnName: d
+      displayName: D
+      description: D
+    t:
+      type: time
+      columnName: t
+      displayName: T
+      description: T
     ownedBy:
       type: relation
       relType: manyToOne

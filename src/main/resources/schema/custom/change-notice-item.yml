@@ -11,6 +11,7 @@ metadata:
   tableName: change_notices
   titleAttribute: displayName
   description: Change Notices
+  icon: FileExclamationOutlined
   core: false
   performDdl: true
   versioned: true
