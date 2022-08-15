@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "scicms-core.schema")
 class SchemaProps {
     var path: String? = null
+    var useFileChecksum: Boolean = true
     var readOnInit: Boolean = true
     var seedOnInit: Boolean = true
     var deleteIfAbsent: Boolean = false

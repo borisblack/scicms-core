@@ -258,6 +258,10 @@
           "description": "Privacy flag",
           "type": "boolean"
         },
+        "readOnly": {
+          "description": "Read only flag",
+          "type": "boolean"
+        },
         "pattern": {
           "description": "Regex pattern (optional, null by default). For string type",
           "type": "string",

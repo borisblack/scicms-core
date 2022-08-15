@@ -24,7 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
-      fieldWidth: 250
+      fieldWidth: 300
     displayName:
       type: string
       columnName: display_name
@@ -32,6 +32,7 @@ spec:
       description: Display Name
       required: true
       length: 50
+      fieldWidth: 300
     pluralName:
       type: string
       columnName: plural_name
@@ -39,7 +40,7 @@ spec:
       description: Plural Name
       required: true
       length: 50
-      fieldWidth: 250
+      fieldWidth: 300
     displayPluralName:
       type: string
       columnName: display_plural_name
@@ -48,6 +49,7 @@ spec:
       required: true
       length: 50
       colWidth: 170
+      fieldWidth: 300
     titleAttribute:
       type: string
       columnName: title_attribute
@@ -56,7 +58,7 @@ spec:
       required: true
       length: 50
       colWidth: 180
-      fieldWidth: 250
+      fieldWidth: 300
     dataSource:
       type: string
       columnName: data_source
@@ -64,14 +66,14 @@ spec:
       description: Data Source
       required: true
       length: 50
-      fieldWidth: 250
+      fieldWidth: 300
     tableName:
       type: string
       columnName: table_name
       displayName: Table Name
       description: Table Name
       length: 50
-      fieldWidth: 250
+      fieldWidth: 300
     description:
       type: string
       columnName: description
@@ -84,7 +86,7 @@ spec:
       displayName: Icon
       description: Icon
       length: 50
-      fieldWidth: 250
+      fieldWidth: 300
     core:
       type: bool
       columnName: core
@@ -124,6 +126,7 @@ spec:
       columnName: revision_policy_id
       displayName: Revision Policy
       description: Revision Policy
+      fieldWidth: 400
     implementation:
       type: string
       columnName: implementation

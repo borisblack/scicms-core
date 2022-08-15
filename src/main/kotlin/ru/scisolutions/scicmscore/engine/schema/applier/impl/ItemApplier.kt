@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.schema.applier.impl
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.domain.model.Attribute
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
@@ -17,6 +18,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class ItemApplier(
+    private val schemaProps: SchemaProps,
     private val dbSchema: DbSchema,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
@@ -89,7 +91,7 @@ class ItemApplier(
     }
 
     private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
-        (item.checksum == null || item.checksum != existingItemEntity.checksum) &&
+        (!schemaProps.useFileChecksum || item.checksum == null || item.checksum != existingItemEntity.checksum) &&
             item.hashCode().toString() != existingItemEntity.hash
 
     companion object {

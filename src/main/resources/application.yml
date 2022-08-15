@@ -30,6 +30,7 @@ scicms-core:
       create-directories: true
   schema:
     path: src/main/resources/schema
+    use-file-checksum: false # TODO: true in production to prevent restoring changed (made via API) items from scheme files
     read-on-init: true
     seed-on-init: true
     delete-if-absent: false

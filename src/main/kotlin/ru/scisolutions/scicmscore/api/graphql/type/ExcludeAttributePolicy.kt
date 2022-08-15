@@ -50,7 +50,7 @@ class ExcludeAttributePolicy(
     }
 
     fun excludeFromInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
-        if (attribute.keyed || attribute.private)
+        if (attribute.private || attribute.readOnly)
             return false
 
         if (item.versioned) {
@@ -67,9 +67,6 @@ class ExcludeAttributePolicy(
         if (attrName == STATE_ATTR_NAME) // use [promote] for state change
             return false
 
-        if (attrName == CREATED_AT_ATTR_NAME || attrName == CREATED_BY_ATTR_NAME || attrName == UPDATED_AT_ATTR_NAME || attrName == UPDATED_BY_ATTR_NAME)
-            return false
-
         if (attribute.type == Type.sequence)
             return false
 
@@ -81,9 +78,5 @@ class ExcludeAttributePolicy(
         private const val MINOR_REV_ATTR_NAME = "minorRev"
         private const val LOCALE_ATTR_NAME = "locale"
         private const val STATE_ATTR_NAME = "state"
-        private const val CREATED_AT_ATTR_NAME = "createdAt"
-        private const val CREATED_BY_ATTR_NAME = "createdBy"
-        private const val UPDATED_AT_ATTR_NAME = "updatedAt"
-        private const val UPDATED_BY_ATTR_NAME = "updatedBy"
     }
 }

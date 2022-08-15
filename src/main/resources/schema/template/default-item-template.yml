@@ -9,20 +9,24 @@ spec:
       columnName: id # the key attribute name and its column name must be 'id'!
       displayName: ID
       description: ID
-      required: true
       keyed: true
+      required: true
+      readOnly: true
       colHidden: true
       colWidth: 290
-      fieldWidth: 290
+      fieldWidth: 300
     configId:
       type: uuid
       columnName: config_id
-      displayName: ConfigID
-      description: ConfigID
+      displayName: Config ID
+      description: Config ID
       required: true
       unique: true
       indexed: true
-      private: true
+      readOnly: true
+      colHidden: true
+      colWidth: 290
+      fieldWidth: 300
     generation:
       type: int
       columnName: generation
@@ -78,6 +82,7 @@ spec:
       description: Lifecycle
 #      indexed: true
       colHidden: true
+      fieldWidth: 400
     state:
       type: string
       columnName: state
@@ -86,7 +91,7 @@ spec:
       indexed: true
       length: 50
       colHidden: true
-      fieldWidth: 200
+      fieldWidth: 300
     permission:
       type: relation
       relType: manyToOne
@@ -96,12 +101,14 @@ spec:
       description: Permission
       indexed: true
       colHidden: true
+      fieldWidth: 400
     createdAt:
       type: datetime
       columnName: created_at
       displayName: Created At
       description: Created At
       required: true
+      readOnly: true
       colHidden: true
     createdBy:
       type: relation
@@ -111,12 +118,15 @@ spec:
       displayName: Created By
       description: Created By
       required: true
+      readOnly: true
       colHidden: true
+      fieldWidth: 400
     updatedAt:
       type: datetime
       columnName: updated_at
       displayName: Updated At
       description: Updated At
+      readOnly: true
       colHidden: true
     updatedBy:
       type: relation
@@ -125,7 +135,9 @@ spec:
       columnName: updated_by_id
       displayName: Updated By
       description: Updated By
+      readOnly: true
       colHidden: true
+      fieldWidth: 400
     lockedBy:
       type: relation
       relType: manyToOne
@@ -133,4 +145,6 @@ spec:
       columnName: locked_by_id
       displayName: Locked By
       description: Locked By
+      readOnly: true
       colHidden: true
+      fieldWidth: 400

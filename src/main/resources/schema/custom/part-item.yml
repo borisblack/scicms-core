@@ -109,11 +109,13 @@ spec:
       columnName: superseded_date
       displayName: Superseded Date
       description: Superseded Date
+    # TODO: Remove after testing
     d:
       type: date
       columnName: d
       displayName: D
       description: D
+    # TODO: Remove after testing
     t:
       type: time
       columnName: t

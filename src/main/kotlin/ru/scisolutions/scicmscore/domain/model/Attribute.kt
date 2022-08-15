@@ -16,6 +16,7 @@ class Attribute(
     val mappedBy: String? = null,
     val inversedBy: String? = null,
     val required: Boolean = false,
+    val readOnly: Boolean = false,
     val defaultValue: String? = null,
     val keyed: Boolean = false, // primary key, used only for id attribute
     val unique: Boolean = false,
@@ -84,6 +85,7 @@ class Attribute(
             pattern,
             defaultValue,
             required,
+            readOnly,
             keyed,
             unique,
             indexed,
@@ -122,6 +124,7 @@ class Attribute(
             pattern == other.pattern &&
             defaultValue != other.defaultValue &&
             required == other.required &&
+            readOnly == other.readOnly &&
             keyed == other.keyed &&
             unique == other.unique &&
             indexed == other.indexed &&
