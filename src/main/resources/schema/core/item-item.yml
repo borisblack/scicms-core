@@ -132,8 +132,8 @@ spec:
       columnName: implementation
       displayName: Implementation
       description: Implementation
-      length: 100
-      colWidth: 150
+      length: 250
+      colWidth: 200
     spec:
       type: json
       columnName: spec

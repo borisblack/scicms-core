@@ -165,7 +165,7 @@
             </column>
             <column name="not_lockable" type="tinyint"/>
             <column name="localized" type="tinyint"/>
-            <column name="implementation" type="varchar(100)"/>
+            <column name="implementation" type="varchar(250)"/>
             <column name="spec" type="text" defaultValue="{}"/>
             <column name="checksum" type="varchar(50)"/>
             <column name="hash" type="varchar(50)"/>
@@ -442,7 +442,7 @@
             <column name="start_state" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="implementation" type="varchar(100)"/>
+            <column name="implementation" type="varchar(250)"/>
             <column name="spec" type="text" defaultValue="{}"/>
             <column name="checksum" type="varchar(50)"/>
             <column name="hash" type="varchar(50)"/>
