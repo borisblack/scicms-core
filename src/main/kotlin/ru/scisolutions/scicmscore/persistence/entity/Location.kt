@@ -15,5 +15,8 @@ class Location(
     val latitude: BigDecimal,
 
     @Column(name = "longitude", nullable = false)
-    val longitude: BigDecimal
+    val longitude: BigDecimal,
+
+    @Column(name = "sort_order")
+    val sortOrder: Int?
 ) : AbstractEntity()

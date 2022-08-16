@@ -33,3 +33,9 @@ spec:
       displayName: Longitude
       description: Longitude
       required: true
+    sortOrder:
+      type: int
+      columnName: sort_order
+      displayName: Sort Order
+      description: Sort Order
+      fieldWidth: 100
