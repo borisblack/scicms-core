@@ -48,6 +48,10 @@ class ItemServiceImpl(
     @Transactional(readOnly = true)
     override fun getByName(name: String): Item = findByName(name) ?: throw IllegalArgumentException("Item [$name] not found")
 
+    override fun getMedia(): Item = getByName(MEDIA_ITEM_NAME)
+
+    override fun getLocation(): Item = getByName(LOCATION_ITEM_NAME)
+
     @Transactional(readOnly = true)
     override fun findByNameForWrite(name: String): Item? = findByNameWithACL(name, Mask.WRITE)
 
@@ -68,5 +72,10 @@ class ItemServiceImpl(
     override fun delete(item: Item) {
         itemRepository.delete(item)
         itemCache.invalidate(item.name)
+    }
+
+    companion object {
+        private const val MEDIA_ITEM_NAME = "media"
+        private const val LOCATION_ITEM_NAME = "location"
     }
 }

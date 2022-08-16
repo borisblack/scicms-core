@@ -36,7 +36,8 @@ class AttributeTypes(
             AttrType.datetime, AttrType.timestamp -> TypeNames.DATETIME.nonNull(attribute.required)
             AttrType.bool -> TypeNames.BOOLEAN.nonNull(attribute.required)
             AttrType.array, AttrType.json -> TypeNames.JSON.nonNull(attribute.required)
-            AttrType.media, AttrType.location -> TypeNames.STRING.nonNull(attribute.required)
+            AttrType.media -> TypeName("MediaRelationResponse").nonNull(attribute.required)
+            AttrType.location -> TypeName("LocationRelationResponse").nonNull(attribute.required)
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
@@ -60,7 +61,20 @@ class AttributeTypes(
             AttrType.timestamp -> TypeNames.DATETIME_FILTER_INPUT
             AttrType.bool -> TypeNames.BOOLEAN_FILTER_INPUT
             AttrType.array, AttrType.json -> TypeNames.STRING_FILTER_INPUT
-            AttrType.media, AttrType.location -> TypeNames.ID_FILTER_INPUT
+            AttrType.media -> {
+                val media = itemService.getMedia()
+                if (media.dataSource == item.dataSource)
+                    TypeName("MediaFiltersInput")
+                else
+                    TypeNames.ID_FILTER_INPUT
+            }
+            AttrType.location -> {
+                val location = itemService.getLocation()
+                if (location.dataSource == item.dataSource)
+                    TypeName("LocationFiltersInput")
+                else
+                    TypeNames.ID_FILTER_INPUT
+            }
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 

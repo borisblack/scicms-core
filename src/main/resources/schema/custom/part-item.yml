@@ -121,6 +121,17 @@ spec:
       columnName: t
       displayName: T
       description: T
+    # TODO: Remove after testing
+    m:
+      type: media
+      columnName: m
+      displayName: M
+      description: M
+    l:
+      type: location
+      columnName: l
+      displayName: L
+      description: L
     ownedBy:
       type: relation
       relType: manyToOne

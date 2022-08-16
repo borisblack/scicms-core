@@ -28,7 +28,19 @@ class ItemFiltersInputMapper(
                 .filterKeys { it !in excludedKeys }
                 .mapValues { (attrName, filterValue) ->
                     val attribute = item.spec.getAttributeOrThrow(attrName)
-                    if (attribute.type == Type.relation) {
+                    if (attribute.type == Type.media) {
+                        val media = itemService.getMedia()
+                        if (media.dataSource == item.dataSource)
+                            map(MEDIA_ITEM_NAME, filterValue)
+                        else
+                            PrimitiveFilterInput.fromMap(filterValue)
+                    } else if (attribute.type == Type.location) {
+                        val location = itemService.getLocation()
+                        if (location.dataSource == item.dataSource)
+                            map(LOCATION_ITEM_NAME, filterValue)
+                        else
+                            PrimitiveFilterInput.fromMap(filterValue)
+                    } else if (attribute.type == Type.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemService.getByName(requireNotNull(attribute.target))
                         if (targetItem.dataSource == item.dataSource) {
@@ -39,8 +51,7 @@ class ItemFiltersInputMapper(
 
                             PrimitiveFilterInput.fromMap(filterValue)
                         }
-                    } else
-                        PrimitiveFilterInput.fromMap(filterValue)
+                    } else PrimitiveFilterInput.fromMap(filterValue)
                 }
 
         val andFiltersList = itemFiltersMapOfLists[AbstractFilterInput.AND_KEY]?.let { list ->
@@ -64,6 +75,8 @@ class ItemFiltersInputMapper(
     }
 
     companion object {
+        private const val MEDIA_ITEM_NAME = "media"
+        private const val LOCATION_ITEM_NAME = "location"
         private val excludedKeys = setOf(AbstractFilterInput.AND_KEY, AbstractFilterInput.OR_KEY, AbstractFilterInput.NOT_KEY)
     }
 }

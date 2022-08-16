@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.util.upperFirst
 
 @Component
 class ItemInputObjectTypes(
-    private val excludeAttributePolicy: ExcludeAttributePolicy,
+    private val includeAttributePolicy: IncludeAttributePolicy,
     private val attributeTypes: AttributeTypes
 ) {
     fun filtersInput(item: Item): InputObjectTypeDefinition {
@@ -41,7 +41,7 @@ class ItemInputObjectTypes(
             )
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromFiltersInputObjectType(item, attrName, attribute) }
+            .filter { (attrName, attribute) -> includeAttributePolicy.includeInFiltersInputObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
@@ -59,7 +59,7 @@ class ItemInputObjectTypes(
             .name("${item.name.upperFirst()}Input")
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromInputObjectType(item, attrName, attribute) }
+            .filter { (attrName, attribute) -> includeAttributePolicy.includeInInputObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()

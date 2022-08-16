@@ -9,6 +9,10 @@ interface ItemService {
 
     fun getByName(name: String): Item
 
+    fun getMedia(): Item
+
+    fun getLocation(): Item
+
     fun findByNameForWrite(name: String): Item?
 
     fun findByNameForCreate(name: String): Item?

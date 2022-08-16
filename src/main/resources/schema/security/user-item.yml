@@ -23,6 +23,7 @@ spec:
       description: Username
       required: true
       length: 50
+      fieldWidth: 300
     password:
       type: password
       columnName: passwd
@@ -30,6 +31,7 @@ spec:
       description: Password
       private: true
       length: 50
+      fieldWidth: 300
     enabled:
       type: bool
       columnName: enabled

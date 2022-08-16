@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      fieldWidth: 300
     access:
       type: relation
       relType: oneToMany
@@ -31,3 +32,4 @@ spec:
       mappedBy: source
       displayName: Access
       description: Access
+      fieldWidth: 400

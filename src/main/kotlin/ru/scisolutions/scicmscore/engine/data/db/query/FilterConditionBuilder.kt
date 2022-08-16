@@ -27,6 +27,7 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneUnidirect
 import ru.scisolutions.scicmscore.engine.schema.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
 
 @Component
 class FilterConditionBuilder(
@@ -39,14 +40,36 @@ class FilterConditionBuilder(
 
         itemFiltersInput.attributeFilters.forEach { (attrName, attrFilter) ->
             val attribute = item.spec.getAttributeOrThrow(attrName)
-            if (attrFilter is ItemFiltersInput) {
-                requireNotNull(attribute.target) { "The [$attrName] attribute does not have a target field." }
+            val target =
+                when (attribute.type) {
+                    AttrType.media -> MEDIA_ITEM_NAME
+                    AttrType.location -> LOCATION_ITEM_NAME
+                    else -> attribute.target
+                }
 
-                val targetItem = itemService.getByName(attribute.target)
+            if (attrFilter is ItemFiltersInput) {
+                requireNotNull(target) { "The [$attrName] attribute does not have a target field." }
+
+                val targetItem = itemService.getByName(target)
                 val targetTable = DbTable(schema, targetItem.tableName)
                 val idCol = DbColumn(table, ID_COL_NAME, null, null)
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
-                when (val relation = relationManager.getAttributeRelation(item, attrName, attribute)) {
+                val relation =
+                    when (attribute.type) {
+                        AttrType.media -> OneToOneUnidirectionalRelation(
+                            item = item,
+                            attrName = attrName,
+                            targetItem = targetItem
+                        )
+                        AttrType.location -> OneToOneUnidirectionalRelation(
+                            item = item,
+                            attrName = attrName,
+                            targetItem = targetItem
+                        )
+                        else -> relationManager.getAttributeRelation(item, attrName, attribute)
+                    }
+
+                when (relation) {
                     is OneToOneUnidirectionalRelation -> {
                         val col = DbColumn(table, relation.getColumnName(), null, null)
                         query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
@@ -209,6 +232,8 @@ class FilterConditionBuilder(
     }
 
     companion object {
+        private const val MEDIA_ITEM_NAME = "media"
+        private const val LOCATION_ITEM_NAME = "location"
         private const val ID_COL_NAME = "id"
     }
 }

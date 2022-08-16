@@ -8,10 +8,10 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ItemService
 
 @Component
-class ExcludeAttributePolicy(
+class IncludeAttributePolicy(
     private val itemService: ItemService
 ) {
-    fun excludeFromObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
+    fun includeInObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
         if (attribute.private)
             return false
 
@@ -24,7 +24,7 @@ class ExcludeAttributePolicy(
         return true
     }
 
-    fun excludeFromFiltersInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
+    fun includeInFiltersInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
         if (attribute.private)
             return false
 
@@ -32,6 +32,12 @@ class ExcludeAttributePolicy(
             return false
 
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
+            return false
+
+        if (attribute.type == Type.media && itemService.getMedia().dataSource != item.dataSource)
+            return false
+
+        if (attribute.type == Type.location && itemService.getLocation().dataSource != item.dataSource)
             return false
 
         if (attribute.isCollection()) {
@@ -49,7 +55,7 @@ class ExcludeAttributePolicy(
         return true
     }
 
-    fun excludeFromInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
+    fun includeInInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
         if (attribute.private || attribute.readOnly)
             return false
 

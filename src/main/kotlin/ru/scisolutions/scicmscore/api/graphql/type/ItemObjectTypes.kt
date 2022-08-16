@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.util.upperFirst
 @Component
 class ItemObjectTypes(
     private val attributeTypes: AttributeTypes,
-    private val excludeAttributePolicy: ExcludeAttributePolicy
+    private val includeAttributePolicy: IncludeAttributePolicy
 ) {
     fun item(item: Item): ObjectTypeDefinition {
         val dataSourceInfo = "Data source: ${item.dataSource}."
@@ -34,7 +34,7 @@ class ItemObjectTypes(
             .description(Description(description, null, true))
 
         item.spec.attributes.asSequence()
-            .filter { (attrName, attribute) -> excludeAttributePolicy.excludeFromObjectType(item, attrName, attribute) }
+            .filter { (attrName, attribute) -> includeAttributePolicy.includeInObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.fieldDefinition(
                     newAttributeField(item, attrName, attribute)
