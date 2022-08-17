@@ -18,6 +18,7 @@ scicms-core:
     default-limit: 25
     max-limit: 100
     cache-expiration-minutes: 10
+    item-template-cache-expiration-minutes: 1440
     item-cache-expiration-minutes: 1440
     trim-strings: true
   i18n:
@@ -31,7 +32,6 @@ scicms-core:
   schema:
     path: src/main/resources/schema
     use-file-checksum: false # TODO: true in production to prevent restoring changed (made via API) items from scheme files
-    read-on-init: true
     seed-on-init: true
     delete-if-absent: false
     item-lock-lock-duration-seconds: 300

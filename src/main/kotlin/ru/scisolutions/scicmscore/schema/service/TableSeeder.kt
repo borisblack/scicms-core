@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.schema.seeder
+package ru.scisolutions.scicmscore.schema.service
 
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity

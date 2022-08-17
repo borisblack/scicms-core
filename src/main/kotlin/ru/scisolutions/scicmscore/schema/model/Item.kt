@@ -3,21 +3,13 @@ package ru.scisolutions.scicmscore.schema.model
 import ru.scisolutions.scicmscore.model.ItemSpec
 import java.util.Objects
 
-data class Item(
+class Item(
     override val coreVersion: String,
     override val metadata: ItemMetadata,
     override var checksum: String?,
     val includeTemplates: Set<String>,
     val spec: ItemSpec
 ) : AbstractModel(coreVersion, metadata, checksum) {
-    fun includeTemplate(itemTemplate: ItemTemplate) = Item(
-        coreVersion = this.coreVersion,
-        metadata = this.metadata,
-        checksum = this.checksum,
-        includeTemplates = this.includeTemplates,
-        spec = this.spec.merge(itemTemplate.spec)
-    )
-
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true

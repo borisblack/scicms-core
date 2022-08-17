@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.schema.seeder.liquibase
+package ru.scisolutions.scicmscore.schema.service.impl.liquibase
 
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.Type

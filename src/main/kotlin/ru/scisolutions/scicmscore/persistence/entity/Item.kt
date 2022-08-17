@@ -80,7 +80,7 @@ class Item(
     // )
     // val allowedPermissions: MutableSet<Permission> = mutableSetOf()
 ) : AbstractEntity() {
-    override fun toString(): String = "Item(name=[$name])"
+    override fun toString(): String = "Item(name=$name)"
 
     companion object {
         private const val ID_ATTR_NAME = "id"

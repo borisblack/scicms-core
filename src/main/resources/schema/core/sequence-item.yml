@@ -11,7 +11,7 @@ metadata:
   tableName: core_sequences
   titleAttribute: name
   description: Sequences
-  icon: BorderlessTableOutlined
+  icon: NumberOutlined
   core: true
   performDdl: false
 spec:

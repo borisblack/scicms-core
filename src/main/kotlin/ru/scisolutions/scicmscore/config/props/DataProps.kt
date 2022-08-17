@@ -11,6 +11,7 @@ class DataProps {
     var defaultLimit: Int = DEFAULT_LIMIT
     var maxLimit: Int = MAX_LIMIT
     var cacheExpirationMinutes: Long = DEFAULT_CACHE_EXPIRATION_MINUTES
+    var itemTemplateCacheExpirationMinutes: Long = DEFAULT_ITEM_TEMPLATE_CACHE_EXPIRATION_MINUTES
     var itemCacheExpirationMinutes: Long = DEFAULT_ITEM_CACHE_EXPIRATION_MINUTES
     var trimStrings: Boolean = true
 
@@ -18,6 +19,7 @@ class DataProps {
         private const val DEFAULT_LIMIT = 25
         private const val MAX_LIMIT = 5
         private const val DEFAULT_CACHE_EXPIRATION_MINUTES: Long = 10
+        private const val DEFAULT_ITEM_TEMPLATE_CACHE_EXPIRATION_MINUTES: Long = 1440
         private const val DEFAULT_ITEM_CACHE_EXPIRATION_MINUTES: Long = 1440
     }
 }

@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.schema.seeder.liquibase
+package ru.scisolutions.scicmscore.schema.service.impl.liquibase
 
 import liquibase.Liquibase
 import liquibase.change.core.AddColumnChange
@@ -20,7 +20,7 @@ import ru.scisolutions.scicmscore.config.props.VersioningProps
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Index
 import ru.scisolutions.scicmscore.schema.model.Item
-import ru.scisolutions.scicmscore.schema.seeder.TableSeeder
+import ru.scisolutions.scicmscore.schema.service.TableSeeder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType

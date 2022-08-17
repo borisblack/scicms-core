@@ -5,21 +5,24 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.model.ItemSpec
+import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
 import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
-import ru.scisolutions.scicmscore.schema.model.DbSchema
 import ru.scisolutions.scicmscore.schema.model.Item
-import ru.scisolutions.scicmscore.schema.seeder.TableSeeder
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
+import ru.scisolutions.scicmscore.schema.service.TableSeeder
+import ru.scisolutions.scicmscore.util.Maps
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
 class ItemApplier(
     private val schemaProps: SchemaProps,
-    private val dbSchema: DbSchema,
+    private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
     private val schemaLockService: SchemaLockService,
@@ -31,7 +34,7 @@ class ItemApplier(
         if (model !is Item)
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
 
-        val item = dbSchema.includeTemplates(model)
+        val item = includeTemplates(model)
 
         validateItem(item)
 
@@ -74,20 +77,46 @@ class ItemApplier(
         }
     }
 
-    private fun validateItem(item: Item) {
-        logger.info("Validating item [{}]", item.metadata.name)
-        item.spec.attributes.asSequence()
+    private fun includeTemplates(item: Item): Item {
+        var mergedItem: Item = item
+        for (templateName in item.includeTemplates) {
+            val itemTemplate = itemTemplateService.getByName(templateName)
+            mergedItem = includeTemplate(mergedItem, itemTemplate)
+        }
+        return mergedItem
+    }
+
+    private fun includeTemplate(item: Item, itemTemplateEntity: ItemTemplate) = Item(
+        coreVersion = item.coreVersion,
+        metadata = item.metadata,
+        checksum = item.checksum,
+        includeTemplates = item.includeTemplates,
+        spec = mergeSpec(item.spec, itemTemplateEntity.spec)
+    )
+
+    private fun mergeSpec(source: ItemSpec, target: ItemSpec) = ItemSpec(
+        attributes = Maps.merge(source.attributes, target.attributes),
+        indexes = Maps.merge(source.indexes, target.indexes)
+    )
+
+    private fun validateItem(model: Item) {
+        logger.info("Validating model [{}]", model.metadata.name)
+        if(model.metadata.name.first().isUpperCase())
+            throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character")
+
+        // Check if item implementation exists
+        if (model.metadata.implementation != null) {
+            Class.forName(model.metadata.implementation)
+        }
+
+        model.spec.attributes.asSequence()
             .filter { (_, attribute) -> attribute.type == Attribute.Type.relation }
             .forEach { (attrName, attribute) ->
                 // logger.debug("Validating attribute [{}]", attrName)
                 attribute.validate()
-                relationValidator.validateAttribute(item, attrName, attribute)
+                relationValidator.validateAttribute(model, attrName, attribute)
             }
 
-        // Check if item implementation exists
-        if (item.metadata.implementation != null) {
-            Class.forName(item.metadata.implementation)
-        }
     }
 
     private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean =

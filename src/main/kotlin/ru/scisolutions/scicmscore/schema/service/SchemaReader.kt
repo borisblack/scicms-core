@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.schema.reader
+package ru.scisolutions.scicmscore.schema.service
 
 import ru.scisolutions.scicmscore.schema.model.DbSchema
 

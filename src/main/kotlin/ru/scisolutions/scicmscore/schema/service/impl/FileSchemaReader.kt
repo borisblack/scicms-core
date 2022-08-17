@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.schema.reader
+package ru.scisolutions.scicmscore.schema.service.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.schema.model.DbSchema
+import ru.scisolutions.scicmscore.schema.service.SchemaReader
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths

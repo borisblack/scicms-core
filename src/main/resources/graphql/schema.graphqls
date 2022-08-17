@@ -237,19 +237,8 @@ type MediaInfo {
     createdAt: DateTime!
 }
 
-type ItemTemplate {
-    coreVersion: String!
-    metadata: BaseMetadata!
-    spec: JSON!
-}
-
-type BaseMetadata {
-    name: String
-}
-
 type Query {
     me: UserInfo
-    itemTemplates: [ItemTemplate!]
 }
 
 type Mutation {

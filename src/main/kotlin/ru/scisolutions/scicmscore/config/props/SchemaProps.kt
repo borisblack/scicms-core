@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 class SchemaProps {
     var path: String? = null
     var useFileChecksum: Boolean = true
-    var readOnInit: Boolean = true
     var seedOnInit: Boolean = true
     var deleteIfAbsent: Boolean = false
     var itemLockLockDurationSeconds: Long = DEFAULT_ITEM_LOCK_LOCK_DURATION_SECONDS

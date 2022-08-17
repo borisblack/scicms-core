@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.schema.seeder.liquibase
+package ru.scisolutions.scicmscore.schema.service.impl.liquibase
 
 import liquibase.change.AddColumnConfig
 import liquibase.change.core.CreateIndexChange

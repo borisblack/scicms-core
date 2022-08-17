@@ -11,7 +11,7 @@ metadata:
   tableName: products
   titleAttribute: name
   description: Products
-  icon: ShopOutlined
+  icon: ContainerOutlined
   core: false
   performDdl: true
   versioned: true

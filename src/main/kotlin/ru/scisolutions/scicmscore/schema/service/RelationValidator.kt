@@ -1,17 +1,16 @@
 package ru.scisolutions.scicmscore.schema.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.schema.model.DbSchema
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Component
 class RelationValidator(
-    private val dbSchema: DbSchema,
     private val itemService: ItemService
 ) {
     fun validateAttribute(item: Item, attrName: String, attribute: Attribute) {
@@ -46,13 +45,23 @@ class RelationValidator(
     }
 
     private fun validateDataSource(item: Item, attribute: Attribute) {
-        val targetItem = dbSchema.getItemOrThrow(requireNotNull(attribute.target))
+        val targetItem = itemService.findByName(requireNotNull(attribute.target))
+        if (targetItem == null) {
+            logger.warn("Target item [${attribute.target}] not found. It may not have been created yet")
+            return
+        }
+
         if (attribute.relType == RelType.manyToMany){
-            if (item.metadata.dataSource != targetItem.metadata.dataSource)
+            if (item.metadata.dataSource != targetItem.dataSource)
                 throw IllegalStateException("Item [${item.metadata.name}] and it's manyToMany attribute target item have different data sources")
 
-            val intermediateItem = dbSchema.getItemOrThrow(requireNotNull(attribute.intermediate))
-            if (item.metadata.dataSource != intermediateItem.metadata.dataSource)
+            val intermediateItem = itemService.findByName(requireNotNull(attribute.intermediate))
+            if (intermediateItem == null) {
+                logger.warn("Intermediate item [${attribute.intermediate}] not found. It may not have been created yet")
+                return
+            }
+
+            if (item.metadata.dataSource != intermediateItem.dataSource)
                 throw IllegalStateException("Item [${item.metadata.name}] and it's manyToMany attribute intermediate item have different data sources")
         }
     }
@@ -72,5 +81,9 @@ class RelationValidator(
             if (itemEntity.dataSource != intermediateItem.dataSource)
                 throw IllegalStateException("Item [${itemEntity.name}] and it's manyToMany attribute intermediate item have different data sources")
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(RelationValidator::class.java)
     }
 }
