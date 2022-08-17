@@ -2,11 +2,11 @@ package ru.scisolutions.scicmscore.engine.handler.impl
 
 import com.google.common.hash.Hashing
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import ru.scisolutions.scicmscore.config.props.MediaProps
 import ru.scisolutions.scicmscore.engine.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.mapper.MediaMapper
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
@@ -20,19 +20,14 @@ import com.google.common.io.Files as GFiles
 
 @Service
 class LocalMediaHandler(
-    @Value("\${scicms-core.media.provider}")
-    private val provider: String?,
-    @Value("\${scicms-core.media.provider-options.base-path}")
-    private val basePath: String?,
-    @Value("\${scicms-core.media.provider-options.create-directories:true}")
-    private val createDirectories: Boolean,
+    private val mediaProps: MediaProps,
     private val mediaService: MediaService
 ) : MediaHandler {
     init {
-        if (provider != PROVIDER_LOCAL)
+        if (mediaProps.provider != PROVIDER_LOCAL)
             logger.warn("Local provider is not configured")
 
-        if (basePath.isNullOrBlank())
+        if (mediaProps.providerOptions.basePath.isNullOrBlank())
             logger.warn("Local provider storage path is not configured")
     }
 
@@ -43,7 +38,7 @@ class LocalMediaHandler(
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
         val fullPath = buildFullPath(filePath)
         val fileToSave = File(fullPath)
-        if (!fileToSave.parentFile.exists() && createDirectories)
+        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.createDirectories)
             fileToSave.parentFile.mkdirs()
 
         file.transferTo(fileToSave) // try to save
@@ -63,10 +58,10 @@ class LocalMediaHandler(
     }
 
     private fun buildFullPath(filePath: String): String {
-        if (basePath.isNullOrBlank())
+        if (mediaProps.providerOptions.basePath.isNullOrBlank())
             throw IllegalStateException("Local provider storage base path is not configured")
 
-        return "${basePath}/${filePath}"
+        return "${mediaProps.providerOptions.basePath}/${filePath}"
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
