@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.api.graphql.ReloadIndicator
-import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
-import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
-import ru.scisolutions.scicmscore.service.SchemaLockService
+import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
+import ru.scisolutions.scicmscore.schema.applier.ModelsApplier
+import ru.scisolutions.scicmscore.schema.model.AbstractModel
 
 @RestController
 @RequestMapping("/api/model")

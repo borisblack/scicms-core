@@ -7,20 +7,20 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class UnlockDataFetcher(
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null.")
-        val result = dataEngine.unlock(itemName, id, selectAttrNames)
+        val result = engine.unlock(itemName, id, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

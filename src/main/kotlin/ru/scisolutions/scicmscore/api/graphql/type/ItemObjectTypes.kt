@@ -9,7 +9,7 @@ import graphql.language.ObjectTypeDefinition
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
-import ru.scisolutions.scicmscore.domain.model.Attribute
+import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.util.upperFirst
 

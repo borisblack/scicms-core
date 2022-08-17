@@ -1,19 +1,19 @@
 package ru.scisolutions.scicmscore.api.controller
 
 import org.springframework.mail.javamail.JavaMailSender
-import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.config.props.SecurityProps
-import ru.scisolutions.scicmscore.domain.model.RegistrationRequest
-import ru.scisolutions.scicmscore.domain.model.TokenResponse
-import ru.scisolutions.scicmscore.domain.model.UserInfo
+import ru.scisolutions.scicmscore.model.RegistrationRequest
+import ru.scisolutions.scicmscore.model.TokenResponse
+import ru.scisolutions.scicmscore.model.UserInfo
+import ru.scisolutions.scicmscore.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
-import ru.scisolutions.scicmscore.service.UserService
 
 @RestController
 @RequestMapping("/api/auth/local")

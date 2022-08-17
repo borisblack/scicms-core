@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseCollectionFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.input.DeleteInput
-import ru.scisolutions.scicmscore.engine.data.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
+import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
-class PurgeDataFetcher(private val dataEngine: DataEngine) : DataFetcher<DataFetcherResult<ResponseCollection>> {
+class PurgeDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResult<ResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<ResponseCollection> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseCollectionFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
@@ -26,7 +26,7 @@ class PurgeDataFetcher(private val dataEngine: DataEngine) : DataFetcher<DataFet
             deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
         )
 
-        val result = dataEngine.purge(itemName, input, selectAttrNames)
+        val result = engine.purge(itemName, input, selectAttrNames)
 
         return DataFetcherResult.newResult<ResponseCollection>()
             .data(result)

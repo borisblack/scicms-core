@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.service.MediaService
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.net.URLEncoder
 import javax.servlet.http.HttpServletRequest
 
@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletRequest
 @RequestMapping("/api/media")
 class MediaController(
     private val mediaService: MediaService,
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) {
     @GetMapping("/{id}/download")
     fun download(@PathVariable id: String, request: HttpServletRequest): ResponseEntity<*> {
         val media = mediaService.findByIdForRead(id) ?: return ResponseEntity.notFound().build<Unit>()
-        val resource = dataEngine.downloadById(id)
+        val resource = engine.downloadById(id)
         val filename = URLEncoder.encode(media.filename.replace(" ", "_"), "UTF-8")
 
         return ResponseEntity.ok()

@@ -5,18 +5,18 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.response.Response
 
 @Component
 class FindOneDataFetcher(
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val selectAttrNames = dfe.selectDataFields()
         val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null.")
         val itemName = dfe.field.name
-        val result = dataEngine.findOne(itemName, id, selectAttrNames)
+        val result = engine.findOne(itemName, id, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

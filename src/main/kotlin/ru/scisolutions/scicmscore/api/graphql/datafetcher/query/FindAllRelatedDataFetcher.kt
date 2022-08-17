@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.unwrapParentType
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.mapper.FindAllInputMapper
-import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponseCollection
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.mapper.FindAllInputMapper
+import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class FindAllRelatedDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
         val parentType = dfe.unwrapParentType()
@@ -31,7 +31,7 @@ class FindAllRelatedDataFetcher(
             .map { it.name }
             .toSet()
 
-        val result = dataEngine.findAllRelated(
+        val result = engine.findAllRelated(
             parentItemName = parentItemName,
             parentItemRec = parentItemRec,
             parentAttrName = parentAttrName,

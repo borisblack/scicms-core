@@ -8,13 +8,13 @@ import ru.scisolutions.scicmscore.api.graphql.field.MutationItemFields
 import ru.scisolutions.scicmscore.api.graphql.field.QueryItemFields
 import ru.scisolutions.scicmscore.api.graphql.type.ItemInputObjectTypes
 import ru.scisolutions.scicmscore.api.graphql.type.ItemObjectTypes
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @DgsComponent
 class DynamicTypeDefinitions(
     private val itemService: ItemService,
-    private val dataEngine: DataEngine,
+    private val engine: Engine,
     private val itemObjectTypes: ItemObjectTypes,
     private val itemInputObjectTypes: ItemInputObjectTypes,
     private val queryItemFields: QueryItemFields,
@@ -80,7 +80,7 @@ class DynamicTypeDefinitions(
                 if (it.implementation != null) {
                     typeDefinitionRegistry.add(itemObjectTypes.customMethodResponse(it))
 
-                    val customMethods = mutationItemFields.customMethods(it, dataEngine.getCustomMethods(it.name))
+                    val customMethods = mutationItemFields.customMethods(it, engine.getCustomMethods(it.name))
                     customMethods.forEach { method -> mutationBuilder.fieldDefinition(method) }
                 }
             }

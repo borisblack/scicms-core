@@ -5,13 +5,13 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
-import ru.scisolutions.scicmscore.domain.model.Attribute
-import ru.scisolutions.scicmscore.engine.schema.service.impl.RelationValidator
+import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
-import ru.scisolutions.scicmscore.domain.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 
 private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) NonNullType(this) else this
 

@@ -19,17 +19,17 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllDataFetch
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllRelatedDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneRelatedDataFetcher
-import ru.scisolutions.scicmscore.domain.model.Attribute.RelType
-import ru.scisolutions.scicmscore.domain.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.data.DataEngine
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.model.Attribute.RelType
+import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.upperFirst
 
 @DgsComponent
 class DynamicDataFetcher(
     private val itemService: ItemService,
-    private val dataEngine: DataEngine,
+    private val engine: Engine,
     private val findOneDataFetcher: FindOneDataFetcher,
     private val findOneRelatedDataFetcher: FindOneRelatedDataFetcher,
     private val findAllDataFetcher: FindAllDataFetcher,
@@ -103,7 +103,7 @@ class DynamicDataFetcher(
 
                 // Custom methods
                 if (it.implementation != null) {
-                    val customMethodNames = dataEngine.getCustomMethods(it.name)
+                    val customMethodNames = engine.getCustomMethods(it.name)
                     for (methodName in customMethodNames) {
                         codeRegistryBuilder
                             .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "${methodName}${capitalizedItemName}"), customMethodDataFetcher)

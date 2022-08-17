@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.util
 
 object Maps {
-    fun merge(source: Map<String, Any?>, target: Map<String, Any?>): Map<String, Any?> {
+    fun <T> merge(source: Map<String, T>, target: Map<String, T>): Map<String, T> {
         val merged = target.toMutableMap()
         merged.putAll(source)
 

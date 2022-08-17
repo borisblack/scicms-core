@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.input.PromoteInput
-import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
+import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
-class PromoteDataFetcher(private val dataEngine: DataEngine) : DataFetcher<DataFetcherResult<Response>> {
+class PromoteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
@@ -23,7 +23,7 @@ class PromoteDataFetcher(private val dataEngine: DataEngine) : DataFetcher<DataF
             state = dfe.arguments[STATE_ARG_NAME] as String? ?: throw IllegalArgumentException("The [$STATE_ARG_NAME] argument is null."),
         )
 
-        val result = dataEngine.promote(itemName, input, selectAttrNames)
+        val result = engine.promote(itemName, input, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

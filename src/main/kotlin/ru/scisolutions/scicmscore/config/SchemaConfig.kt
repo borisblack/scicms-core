@@ -4,8 +4,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import ru.scisolutions.scicmscore.config.props.SchemaProps
-import ru.scisolutions.scicmscore.engine.schema.model.DbSchema
-import ru.scisolutions.scicmscore.engine.schema.reader.SchemaReader
+import ru.scisolutions.scicmscore.schema.model.DbSchema
+import ru.scisolutions.scicmscore.schema.reader.SchemaReader
 
 @Configuration
 class SchemaConfig(

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.input.CreateLocalizationInput
-import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
+import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class CreateLocalizationDataFetcher(
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
@@ -27,7 +27,7 @@ class CreateLocalizationDataFetcher(
             copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?
         )
 
-        val result = dataEngine.createLocalization(itemName, input, selectAttrNames)
+        val result = engine.createLocalization(itemName, input, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

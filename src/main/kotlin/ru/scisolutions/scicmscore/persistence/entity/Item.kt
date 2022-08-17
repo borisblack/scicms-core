@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
 import org.hibernate.annotations.Type
-import ru.scisolutions.scicmscore.domain.model.ItemSpec
+import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert

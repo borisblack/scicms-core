@@ -2,11 +2,11 @@ package ru.scisolutions.scicmscore.api.graphql.datafetcher.query
 
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsQuery
-import ru.scisolutions.scicmscore.domain.model.UserInfo
-import ru.scisolutions.scicmscore.engine.data.DataEngine
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.model.UserInfo
 
 @DgsComponent
-class UserDataFetcher(private val dataEngine: DataEngine) {
+class UserDataFetcher(private val engine: Engine) {
     @DgsQuery
-    fun me(): UserInfo? = dataEngine.me()
+    fun me(): UserInfo? = engine.me()
 }

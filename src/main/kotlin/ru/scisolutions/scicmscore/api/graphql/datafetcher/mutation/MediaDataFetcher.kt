@@ -4,22 +4,20 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.web.multipart.MultipartFile
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.MediaInfo
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.MediaInfo
 
 @DgsComponent
-class MediaDataFetcher(
-    private val dataEngine: DataEngine
-) {
+class MediaDataFetcher(private val engine: Engine) {
     @DgsMutation
     fun upload(dfe: DataFetchingEnvironment): MediaInfo {
         val file = dfe.getArgument<MultipartFile>("file")
-        return dataEngine.upload(file)
+        return engine.upload(file)
     }
 
     @DgsMutation
     fun uploadMultiple(dfe: DataFetchingEnvironment): List<MediaInfo> {
         val files = dfe.getArgument<List<MultipartFile>>("files")
-        return dataEngine.uploadMultiple(files)
+        return engine.uploadMultiple(files)
     }
 }

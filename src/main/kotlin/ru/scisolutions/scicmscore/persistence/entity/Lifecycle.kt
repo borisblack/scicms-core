@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import ru.scisolutions.scicmscore.domain.model.LifecycleSpec
+import ru.scisolutions.scicmscore.model.LifecycleSpec
 import ru.scisolutions.scicmscore.persistence.converter.LifecycleSpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert

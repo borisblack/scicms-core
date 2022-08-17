@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.input.UpdateInput
-import ru.scisolutions.scicmscore.engine.data.model.response.Response
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
+import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class UpdateDataFetcher(
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
@@ -25,7 +25,7 @@ class UpdateDataFetcher(
             data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
         )
 
-        val result = dataEngine.update(itemName, input, selectAttrNames)
+        val result = engine.update(itemName, input, selectAttrNames)
 
         return DataFetcherResult.newResult<Response>()
             .data(result)

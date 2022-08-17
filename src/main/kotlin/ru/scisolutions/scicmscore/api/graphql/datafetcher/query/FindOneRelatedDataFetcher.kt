@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.unwrapParentType
-import ru.scisolutions.scicmscore.engine.data.DataEngine
-import ru.scisolutions.scicmscore.engine.data.model.ItemRec
-import ru.scisolutions.scicmscore.engine.data.model.response.RelationResponse
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.util.lowerFirst
 
 @Component
 class FindOneRelatedDataFetcher(
-    private val dataEngine: DataEngine
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponse> {
         val parentType = dfe.unwrapParentType()
@@ -24,7 +24,7 @@ class FindOneRelatedDataFetcher(
         val parentItemRec: ItemRec = dfe.getSource()
         val parentAttrName = dfe.field.name
         val selectAttrNames = dfe.selectDataFields()
-        val result = dataEngine.findOneRelated(
+        val result = engine.findOneRelated(
             parentItemName = parentItemName,
             parentItemRec = parentItemRec,
             parentAttrName = parentAttrName,

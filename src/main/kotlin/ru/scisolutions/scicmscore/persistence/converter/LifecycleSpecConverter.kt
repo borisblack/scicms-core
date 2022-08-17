@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import ru.scisolutions.scicmscore.domain.model.LifecycleSpec
+import ru.scisolutions.scicmscore.model.LifecycleSpec
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 

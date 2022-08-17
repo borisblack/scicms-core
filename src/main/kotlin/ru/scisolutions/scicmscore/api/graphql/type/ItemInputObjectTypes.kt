@@ -7,8 +7,8 @@ import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.domain.model.Attribute
-import ru.scisolutions.scicmscore.domain.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.util.upperFirst
 
