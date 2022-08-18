@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.6.10"
     kotlin("plugin.spring") version "1.6.10"
     kotlin("plugin.jpa") version "1.6.10"
+    kotlin("kapt") version "1.6.10"
 }
 
 group = "ru.scisolutions"
@@ -49,8 +50,8 @@ dependencies {
     runtimeOnly("com.oracle.database.jdbc:ojdbc8")
     runtimeOnly("org.postgresql:postgresql")
 
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    // compileOnly("org.springframework.boot:spring-boot-configuration-processor")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
+    compileOnly("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

@@ -36,7 +36,7 @@ class CopyRelationHelper(
                 val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.owningItem, relation.owningAttrName, prevItemRecId)
                 prevRelItemRecs.forEach {
                     it[relation.owningAttrName] = itemRecId
-                    insertWithDefaults(relation.owningItem, it.id as String, it)
+                    insertWithDefaults(relation.owningItem, it)
                 }
             }
             is ManyToManyRelation -> {
@@ -45,7 +45,7 @@ class CopyRelationHelper(
                         val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, prevItemRecId)
                         prevRelItemRecs.forEach {
                             it[INTERMEDIATE_SOURCE_ATTR_NAME] = itemRecId
-                            insertWithDefaults(relation.intermediateItem, it.id as String, it)
+                            insertWithDefaults(relation.intermediateItem, it)
                         }
                     }
                     is ManyToManyBidirectionalRelation -> {
@@ -53,13 +53,13 @@ class CopyRelationHelper(
                             val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, prevItemRecId)
                             prevRelItemRecs.forEach {
                                 it[INTERMEDIATE_SOURCE_ATTR_NAME] = itemRecId
-                                insertWithDefaults(relation.intermediateItem, it.id as String, it)
+                                insertWithDefaults(relation.intermediateItem, it)
                             }
                         } else {
                             val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.intermediateItem, INTERMEDIATE_TARGET_ATTR_NAME, prevItemRecId)
                             prevRelItemRecs.forEach {
                                 it[INTERMEDIATE_TARGET_ATTR_NAME] = itemRecId
-                                insertWithDefaults(relation.intermediateItem, it.id as String, it)
+                                insertWithDefaults(relation.intermediateItem, it)
                             }
                         }
                     }
@@ -69,7 +69,7 @@ class CopyRelationHelper(
         }
     }
 
-    private fun insertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
+    private fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
         if (itemService.findByNameForCreate(item.name) == null) {
             logger.warn("Create operation disabled for item [${item.name}].")
             return 0

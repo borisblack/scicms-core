@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.config.props
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.stereotype.Component
 
 @Component
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Component
 class MediaProps {
     var provider: String = DEFAULT_PROVIDER
     var includeInUniqueIndex: Boolean = true
+
+    @NestedConfigurationProperty
     var providerOptions: ProviderOptions = ProviderOptions()
 
     class ProviderOptions {

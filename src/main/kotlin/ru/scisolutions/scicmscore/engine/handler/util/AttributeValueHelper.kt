@@ -37,7 +37,7 @@ class AttributeValueHelper(
             .mapValues { (attrName, value) -> prepareAttributeValue(item, attrName, value as Any) }
 
         if (dataProps.trimStrings)
-            return result.mapValues { (attrName, value) -> if (value is String) value.trim() else value }
+            return result.mapValues { (_, value) -> if (value is String) value.trim() else value }
 
         return result
     }

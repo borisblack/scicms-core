@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import ru.scisolutions.scicmscore.api.graphql.CustomScalarsRegistration
+import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.model.UserInfo
 import java.util.UUID
 
@@ -25,7 +26,7 @@ class UserDataFetcherTest {
     private lateinit var dgsQueryExecutor: DgsQueryExecutor
 
     @MockBean
-    lateinit var engineengine.Engine
+    lateinit var engine: Engine
 
     @BeforeEach
     fun before() {

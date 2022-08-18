@@ -1,12 +1,15 @@
 package ru.scisolutions.scicmscore.config.props
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.NestedConfigurationProperty
 import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties(prefix = "scicms-core.security")
 class SecurityProps {
+    @NestedConfigurationProperty
     var jwtToken: JwtToken = JwtToken()
+
     var registrationDisabled: Boolean = false
 
     class JwtToken {
