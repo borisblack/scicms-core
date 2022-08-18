@@ -32,4 +32,20 @@ class PersistenceConfig(
 
     @Bean
     fun jdbcTemplate(): JdbcTemplate = jdbcTemplateMap().main
+
+    class DataSourceMap(map: Map<String, DataSource>) : Map<String, DataSource> by map {
+        val main: DataSource = getOrThrow(MAIN_KEY)
+
+        fun getOrThrow(key: String) = this[key] ?: throw IllegalArgumentException("Datasource [$key] not found")
+    }
+
+    class JdbcTemplateMap(map: Map<String, JdbcTemplate>) : Map<String, JdbcTemplate> by map {
+        val main: JdbcTemplate = getOrThrow(MAIN_KEY)
+
+        fun getOrThrow(key: String) = this[key] ?: throw IllegalArgumentException("JdbcTemplate [$key] not found")
+    }
+
+    companion object {
+        const val MAIN_KEY = "main"
+    }
 }

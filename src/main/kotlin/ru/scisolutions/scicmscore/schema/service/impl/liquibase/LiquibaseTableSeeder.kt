@@ -13,7 +13,7 @@ import liquibase.database.jvm.JdbcConnection
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.config.DataSourceMap
+import ru.scisolutions.scicmscore.config.PersistenceConfig.DataSourceMap
 import ru.scisolutions.scicmscore.config.props.I18nProps
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.config.props.VersioningProps

@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.dao.impl
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.config.JdbcTemplateMap
+import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.db.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.db.query.DaoQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
