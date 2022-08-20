@@ -229,7 +229,7 @@ type UserInfo {
 
 type MediaInfo {
     id: ID!
-    filename: String
+    filename: String!
     description: String
     fileSize: Int!
     mimetype: String!

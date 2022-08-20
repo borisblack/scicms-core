@@ -123,12 +123,10 @@ class EngineImpl(
         updateHandler.update(itemName, input, selectAttrNames)
 
     override fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
-        val result = deleteHandler.delete(itemName, input, selectAttrNames)
-
         if (itemName == MEDIA_ITEM_NAME)
             mediaHandler.deleteById(input.id)
 
-        return result
+        return deleteHandler.delete(itemName, input, selectAttrNames)
     }
 
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =

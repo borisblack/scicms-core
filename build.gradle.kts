@@ -38,7 +38,7 @@ dependencies {
     implementation("org.liquibase:liquibase-core")
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", Constants.jacksonVersion)
     implementation("com.fasterxml.jackson.dataformat", "jackson-dataformat-yaml", Constants.jacksonVersion)
-    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
+    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:5.0.5"))
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
