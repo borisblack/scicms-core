@@ -9,6 +9,7 @@ metadata:
   displayPluralName: Group Roles
   dataSource: main
   tableName: sec_group_roles
+  titleAttribute: role
   description: Group Roles
   core: true
   performDdl: false

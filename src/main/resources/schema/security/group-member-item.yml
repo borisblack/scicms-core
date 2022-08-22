@@ -9,6 +9,7 @@ metadata:
   displayPluralName: Group Members
   dataSource: main
   tableName: sec_group_members
+  titleAttribute: username
   description: Group Members
   core: true
   performDdl: false
