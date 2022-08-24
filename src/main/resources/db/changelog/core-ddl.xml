@@ -360,7 +360,7 @@
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
-            <column name="filename" type="varchar(250)">
+            <column name="filename" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="display_name" type="varchar(50)"/>
@@ -371,7 +371,7 @@
             <column name="mimetype" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="path" type="varchar(100)">
+            <column name="path" type="varchar(500)">
                 <constraints nullable="false"/>
             </column>
             <column name="checksum" type="varchar(50)">

@@ -6,18 +6,18 @@ import ru.scisolutions.scicmscore.persistence.entity.AllowedLifecycle
 
 interface AllowedLifecycleRepository : CrudRepository<AllowedLifecycle, String> {
     @Query(
-        value = "SELECT a.target_id FROM core_allowed_lifecycles a WHERE a.source_id = :itemId ORDER BY a.sort_order",
+        value = "SELECT a.* FROM core_allowed_lifecycles a WHERE a.source_id = :itemId ORDER BY a.sort_order",
         nativeQuery = true
     )
-    fun findLifecycleIdsByItemId(itemId: String): List<String>
+    fun findAllByItemId(itemId: String): List<AllowedLifecycle>
 
     @Query(
         value =
-            "SELECT a.target_id FROM core_allowed_lifecycles a " +
+            "SELECT a.* FROM core_allowed_lifecycles a " +
                 "LEFT JOIN core_items i ON a.source_id = i.id " +
             "WHERE i.name = :itemName " +
             "ORDER BY a.sort_order",
         nativeQuery = true
     )
-    fun findLifecycleIdsByItemName(itemName: String): List<String>
+    fun findAllByItemName(itemName: String): List<AllowedLifecycle>
 }

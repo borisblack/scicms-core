@@ -18,13 +18,13 @@ class AllowedPermissionServiceImpl(
     dataProps: DataProps,
     private val allowedPermissionRepository: AllowedPermissionRepository
 ) : AllowedPermissionService {
-    private val permissionIdsCache: Cache<String, List<String>> = CacheBuilder.newBuilder()
+    private val permissionIdsCache: Cache<String, List<AllowedPermission>> = CacheBuilder.newBuilder()
         .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
     @Transactional(readOnly = true)
-    override fun findPermissionIdsByItemName(itemName: String): List<String> = permissionIdsCache.get(itemName) {
-        allowedPermissionRepository.findPermissionIdsByItemName(itemName)
+    override fun findAllByItemName(itemName: String): List<AllowedPermission> = permissionIdsCache.get(itemName) {
+        allowedPermissionRepository.findAllByItemName(itemName)
     }
 
     override fun save(allowedPermission: AllowedPermission): AllowedPermission = allowedPermissionRepository.save(allowedPermission)

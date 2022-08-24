@@ -23,7 +23,7 @@ spec:
       description: Filename
       required: true
       readOnly: true
-      length: 250
+      length: 100
       fieldWidth: 300
     displayName:
       type: string
@@ -62,7 +62,7 @@ spec:
       description: Path
       required: true
       readOnly: true
-      length: 100
+      length: 500
     checksum:
       type: string
       columnName: checksum

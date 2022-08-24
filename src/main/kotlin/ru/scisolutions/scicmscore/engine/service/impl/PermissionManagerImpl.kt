@@ -11,10 +11,11 @@ import ru.scisolutions.scicmscore.persistence.service.AllowedPermissionService
 class PermissionManagerImpl(private val allowedPermissionService: AllowedPermissionService) : PermissionManager {
     override fun assignPermissionAttribute(item: Item, itemRec: ItemRec) {
         val permissionId = itemRec.permission
-        val allowedPermissionIds = allowedPermissionService.findPermissionIdsByItemName(item.name)
+        val allowedPermissions = allowedPermissionService.findAllByItemName(item.name)
         if (permissionId == null) {
-            itemRec.permission = if (allowedPermissionIds.isEmpty()) Permission.DEFAULT_PERMISSION_ID else allowedPermissionIds[0]
+            itemRec.permission = allowedPermissions.find { it.isDefault }?.targetId ?: Permission.DEFAULT_PERMISSION_ID
         } else {
+            val allowedPermissionIds = allowedPermissions.asSequence().map { it.targetId }.toSet()
             if (permissionId !in allowedPermissionIds || permissionId != Permission.DEFAULT_PERMISSION_ID)
                 throw IllegalArgumentException("Permission [$permissionId] is not allowed for item [${item.name}]")
 

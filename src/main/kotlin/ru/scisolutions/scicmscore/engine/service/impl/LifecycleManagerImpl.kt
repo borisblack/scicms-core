@@ -15,10 +15,11 @@ class LifecycleManagerImpl(
 ) : LifecycleManager {
     override fun assignLifecycleAttributes(item: Item, itemRec: ItemRec) {
         val lifecycleId = itemRec.lifecycle
-        val allowedLifecycleIds = allowedLifecycleService.findLifecycleIdsByItemName(item.name)
+        val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
         if (lifecycleId == null) {
-            itemRec.lifecycle = if (allowedLifecycleIds.isEmpty()) Lifecycle.DEFAULT_LIFECYCLE_ID else allowedLifecycleIds[0]
+            itemRec.lifecycle = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID
         } else {
+            val allowedLifecycleIds = allowedLifecycles.asSequence().map { it.targetId }.toSet()
             if (lifecycleId !in allowedLifecycleIds || lifecycleId != Lifecycle.DEFAULT_LIFECYCLE_ID)
                 throw IllegalArgumentException("Lifecycle [$lifecycleId] is not allowed for item [${item.name}]")
 
