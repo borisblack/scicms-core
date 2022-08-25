@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.model.PurgeHook
 import ru.scisolutions.scicmscore.engine.model.UpdateHook
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
-import ru.scisolutions.scicmscore.persistence.service.ClassService
+import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.lang.reflect.Modifier
 
@@ -30,7 +30,7 @@ class CustomMethodHandlerImpl(
         if (implementation.isNullOrBlank())
             throw IllegalArgumentException("Item [$itemName] has no implementation.")
 
-        val clazz = classService.getClass(implementation)
+        val clazz = Class.forName(implementation)
 
         return clazz.declaredMethods.asSequence()
             .filter { Modifier.isPublic(it.modifiers) }
@@ -61,7 +61,7 @@ class CustomMethodHandlerImpl(
         if (implementation.isNullOrBlank())
             throw IllegalStateException("Item [$itemName] has no implementation.")
 
-        val clazz = classService.getClass(implementation)
+        val clazz = Class.forName(implementation)
         val customMethod = clazz.getMethod(methodName, CustomMethodInput::class.java)
             ?: throw IllegalStateException("Method [$methodName] with valid signature not found.")
 

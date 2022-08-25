@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
-import ru.scisolutions.scicmscore.persistence.service.ClassService
+import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.LifecycleService
 
@@ -74,7 +74,7 @@ class PromoteHandlerImpl(
         if (implementation.isNullOrBlank())
             throw IllegalArgumentException("Lifecycle [${lifecycle.name}] has no implementation.")
 
-        val clazz = classService.getClass(implementation)
+        val clazz = Class.forName(implementation)
         return if (Promotable::class.java.isAssignableFrom(clazz))
             classService.getInstance(clazz) as Promotable
         else
