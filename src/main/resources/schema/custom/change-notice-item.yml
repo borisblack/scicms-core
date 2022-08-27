@@ -20,11 +20,11 @@ metadata:
   localized: true
 spec:
   attributes:
-    displayName:
+    label:
       type: string
-      columnName: display_name
-      displayName: Display Name
-      description: Display Name
+      columnName: label
+      displayName: Label
+      description: Label
       length: 50
     noticeType:
       type: enum

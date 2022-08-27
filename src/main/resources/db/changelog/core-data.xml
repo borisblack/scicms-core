@@ -15,7 +15,7 @@
             <column name="id" value="d81fd69a-1834-4ee5-9afa-e20151f804c5"/>
             <column name="config_id" value="d81fd69a-1834-4ee5-9afa-e20151f804c5"/>
             <column name="name" value="en-US"/>
-            <column name="display_name" value="English"/>
+            <column name="display_name" value="English (United States)"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
@@ -28,7 +28,7 @@
             <column name="id" value="afcedcba-124c-46ae-a791-d986aa26ed9a"/>
             <column name="config_id" value="afcedcba-124c-46ae-a791-d986aa26ed9a"/>
             <column name="name" value="ru-RU"/>
-            <column name="display_name" value="Russian"/>
+            <column name="display_name" value="Russian (Russia)"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>

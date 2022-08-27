@@ -444,7 +444,7 @@
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
-            <column name="display_name" type="varchar(50)"/>
+            <column name="label" type="varchar(50)"/>
             <column name="sort_order" type="int"/>
             <column name="source_id" type="varchar(36)">
                 <constraints nullable="false" foreignKeyName="sec_access_source_fk" references="sec_permissions(id)"/>

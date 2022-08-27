@@ -25,11 +25,11 @@ spec:
       readOnly: true
       length: 100
       fieldWidth: 300
-    displayName:
+    label:
       type: string
-      columnName: display_name
-      displayName: Display Name
-      description: Display Name
+      columnName: label
+      displayName: Label
+      description: Label
       length: 50
       fieldWidth: 300
     description:

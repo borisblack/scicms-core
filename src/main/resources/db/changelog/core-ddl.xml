@@ -363,7 +363,7 @@
             <column name="filename" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
-            <column name="display_name" type="varchar(50)"/>
+            <column name="label" type="varchar(50)"/>
             <column name="description" type="varchar(250)"/>
             <column name="file_size" type="int">
                 <constraints nullable="false"/>
@@ -432,11 +432,13 @@
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
-            <column name="display_name" type="varchar(50)"/>
             <column name="latitude" type="decimal">
                 <constraints nullable="false"/>
             </column>
             <column name="longitude" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="sort_order" type="int"/>

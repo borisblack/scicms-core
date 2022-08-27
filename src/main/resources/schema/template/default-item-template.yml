@@ -72,7 +72,7 @@ spec:
       indexed: true
       length: 50
       colHidden: true
-      fieldWidth: 200
+      fieldWidth: 300
     lifecycle:
       type: relation
       relType: manyToOne

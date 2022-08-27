@@ -15,12 +15,6 @@ metadata:
   performDdl: false
 spec:
   attributes:
-    displayName:
-      type: string
-      columnName: display_name
-      displayName: Display Name
-      description: Display Name
-      length: 50
     latitude:
       type: decimal
       columnName: latitude
@@ -33,6 +27,13 @@ spec:
       displayName: Longitude
       description: Longitude
       required: true
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      required: true
+      length: 50
     sortOrder:
       type: int
       columnName: sort_order

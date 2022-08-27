@@ -10,8 +10,7 @@ class Media(
     @Column(nullable = false)
     var filename: String,
 
-    @Column(name = "display_name")
-    var displayName: String? = null,
+    var label: String? = null,
 
     var description: String? = null,
 

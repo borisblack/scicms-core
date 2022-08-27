@@ -8,14 +8,14 @@ import javax.persistence.Table
 @Entity
 @Table(name = "core_locations")
 class Location(
-    @Column(name = "display_name")
-    var displayName: String?,
-
-    @Column(name = "latitude", nullable = false)
+    @Column(nullable = false)
     val latitude: BigDecimal,
 
-    @Column(name = "longitude", nullable = false)
+    @Column(nullable = false)
     val longitude: BigDecimal,
+
+    @Column(nullable = false)
+    var label: String?,
 
     @Column(name = "sort_order")
     val sortOrder: Int?
