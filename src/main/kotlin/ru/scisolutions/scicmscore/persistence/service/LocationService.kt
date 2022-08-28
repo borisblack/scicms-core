@@ -14,4 +14,6 @@ interface LocationService {
     fun existsById(id: String): Boolean
 
     fun save(location: Location): Location
+
+    fun delete(location: Location)
 }

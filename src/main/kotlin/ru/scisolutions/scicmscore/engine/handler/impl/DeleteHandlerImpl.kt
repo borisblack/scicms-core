@@ -7,16 +7,18 @@ import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.DeleteHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.handler.util.DeleteLocationHelper
+import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.model.DeleteHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
-import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
@@ -24,6 +26,8 @@ class DeleteHandlerImpl(
     private val classService: ClassService,
     private val itemService: ItemService,
     private val deleteRelationHelper: DeleteRelationHelper,
+    private val deleteMediaHelper: DeleteMediaHelper,
+    private val deleteLocationHelper: DeleteLocationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : DeleteHandler {
@@ -56,6 +60,8 @@ class DeleteHandlerImpl(
         implInstance?.beforeDelete(itemName, input)
 
         deleteRelationHelper.processRelations(item, itemRec, input.deletingStrategy) // process relations
+        deleteMediaHelper.processMedia(item, itemRec)
+        deleteLocationHelper.processLocations(item, itemRec)
 
         deleteById(item, input.id) // delete
 

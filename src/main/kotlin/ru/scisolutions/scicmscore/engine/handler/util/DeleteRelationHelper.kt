@@ -24,6 +24,8 @@ class DeleteRelationHelper(
     private val itemService: ItemService,
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
+    private val deleteMediaHelper: DeleteMediaHelper,
+    private val deleteLocationHelper: DeleteLocationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDaoImpl
 ) {
@@ -81,7 +83,11 @@ class DeleteRelationHelper(
                             logger.warn("Delete operation disabled for item [${targetItem.name}] with ID [$targetId]")
                         } else {
                             logger.debug("Processing relations recursively")
+
                             processRelations(targetItem, targetItemRec, strategy)
+                            deleteMediaHelper.processMedia(item, targetItemRec)
+                            deleteLocationHelper.processLocations(item, targetItemRec)
+
                             deleteById(targetItem, targetId)
                         }
                     }

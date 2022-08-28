@@ -237,8 +237,17 @@ type MediaInfo {
     createdAt: DateTime!
 }
 
+type Config {
+    i18n: I18nConfig!
+}
+
+type I18nConfig {
+    defaultLocale: String!
+}
+
 type Query {
     me: UserInfo
+    config: Config
 }
 
 type Mutation {

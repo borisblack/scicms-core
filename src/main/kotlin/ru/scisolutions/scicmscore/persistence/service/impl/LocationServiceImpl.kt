@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Location
 import ru.scisolutions.scicmscore.persistence.repository.LocationRepository
-import ru.scisolutions.scicmscore.persistence.service.LocationService
 import ru.scisolutions.scicmscore.util.ACL.Mask
 
 @Service
@@ -35,4 +34,8 @@ class LocationServiceImpl(private val locationRepository: LocationRepository) :
     override fun existsById(id: String): Boolean = locationRepository.existsById(id)
 
     override fun save(location: Location): Location = locationRepository.save(location)
+
+    override fun delete(location: Location) {
+        locationRepository.delete(location)
+    }
 }
