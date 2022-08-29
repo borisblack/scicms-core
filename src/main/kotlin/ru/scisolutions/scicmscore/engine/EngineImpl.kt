@@ -2,7 +2,6 @@ package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.stereotype.Service
-import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.handler.CreateLocalizationHandler
 import ru.scisolutions.scicmscore.engine.handler.CreateVersionHandler
@@ -27,6 +26,7 @@ import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
+import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.Response
@@ -54,9 +54,9 @@ class EngineImpl(
 ) : Engine {
     override fun me(): UserInfo? = userHandler.me()
 
-    override fun upload(file: MultipartFile): MediaInfo = mediaHandler.upload(file)
+    override fun upload(uploadInput: UploadInput): MediaInfo = mediaHandler.upload(uploadInput)
 
-    override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = mediaHandler.uploadMultiple(files)
+    override fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> = mediaHandler.uploadMultiple(uploadInputList)
 
     override fun downloadById(id: String): ByteArrayResource = mediaHandler.downloadById(id)
 

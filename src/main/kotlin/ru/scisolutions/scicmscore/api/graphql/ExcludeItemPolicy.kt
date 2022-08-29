@@ -5,7 +5,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 class ExcludeItemPolicy {
     fun excludeFromQuery(item: Item) = item.name in excludedFromQueryItemNames
 
-    fun excludeFromMutation(item: Item) = item.name in excludedMutationItemNames
+    fun excludeFromMutation(item: Item) = item.name in excludedFromMutationItemNames
 
     fun excludeFromCreateMutation(item: Item) = item.name in excludedFromCreateMutationItemNames
 
@@ -17,8 +17,8 @@ class ExcludeItemPolicy {
         private const val MEDIA_ITEM_NAME = "media"
 
         private val excludedFromQueryItemNames = setOf(EXAMPLE_ITEM_NAME)
-        private val excludedMutationItemNames = excludedFromQueryItemNames.plus(setOf(ITEM_ITEM_NAME))
+        private val excludedFromMutationItemNames = excludedFromQueryItemNames.plus(setOf(ITEM_ITEM_NAME))
         private val excludedFromCreateMutationItemNames = setOf(MEDIA_ITEM_NAME)
-        private val excludedFromUpdateMutationItemNames = setOf(MEDIA_ITEM_NAME)
+        private val excludedFromUpdateMutationItemNames = setOf<String>()
     }
 }

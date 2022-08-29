@@ -227,9 +227,17 @@ type UserInfo {
     roles: [String!]!
 }
 
+input UploadInput {
+    file: Upload!
+    label: String
+    description: String
+    permission: ID
+}
+
 type MediaInfo {
     id: ID!
     filename: String!
+    label: String,
     description: String
     fileSize: Int!
     mimetype: String!
@@ -251,6 +259,6 @@ type Query {
 }
 
 type Mutation {
-    upload(file: Upload!): MediaInfo
-    uploadMultiple(files: [Upload!]!): [MediaInfo!]
+    upload(input: UploadInput!): MediaInfo
+    uploadMultiple(input: [UploadInput!]!): [MediaInfo!]
 }

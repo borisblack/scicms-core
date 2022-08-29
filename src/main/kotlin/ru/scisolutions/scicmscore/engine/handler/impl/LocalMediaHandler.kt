@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
-import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.config.props.MediaProps
 import ru.scisolutions.scicmscore.engine.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.mapper.MediaMapper
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
+import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.io.File
@@ -32,7 +32,8 @@ class LocalMediaHandler(
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
-    override fun upload(file: MultipartFile): MediaInfo {
+    override fun upload(uploadInput: UploadInput): MediaInfo {
+        val file = uploadInput.file
         val filename = file.originalFilename ?: throw IllegalArgumentException("Filename is null")
         val mimetype = file.contentType ?: throw IllegalArgumentException("Content type is null")
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
@@ -46,11 +47,15 @@ class LocalMediaHandler(
         val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
         val media = Media(
             filename = filename,
+            label = uploadInput.label,
+            description = uploadInput.description,
             fileSize = file.size,
             mimetype = mimetype,
             path = filePath,
             checksum = md5.toString()
-        )
+        ).apply {
+            permissionId = uploadInput.permissionId
+        }
 
         return mediaMapper.map(
             mediaService.save(media)
@@ -65,8 +70,8 @@ class LocalMediaHandler(
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
-    override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> =
-        files.map { upload(it) }
+    override fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> =
+        uploadInputList.map { upload(it) }
 
     override fun downloadById(id: String): ByteArrayResource {
         val media = mediaService.findByIdForRead(id)

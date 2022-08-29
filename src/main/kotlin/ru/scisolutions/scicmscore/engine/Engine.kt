@@ -1,8 +1,6 @@
 package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.web.multipart.MultipartFile
-import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
@@ -14,11 +12,13 @@ import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
+import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.model.UserInfo
 
 /**
  * General facade for all operations with data
@@ -26,9 +26,9 @@ import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 interface Engine {
     fun me(): UserInfo?
 
-    fun upload(file: MultipartFile): MediaInfo
+    fun upload(uploadInput: UploadInput): MediaInfo
 
-    fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo>
+    fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo>
 
     fun downloadById(id: String): ByteArrayResource
 
