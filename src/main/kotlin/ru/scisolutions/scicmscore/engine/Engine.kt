@@ -14,6 +14,7 @@ import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
+import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.Response
@@ -71,9 +72,9 @@ interface Engine {
 
     fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection
 
-    fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response
+    fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse
 
-    fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response
+    fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse
 
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response
 

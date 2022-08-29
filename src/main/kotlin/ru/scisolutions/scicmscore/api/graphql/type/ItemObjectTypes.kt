@@ -107,6 +107,26 @@ class ItemObjectTypes(
             .build()
     }
 
+    fun flaggedResponse(item: Item): ObjectTypeDefinition {
+        val capitalizedItemName = item.name.upperFirst()
+
+        return ObjectTypeDefinition.newObjectTypeDefinition()
+            .name("${capitalizedItemName}FlaggedResponse")
+            .fieldDefinition(
+                FieldDefinition.newFieldDefinition()
+                    .name("success")
+                    .type(TypeNames.BOOLEAN)
+                    .build()
+            )
+            .fieldDefinition(
+                FieldDefinition.newFieldDefinition()
+                    .name("data")
+                    .type(TypeName(capitalizedItemName))
+                    .build()
+            )
+            .build()
+    }
+
     fun responseCollection(item: Item): ObjectTypeDefinition {
         val capitalizedItemName = item.name.upperFirst()
 

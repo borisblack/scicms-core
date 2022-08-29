@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.handler.LockHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.LockHook
-import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
@@ -20,7 +20,7 @@ class LockHandlerImpl(
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : LockHandler {
-    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response {
+    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
@@ -32,19 +32,22 @@ class LockHandlerImpl(
         val implInstance = classService.getCastInstance(item.implementation, LockHook::class.java)
         implInstance?.beforeLock(itemName, id)
 
-        itemRecDao.lockByIdOrThrow(item, id)
+        val success = itemRecDao.lockById(item, id)
 
         val itemRec = aclItemRecDao.findByIdForWrite(item, id) as ItemRec
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        val response = Response(ItemRec(selectData))
+        val response = FlaggedResponse(
+            success = success,
+            data = ItemRec(selectData)
+        )
         implInstance?.afterLock(itemName, response)
 
         return response
     }
 
-    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response {
+    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
@@ -59,13 +62,16 @@ class LockHandlerImpl(
         val implInstance = classService.getCastInstance(item.implementation, LockHook::class.java)
         implInstance?.beforeUnlock(itemName, id)
 
-        itemRecDao.unlockByIdOrThrow(item, id)
+        val success = itemRecDao.unlockById(item, id)
 
         val itemRec = aclItemRecDao.findByIdForWrite(item, id) as ItemRec
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        val response = Response(ItemRec(selectData))
+        val response = FlaggedResponse(
+            success = success,
+            data = ItemRec(selectData)
+        )
 
         implInstance?.afterUnlock(itemName, response)
 

@@ -70,6 +70,7 @@ class DynamicTypeDefinitions(
                     mutationBuilder.fieldDefinition(mutationItemFields.purge(it))
 
                 if (!it.notLockable) {
+                    typeDefinitionRegistry.add(itemObjectTypes.flaggedResponse(it))
                     mutationBuilder.fieldDefinition(mutationItemFields.lock(it))
                     mutationBuilder.fieldDefinition(mutationItemFields.unlock(it))
                 }

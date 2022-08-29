@@ -188,7 +188,7 @@ class MutationItemFields {
         val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("lock${capitalizedItemName}")
-            .type(TypeName("${capitalizedItemName}Response"))
+            .type(TypeName("${capitalizedItemName}FlaggedResponse"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
@@ -209,7 +209,7 @@ class MutationItemFields {
         val capitalizedItemName = item.name.upperFirst()
         val builder = FieldDefinition.newFieldDefinition()
             .name("unlock${capitalizedItemName}")
-            .type(TypeName("${capitalizedItemName}Response"))
+            .type(TypeName("${capitalizedItemName}FlaggedResponse"))
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)

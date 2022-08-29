@@ -27,6 +27,7 @@ import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
+import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.Response
@@ -132,10 +133,10 @@ class EngineImpl(
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =
         purgeHandler.purge(itemName, input, selectAttrNames)
 
-    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse =
         lockHandler.lock(itemName, id, selectAttrNames)
 
-    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse =
         lockHandler.unlock(itemName, id, selectAttrNames)
 
     override fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response =
