@@ -5,7 +5,7 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
-import ru.scisolutions.scicmscore.api.graphql.datafetcher.responseFieldTypeRegex
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.flaggedResponseFieldTypeRegex
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
@@ -16,7 +16,7 @@ class UnlockDataFetcher(
     private val engine: Engine
 ) : DataFetcher<DataFetcherResult<FlaggedResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<FlaggedResponse> {
-        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
+        val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(flaggedResponseFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null.")

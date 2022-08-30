@@ -7,6 +7,7 @@ import graphql.schema.GraphQLNonNull
 import graphql.schema.GraphQLType
 
 val responseFieldTypeRegex = "^(\\w+)Response$".toRegex()
+val flaggedResponseFieldTypeRegex = "^(\\w+)FlaggedResponse$".toRegex()
 val responseCollectionFieldTypeRegex = "^(\\w+)ResponseCollection$".toRegex()
 
 fun DataFetchingEnvironment.extractCapitalizedItemNameFromFieldType(fieldTypeRegex: Regex): String {
