@@ -4,6 +4,7 @@ scalar DateTime
 scalar Object
 scalar JSON
 scalar Upload
+scalar UUID
 scalar Email
 
 enum DeletingStrategy {
@@ -26,6 +27,11 @@ input IDFilterInput {
     endsWith: ID
     eq: ID
     ne: ID
+    gt: ID
+    gte: ID
+    lt: ID
+    lte: ID
+    between: [ID]
     in: [ID]
     notIn: [ID]
     null: Boolean
@@ -33,6 +39,23 @@ input IDFilterInput {
     and: [IDFilterInput]
     or: [IDFilterInput]
     not: IDFilterInput
+}
+
+input UUIDFilterInput {
+    eq: UUID
+    ne: UUID
+    gt: UUID
+    gte: UUID
+    lt: UUID
+    lte: UUID
+    between: [UUID]
+    in: [UUID]
+    notIn: [UUID]
+    null: Boolean
+    notNull: Boolean
+    and: [UUIDFilterInput]
+    or: [UUIDFilterInput]
+    not: UUIDFilterInput
 }
 
 input IntFilterInput {

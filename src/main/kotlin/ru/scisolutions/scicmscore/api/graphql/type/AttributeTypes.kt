@@ -6,9 +6,9 @@ import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
 import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
@@ -23,7 +23,7 @@ class AttributeTypes(
     fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
         when (attribute.type) {
             AttrType.uuid -> {
-                val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.STRING
+                val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.UUID
                 typeName.nonNull(attribute.required)
             }
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence -> TypeNames.STRING.nonNull(attribute.required)
@@ -93,7 +93,7 @@ class AttributeTypes(
 
     fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
         when (attribute.type) {
-            AttrType.uuid -> TypeNames.STRING
+            AttrType.uuid -> TypeNames.UUID
             AttrType.string, AttrType.text -> TypeNames.STRING
             // AttrType.enum -> TypeName("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
             AttrType.enum, AttrType.sequence -> TypeNames.STRING
@@ -106,11 +106,12 @@ class AttributeTypes(
             AttrType.datetime -> TypeNames.DATETIME
             AttrType.timestamp -> TypeNames.DATETIME
             AttrType.bool -> TypeNames.BOOLEAN
-            AttrType.array, AttrType.json, AttrType.media, AttrType.location -> TypeNames.STRING
+            AttrType.array, AttrType.json -> TypeNames.STRING
+            AttrType.media, AttrType.location -> TypeNames.UUID
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
-                if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
+                if (attribute.isCollection()) ListType(TypeNames.UUID) else TypeNames.UUID
             }
         }
 }

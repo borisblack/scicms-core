@@ -68,12 +68,12 @@ class AttributeValueHelper(
 
     private fun validateAttributeValue(item: Item, attrName: String, attribute: Attribute, value: Any) {
         when (attribute.type) {
-            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media, Type.location -> {
+            Type.uuid -> {}
+            Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media, Type.location -> {
                 if (value !is String)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                 when (attribute.type) {
-                    Type.uuid -> UUID.fromString(value)
                     Type.string -> {
                         if (attribute.length == null)
                             throw IllegalArgumentException("The length is required for the string type")

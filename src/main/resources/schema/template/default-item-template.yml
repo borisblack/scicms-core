@@ -63,7 +63,8 @@ spec:
       required: true
       defaultValue: 1
       indexed: true
-      private: true
+      readOnly: true
+      colHidden: true
     locale:
       type: string
       columnName: locale

@@ -11,8 +11,8 @@ import ru.scisolutions.scicmscore.engine.model.Promotable
 import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
-import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.LifecycleService
 
@@ -39,13 +39,17 @@ class PromoteHandlerImpl(
 
         val lifecycle = lifecycleService.getById(lifecycleId)
 
-        val currentStateName = itemRec.state ?: lifecycle.startState
-        if (currentStateName == input.state)
-            throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is already in the [$currentStateName] state.")
+        if (itemRec.state == input.state)
+            throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is already in the [${itemRec.state}] state.")
 
-        val currentState = lifecycle.spec.getStateOrThrow(currentStateName)
-        if (input.state !in currentState.transitions)
-            throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
+        if (itemRec.state == null) {
+            if (input.state != lifecycle.startState)
+                throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
+        } else {
+            val currentState = lifecycle.spec.getStateOrThrow(itemRec.state as String)
+            if (input.state !in currentState.transitions)
+                throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
+        }
 
         itemRec.state = input.state
 
