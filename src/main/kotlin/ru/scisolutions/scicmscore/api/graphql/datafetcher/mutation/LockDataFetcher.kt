@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.util.lowerFirst
+import java.util.UUID
 
 @Component
 class LockDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResult<FlaggedResponse>> {
@@ -17,7 +18,7 @@ class LockDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResul
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(flaggedResponseFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
-        val id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null.")
+        val id = dfe.arguments[ID_ARG_NAME] as UUID? ?: throw IllegalArgumentException("ID argument is null.")
         val result = engine.lock(itemName, id, selectAttrNames)
 
         return DataFetcherResult.newResult<FlaggedResponse>()

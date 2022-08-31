@@ -37,7 +37,7 @@ class PromoteHandlerImpl(
         val lifecycleId = itemRec.lifecycle
             ?: throw IllegalStateException("Item [$itemName] with ID [${input.id}] has no lifecycle.")
 
-        val lifecycle = lifecycleService.getById(lifecycleId)
+        val lifecycle = lifecycleService.getById(lifecycleId.toString())
 
         if (itemRec.state == input.state)
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is already in the [${itemRec.state}] state.")

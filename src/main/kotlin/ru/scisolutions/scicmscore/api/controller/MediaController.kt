@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.net.URLEncoder
+import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 
 @RestController
@@ -19,8 +20,8 @@ class MediaController(
     private val engine: Engine
 ) {
     @GetMapping("/{id}/download")
-    fun download(@PathVariable id: String, request: HttpServletRequest): ResponseEntity<*> {
-        val media = mediaService.findByIdForRead(id) ?: return ResponseEntity.notFound().build<Unit>()
+    fun download(@PathVariable id: UUID, request: HttpServletRequest): ResponseEntity<*> {
+        val media = mediaService.findByIdForRead(id.toString()) ?: return ResponseEntity.notFound().build<Unit>()
         val resource = engine.downloadById(id)
         val filename = URLEncoder.encode(media.filename.replace(" ", "_"), "UTF-8")
 

@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.persistence.entity
 
 import ru.scisolutions.scicmscore.model.LifecycleSpec
 import ru.scisolutions.scicmscore.persistence.converter.LifecycleSpecConverter
+import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -33,6 +34,6 @@ class Lifecycle(
     override fun toString(): String = "Lifecycle(name=$name)"
 
     companion object {
-        const val DEFAULT_LIFECYCLE_ID = "ad051120-65cf-440a-8fc3-7a24ac8301d3"
+        val DEFAULT_LIFECYCLE_ID: UUID = UUID.fromString("ad051120-65cf-440a-8fc3-7a24ac8301d3")
     }
 }

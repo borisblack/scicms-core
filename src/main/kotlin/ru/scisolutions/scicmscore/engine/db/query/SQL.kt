@@ -6,10 +6,12 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.OffsetTime
+import java.util.UUID
 
 object SQL {
     fun toSqlValue(value: Any?) =
         when (value) {
+            is UUID -> value.toString()
             is LocalDate -> JdbcEscape.date(value)
             is LocalTime -> JdbcEscape.time(value)
             is OffsetTime -> JdbcEscape.time(value)

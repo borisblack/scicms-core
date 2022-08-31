@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.jdbc.core.RowMapper
+import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import java.sql.Clob
 import java.sql.ResultSet
 import java.time.ZoneOffset
+import java.util.UUID
 
 class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
     override fun mapRow(rs: ResultSet, rowNum: Int): ItemRec {
@@ -22,7 +23,8 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
             val attrName = item.spec.columnNameToAttrNameMap[columnName] as String
             val attribute = item.spec.attributes[attrName] as Attribute
             val value = when (attribute.type) {
-                Type.uuid, Type.string, Type.enum, Type.sequence, Type.email, Type.media, Type.relation -> rs.getString(i)
+                Type.uuid, Type.media, Type.location, Type.relation -> parseUUID(rs.getString(i))
+                Type.string, Type.enum, Type.sequence, Type.email -> rs.getString(i)
                 Type.text -> parseText(rs.getObject(i))
                 Type.password -> rs.getString(i)
                 Type.int -> rs.getInt(i)
@@ -51,7 +53,9 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
         return itemRec
     }
 
-    private fun parseText(obj: Any?): String? = if (obj is Clob) obj.characterStream.readText() else obj as String?
+    private fun parseUUID(value: String?): UUID? = if (value == null) null else UUID.fromString(value)
+
+    private fun parseText(value: Any?): String? = if (value is Clob) value.characterStream.readText() else value as String?
 
     companion object {
         private val objectMapper = jacksonObjectMapper().apply {

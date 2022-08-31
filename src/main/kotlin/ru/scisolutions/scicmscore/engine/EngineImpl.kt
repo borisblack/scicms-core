@@ -33,6 +33,7 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.model.UserInfo
+import java.util.UUID
 
 /**
  * General facade for all operations with data
@@ -59,9 +60,9 @@ class EngineImpl(
 
     override fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> = mediaHandler.uploadMultiple(uploadInputList)
 
-    override fun downloadById(id: String): ByteArrayResource = mediaHandler.downloadById(id)
+    override fun downloadById(id: UUID): ByteArrayResource = mediaHandler.downloadById(id)
 
-    override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response =
+    override fun findOne(itemName: String, id: UUID, selectAttrNames: Set<String>): Response =
         findOneHandler.findOne(itemName, id, selectAttrNames)
 
     override fun findOneRelated(
@@ -133,10 +134,10 @@ class EngineImpl(
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =
         purgeHandler.purge(itemName, input, selectAttrNames)
 
-    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse =
+    override fun lock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse =
         lockHandler.lock(itemName, id, selectAttrNames)
 
-    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse =
+    override fun unlock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse =
         lockHandler.unlock(itemName, id, selectAttrNames)
 
     override fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response =

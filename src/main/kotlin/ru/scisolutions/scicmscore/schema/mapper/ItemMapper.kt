@@ -36,7 +36,7 @@ class ItemMapper {
         target.localized = metadata.localized
         target.revisionPolicyId = metadata.revisionPolicy
         target.lifecycleId = metadata.lifecycle
-        target.permissionId = metadata.permission ?: Permission.DEFAULT_PERMISSION_ID
+        target.permissionId = metadata.permission ?: Permission.DEFAULT_PERMISSION_ID.toString()
         target.implementation = metadata.implementation
         target.notLockable = metadata.notLockable
         target.spec = source.spec

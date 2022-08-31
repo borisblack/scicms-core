@@ -2,9 +2,10 @@ package ru.scisolutions.customimpl.lifecycle
 
 import org.slf4j.LoggerFactory
 import ru.scisolutions.scicmscore.engine.model.Promotable
+import java.util.UUID
 
 class DefaultLifecycleImpl : Promotable {
-    override fun promote(itemName: String, id: String, state: String) {
+    override fun promote(itemName: String, id: UUID, state: String) {
         logger.info("Promote called. Item name = $itemName, ID = $id, state = $state")
     }
 

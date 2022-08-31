@@ -7,6 +7,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.service.AllowedLifecycleService
 import ru.scisolutions.scicmscore.persistence.service.LifecycleService
+import java.util.UUID
 
 @Service
 class LifecycleManagerImpl(
@@ -17,13 +18,14 @@ class LifecycleManagerImpl(
         val lifecycleId = itemRec.lifecycle
         val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
         if (lifecycleId == null) {
-            itemRec.lifecycle = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID
+            val defaultAllowedLifecycle = allowedLifecycles.find { it.isDefault }
+            itemRec.lifecycle = if (defaultAllowedLifecycle == null) Lifecycle.DEFAULT_LIFECYCLE_ID else UUID.fromString(defaultAllowedLifecycle.targetId)
         } else {
-            val allowedLifecycleIds = allowedLifecycles.asSequence().map { it.targetId }.toSet()
-            if (lifecycleId !in allowedLifecycleIds || lifecycleId != Lifecycle.DEFAULT_LIFECYCLE_ID)
+            val allowedLifecycleIds = allowedLifecycles.asSequence().map { UUID.fromString(it.targetId) }.toSet()
+            if (lifecycleId !in allowedLifecycleIds && lifecycleId != Lifecycle.DEFAULT_LIFECYCLE_ID)
                 throw IllegalArgumentException("Lifecycle [$lifecycleId] is not allowed for item [${item.name}]")
 
-            val lifecycle = lifecycleService.getById(lifecycleId)
+            val lifecycle = lifecycleService.getById(lifecycleId.toString())
             val state = itemRec.state
             if (state == null) {
                 itemRec.state = lifecycle.startState

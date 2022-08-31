@@ -13,13 +13,13 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
+import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
 
@@ -55,7 +55,7 @@ class CreateHandlerImpl(
             .toMutableMap()
 
         val itemRec = ItemRec(nonCollectionData).apply {
-            id = UUID.randomUUID().toString()
+            id = UUID.randomUUID()
             configId = id
         }
 
@@ -73,7 +73,7 @@ class CreateHandlerImpl(
 
         addRelationHelper.processRelations(
             item,
-            itemRec.id as String,
+            itemRec.id as UUID,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 

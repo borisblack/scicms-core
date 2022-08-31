@@ -63,7 +63,7 @@ class CreateVersionHandlerImpl(
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
         val itemRec = ItemRec(mergedData).apply {
-            id = UUID.randomUUID().toString()
+            id = UUID.randomUUID()
         }
 
         // Assign other attributes
@@ -91,13 +91,13 @@ class CreateVersionHandlerImpl(
         // Update relations
         addRelationHelper.processRelations(
             item,
-            itemRec.id as String,
+            itemRec.id as UUID,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 
         // Copy relations from previous version
         if (input.copyCollectionRelations == true)
-            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as String)
+            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as UUID)
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id)

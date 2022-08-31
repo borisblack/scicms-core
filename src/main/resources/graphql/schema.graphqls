@@ -254,7 +254,7 @@ input UploadInput {
     file: Upload!
     label: String
     description: String
-    permission: ID
+    permission: UUID
 }
 
 type MediaInfo {

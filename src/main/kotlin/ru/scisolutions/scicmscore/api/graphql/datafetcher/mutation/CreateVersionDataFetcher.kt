@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
+import java.util.UUID
 
 @Component
 class CreateVersionDataFetcher(
@@ -21,7 +22,7 @@ class CreateVersionDataFetcher(
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val input = CreateVersionInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+            id = dfe.arguments[ID_ARG_NAME] as UUID? ?: throw IllegalArgumentException("ID argument is null."),
             data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
             majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
             locale = dfe.arguments[LOCALE_ARG_NAME] as String?,

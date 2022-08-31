@@ -346,7 +346,7 @@ class CustomUserDetailsManager(
         private const val DEFAULT_GENERATION = 1
         private const val DEFAULT_MAJOR_REV = "A"
         private const val DEFAULT_IS_CURRENT = true
-        private const val DEFAULT_PERMISSION_ID = Permission.DEFAULT_PERMISSION_ID
         private const val ROOT_USER_ID = User.ROOT_USER_ID
+        private val DEFAULT_PERMISSION_ID = Permission.DEFAULT_PERMISSION_ID
     }
 }

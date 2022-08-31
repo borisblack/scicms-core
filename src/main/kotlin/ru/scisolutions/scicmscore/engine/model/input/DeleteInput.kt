@@ -1,7 +1,9 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
+import java.util.UUID
+
 class DeleteInput(
-    val id: String,
+    val id: UUID,
     val deletingStrategy: DeletingStrategy
 ) {
     enum class DeletingStrategy {

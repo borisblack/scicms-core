@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
+import java.util.UUID
 
 @Component
 class DeleteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResult<Response>> {
@@ -22,7 +23,7 @@ class DeleteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherRes
             ?: throw IllegalArgumentException("The [$DELETING_STRATEGY_ARG_NAME] argument is null.")
 
         val input = DeleteInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+            id = dfe.arguments[ID_ARG_NAME] as UUID? ?: throw IllegalArgumentException("ID argument is null."),
             deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
         )
 

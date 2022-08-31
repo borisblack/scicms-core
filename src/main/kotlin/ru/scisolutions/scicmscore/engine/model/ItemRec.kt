@@ -1,14 +1,15 @@
 package ru.scisolutions.scicmscore.engine.model
 
 import java.time.OffsetDateTime
+import java.util.UUID
 
 class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : MutableMap<String, Any?> by map {
-    var id: String?
-        get() = this[ID_ATTR_NAME] as String?
+    var id: UUID?
+        get() = this[ID_ATTR_NAME] as UUID?
         set(value) { this[ID_ATTR_NAME] = value }
 
-    var configId: String?
-        get() = this[CONFIG_ID_ATTR_NAME] as String?
+    var configId: UUID?
+        get() = this[CONFIG_ID_ATTR_NAME] as UUID?
         set(value) { this[CONFIG_ID_ATTR_NAME] = value }
 
     var generation: Int?
@@ -31,36 +32,36 @@ class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : Muta
         get() = this[LOCALE_ATTR_NAME] as String?
         set(value) { this[LOCALE_ATTR_NAME] = value }
 
-    var lifecycle: String?
-        get() = this[LIFECYCLE_ATTR_NAME] as String?
+    var lifecycle: UUID?
+        get() = this[LIFECYCLE_ATTR_NAME] as UUID?
         set(value) { this[LIFECYCLE_ATTR_NAME] = value }
 
     var state: String?
         get() = this[STATE_ATTR_NAME] as String?
         set(value) { this[STATE_ATTR_NAME] = value }
 
-    var permission: String?
-        get() = this[PERMISSION_ATTR_NAME] as String?
+    var permission: UUID?
+        get() = this[PERMISSION_ATTR_NAME] as UUID?
         set(value) { this[PERMISSION_ATTR_NAME] = value }
 
     var createdAt: OffsetDateTime?
         get() = this[CREATED_AT_ATTR_NAME] as OffsetDateTime?
         set(value) { this[CREATED_AT_ATTR_NAME] = value }
 
-    var createdBy: String?
-        get() = this[CREATED_BY_ATTR_NAME] as String?
+    var createdBy: UUID?
+        get() = this[CREATED_BY_ATTR_NAME] as UUID?
         set(value) { this[CREATED_BY_ATTR_NAME] = value }
 
     var updatedAt: OffsetDateTime?
         get() = this[UPDATED_AT_ATTR_NAME] as OffsetDateTime?
         set(value) { this[UPDATED_AT_ATTR_NAME] = value }
 
-    var updatedBy: String?
-        get() = this[UPDATED_BY_ATTR_NAME] as String?
+    var updatedBy: UUID?
+        get() = this[UPDATED_BY_ATTR_NAME] as UUID?
         set(value) { this[UPDATED_BY_ATTR_NAME] = value }
 
-    var lockedBy: String?
-        get() = this[LOCKED_BY_ATTR_NAME] as String?
+    var lockedBy: UUID?
+        get() = this[LOCKED_BY_ATTR_NAME] as UUID?
         set(value) { this[LOCKED_BY_ATTR_NAME] = value }
 
     companion object {

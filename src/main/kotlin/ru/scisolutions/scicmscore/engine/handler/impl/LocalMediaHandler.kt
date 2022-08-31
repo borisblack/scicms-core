@@ -73,8 +73,8 @@ class LocalMediaHandler(
     override fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> =
         uploadInputList.map { upload(it) }
 
-    override fun downloadById(id: String): ByteArrayResource {
-        val media = mediaService.findByIdForRead(id)
+    override fun downloadById(id: UUID): ByteArrayResource {
+        val media = mediaService.findByIdForRead(id.toString())
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
         val fullPath = buildFullPath(media.path)
@@ -83,8 +83,8 @@ class LocalMediaHandler(
         return ByteArrayResource(data)
     }
 
-    override fun deleteById(id: String) {
-        val media = mediaService.findByIdForDelete(id)
+    override fun deleteById(id: UUID) {
+        val media = mediaService.findByIdForDelete(id.toString())
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
         val fullPath = buildFullPath(media.path)

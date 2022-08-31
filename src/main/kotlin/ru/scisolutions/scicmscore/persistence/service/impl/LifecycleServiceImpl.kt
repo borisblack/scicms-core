@@ -23,7 +23,7 @@ class LifecycleServiceImpl(
         .build()
 
     @Transactional(readOnly = true)
-    override fun getDefaultLifecycle(): Lifecycle = getById(Lifecycle.DEFAULT_LIFECYCLE_ID)
+    override fun getDefaultLifecycle(): Lifecycle = getById(Lifecycle.DEFAULT_LIFECYCLE_ID.toString())
 
     @Transactional(readOnly = true)
     override fun getById(id: String): Lifecycle = lifecycleCache.get(id) { lifecycleRepository.getById(id) }

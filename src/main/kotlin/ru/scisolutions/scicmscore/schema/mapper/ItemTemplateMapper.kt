@@ -20,8 +20,8 @@ class ItemTemplateMapper {
         val metadata = source.metadata
         
         target.name = metadata.name
-        target.lifecycleId = Lifecycle.DEFAULT_LIFECYCLE_ID
-        target.permissionId = Permission.DEFAULT_PERMISSION_ID
+        target.lifecycleId = Lifecycle.DEFAULT_LIFECYCLE_ID.toString()
+        target.permissionId = Permission.DEFAULT_PERMISSION_ID.toString()
         target.spec = source.spec
 
         // Update the checksum only if it's a change from a file

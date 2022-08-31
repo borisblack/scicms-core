@@ -17,7 +17,7 @@ class VersionManagerImpl(private val revisionPolicyService: RevisionPolicyServic
             itemRec.majorRev = majorRev
         } else {
             val revisionPolicyId = item.revisionPolicyId ?: RevisionPolicy.DEFAULT_REVISION_POLICY_ID
-            val revisionPolicy = revisionPolicyService.getById(revisionPolicyId)
+            val revisionPolicy = revisionPolicyService.getById(revisionPolicyId.toString())
             itemRec.majorRev = revisionPolicy.firstRevision()
         }
 
@@ -39,7 +39,7 @@ class VersionManagerImpl(private val revisionPolicyService: RevisionPolicyServic
         } else {
             val prevMajorRev = prevItemRec.majorRev ?: throw IllegalArgumentException("Previous majorRev is null")
             val revisionPolicyId = item.revisionPolicyId ?: RevisionPolicy.DEFAULT_REVISION_POLICY_ID
-            val revisionPolicy = revisionPolicyService.getById(revisionPolicyId)
+            val revisionPolicy = revisionPolicyService.getById(revisionPolicyId.toString())
             itemRec.majorRev = revisionPolicy.nextRevision(prevMajorRev)
         }
 

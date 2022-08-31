@@ -20,6 +20,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
 import ru.scisolutions.scicmscore.persistence.service.ItemService
+import java.util.UUID
 
 @Service
 class DeleteHandlerImpl(
@@ -77,7 +78,7 @@ class DeleteHandlerImpl(
         return response
     }
 
-    private fun deleteById(item: Item, id: String): Int =
+    private fun deleteById(item: Item, id: UUID): Int =
         if (item.versioned)
             itemRecDao.deleteVersionedById(item, id)
         else

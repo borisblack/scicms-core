@@ -15,6 +15,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectional
 import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.util.Maps
+import java.util.UUID
 
 @Component
 class AddRelationHelper(
@@ -24,47 +25,47 @@ class AddRelationHelper(
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) {
-    fun processRelations(item: Item, itemRecId: String, relAttributes: Map<String, Any>) {
+    fun processRelations(item: Item, itemRecId: UUID, relAttributes: Map<String, Any>) {
         relAttributes.forEach { (attrName, value) ->
             processRelation(item, itemRecId, attrName, value)
         }
     }
 
-    private fun processRelation(item: Item, itemRecId: String, relAttrName: String, relAttrValue: Any) {
+    private fun processRelation(item: Item, itemRecId: UUID, relAttrName: String, relAttrValue: Any) {
         val attribute = item.spec.getAttributeOrThrow(relAttrName)
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
             is OneToOneBidirectionalRelation -> {
                 if (relation.isOwning) {
                     val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to itemRecId))
-                    updateOrInsertWithDefaults(relation.inversedItem, relAttrValue as String, inversedItemRec)
+                    updateOrInsertWithDefaults(relation.inversedItem, relAttrValue as UUID, inversedItemRec)
                 } else {
                     val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
-                    updateOrInsertWithDefaults(relation.owningItem, relAttrValue as String, owningItemRec)
+                    updateOrInsertWithDefaults(relation.owningItem, relAttrValue as UUID, owningItemRec)
                 }
             }
             is OneToManyInversedBidirectionalRelation -> {
                 val relIds = relAttrValue as Collection<*>
                 val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
-                relIds.forEach { updateOrInsertWithDefaults(relation.owningItem, it as String, owningItemRec) }
+                relIds.forEach { updateOrInsertWithDefaults(relation.owningItem, it as UUID, owningItemRec) }
             }
             is ManyToManyRelation -> {
                 val relIds = relAttrValue as Collection<*>
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
-                        relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
+                        relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as UUID) }
                     }
                     is ManyToManyBidirectionalRelation -> {
                         if (relation.isOwning)
-                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
+                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as UUID) }
                         else
-                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, it as String, itemRecId) }
+                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, it as UUID, itemRecId) }
                     }
                 }
             }
         }
     }
 
-    private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
+    private fun updateOrInsertWithDefaults(item: Item, id: UUID, itemRec: ItemRec): Int {
         if (item.versioned) {
             if (itemService.findByNameForCreate(item.name) == null) {
                 logger.warn("Create operation disabled for item [${item.name}].")
@@ -85,7 +86,7 @@ class AddRelationHelper(
         }
     }
 
-    private fun addManyToManyRelation(intermediateItem: Item, sourceId: String, targetId: String) {
+    private fun addManyToManyRelation(intermediateItem: Item, sourceId: UUID, targetId: UUID) {
         if (itemService.findByNameForCreate(intermediateItem.name) == null) {
             logger.warn("Create operation disabled for item [${intermediateItem.name}].")
             return

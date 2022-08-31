@@ -26,7 +26,7 @@ class PermissionServiceImpl(
         .build()
 
     @Transactional(readOnly = true)
-    override fun getDefaultPermission(): Permission = permissionRepository.getById(Permission.DEFAULT_PERMISSION_ID)
+    override fun getDefaultPermission(): Permission = permissionRepository.getById(Permission.DEFAULT_PERMISSION_ID.toString())
 
     @Transactional(readOnly = true)
     override fun findIdsForRead(): Set<String> = findIdsFor(Mask.READ)

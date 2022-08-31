@@ -12,6 +12,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalR
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
+import java.util.UUID
 
 @Component
 class CopyRelationHelper(
@@ -19,7 +20,7 @@ class CopyRelationHelper(
     private val relationManager: RelationManager,
     private val itemRecDao: ItemRecDao
 ) {
-    fun processCollectionRelations(item: Item, prevItemRecId: String, itemRecId: String) {
+    fun processCollectionRelations(item: Item, prevItemRecId: UUID, itemRecId: UUID) {
         logger.debug("Processing collection relations")
         val collectionRelAttributes = item.spec.attributes.filterValues { it.isCollection() }
         collectionRelAttributes.forEach { (attrName, attribute) ->
@@ -27,7 +28,7 @@ class CopyRelationHelper(
         }
     }
 
-    private fun processCollectionRelation(item: Item, prevItemRecId: String, itemRecId: String, relAttrName: String, relAttribute: Attribute) {
+    private fun processCollectionRelation(item: Item, prevItemRecId: UUID, itemRecId: UUID, relAttrName: String, relAttribute: Attribute) {
         if (!relAttribute.isCollection())
             throw IllegalArgumentException("Attribute [$relAttrName] is not collection")
 

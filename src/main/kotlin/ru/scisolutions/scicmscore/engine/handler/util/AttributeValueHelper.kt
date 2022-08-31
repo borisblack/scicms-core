@@ -34,7 +34,7 @@ class AttributeValueHelper(
                 val attribute = item.spec.getAttributeOrThrow(it)
                 !attribute.private && attribute.type != Type.sequence && it !in excludeAttrNames
             }
-            .mapValues { (attrName, value) -> prepareAttributeValue(item, attrName, value as Any) }
+            .mapValues { (attrName, value) -> prepareAttributeValue(item, attrName, value) }
 
         if (dataProps.trimStrings)
             return result.mapValues { (_, value) -> if (value is String) value.trim() else value }
@@ -186,7 +186,7 @@ class AttributeValueHelper(
                     if (!itemRecDao.existAllByIds(targetItem, ids.toSet()))
                         throw IllegalArgumentException("Items [${attribute.target}] with IDs [${ids.joinToString()}] do not exist")
                 } else {
-                    if (value !is String)
+                    if (value !is UUID)
                         throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                     if (!itemRecDao.existsById(targetItem, value))

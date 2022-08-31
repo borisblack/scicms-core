@@ -20,6 +20,7 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.model.UserInfo
+import java.util.UUID
 
 /**
  * General facade for all operations with data
@@ -31,9 +32,9 @@ interface Engine {
 
     fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo>
 
-    fun downloadById(id: String): ByteArrayResource
+    fun downloadById(id: UUID): ByteArrayResource
 
-    fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
+    fun findOne(itemName: String, id: UUID, selectAttrNames: Set<String>): Response
 
     fun findOneRelated(
         parentItemName: String,
@@ -72,9 +73,9 @@ interface Engine {
 
     fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection
 
-    fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse
+    fun lock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse
 
-    fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse
+    fun unlock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse
 
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response
 

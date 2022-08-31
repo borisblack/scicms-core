@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
 import ru.scisolutions.scicmscore.persistence.converter.RevisionsConverter
+import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -43,6 +44,6 @@ class RevisionPolicy(
     }
 
     companion object {
-        const val DEFAULT_REVISION_POLICY_ID: String = "48fea283-2872-4ca3-8fbd-980b7654907b"
+        val DEFAULT_REVISION_POLICY_ID: UUID = UUID.fromString("48fea283-2872-4ca3-8fbd-980b7654907b")
     }
 }

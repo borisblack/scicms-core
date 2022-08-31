@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
+import java.util.UUID
 
 @Component
 class PromoteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResult<Response>> {
@@ -19,7 +20,7 @@ class PromoteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherRe
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val input = PromoteInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+            id = dfe.arguments[ID_ARG_NAME] as UUID? ?: throw IllegalArgumentException("ID argument is null."),
             state = dfe.arguments[STATE_ARG_NAME] as String? ?: throw IllegalArgumentException("The [$STATE_ARG_NAME] argument is null."),
         )
 

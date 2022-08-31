@@ -19,7 +19,7 @@ class QueryItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name("id")
-                    .type(NonNullType(TypeNames.ID))
+                    .type(NonNullType(TypeNames.UUID))
                     .build()
             )
 

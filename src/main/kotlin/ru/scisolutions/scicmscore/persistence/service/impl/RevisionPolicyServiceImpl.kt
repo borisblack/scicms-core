@@ -23,7 +23,7 @@ class RevisionPolicyServiceImpl(
         .build()
 
     @Transactional(readOnly = true)
-    override fun getDefaultRevisionPolicy(): RevisionPolicy = getById(RevisionPolicy.DEFAULT_REVISION_POLICY_ID)
+    override fun getDefaultRevisionPolicy(): RevisionPolicy = getById(RevisionPolicy.DEFAULT_REVISION_POLICY_ID.toString())
 
     @Transactional(readOnly = true)
     override fun getById(id: String): RevisionPolicy = revisionPolicyCache.get(id) { revisionPolicyRepository.getById(id) }

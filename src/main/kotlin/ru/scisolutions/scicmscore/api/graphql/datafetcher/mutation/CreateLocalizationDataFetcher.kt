@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.util.lowerFirst
+import java.util.UUID
 
 @Component
 class CreateLocalizationDataFetcher(
@@ -21,7 +22,7 @@ class CreateLocalizationDataFetcher(
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val input = CreateLocalizationInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+            id = dfe.arguments[ID_ARG_NAME] as UUID? ?: throw IllegalArgumentException("ID argument is null."),
             data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
             locale = dfe.arguments[LOCALE_ARG_NAME] as String? ?: throw IllegalArgumentException("The [$LOCALE_ARG_NAME] argument is null."),
             copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?
