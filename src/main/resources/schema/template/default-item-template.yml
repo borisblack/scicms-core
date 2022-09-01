@@ -5,18 +5,19 @@ metadata:
 spec:
   attributes:
     id:
-      type: uuid
+      type: string
       columnName: id # the key attribute name and its column name must be 'id'!
       displayName: ID
       description: ID
       keyed: true
       required: true
       readOnly: true
+      length: 36
       colHidden: true
       colWidth: 290
       fieldWidth: 300
     configId:
-      type: uuid
+      type: string
       columnName: config_id
       displayName: Config ID
       description: Config ID
@@ -24,6 +25,7 @@ spec:
       unique: true
       indexed: true
       readOnly: true
+      length: 36
       colHidden: true
       colWidth: 290
       fieldWidth: 300
@@ -41,7 +43,6 @@ spec:
       columnName: major_rev
       displayName: Major Rev
       description: Major Rev
-      required: true
       indexed: true
       defaultValue: A
       length: 50

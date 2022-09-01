@@ -12,7 +12,6 @@ import ru.scisolutions.scicmscore.engine.model.LockHook
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import java.util.UUID
 
 @Service
 class LockHandlerImpl(
@@ -21,7 +20,7 @@ class LockHandlerImpl(
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : LockHandler {
-    override fun lock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse {
+    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
@@ -48,7 +47,7 @@ class LockHandlerImpl(
         return response
     }
 
-    override fun unlock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse {
+    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")

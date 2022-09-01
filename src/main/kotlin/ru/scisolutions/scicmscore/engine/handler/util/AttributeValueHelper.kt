@@ -18,7 +18,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.OffsetTime
-import java.util.UUID
 
 @Component
 class AttributeValueHelper(
@@ -186,7 +185,7 @@ class AttributeValueHelper(
                     if (!itemRecDao.existAllByIds(targetItem, ids.toSet()))
                         throw IllegalArgumentException("Items [${attribute.target}] with IDs [${ids.joinToString()}] do not exist")
                 } else {
-                    if (value !is UUID)
+                    if (value !is String)
                         throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                     if (!itemRecDao.existsById(targetItem, value))

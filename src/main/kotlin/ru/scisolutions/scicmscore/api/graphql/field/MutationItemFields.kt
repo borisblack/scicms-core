@@ -43,7 +43,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
@@ -79,7 +79,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
@@ -111,7 +111,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
@@ -135,7 +135,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
@@ -165,7 +165,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(
@@ -192,7 +192,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
 
@@ -213,7 +213,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
 
@@ -231,7 +231,7 @@ class MutationItemFields {
             .inputValueDefinition(
                 InputValueDefinition.newInputValueDefinition()
                     .name(ID_INPUT_VALUE_NAME)
-                    .type(NonNullType(TypeNames.UUID))
+                    .type(NonNullType(TypeNames.ID))
                     .build()
             )
             .inputValueDefinition(

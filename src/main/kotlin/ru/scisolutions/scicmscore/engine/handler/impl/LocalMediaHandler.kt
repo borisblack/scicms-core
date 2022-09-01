@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.config.props.MediaProps
 import ru.scisolutions.scicmscore.engine.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.mapper.MediaMapper
@@ -32,8 +33,7 @@ class LocalMediaHandler(
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
-    override fun upload(uploadInput: UploadInput): MediaInfo {
-        val file = uploadInput.file
+    override fun upload(file: MultipartFile): MediaInfo {
         val filename = file.originalFilename ?: throw IllegalArgumentException("Filename is null")
         val mimetype = file.contentType ?: throw IllegalArgumentException("Content type is null")
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
@@ -43,6 +43,43 @@ class LocalMediaHandler(
             fileToSave.parentFile.mkdirs()
 
         file.transferTo(fileToSave) // try to save
+
+        val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
+        val media = Media(
+            filename = filename,
+            fileSize = file.size,
+            mimetype = mimetype,
+            path = filePath,
+            checksum = md5.toString()
+        )
+
+        return mediaMapper.map(
+            mediaService.save(media)
+        )
+    }
+
+    private fun buildFullPath(filePath: String): String {
+        if (mediaProps.providerOptions.basePath.isNullOrBlank())
+            throw IllegalStateException("Local provider storage base path is not configured")
+
+        return "${mediaProps.providerOptions.basePath}/${filePath}"
+    }
+
+    @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
+    override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = files.map { upload(it) }
+
+    @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
+    override fun uploadData(uploadInput: UploadInput): MediaInfo {
+        val file = uploadInput.file
+        val filename = file.submittedFileName ?: throw IllegalArgumentException("Filename is null")
+        val mimetype = file.contentType ?: throw IllegalArgumentException("Content type is null")
+        val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
+        val fullPath = buildFullPath(filePath)
+        val fileToSave = File(fullPath)
+        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.createDirectories)
+            fileToSave.parentFile.mkdirs()
+
+        file.write(fullPath) // try to save
 
         val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
         val media = Media(
@@ -62,19 +99,12 @@ class LocalMediaHandler(
         )
     }
 
-    private fun buildFullPath(filePath: String): String {
-        if (mediaProps.providerOptions.basePath.isNullOrBlank())
-            throw IllegalStateException("Local provider storage base path is not configured")
-
-        return "${mediaProps.providerOptions.basePath}/${filePath}"
-    }
-
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
-    override fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> =
-        uploadInputList.map { upload(it) }
+    override fun uploadDataMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> =
+        uploadInputList.map { uploadData(it) }
 
-    override fun downloadById(id: UUID): ByteArrayResource {
-        val media = mediaService.findByIdForRead(id.toString())
+    override fun downloadById(id: String): ByteArrayResource {
+        val media = mediaService.findByIdForRead(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
         val fullPath = buildFullPath(media.path)
@@ -83,8 +113,8 @@ class LocalMediaHandler(
         return ByteArrayResource(data)
     }
 
-    override fun deleteById(id: UUID) {
-        val media = mediaService.findByIdForDelete(id.toString())
+    override fun deleteById(id: String) {
+        val media = mediaService.findByIdForDelete(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
         val fullPath = buildFullPath(media.path)

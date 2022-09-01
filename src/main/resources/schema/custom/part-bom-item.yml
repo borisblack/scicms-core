@@ -13,8 +13,7 @@ metadata:
   description: Part BOM
   core: false
   performDdl: true
-  versioned: true
-  manualVersioning: false
+  versioned: false
   notLockable: false
   localized: true
 spec:

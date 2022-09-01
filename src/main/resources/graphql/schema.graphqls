@@ -42,13 +42,19 @@ input IDFilterInput {
 }
 
 input UUIDFilterInput {
+    contains: String
+    containsi: String
+    notContains: String
+    notContainsi: String
+    startsWith: String
+    endsWith: String
     eq: UUID
     ne: UUID
-    gt: UUID
-    gte: UUID
-    lt: UUID
-    lte: UUID
-    between: [UUID]
+    gt: String
+    gte: String
+    lt: String
+    lte: String
+    between: [String]
     in: [UUID]
     notIn: [UUID]
     null: Boolean
@@ -250,11 +256,12 @@ type UserInfo {
     roles: [String!]!
 }
 
-input UploadInput {
-    file: Upload!
-    label: String
-    description: String
-    permission: UUID
+type Config {
+    i18n: I18nConfig!
+}
+
+type I18nConfig {
+    defaultLocale: String!
 }
 
 type MediaInfo {
@@ -268,20 +275,12 @@ type MediaInfo {
     createdAt: DateTime!
 }
 
-type Config {
-    i18n: I18nConfig!
-}
-
-type I18nConfig {
-    defaultLocale: String!
-}
-
 type Query {
     me: UserInfo
     config: Config
 }
 
 type Mutation {
-    upload(input: UploadInput!): MediaInfo
-    uploadMultiple(input: [UploadInput!]!): [MediaInfo!]
+    upload(file: Upload!): MediaInfo
+    uploadMultiple(files: [Upload!]!): [MediaInfo!]
 }

@@ -2,14 +2,13 @@ package ru.scisolutions.scicmscore.engine.dao
 
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import java.util.UUID
 
 interface ItemRecDao {
-    fun findById(item: Item, id: UUID, selectAttrNames: Set<String>? = null): ItemRec?
+    fun findById(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
 
-    fun findByIdOrThrow(item: Item, id: UUID, selectAttrNames: Set<String>? = null): ItemRec
+    fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec
 
-    fun existsById(item: Item, id: UUID): Boolean
+    fun existsById(item: Item, id: String): Boolean
 
     fun existAllByIds(item: Item, ids: Set<String>): Boolean
 
@@ -23,27 +22,27 @@ interface ItemRecDao {
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec): Int
 
-    fun updateById(item: Item, id: UUID, itemRec: ItemRec): Int
+    fun updateById(item: Item, id: String, itemRec: ItemRec): Int
 
     fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int
 
-    fun deleteById(item: Item, id: UUID): Int
+    fun deleteById(item: Item, id: String): Int
 
     fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int
 
-    fun deleteVersionedById(item: Item, id: UUID): Int
+    fun deleteVersionedById(item: Item, id: String): Int
 
     fun deleteVersionedByAttribute(item: Item, attrName: String, attrValue: Any): Int
 
-    fun lockById(item: Item, id: UUID): Boolean
+    fun lockById(item: Item, id: String): Boolean
 
-    fun lockByIdOrThrow(item: Item, id: UUID)
+    fun lockByIdOrThrow(item: Item, id: String)
 
     fun lockByAttribute(item: Item, attrName: String, attrValue: Any): Int
 
-    fun unlockById(item: Item, id: UUID): Boolean
+    fun unlockById(item: Item, id: String): Boolean
 
-    fun unlockByIdOrThrow(item: Item, id: UUID)
+    fun unlockByIdOrThrow(item: Item, id: String)
 
     fun unlockByAttribute(item: Item, attrName: String, attrValue: Any): Int
 }

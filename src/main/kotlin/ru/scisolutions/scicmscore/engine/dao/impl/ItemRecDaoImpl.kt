@@ -21,15 +21,15 @@ class ItemRecDaoImpl(
     private val auditManager: AuditManager,
     private val jdbcTemplateMap: JdbcTemplateMap
 ) : BaseItemRecDao(jdbcTemplateMap), ru.scisolutions.scicmscore.engine.dao.ItemRecDao {
-    override fun findById(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec? {
+    override fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
         val query =  daoQueryBuilder.buildFindByIdQuery(item, id, selectAttrNames)
         return findOne(item, query.toString())
     }
 
-    override fun findByIdOrThrow(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec =
+    override fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec =
         findById(item, id, selectAttrNames) ?: throw IllegalArgumentException("Item [${item.name}] with ID [$id] not found")
 
-    override fun existsById(item: Item, id: UUID): Boolean = countByIds(item, setOf(id.toString())) > 0
+    override fun existsById(item: Item, id: String): Boolean = countByIds(item, setOf(id)) > 0
 
     override fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
 
@@ -59,7 +59,7 @@ class ItemRecDaoImpl(
 
     override fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
         with(itemRec) {
-            id = UUID.randomUUID()
+            id = UUID.randomUUID().toString()
             configId = id
         }
 
@@ -70,7 +70,7 @@ class ItemRecDaoImpl(
         return insert(item, itemRec)
     }
 
-    override fun updateById(item: Item, id: UUID, itemRec: ItemRec): Int =
+    override fun updateById(item: Item, id: String, itemRec: ItemRec): Int =
         updateByAttribute(item, ID_ATTR_NAME, id, itemRec)
 
     override fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int {
@@ -80,7 +80,7 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
-    override fun deleteById(item: Item, id: UUID): Int = deleteByAttribute(item, ID_ATTR_NAME, id)
+    override fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ID_ATTR_NAME, id)
 
     override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
         val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue)
@@ -89,7 +89,7 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
-    override fun deleteVersionedById(item: Item, id: UUID): Int {
+    override fun deleteVersionedById(item: Item, id: String): Int {
         if (!item.versioned)
             throw IllegalArgumentException("Item [${item.name}] is not versioned")
 
@@ -98,7 +98,7 @@ class ItemRecDaoImpl(
         if (!item.notLockable)
             lockByIdOrThrow(item, id)
 
-        val rows = deleteById(item, itemRec.id as UUID)
+        val rows = deleteById(item, itemRec.id as String)
         if (itemRec.current == true) {
             logger.debug("Versioned item [${item.name}] with ID [${itemRec.id}] is current. Updating group before deleting")
             assignNewCurrent(item, itemRec)
@@ -126,7 +126,7 @@ class ItemRecDaoImpl(
         }
 
         itemsToDelete.forEach {
-            deleteById(item, it.id as UUID)
+            deleteById(item, it.id as String)
             if (it.current == true) {
                 logger.debug("Versioned item [${item.name}] with ID [${it.id}] is current. Updating group before deleting")
                 assignNewCurrent(item, it)
@@ -163,7 +163,7 @@ class ItemRecDaoImpl(
             logger.debug("Setting current flag for the last versioned item [${item.name}] with ID ${lastItemRec.id}")
             lastItemRec.current = true
             auditManager.assignUpdateAttributes(lastItemRec)
-            updateById(item, lastItemRec.id as UUID, lastItemRec)
+            updateById(item, lastItemRec.id as String, lastItemRec)
         } else {
             logger.debug("There are no another items [${item.name}] within group.")
         }
@@ -172,12 +172,12 @@ class ItemRecDaoImpl(
             unlockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
     }
 
-    override fun lockByIdOrThrow(item: Item, id: UUID) {
+    override fun lockByIdOrThrow(item: Item, id: String) {
         if (!lockById(item, id))
             throw IllegalStateException(LOCK_FAIL_MSG.format(item.name, id))
     }
 
-    override fun lockById(item: Item, id: UUID): Boolean {
+    override fun lockById(item: Item, id: String): Boolean {
         val rows = lockByAttribute(item, ID_ATTR_NAME, id)
         return if (rows == 1) {
             logger.info("Item [${item.name}] with ID [$id] successfully locked")
@@ -200,12 +200,12 @@ class ItemRecDaoImpl(
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
     }
 
-    override fun unlockByIdOrThrow(item: Item, id: UUID) {
+    override fun unlockByIdOrThrow(item: Item, id: String) {
         if (!unlockById(item, id))
             throw IllegalStateException(UNLOCK_FAIL_MSG.format(item.name, id))
     }
 
-    override fun unlockById(item: Item, id: UUID): Boolean {
+    override fun unlockById(item: Item, id: String): Boolean {
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 

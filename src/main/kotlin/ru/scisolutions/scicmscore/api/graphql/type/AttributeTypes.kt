@@ -20,12 +20,12 @@ class AttributeTypes(
     private val itemService: ItemService,
     private val relationValidator: RelationValidator
 ) {
-    fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
-        when (attribute.type) {
-            AttrType.uuid -> {
-                val typeName = if (attribute.keyed) TypeNames.ID else TypeNames.UUID
-                typeName.nonNull(attribute.required)
-            }
+    fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
+        if (attribute.keyed)
+            return TypeNames.ID.nonNull(attribute.required)
+
+        return when (attribute.type) {
+            AttrType.uuid -> TypeNames.UUID.nonNull(attribute.required)
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence -> TypeNames.STRING.nonNull(attribute.required)
             AttrType.email -> TypeNames.EMAIL.nonNull(attribute.required)
             AttrType.password -> TypeNames.STRING.nonNull(attribute.required)
@@ -48,10 +48,14 @@ class AttributeTypes(
                     TypeName("${capitalizedTargetItemName}RelationResponse").nonNull(attribute.required)
             }
         }
+    }
 
-    fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
-        when (attribute.type) {
-            AttrType.uuid -> if (attribute.keyed) TypeNames.ID_FILTER_INPUT else TypeNames.STRING_FILTER_INPUT
+    fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
+        if (attribute.keyed)
+            return TypeNames.ID_FILTER_INPUT
+
+        return when (attribute.type) {
+            AttrType.uuid -> TypeNames.UUID_FILTER_INPUT
             AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence, AttrType.email, AttrType.password -> TypeNames.STRING_FILTER_INPUT
             AttrType.int, AttrType.long -> TypeNames.INT_FILTER_INPUT
             AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT_FILTER_INPUT
@@ -68,6 +72,7 @@ class AttributeTypes(
                 else
                     TypeNames.ID_FILTER_INPUT
             }
+
             AttrType.location -> {
                 val location = itemService.getLocation()
                 if (location.dataSource == item.dataSource)
@@ -75,6 +80,7 @@ class AttributeTypes(
                 else
                     TypeNames.ID_FILTER_INPUT
             }
+
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
@@ -90,9 +96,13 @@ class AttributeTypes(
                 }
             }
         }
+    }
 
-    fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> =
-        when (attribute.type) {
+    fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
+        if (attribute.keyed)
+            return TypeNames.ID
+
+        return when (attribute.type) {
             AttrType.uuid -> TypeNames.UUID
             AttrType.string, AttrType.text -> TypeNames.STRING
             // AttrType.enum -> TypeName("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
@@ -107,11 +117,12 @@ class AttributeTypes(
             AttrType.timestamp -> TypeNames.DATETIME
             AttrType.bool -> TypeNames.BOOLEAN
             AttrType.array, AttrType.json -> TypeNames.STRING
-            AttrType.media, AttrType.location -> TypeNames.UUID
+            AttrType.media, AttrType.location -> TypeNames.ID
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
-                if (attribute.isCollection()) ListType(TypeNames.UUID) else TypeNames.UUID
+                if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID
             }
         }
+    }
 }

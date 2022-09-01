@@ -9,7 +9,6 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.PermissionService
 import ru.scisolutions.scicmscore.util.ACL.Mask
-import java.util.UUID
 
 @Service
 class ACLItemRecDaoImpl(
@@ -17,38 +16,38 @@ class ACLItemRecDaoImpl(
     private val jdbcTemplateMap: JdbcTemplateMap
 ) : BaseItemRecDao(jdbcTemplateMap),
     ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao {
-    override fun findByIdForRead(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec? =
+    override fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.READ)
 
-    override fun findByIdForWrite(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec? =
+    override fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.WRITE)
 
-    override fun findByIdForCreate(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec? =
+    override fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.CREATE)
 
-    override fun findByIdForDelete(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec? =
+    override fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.DELETE)
 
-    override fun findByIdForAdministration(item: Item, id: UUID, selectAttrNames: Set<String>?): ItemRec? =
+    override fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.ADMINISTRATION)
 
-    private fun findByIdFor(item: Item, id: UUID, selectAttrNames: Set<String>?, accessMask: Mask): ItemRec? {
+    private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Mask): ItemRec? {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
         val query =  daoQueryBuilder.buildFindByIdQuery(item, id, selectAttrNames, permissionIds)
         return findOne(item, query.toString())
     }
 
-    override fun existsByIdForRead(item: Item, id: UUID): Boolean = existsByIdFor(item, id, Mask.READ)
+    override fun existsByIdForRead(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.READ)
 
-    override fun existsByIdForWrite(item: Item, id: UUID): Boolean = existsByIdFor(item, id, Mask.WRITE)
+    override fun existsByIdForWrite(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.WRITE)
 
-    override fun existsByIdForCreate(item: Item, id: UUID): Boolean = existsByIdFor(item, id, Mask.CREATE)
+    override fun existsByIdForCreate(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.CREATE)
 
-    override fun existsByIdForDelete(item: Item, id: UUID): Boolean = existsByIdFor(item, id, Mask.DELETE)
+    override fun existsByIdForDelete(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.DELETE)
 
-    override fun existsByIdForAdministration(item: Item, id: UUID): Boolean = existsByIdFor(item, id, Mask.ADMINISTRATION)
+    override fun existsByIdForAdministration(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.ADMINISTRATION)
 
-    private fun existsByIdFor(item: Item, id: UUID, accessMask: Mask): Boolean = countByIdsFor(item, setOf(id.toString()), accessMask) > 0
+    private fun existsByIdFor(item: Item, id: String, accessMask: Mask): Boolean = countByIdsFor(item, setOf(id), accessMask) > 0
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Mask): Int {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
@@ -80,7 +79,7 @@ class ACLItemRecDaoImpl(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(ru.scisolutions.scicmscore.engine.dao.impl.ACLItemRecDaoImpl::class.java)
+        private val logger = LoggerFactory.getLogger(ACLItemRecDaoImpl::class.java)
         private val daoQueryBuilder = DaoQueryBuilder()
     }
 }

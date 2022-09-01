@@ -15,10 +15,9 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import java.util.UUID
 
 class DaoQueryBuilder {
-    fun buildFindByIdQuery(item: Item, id: UUID, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
+    fun buildFindByIdQuery(item: Item, id: String, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
         val table = createTable(item)
         val idCol = DbColumn(table, ID_COL_NAME, null, null)
         val query = SelectQuery()
@@ -36,7 +35,7 @@ class DaoQueryBuilder {
             query.addColumns(*columns)
         }
 
-        query.addCondition(BinaryCondition.equalTo(idCol, SQL.toSqlValue(id)))
+        query.addCondition(BinaryCondition.equalTo(idCol, id))
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
         if (permissionCondition != null)

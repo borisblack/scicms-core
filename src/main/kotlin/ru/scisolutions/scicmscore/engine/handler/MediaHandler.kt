@@ -1,16 +1,20 @@
 package ru.scisolutions.scicmscore.engine.handler
 
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
-import java.util.UUID
 
 interface MediaHandler {
-    fun upload(uploadInput: UploadInput): MediaInfo
+    fun upload(file: MultipartFile): MediaInfo
 
-    fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo>
+    fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo>
 
-    fun downloadById(id: UUID): ByteArrayResource
+    fun uploadData(uploadInput: UploadInput): MediaInfo
 
-    fun deleteById(id: UUID)
+    fun uploadDataMultiple(uploadInputList: List<UploadInput>): List<MediaInfo>
+
+    fun downloadById(id: String): ByteArrayResource
+
+    fun deleteById(id: String)
 }

@@ -117,14 +117,19 @@ class DynamicDataFetcher(
     private fun addAttributeDataFetchers(codeRegistryBuilder: GraphQLCodeRegistry.Builder, item: Item) {
         val capitalizedItemName = item.name.upperFirst()
         item.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Type.relation }
+            .filter { (_, attribute) -> attribute.type == Type.relation || attribute.type == Type.media || attribute.type == Type.location }
             .forEach { (attrName, attribute) ->
-                if (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne) {
+                if (attribute.type == Type.relation) {
+                    if (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne) {
+                        codeRegistryBuilder
+                            .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findOneRelatedDataFetcher)
+                    } else if (attribute.isCollection()) {
+                        codeRegistryBuilder
+                            .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findAllRelatedDataFetcher)
+                    }
+                } else {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findOneRelatedDataFetcher)
-                } else if (attribute.isCollection()) {
-                    codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findAllRelatedDataFetcher)
                 }
             }
     }

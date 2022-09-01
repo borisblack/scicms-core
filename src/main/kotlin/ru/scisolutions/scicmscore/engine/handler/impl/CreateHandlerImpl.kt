@@ -55,7 +55,7 @@ class CreateHandlerImpl(
             .toMutableMap()
 
         val itemRec = ItemRec(nonCollectionData).apply {
-            id = UUID.randomUUID()
+            id = UUID.randomUUID().toString()
             configId = id
         }
 
@@ -73,7 +73,7 @@ class CreateHandlerImpl(
 
         addRelationHelper.processRelations(
             item,
-            itemRec.id as UUID,
+            itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 

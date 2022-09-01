@@ -6,7 +6,6 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.persistence.service.UserService
 import java.time.OffsetDateTime
-import java.util.UUID
 
 @Service
 class AuditManagerImpl(
@@ -19,9 +18,9 @@ class AuditManagerImpl(
 
         with(itemRec) {
             createdAt = now
-            createdBy = UUID.fromString(currentUser.id)
+            createdBy = currentUser.id
             updatedAt = now
-            updatedBy = UUID.fromString(currentUser.id)
+            updatedBy = currentUser.id
         }
     }
 
@@ -31,7 +30,7 @@ class AuditManagerImpl(
 
         with(itemRec) {
             updatedAt = OffsetDateTime.now()
-            updatedBy = UUID.fromString(currentUser.id)
+            updatedBy = currentUser.id
         }
     }
 }

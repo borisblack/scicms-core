@@ -22,9 +22,9 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
             val columnName = metaData.getColumnName(i).lowercase()
             val attrName = item.spec.columnNameToAttrNameMap[columnName] as String
             val attribute = item.spec.attributes[attrName] as Attribute
-            val value = when (attribute.type) {
-                Type.uuid, Type.media, Type.location, Type.relation -> parseUUID(rs.getString(i))
-                Type.string, Type.enum, Type.sequence, Type.email -> rs.getString(i)
+            val value: Any? = when (attribute.type) {
+                Type.uuid -> parseUUID(rs.getString(i))
+                Type.string, Type.enum, Type.sequence, Type.email, Type.media, Type.location, Type.relation -> rs.getString(i)
                 Type.text -> parseText(rs.getObject(i))
                 Type.password -> rs.getString(i)
                 Type.int -> rs.getInt(i)
@@ -44,7 +44,6 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
                     val text: String? = parseText(rs.getObject(i))
                     if (text == null) null else objectMapper.readValue(text, Map::class.java)
                 }
-                else -> rs.getObject(i)
             }
 
             itemRec[attrName] = value

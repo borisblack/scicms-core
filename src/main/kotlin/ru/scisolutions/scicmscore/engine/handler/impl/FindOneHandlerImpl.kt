@@ -11,7 +11,6 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import java.util.UUID
 
 @Service
 class FindOneHandlerImpl(
@@ -19,7 +18,7 @@ class FindOneHandlerImpl(
     private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao
 ) : FindOneHandler {
-    override fun findOne(itemName: String, id: UUID, selectAttrNames: Set<String>): Response {
+    override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
 
         // Get and call hook
@@ -49,7 +48,7 @@ class FindOneHandlerImpl(
         itemName: String,
         selectAttrNames: Set<String>
     ): RelationResponse {
-        val id = parentItemRec[parentAttrName] as UUID?
+        val id = parentItemRec[parentAttrName] as String?
         if (id == null) {
             logger.debug("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
             return RelationResponse()

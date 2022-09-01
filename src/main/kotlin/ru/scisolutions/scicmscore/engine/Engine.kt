@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
@@ -20,7 +21,6 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.model.UserInfo
-import java.util.UUID
 
 /**
  * General facade for all operations with data
@@ -28,13 +28,17 @@ import java.util.UUID
 interface Engine {
     fun me(): UserInfo?
 
-    fun upload(uploadInput: UploadInput): MediaInfo
+    fun upload(file: MultipartFile): MediaInfo
 
-    fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo>
+    fun uploadData(uploadInput: UploadInput): MediaInfo
 
-    fun downloadById(id: UUID): ByteArrayResource
+    fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo>
 
-    fun findOne(itemName: String, id: UUID, selectAttrNames: Set<String>): Response
+    fun uploadDataMultiple(uploadInputList: List<UploadInput>): List<MediaInfo>
+
+    fun downloadById(id: String): ByteArrayResource
+
+    fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
     fun findOneRelated(
         parentItemName: String,
@@ -73,9 +77,9 @@ interface Engine {
 
     fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection
 
-    fun lock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse
+    fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse
 
-    fun unlock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse
+    fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse
 
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response
 

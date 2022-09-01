@@ -14,12 +14,12 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
+import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
-import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 import java.util.UUID
@@ -66,7 +66,7 @@ class CreateLocalizationHandlerImpl(
 
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
         val itemRec = ItemRec(mergedData).apply {
-            id = UUID.randomUUID()
+            id = UUID.randomUUID().toString()
         }
 
         // Assign other attributes
@@ -83,13 +83,13 @@ class CreateLocalizationHandlerImpl(
         // Update relations
         addRelationHelper.processRelations(
             item,
-            itemRec.id as UUID,
+            itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 
         // Copy relations from previous localization
         if (input.copyCollectionRelations == true)
-            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as UUID)
+            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as String)
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id) // unlock

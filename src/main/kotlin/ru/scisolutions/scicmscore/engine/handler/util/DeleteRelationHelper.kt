@@ -18,7 +18,6 @@ import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToOneBidirectionalRelation
-import java.util.UUID
 
 @Component
 class DeleteRelationHelper(
@@ -44,7 +43,7 @@ class DeleteRelationHelper(
                 val attribute = item.spec.getAttributeOrThrow(it)
                 attribute.type == Type.relation && attribute.relType == RelType.oneToOne
             }
-            .filterValues { it != null } as Map<String, UUID>
+            .filterValues { it != null } as Map<String, String>
 
 
         oneToOneRelAttributes.forEach { (attrName, targetId) ->
@@ -52,7 +51,7 @@ class DeleteRelationHelper(
         }
     }
 
-    private fun processOneToOneRelation(item: Item, relAttrName: String, targetId: UUID, strategy: DeletingStrategy) {
+    private fun processOneToOneRelation(item: Item, relAttrName: String, targetId: String, strategy: DeletingStrategy) {
         logger.debug("Processing oneToOne relations")
 
         if (strategy == DeletingStrategy.NO_ACTION)
@@ -99,7 +98,7 @@ class DeleteRelationHelper(
         }
     }
 
-    private fun updateById(item: Item, id: UUID, itemRec: ItemRec): Int {
+    private fun updateById(item: Item, id: String, itemRec: ItemRec): Int {
         if (!aclItemRecDao.existsByIdForWrite(item, id)) {
             logger.warn("Update operation disabled for item [${item.name}] with ID [$id].")
             return 0
@@ -113,13 +112,13 @@ class DeleteRelationHelper(
         auditManager.assignUpdateAttributes(itemRec)
         val itemsToUpdate = aclItemRecDao.findAllByAttributeForWrite(item, attrName, attrValue)
         itemsToUpdate.forEach {
-            itemRecDao.updateById(item, it.id as UUID, itemRec)
+            itemRecDao.updateById(item, it.id as String, itemRec)
         }
 
         return itemsToUpdate.size
     }
 
-    private fun deleteById(item: Item, id: UUID): Int =
+    private fun deleteById(item: Item, id: String): Int =
         if (item.versioned)
             itemRecDao.deleteVersionedById(item, id)
         else
@@ -127,12 +126,12 @@ class DeleteRelationHelper(
 
     private fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
         val itemsToDelete = aclItemRecDao.findAllByAttributeForDelete(item, attrName, attrValue)
-        itemsToDelete.forEach { deleteById(item, it.id as UUID) }
+        itemsToDelete.forEach { deleteById(item, it.id as String) }
 
         return itemsToDelete.size
     }
 
-    private fun processCollectionRelations(item: Item, itemRecId: UUID, strategy: DeletingStrategy) {
+    private fun processCollectionRelations(item: Item, itemRecId: String, strategy: DeletingStrategy) {
         logger.debug("Processing collection relations")
         val collectionRelAttributes = item.spec.attributes.filterValues { it.isCollection() }
         collectionRelAttributes.forEach { (attrName, attribute) ->
@@ -140,7 +139,7 @@ class DeleteRelationHelper(
         }
     }
 
-    private fun processCollectionRelation(item: Item, itemRecId: UUID, relAttrName: String, relAttribute: Attribute, strategy: DeletingStrategy) {
+    private fun processCollectionRelation(item: Item, itemRecId: String, relAttrName: String, relAttribute: Attribute, strategy: DeletingStrategy) {
         if (!relAttribute.isCollection())
             throw IllegalArgumentException("Attribute [$relAttrName] is not collection")
 

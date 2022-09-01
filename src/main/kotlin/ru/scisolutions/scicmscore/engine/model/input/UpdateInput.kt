@@ -1,8 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-import java.util.UUID
-
 class UpdateInput(
-    val id: UUID,
+    val id: String,
     val data: Map<String, Any?>
 )

@@ -71,7 +71,7 @@ class FindAllHandlerImpl(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val findAllQuery = findAllQueryBuilder.buildFindAllRelatedQuery(
             parentItem = parentItem,
-            parentId = parentId.toString(),
+            parentId = parentId,
             parentAttrName = parentAttrName,
             item = item,
             input = input,

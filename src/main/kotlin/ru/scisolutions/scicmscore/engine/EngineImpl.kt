@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.handler.CreateLocalizationHandler
 import ru.scisolutions.scicmscore.engine.handler.CreateVersionHandler
@@ -33,7 +34,6 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.model.UserInfo
-import java.util.UUID
 
 /**
  * General facade for all operations with data
@@ -56,13 +56,17 @@ class EngineImpl(
 ) : Engine {
     override fun me(): UserInfo? = userHandler.me()
 
-    override fun upload(uploadInput: UploadInput): MediaInfo = mediaHandler.upload(uploadInput)
+    override fun upload(file: MultipartFile): MediaInfo = mediaHandler.upload(file)
 
-    override fun uploadMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> = mediaHandler.uploadMultiple(uploadInputList)
+    override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = mediaHandler.uploadMultiple(files)
 
-    override fun downloadById(id: UUID): ByteArrayResource = mediaHandler.downloadById(id)
+    override fun uploadData(uploadInput: UploadInput): MediaInfo = mediaHandler.uploadData(uploadInput)
 
-    override fun findOne(itemName: String, id: UUID, selectAttrNames: Set<String>): Response =
+    override fun uploadDataMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> = mediaHandler.uploadDataMultiple(uploadInputList)
+
+    override fun downloadById(id: String): ByteArrayResource = mediaHandler.downloadById(id)
+
+    override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response =
         findOneHandler.findOne(itemName, id, selectAttrNames)
 
     override fun findOneRelated(
@@ -134,10 +138,10 @@ class EngineImpl(
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =
         purgeHandler.purge(itemName, input, selectAttrNames)
 
-    override fun lock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse =
+    override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse =
         lockHandler.lock(itemName, id, selectAttrNames)
 
-    override fun unlock(itemName: String, id: UUID, selectAttrNames: Set<String>): FlaggedResponse =
+    override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse =
         lockHandler.unlock(itemName, id, selectAttrNames)
 
     override fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response =

@@ -78,7 +78,7 @@ class DeleteHandlerImpl(
         return response
     }
 
-    private fun deleteById(item: Item, id: UUID): Int =
+    private fun deleteById(item: Item, id: String): Int =
         if (item.versioned)
             itemRecDao.deleteVersionedById(item, id)
         else

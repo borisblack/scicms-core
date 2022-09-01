@@ -37,4 +37,5 @@ spec:
       columnName: revisions
       displayName: Revisions
       description: Revisions
+      required: true
       colWidth: 350

@@ -18,7 +18,6 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
-import java.util.UUID
 
 @Service
 class UpdateHandlerImpl(
@@ -68,7 +67,7 @@ class UpdateHandlerImpl(
         // Update relations
         addRelationHelper.processRelations(
             item,
-            itemRec.id as UUID,
+            itemRec.id as String,
             preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
         )
 

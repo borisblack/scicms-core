@@ -1,9 +1,9 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-import org.springframework.web.multipart.MultipartFile
+import javax.servlet.http.Part
 
 class UploadInput(
-    val file: MultipartFile,
+    val file: Part,
     val label: String?,
     val description: String?,
     val permissionId: String?
