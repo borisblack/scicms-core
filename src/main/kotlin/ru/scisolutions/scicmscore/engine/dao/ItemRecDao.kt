@@ -24,7 +24,9 @@ interface ItemRecDao {
 
     fun updateById(item: Item, id: String, itemRec: ItemRec): Int
 
-    fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int
+    fun updateByAttribute(item: Item, attrName: String, attrValue: Any?, itemRec: ItemRec): Int
+
+    fun updateByAttributes(item: Item, attributes: Map<String, Any?>, itemRec: ItemRec): Int
 
     fun deleteById(item: Item, id: String): Int
 

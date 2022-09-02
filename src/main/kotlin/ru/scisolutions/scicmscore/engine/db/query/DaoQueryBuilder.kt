@@ -111,12 +111,22 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
-    fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec, permissionIds: Set<String>? = null): UpdateQuery {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+    fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any?, itemRec: ItemRec, permissionIds: Set<String>? = null): UpdateQuery =
+        buildUpdateByAttributesQuery(item, mapOf(attrName to attrValue), itemRec, permissionIds)
+
+    fun buildUpdateByAttributesQuery(item: Item, attributes: Map<String, Any?>, itemRec: ItemRec, permissionIds: Set<String>? = null): UpdateQuery {
         val table = createTable(item)
-        val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
+        val conditions = attributes.map { (attrName, value) ->
+            val attribute = item.spec.getAttributeOrThrow(attrName)
+            val attrCol = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
+            if (value == null)
+                UnaryCondition.isNull(attrCol)
+            else
+                BinaryCondition.equalTo(attrCol, SQL.toSqlValue(value))
+        }
+
         val query = UpdateQuery(table)
-            .addCondition(BinaryCondition.equalTo(attrCol, SQL.toSqlValue(attrValue)))
+            .addCondition(ComboCondition(Op.AND, *conditions.toTypedArray()))
 
         itemRec.forEach { (recAttrName, recValue) ->
             val recAttribute = item.spec.getAttributeOrThrow(recAttrName)

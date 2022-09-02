@@ -67,6 +67,7 @@ class CreateLocalizationHandlerImpl(
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
         val itemRec = ItemRec(mergedData).apply {
             id = UUID.randomUUID().toString()
+            lockedBy = null
         }
 
         // Assign other attributes

@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
+import ru.scisolutions.scicmscore.persistence.service.SequenceService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
@@ -17,6 +18,7 @@ import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
 import ru.scisolutions.scicmscore.util.Maps
+import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
@@ -26,6 +28,7 @@ class ItemApplier(
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
     private val schemaLockService: SchemaLockService,
+    private val sequenceService: SequenceService,
     private val relationValidator: RelationValidator
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java
@@ -36,7 +39,7 @@ class ItemApplier(
 
         val item = includeTemplates(model)
 
-        validateItem(item)
+        validateModel(item)
 
         val itemName = item.metadata.name
         var itemEntity = itemService.findByName(itemName)
@@ -99,7 +102,7 @@ class ItemApplier(
         indexes = Maps.merge(source.indexes, target.indexes)
     )
 
-    private fun validateItem(model: Item) {
+    private fun validateModel(model: Item) {
         logger.info("Validating model [{}]", model.metadata.name)
         if(model.metadata.name.first().isUpperCase())
             throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character")
@@ -109,12 +112,16 @@ class ItemApplier(
             Class.forName(model.metadata.implementation)
         }
 
-        model.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Attribute.Type.relation }
+        model.spec.attributes
             .forEach { (attrName, attribute) ->
-                // logger.debug("Validating attribute [{}]", attrName)
                 attribute.validate()
-                relationValidator.validateAttribute(model, attrName, attribute)
+
+                if (attribute.type == Attribute.Type.relation)
+                    relationValidator.validateAttribute(model, attrName, attribute)
+
+                // Sequence might not exist while item is creating
+                // if (attribute.type == AttrType.sequence && !sequenceService.existsByName(requireNotNull(attribute.seqName)))
+                //     throw IllegalArgumentException("Sequence [${attribute.seqName}] does not exist")
             }
 
     }

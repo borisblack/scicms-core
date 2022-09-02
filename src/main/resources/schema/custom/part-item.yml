@@ -130,8 +130,14 @@ spec:
     l:
       type: location
       columnName: l
-      displayName: L
-      description: L
+      displayName: Loc
+      description: Loc
+    s:
+      type: sequence
+      seqName: mainSeq
+      columnName: s
+      displayName: S
+      description: S
     ownedBy:
       type: relation
       relType: manyToOne

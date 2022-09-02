@@ -47,8 +47,12 @@ class PurgeHandlerImpl(
         // Process relations, media and locations
         itemRecsToPurge.forEach {
             deleteRelationHelper.processRelations(item, it, input.deletingStrategy)
-            deleteMediaHelper.processMedia(item, itemRec)
-            deleteLocationHelper.processLocations(item, itemRec)
+
+            // Can be used by another versions or localizations
+            if (!item.versioned && !item.localized) {
+                deleteMediaHelper.processMedia(item, itemRec)
+                deleteLocationHelper.processLocations(item, itemRec)
+            }
         }
 
         itemRecDao.deleteByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String) // purge

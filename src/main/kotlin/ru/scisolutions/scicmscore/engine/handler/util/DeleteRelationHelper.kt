@@ -85,8 +85,12 @@ class DeleteRelationHelper(
                             logger.debug("Processing relations recursively")
 
                             processRelations(targetItem, targetItemRec, strategy)
-                            deleteMediaHelper.processMedia(item, targetItemRec)
-                            deleteLocationHelper.processLocations(item, targetItemRec)
+
+                            // Can be used by another versions or localizations
+                            if (!item.versioned && !item.localized) {
+                                deleteMediaHelper.processMedia(item, targetItemRec)
+                                deleteLocationHelper.processLocations(item, targetItemRec)
+                            }
 
                             deleteById(targetItem, targetId)
                         }

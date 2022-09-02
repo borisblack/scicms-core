@@ -61,8 +61,12 @@ class DeleteHandlerImpl(
         implInstance?.beforeDelete(itemName, input)
 
         deleteRelationHelper.processRelations(item, itemRec, input.deletingStrategy) // process relations
-        deleteMediaHelper.processMedia(item, itemRec)
-        deleteLocationHelper.processLocations(item, itemRec)
+
+        // Can be used by another versions or localizations
+        if (!item.versioned && !item.localized) {
+            deleteMediaHelper.processMedia(item, itemRec)
+            deleteLocationHelper.processLocations(item, itemRec)
+        }
 
         deleteById(item, input.id) // delete
 

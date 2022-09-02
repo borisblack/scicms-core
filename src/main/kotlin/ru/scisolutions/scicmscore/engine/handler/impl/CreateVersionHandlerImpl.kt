@@ -64,6 +64,7 @@ class CreateVersionHandlerImpl(
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
         val itemRec = ItemRec(mergedData).apply {
             id = UUID.randomUUID().toString()
+            lockedBy = null
         }
 
         // Assign other attributes
@@ -77,10 +78,12 @@ class CreateVersionHandlerImpl(
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
         // Reset current flag
-        itemRecDao.updateByAttribute(
+        itemRecDao.updateByAttributes(
             item = item,
-            attrName = CONFIG_ID_ATTR_NAME,
-            attrValue = requireNotNull(itemRec.configId),
+            attributes = mapOf(
+                CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
+                LOCALE_ATTR_NAME to itemRec.locale
+            ),
             itemRec = ItemRec().apply {
                 current = false
             }
@@ -114,6 +117,7 @@ class CreateVersionHandlerImpl(
 
     companion object {
         private const val CONFIG_ID_ATTR_NAME = "configId"
+        private const val LOCALE_ATTR_NAME = "locale"
 
         private val logger = LoggerFactory.getLogger(CreateVersionHandlerImpl::class.java)
     }

@@ -55,7 +55,7 @@ class Attribute(
                     throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
             }
             Type.decimal -> {
-                if (precision == null || precision <= 0 || scale == null || scale < 0)
+                if ((precision != null && precision <= 0) || (scale != null && scale < 0))
                     throw IllegalArgumentException("Invalid precision and/or scale (${precision}, ${scale})")
 
                 if (minRange != null && maxRange != null && minRange > maxRange)

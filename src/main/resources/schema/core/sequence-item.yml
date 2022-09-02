@@ -54,7 +54,7 @@ spec:
       columnName: current_value
       displayName: Current Value
       description: Current Value
-      required: true
+      readOnly: true
     step:
       type: int
       columnName: step
