@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.db.query
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import java.sql.Types
+import java.time.OffsetDateTime
 import java.time.OffsetTime
 import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 
@@ -32,7 +33,7 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             AttrType.date -> this.addValue(paramName, value, Types.DATE)
             AttrType.time -> this.addValue(paramName, if (value is OffsetTime) value.toLocalTime() else value, Types.TIME)
             AttrType.datetime,
-            AttrType.timestamp -> this.addValue(paramName, value, Types.TIMESTAMP_WITH_TIMEZONE)
+            AttrType.timestamp -> this.addValue(paramName, if (value is OffsetDateTime) value.toLocalDateTime() else value, Types.TIMESTAMP)
             AttrType.text,
             AttrType.array,
             AttrType.json -> this.addValue(paramName, value)
