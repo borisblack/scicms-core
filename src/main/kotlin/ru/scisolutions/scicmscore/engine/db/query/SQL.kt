@@ -13,8 +13,8 @@ object SQL {
         when (value) {
             is UUID -> value.toString()
             is LocalDate -> JdbcEscape.date(value)
-            is LocalTime -> JdbcEscape.timestamp(value.atDate(LocalDate.now())) // JdbcEscape.time not works on Oracle DATE type
-            is OffsetTime -> JdbcEscape.timestamp(value.atDate(LocalDate.now())) // JdbcEscape.time not works on Oracle DATE type
+            is LocalTime -> JdbcEscape.timestamp(value.atDate(LocalDate.EPOCH)) // JdbcEscape.time not works on Oracle DATE type
+            is OffsetTime -> JdbcEscape.timestamp(value.atDate(LocalDate.EPOCH)) // JdbcEscape.time not works on Oracle DATE type
             is LocalDateTime -> JdbcEscape.timestamp(value)
             is OffsetDateTime -> JdbcEscape.timestamp(value)
             else -> value

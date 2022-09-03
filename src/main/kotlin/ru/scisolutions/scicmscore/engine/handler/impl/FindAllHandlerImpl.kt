@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.handler.impl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.db.query.FindAllQueryBuilder
 import ru.scisolutions.scicmscore.engine.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
@@ -36,13 +37,15 @@ class FindAllHandlerImpl(
         implInstance?.beforeFindAll(itemName, input)
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val paramSource = AttributeSqlParameterSource()
         val findAllQuery = findAllQueryBuilder.buildFindAllQuery(
             item = item,
             input = input,
             selectAttrNames = attrNames,
-            selectPaginationFields = selectPaginationFields
+            selectPaginationFields = selectPaginationFields,
+            paramSource = paramSource
         )
-        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql)
+        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql, paramSource)
 
         val response = ResponseCollection(
             data = itemRecList,
@@ -69,6 +72,7 @@ class FindAllHandlerImpl(
         val parentItem = itemService.getByName(parentItemName)
         val parentId = parentItemRec.id ?: throw IllegalArgumentException("Parent ID not found")
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val paramSource = AttributeSqlParameterSource()
         val findAllQuery = findAllQueryBuilder.buildFindAllRelatedQuery(
             parentItem = parentItem,
             parentId = parentId,
@@ -76,9 +80,10 @@ class FindAllHandlerImpl(
             item = item,
             input = input,
             selectAttrNames = attrNames,
-            selectPaginationFields = selectPaginationFields
+            selectPaginationFields = selectPaginationFields,
+            paramSource = paramSource
         )
-        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql)
+        val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql, paramSource)
 
         return RelationResponseCollection(
             data = itemRecList

@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.dao
 
+import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
@@ -12,9 +13,9 @@ interface ItemRecDao {
 
     fun existAllByIds(item: Item, ids: Set<String>): Boolean
 
-    fun count(item: Item, sql: String): Int
+    fun count(item: Item, sql: String, paramSource: AttributeSqlParameterSource): Int
 
-    fun findAll(item: Item, sql: String): List<ItemRec>
+    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec>
 
     fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec>
 

@@ -3,7 +3,9 @@ package ru.scisolutions.scicmscore.engine.dao.impl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
+import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.db.ItemRecMapper
+import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.db.query.DaoQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.AuditManager
@@ -20,10 +22,11 @@ class ItemRecDaoImpl(
     private val sequenceManager: SequenceManager,
     private val auditManager: AuditManager,
     private val jdbcTemplateMap: JdbcTemplateMap
-) : BaseItemRecDao(jdbcTemplateMap), ru.scisolutions.scicmscore.engine.dao.ItemRecDao {
+) : BaseItemRecDao(jdbcTemplateMap), ItemRecDao {
     override fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
-        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, selectAttrNames)
-        return findOne(item, query.toString())
+        val paramSource = AttributeSqlParameterSource()
+        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
+        return findOne(item, query.toString(), paramSource)
     }
 
     override fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec =
@@ -34,27 +37,30 @@ class ItemRecDaoImpl(
     override fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
 
     private fun countByIds(item: Item, ids: Set<String>): Int {
-        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids)
-        return count(item, query.toString())
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids, paramSource)
+        return count(item, query.toString(), paramSource)
     }
 
-    override fun findAll(item: Item, sql: String): List<ItemRec> {
+    override fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> {
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
+        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
     }
 
     override fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
-        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
+        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
     }
 
     override fun insert(item: Item, itemRec: ItemRec): Int {
-        val query = daoQueryBuilder.buildInsertQuery(item, itemRec)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
     }
 
     override fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
@@ -71,25 +77,27 @@ class ItemRecDaoImpl(
     }
 
     override fun updateById(item: Item, id: String, itemRec: ItemRec): Int =
-        updateByAttribute(item, ID_ATTR_NAME, id, itemRec)
+        updateByAttribute(item, ItemRec.ID_ATTR_NAME, id, itemRec)
 
     override fun updateByAttribute(item: Item, attrName: String, attrValue: Any?, itemRec: ItemRec): Int =
         updateByAttributes(item, mapOf(attrName to attrValue), itemRec)
 
     override fun updateByAttributes(item: Item, attributes: Map<String, Any?>, itemRec: ItemRec): Int {
-        val query = daoQueryBuilder.buildUpdateByAttributesQuery(item, attributes, itemRec)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildUpdateByAttributesQuery(item, attributes, itemRec, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
     }
 
-    override fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ID_ATTR_NAME, id)
+    override fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ItemRec.ID_ATTR_NAME, id)
 
     override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
-        val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
     }
 
     override fun deleteVersionedById(item: Item, id: String): Int {
@@ -150,11 +158,11 @@ class ItemRecDaoImpl(
         if (deletedItemRec.current != true)
             throw IllegalArgumentException("Item [${item.name}] with ID [${deletedItemRec.id}] is not current")
 
-        val group = findAllByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+        val group = findAllByAttribute(item, ItemRec.CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
         if (!item.notLockable) {
-            val lockedRows = lockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+            val lockedRows = lockByAttribute(item, ItemRec.CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
             if (lockedRows != group.size) {
-                unlockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+                unlockByAttribute(item, ItemRec.CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
                 throw IllegalStateException("Failed to lock items group")
             }
         }
@@ -172,7 +180,7 @@ class ItemRecDaoImpl(
         }
 
         if (!item.notLockable)
-            unlockByAttribute(item, CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+            unlockByAttribute(item, ItemRec.CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
     }
 
     override fun lockByIdOrThrow(item: Item, id: String) {
@@ -181,7 +189,7 @@ class ItemRecDaoImpl(
     }
 
     override fun lockById(item: Item, id: String): Boolean {
-        val rows = lockByAttribute(item, ID_ATTR_NAME, id)
+        val rows = lockByAttribute(item, ItemRec.ID_ATTR_NAME, id)
         return if (rows == 1) {
             logger.info("Item [${item.name}] with ID [$id] successfully locked")
             true
@@ -196,11 +204,12 @@ class ItemRecDaoImpl(
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
         val user = userService.getCurrentUser()
-        val query = daoQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
     }
 
     override fun unlockByIdOrThrow(item: Item, id: String) {
@@ -212,7 +221,7 @@ class ItemRecDaoImpl(
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
-        val rows = unlockByAttribute(item, ID_ATTR_NAME, id)
+        val rows = unlockByAttribute(item, ItemRec.ID_ATTR_NAME, id)
         return if (rows == 1) {
             logger.info("Item [${item.name}] with ID [$id] successfully unlocked")
             true
@@ -227,16 +236,15 @@ class ItemRecDaoImpl(
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
         val user = userService.getCurrentUser()
-        val query = daoQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql)
+        return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
-        private const val CONFIG_ID_ATTR_NAME = "configId"
         private const val LOCK_FAIL_MSG = "Cannot lock item %s with ID [%s]. It was locked by another user"
         private const val UNLOCK_FAIL_MSG = "Cannot unlock item %s with ID [%s]"
 

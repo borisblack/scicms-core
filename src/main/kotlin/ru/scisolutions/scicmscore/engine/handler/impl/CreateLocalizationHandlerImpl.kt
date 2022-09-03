@@ -60,7 +60,7 @@ class CreateLocalizationHandlerImpl(
         val implInstance = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
         implInstance?.beforeCreateLocalization(itemName, input)
 
-        val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val filteredData = preparedData
             .filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
 
@@ -97,8 +97,7 @@ class CreateLocalizationHandlerImpl(
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-
-        val response = Response(ItemRec(selectData))
+        val response = Response(ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)))
 
         implInstance?.afterCreateLocalization(itemName, response)
 

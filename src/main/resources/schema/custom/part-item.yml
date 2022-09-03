@@ -132,12 +132,22 @@ spec:
       columnName: l
       displayName: Loc
       description: Loc
-    s:
-      type: sequence
-      seqName: mainSeq
-      columnName: s
-      displayName: S
-      description: S
+#    s:
+#      type: sequence
+#      seqName: mainSeq
+#      columnName: s
+#      displayName: S
+#      description: S
+    e:
+      type: email
+      columnName: e
+      displayName: E
+      description: E
+    txt:
+      type: text
+      columnName: txt
+      displayName: Txt
+      description: Txt
     ownedBy:
       type: relation
       relType: manyToOne

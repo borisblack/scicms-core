@@ -1,6 +1,9 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
+import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+
 class PrimitiveFilterInput(
+    val attrType: AttrType,
     val containsFilter: String?,
     val notContainsFilter: String?,
     val containsiFilter: String?,
@@ -46,7 +49,8 @@ class PrimitiveFilterInput(
         private const val NULL_KEY = "null"
         private const val NOT_NULL_KEY = "notNull"
 
-        fun fromMap(filters: Map<String, Any>): PrimitiveFilterInput = PrimitiveFilterInput(
+        fun fromMap(attrType: AttrType, filters: Map<String, Any>): PrimitiveFilterInput = PrimitiveFilterInput(
+            attrType = attrType,
             containsFilter = filters[CONTAINS_KEY]?.toString(),
             notContainsFilter = filters[NOT_CONTAINS_KEY]?.toString(),
             containsiFilter = filters[CONTAINSI_KEY]?.toString(),
@@ -78,7 +82,7 @@ class PrimitiveFilterInput(
             andFilterList = filters[AND_KEY]?.let { list ->
                 if (list is List<*>) {
                     list.filterIsInstance<Map<*, *>>()
-                        .map { fromMap(it as Map<String, Any>) }
+                        .map { fromMap(attrType, it as Map<String, Any>) }
                 } else
                     null
             },
@@ -86,13 +90,13 @@ class PrimitiveFilterInput(
             orFilterList = filters[OR_KEY]?.let { list ->
                 if (list is List<*>) {
                     list.filterIsInstance<Map<*, *>>()
-                        .map { fromMap(it as Map<String, Any>) }
+                        .map { fromMap(attrType, it as Map<String, Any>) }
                 } else
                     null
             },
 
             notFilter = filters[NOT_KEY]?.let {
-                if (it is Map<*, *>) fromMap(it as Map<String, Any>) else null
+                if (it is Map<*, *>) fromMap(attrType, it as Map<String, Any>) else null
             }
         )
     }

@@ -34,8 +34,7 @@ class FilterConditionBuilder(
     private val itemService: ItemService,
     private val relationManager: RelationManager
 ) {
-    fun newFilterCondition(schema: DbSchema, table: DbTable, query: SelectQuery, item: Item, itemFiltersInput: ItemFiltersInput
-    ): Condition {
+    fun newFilterCondition(item: Item, itemFiltersInput: ItemFiltersInput, schema: DbSchema, table: DbTable, query: SelectQuery, paramSource: AttributeSqlParameterSource): Condition {
         val nestedConditions = mutableListOf<Condition>()
 
         itemFiltersInput.attributeFilters.forEach { (attrName, attrFilter) ->
@@ -117,32 +116,33 @@ class FilterConditionBuilder(
                         }
                     }
                 }
-                nestedConditions.add(newFilterCondition(schema, targetTable, query, targetItem, attrFilter))
+                nestedConditions.add(newFilterCondition(targetItem, attrFilter, schema, targetTable, query, paramSource))
             } else if (attrFilter is PrimitiveFilterInput) {
                 val column = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
-                nestedConditions.add(newPrimitiveCondition(table, column, attrFilter))
+                nestedConditions.add(newPrimitiveCondition(attrFilter, table, column, paramSource))
             }
         }
 
         itemFiltersInput.andFilterList?.let { list ->
-            val andConditions = list.map { newFilterCondition(schema, table, query, item, it) }
+            val andConditions = list.map { newFilterCondition(item, it, schema, table, query, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
         }
 
         itemFiltersInput.orFilterList?.let { list ->
-            val orConditions = list.map { newFilterCondition(schema, table, query, item, it) }
+            val orConditions = list.map { newFilterCondition(item, it, schema, table, query, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
         }
 
         itemFiltersInput.notFilter?.let {
-            nestedConditions.add(NotCondition(newFilterCondition(schema, table, query, item, it)))
+            nestedConditions.add(NotCondition(newFilterCondition(item, it, schema, table, query, paramSource)))
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
     }
 
-    private fun newPrimitiveCondition(table: DbTable, column: DbColumn, primitiveFilterInput: PrimitiveFilterInput): Condition {
+    private fun newPrimitiveCondition(primitiveFilterInput: PrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
         val nestedConditions = mutableListOf<Condition>()
+        val sqlParamName = "${table.alias}_${column.name}"
 
         primitiveFilterInput.containsFilter?.let {
             nestedConditions.add(BinaryCondition.like(column, "%$it%"))
@@ -169,31 +169,47 @@ class FilterConditionBuilder(
         }
 
         primitiveFilterInput.eqFilter?.let {
-            nestedConditions.add(BinaryCondition.equalTo(column, SQL.toSqlValue(it)))
+            val eqSqlParamName = "${sqlParamName}_eq"
+            nestedConditions.add(BinaryCondition.equalTo(column, CustomSql(":$eqSqlParamName")))
+            paramSource.addValue(eqSqlParamName, it, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.neFilter?.let {
-            nestedConditions.add(BinaryCondition.notEqualTo(column, SQL.toSqlValue(it)))
+            val neSqlParamName = "${sqlParamName}_ne"
+            nestedConditions.add(BinaryCondition.notEqualTo(column, CustomSql(":$neSqlParamName")))
+            paramSource.addValue(neSqlParamName, it, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.gtFilter?.let {
-            nestedConditions.add(BinaryCondition.greaterThan(column, SQL.toSqlValue(it)))
+            val gtSqlParamName = "${sqlParamName}_gt"
+            nestedConditions.add(BinaryCondition.greaterThan(column, CustomSql(":$gtSqlParamName")))
+            paramSource.addValue(gtSqlParamName, it, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.gteFilter?.let {
-            nestedConditions.add(BinaryCondition.greaterThanOrEq(column, SQL.toSqlValue(it)))
+            val gteSqlParamName = "${sqlParamName}_gte"
+            nestedConditions.add(BinaryCondition.greaterThanOrEq(column, CustomSql(":$gteSqlParamName")))
+            paramSource.addValue(gteSqlParamName, it, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.ltFilter?.let {
-            nestedConditions.add(BinaryCondition.lessThan(column, SQL.toSqlValue(it)))
+            val ltSqlParamName = "${sqlParamName}_lt"
+            nestedConditions.add(BinaryCondition.lessThan(column, CustomSql(":$ltSqlParamName")))
+            paramSource.addValue(ltSqlParamName, it, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.lteFilter?.let {
-            nestedConditions.add(BinaryCondition.lessThanOrEq(column, SQL.toSqlValue(it)))
+            val lteSqlParamName = "${sqlParamName}_lte"
+            nestedConditions.add(BinaryCondition.lessThanOrEq(column, CustomSql(":$lteSqlParamName")))
+            paramSource.addValue(lteSqlParamName, it, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.betweenFilter?.let {
-            nestedConditions.add(BetweenCondition(column, SQL.toSqlValue(it.left), SQL.toSqlValue(it.right)))
+            val leftSqlParamName = "${sqlParamName}_left"
+            val rightSqlParamName = "${sqlParamName}_right"
+            nestedConditions.add(BetweenCondition(column, CustomSql(":$leftSqlParamName"), CustomSql(":$rightSqlParamName")))
+            paramSource.addValue(leftSqlParamName, it.left, primitiveFilterInput.attrType)
+            paramSource.addValue(rightSqlParamName, it.right, primitiveFilterInput.attrType)
         }
 
         primitiveFilterInput.inFilter?.let { list ->
@@ -215,17 +231,17 @@ class FilterConditionBuilder(
         }
 
         primitiveFilterInput.andFilterList?.let { list ->
-            val andConditions = list.map { newPrimitiveCondition(table, column, it) }
+            val andConditions = list.map { newPrimitiveCondition(it, table, column, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
         }
 
         primitiveFilterInput.orFilterList?.let { list ->
-            val orConditions = list.map { newPrimitiveCondition(table, column, it) }
+            val orConditions = list.map { newPrimitiveCondition(it, table, column, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
         }
 
         primitiveFilterInput.notFilter?.let {
-            nestedConditions.add(NotCondition(newPrimitiveCondition(table, column, it)))
+            nestedConditions.add(NotCondition(newPrimitiveCondition(it, table, column, paramSource)))
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())

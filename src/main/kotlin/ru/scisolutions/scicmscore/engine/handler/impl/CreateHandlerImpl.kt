@@ -49,7 +49,7 @@ class CreateHandlerImpl(
         val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
         implInstance?.beforeCreate(itemName, input)
 
-        val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val nonCollectionData = preparedData
             .filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
             .toMutableMap()
@@ -79,8 +79,7 @@ class CreateHandlerImpl(
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-
-        val response = Response(ItemRec(selectData))
+        val response = Response(ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)))
 
         implInstance?.afterCreate(itemName, response)
 

@@ -51,7 +51,7 @@ class UpdateHandlerImpl(
         val implInstance = classService.getCastInstance(item.implementation, UpdateHook::class.java)
         implInstance?.beforeUpdate(itemName, input)
 
-        val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val mergedData = Maps.merge(preparedData, prevItemRec).toMutableMap()
         val filteredData = mergedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
         val itemRec = ItemRec(filteredData.toMutableMap())
@@ -76,8 +76,7 @@ class UpdateHandlerImpl(
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-
-        val response = Response(ItemRec(selectData))
+        val response = Response(ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)))
 
         implInstance?.afterUpdate(itemName, response)
 

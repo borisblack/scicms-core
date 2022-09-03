@@ -304,7 +304,6 @@
             </column>
             <column name="pad_with" type="char(1)"/>
             <column name="pad_to" type="int"/>
-            <column name="entries" type="text" defaultValue="[]"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>

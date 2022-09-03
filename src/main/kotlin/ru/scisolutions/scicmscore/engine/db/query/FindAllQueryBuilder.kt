@@ -39,10 +39,10 @@ class FindAllQueryBuilder(
         val pagination: Pagination
     )
 
-    fun buildFindAllQuery(item: Item, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>): FindAllQuery {
+    fun buildFindAllQuery(item: Item, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>, paramSource: AttributeSqlParameterSource): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildFindAllInitialQuery(schema, item, input.filters, selectAttrNames)
+        val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
 
         // Version
@@ -60,7 +60,7 @@ class FindAllQueryBuilder(
         if (stateCondition != null)
             query.addCondition(stateCondition)
 
-        val pagination = paginator.paginate(item, query, input.pagination, selectPaginationFields)
+        val pagination = paginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
@@ -74,7 +74,7 @@ class FindAllQueryBuilder(
         )
     }
 
-    private fun buildFindAllInitialQuery(schema: DbSchema, item: Item, filters: ItemFiltersInput?, selectAttrNames: Set<String>): SelectQuery {
+    private fun buildFindAllInitialQuery(item: Item, filters: ItemFiltersInput?, selectAttrNames: Set<String>, schema: DbSchema, paramSource: AttributeSqlParameterSource): SelectQuery {
         val table = schema.addTable(item.tableName)
 
         val columns = selectAttrNames
@@ -89,7 +89,7 @@ class FindAllQueryBuilder(
         // Filters
         if (filters != null) {
             query.addCondition(
-                filterConditionBuilder.newFilterCondition(schema, table, query, item, filters)
+                filterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource)
             )
         }
 
@@ -121,11 +121,12 @@ class FindAllQueryBuilder(
         item: Item,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
-        selectPaginationFields: Set<String>
+        selectPaginationFields: Set<String>,
+        paramSource: AttributeSqlParameterSource
     ): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildFindAllInitialQuery(schema, item, input.filters, selectAttrNames)
+        val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
         val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
         val parentAttribute = parentItem.spec.getAttributeOrThrow(parentAttrName)
         when (val parentRelation = relationManager.getAttributeRelation(parentItem, parentAttrName, parentAttribute)) {
@@ -175,7 +176,7 @@ class FindAllQueryBuilder(
             else -> throw IllegalArgumentException("Invalid relation")
         }
 
-        val pagination = paginator.paginate(item, query, input.pagination, selectPaginationFields)
+        val pagination = paginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {

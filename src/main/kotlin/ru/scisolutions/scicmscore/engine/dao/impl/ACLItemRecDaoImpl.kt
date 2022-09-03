@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.db.ItemRecMapper
+import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.db.query.DaoQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
@@ -33,8 +34,9 @@ class ACLItemRecDaoImpl(
 
     private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Mask): ItemRec? {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
-        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, selectAttrNames, permissionIds)
-        return findOne(item, query.toString())
+        val paramSource = AttributeSqlParameterSource()
+        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames, permissionIds)
+        return findOne(item, query.toString(), paramSource)
     }
 
     override fun existsByIdForRead(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.READ)
@@ -51,8 +53,9 @@ class ACLItemRecDaoImpl(
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Mask): Int {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
-        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids, permissionIds)
-        return count(item, query.toString())
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
+        return count(item, query.toString(), paramSource)
     }
 
     override fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
@@ -72,10 +75,11 @@ class ACLItemRecDaoImpl(
 
     private fun findAllByAttributeFor(item: Item, attrName: String, attrValue: Any, accessMask: Mask): List<ItemRec> {
         val permissionIds: Set<String> = permissionService.findIdsFor(accessMask)
-        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, permissionIds)
+        val paramSource = AttributeSqlParameterSource()
+        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource, permissionIds)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, ItemRecMapper(item))
+        return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
     }
 
     companion object {

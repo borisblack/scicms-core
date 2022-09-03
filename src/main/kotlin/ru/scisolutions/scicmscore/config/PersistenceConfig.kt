@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import ru.scisolutions.scicmscore.config.props.DataProps
 import javax.sql.DataSource
@@ -25,13 +26,13 @@ class PersistenceConfig(
 
     @Bean
     fun jdbcTemplateMap(): JdbcTemplateMap {
-        val map = dataSourceMap().mapValues { (_, dataSource) -> JdbcTemplate(dataSource) }
+        val map = dataSourceMap().mapValues { (_, ds) -> NamedParameterJdbcTemplate(ds) }
 
         return JdbcTemplateMap(map)
     }
 
     @Bean
-    fun jdbcTemplate(): JdbcTemplate = jdbcTemplateMap().main
+    fun jdbcTemplate(): JdbcTemplate = JdbcTemplate(dataSource())
 
     class DataSourceMap(map: Map<String, DataSource>) : Map<String, DataSource> by map {
         val main: DataSource = getOrThrow(MAIN_KEY)
@@ -39,8 +40,8 @@ class PersistenceConfig(
         fun getOrThrow(key: String) = this[key] ?: throw IllegalArgumentException("Datasource [$key] not found")
     }
 
-    class JdbcTemplateMap(map: Map<String, JdbcTemplate>) : Map<String, JdbcTemplate> by map {
-        val main: JdbcTemplate = getOrThrow(MAIN_KEY)
+    class JdbcTemplateMap(map: Map<String, NamedParameterJdbcTemplate>) : Map<String, NamedParameterJdbcTemplate> by map {
+        val main: NamedParameterJdbcTemplate = getOrThrow(MAIN_KEY)
 
         fun getOrThrow(key: String) = this[key] ?: throw IllegalArgumentException("JdbcTemplate [$key] not found")
     }

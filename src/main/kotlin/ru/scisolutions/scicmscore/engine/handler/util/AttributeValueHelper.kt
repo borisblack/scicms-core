@@ -18,6 +18,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.OffsetTime
+import java.time.ZoneOffset
 
 @Component
 class AttributeValueHelper(
@@ -27,13 +28,13 @@ class AttributeValueHelper(
     private val locationService: LocationService,
     private val itemRecDao: ItemRecDao
 ) {
-    fun prepareAttributeValues(item: Item, attributes: Map<String, Any?>): Map<String, Any?> {
+    fun prepareValuesToSave(item: Item, attributes: Map<String, Any?>): Map<String, Any?> {
         val result = attributes
             .filterKeys {
                 val attribute = item.spec.getAttributeOrThrow(it)
                 !attribute.private && attribute.type != Type.sequence && it !in excludeAttrNames
             }
-            .mapValues { (attrName, value) -> prepareAttributeValue(item, attrName, value) }
+            .mapValues { (attrName, value) -> prepareValueToSave(item, attrName, value) }
 
         if (dataProps.trimStrings)
             return result.mapValues { (_, value) -> if (value is String) value.trim() else value }
@@ -41,7 +42,7 @@ class AttributeValueHelper(
         return result
     }
 
-    fun prepareAttributeValue(item: Item, attrName: String, value: Any?): Any? {
+    fun prepareValueToSave(item: Item, attrName: String, value: Any?): Any? {
         val attribute = item.spec.getAttributeOrThrow(attrName)
         if (value == null) {
             if (attribute.required)
@@ -232,6 +233,26 @@ class AttributeValueHelper(
                 if (attribute.maxRange != null && value > attribute.maxRange.toBigDecimal())
                     throw IllegalArgumentException(VALUE_MORE_THAN_MAX_MSG.format(item.name, attrName, value))
             }
+        }
+    }
+
+    fun prepareValuesToReturn(item: Item, attributes: Map<String, Any?>): MutableMap<String, Any?> =
+        attributes
+            .mapValues { (attrName, value) -> prepareValueToReturn(item, attrName, value) }
+            .toMutableMap()
+
+    fun prepareValueToReturn(item: Item, attrName: String, value: Any?): Any? {
+        val attribute = item.spec.getAttributeOrThrow(attrName)
+
+        return when (attribute.type) {
+            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.sequence, Type.password -> value
+            Type.int, Type.long, Type.float, Type.double, Type.decimal -> value
+            Type.date -> value
+            Type.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
+            Type.datetime, Type.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
+            Type.bool -> value
+            Type.array, Type.json -> if (value == null) null else objectMapper.readValue(value as String, Map::class.java)
+            Type.media, Type.location, Type.relation -> value
         }
     }
 

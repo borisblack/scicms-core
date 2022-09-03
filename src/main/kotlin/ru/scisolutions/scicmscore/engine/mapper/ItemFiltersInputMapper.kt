@@ -1,13 +1,13 @@
 package ru.scisolutions.scicmscore.engine.mapper
 
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
-import ru.scisolutions.scicmscore.schema.service.RelationValidator
+import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.schema.service.RelationValidator
 
 @Component
 class ItemFiltersInputMapper(
@@ -33,13 +33,13 @@ class ItemFiltersInputMapper(
                         if (media.dataSource == item.dataSource)
                             map(MEDIA_ITEM_NAME, filterValue)
                         else
-                            PrimitiveFilterInput.fromMap(filterValue)
+                            PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == Type.location) {
                         val location = itemService.getLocation()
                         if (location.dataSource == item.dataSource)
                             map(LOCATION_ITEM_NAME, filterValue)
                         else
-                            PrimitiveFilterInput.fromMap(filterValue)
+                            PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == Type.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemService.getByName(requireNotNull(attribute.target))
@@ -49,9 +49,9 @@ class ItemFiltersInputMapper(
                             if (attribute.isCollection())
                                 throw IllegalArgumentException("Filtering collections from different datasource is not supported")
 
-                            PrimitiveFilterInput.fromMap(filterValue)
+                            PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                         }
-                    } else PrimitiveFilterInput.fromMap(filterValue)
+                    } else PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                 }
 
         val andFiltersList = itemFiltersMapOfLists[AbstractFilterInput.AND_KEY]?.let { list ->

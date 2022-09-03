@@ -59,7 +59,7 @@ class CreateVersionHandlerImpl(
         val implInstance = classService.getCastInstance(item.implementation, CreateVersionHook::class.java)
         implInstance?.beforeCreateVersion(itemName, input)
 
-        val preparedData = attributeValueHelper.prepareAttributeValues(item, input.data)
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
         val itemRec = ItemRec(mergedData).apply {
@@ -81,8 +81,8 @@ class CreateVersionHandlerImpl(
         itemRecDao.updateByAttributes(
             item = item,
             attributes = mapOf(
-                CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
-                LOCALE_ATTR_NAME to itemRec.locale
+                ItemRec.CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
+                ItemRec.LOCALE_ATTR_NAME to itemRec.locale
             ),
             itemRec = ItemRec().apply {
                 current = false
@@ -107,8 +107,7 @@ class CreateVersionHandlerImpl(
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-
-        val response = Response(ItemRec(selectData))
+        val response = Response(ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)))
 
         implInstance?.afterCreateVersion(itemName, response)
 
@@ -116,9 +115,6 @@ class CreateVersionHandlerImpl(
     }
 
     companion object {
-        private const val CONFIG_ID_ATTR_NAME = "configId"
-        private const val LOCALE_ATTR_NAME = "locale"
-
         private val logger = LoggerFactory.getLogger(CreateVersionHandlerImpl::class.java)
     }
 }
