@@ -11,7 +11,7 @@ metadata:
   tableName: core_item_templates
   titleAttribute: name
   description: Item Templates
-  icon: BorderOuterOutlined
+  icon: AppstoreAddOutlined
   core: true
   performDdl: false
 spec:
@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      colWidth: 200
       fieldWidth: 300
     spec:
       type: json

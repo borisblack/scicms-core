@@ -123,12 +123,25 @@ class DaoQueryBuilder {
         return query.validate()
     }
 
-    fun buildUpdateByAttributeQuery(item: Item, attrName: String, attrValue: Any?, itemRec: ItemRec, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): UpdateQuery =
-        buildUpdateByAttributesQuery(item, mapOf(attrName to attrValue), itemRec, paramSource, permissionIds)
+    fun buildUpdateByAttributeQuery(
+        item: Item,
+        whereAttrName: String,
+        whereAttrValue: Any?,
+        updateAttributes: Map<String, Any?>,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): UpdateQuery =
+        buildUpdateByAttributesQuery(item, mapOf(whereAttrName to whereAttrValue), updateAttributes, paramSource, permissionIds)
 
-    fun buildUpdateByAttributesQuery(item: Item, attributes: Map<String, Any?>, itemRec: ItemRec, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): UpdateQuery {
+    fun buildUpdateByAttributesQuery(
+        item: Item,
+        whereAttributes: Map<String, Any?>,
+        updateAttributes: Map<String, Any?>,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): UpdateQuery {
         val table = createTable(item)
-        val conditions = attributes.map { (attrName, value) ->
+        val conditions = whereAttributes.map { (attrName, value) ->
             val attribute = item.spec.getAttributeOrThrow(attrName)
             val colName = attribute.columnName ?: attrName.lowercase()
             val attrCol = DbColumn(table, colName, null, null)
@@ -145,7 +158,7 @@ class DaoQueryBuilder {
         val query = UpdateQuery(table)
             .addCondition(ComboCondition(Op.AND, *conditions.toTypedArray()))
 
-        itemRec.forEach { (recAttrName, recValue) ->
+        updateAttributes.forEach { (recAttrName, recValue) ->
             val recAttribute = item.spec.getAttributeOrThrow(recAttrName)
             val recColName = recAttribute.columnName ?: recAttrName.lowercase()
             val column = DbColumn(table, recColName, null, null)

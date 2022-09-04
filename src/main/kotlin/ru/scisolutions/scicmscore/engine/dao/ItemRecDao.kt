@@ -23,11 +23,11 @@ interface ItemRecDao {
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec): Int
 
-    fun updateById(item: Item, id: String, itemRec: ItemRec): Int
+    fun updateById(item: Item, id: String, updateAttributes: Map<String, Any?>): Int
 
-    fun updateByAttribute(item: Item, attrName: String, attrValue: Any?, itemRec: ItemRec): Int
+    fun updateByAttribute(item: Item, whereAttrName: String, whereAttrValue: Any?, updateAttributes: Map<String, Any?>): Int
 
-    fun updateByAttributes(item: Item, attributes: Map<String, Any?>, itemRec: ItemRec): Int
+    fun updateByAttributes(item: Item, whereAttributes: Map<String, Any?>, updateAttributes: Map<String, Any?>): Int
 
     fun deleteById(item: Item, id: String): Int
 

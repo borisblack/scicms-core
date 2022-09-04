@@ -79,6 +79,20 @@ class CreateLocalizationHandlerImpl(
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
+        // TODO: Do in one transaction
+        // Reset current flag
+        if (item.versioned && itemRec.current == true)
+            itemRecDao.updateByAttributes(
+                item = item,
+                whereAttributes = mapOf(
+                    ItemRec.CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
+                    ItemRec.LOCALE_ATTR_NAME to itemRec.locale
+                ),
+                updateAttributes = mapOf(
+                    ItemRec.CURRENT_ATTR_NAME to false
+                )
+            )
+
         itemRecDao.insert(item, itemRec) // insert
 
         // Update relations

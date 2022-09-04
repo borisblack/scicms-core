@@ -77,16 +77,17 @@ class CreateVersionHandlerImpl(
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
+        // TODO: Do in one transaction
         // Reset current flag
         itemRecDao.updateByAttributes(
             item = item,
-            attributes = mapOf(
+            whereAttributes = mapOf(
                 ItemRec.CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
                 ItemRec.LOCALE_ATTR_NAME to itemRec.locale
             ),
-            itemRec = ItemRec().apply {
-                current = false
-            }
+            updateAttributes = mapOf(
+                ItemRec.CURRENT_ATTR_NAME to false
+            )
         )
 
         itemRecDao.insert(item, itemRec) // insert

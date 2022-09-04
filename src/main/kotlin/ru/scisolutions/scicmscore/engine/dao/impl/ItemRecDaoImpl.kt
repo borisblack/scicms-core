@@ -76,15 +76,15 @@ class ItemRecDaoImpl(
         return insert(item, itemRec)
     }
 
-    override fun updateById(item: Item, id: String, itemRec: ItemRec): Int =
-        updateByAttribute(item, ItemRec.ID_ATTR_NAME, id, itemRec)
+    override fun updateById(item: Item, id: String, updateAttributes: Map<String, Any?>): Int =
+        updateByAttribute(item, ItemRec.ID_ATTR_NAME, id, updateAttributes)
 
-    override fun updateByAttribute(item: Item, attrName: String, attrValue: Any?, itemRec: ItemRec): Int =
-        updateByAttributes(item, mapOf(attrName to attrValue), itemRec)
+    override fun updateByAttribute(item: Item, whereAttrName: String, whereAttrValue: Any?, updateAttributes: Map<String, Any?>): Int =
+        updateByAttributes(item, mapOf(whereAttrName to whereAttrValue), updateAttributes)
 
-    override fun updateByAttributes(item: Item, attributes: Map<String, Any?>, itemRec: ItemRec): Int {
+    override fun updateByAttributes(item: Item, whereAttributes: Map<String, Any?>, updateAttributes: Map<String, Any?>): Int {
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildUpdateByAttributesQuery(item, attributes, itemRec, paramSource)
+        val query = daoQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
