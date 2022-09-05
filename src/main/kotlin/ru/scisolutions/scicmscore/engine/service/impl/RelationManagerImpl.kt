@@ -1,12 +1,14 @@
 package ru.scisolutions.scicmscore.engine.service.impl
 
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
+import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
+import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneOwningBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneUnidirectionalRelation
@@ -96,12 +98,19 @@ class RelationManagerImpl(
         )
     }
 
-    private fun getManyToManyAttributeRelation(item: Item, attrName: String, attribute: Attribute): ManyToManyBidirectionalRelation {
+    private fun getManyToManyAttributeRelation(item: Item, attrName: String, attribute: Attribute): ManyToManyRelation {
         val targetItem = itemService.getByName(requireNotNull(attribute.target))
         val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
 
         // Create context
-        return if (attribute.inversedBy != null) { // owning side
+        return if (attribute.mappedBy == null && attribute.inversedBy == null) {
+            ManyToManyUnidirectionalRelation(
+                item = item,
+                attrName = attrName,
+                targetItem = targetItem,
+                intermediateItem = intermediateItem
+            )
+        } else if (attribute.inversedBy != null) { // owning side
             ManyToManyBidirectionalRelation(
                 isOwning = true,
                 owningItem = item,
@@ -119,7 +128,8 @@ class RelationManagerImpl(
                 inversedAttrName = attrName,
                 intermediateItem = intermediateItem
             )
-        } else
+        } else {
             throw IllegalStateException("Illegal state for manyToMany context")
+        }
     }
 }

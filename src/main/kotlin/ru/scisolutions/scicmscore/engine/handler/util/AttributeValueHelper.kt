@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
@@ -245,7 +246,8 @@ class AttributeValueHelper(
         val attribute = item.spec.getAttributeOrThrow(attrName)
 
         return when (attribute.type) {
-            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.sequence, Type.password -> value
+            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.sequence -> value
+            Type.password -> ItemRec.PASSWORD_PLACEHOLDER
             Type.int, Type.long, Type.float, Type.double, Type.decimal -> value
             Type.date -> value
             Type.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value

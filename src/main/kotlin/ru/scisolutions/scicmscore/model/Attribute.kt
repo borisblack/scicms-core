@@ -6,10 +6,11 @@ import java.util.Objects
 class Attribute(
     val type: Type,
     val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
-    val displayName: String? = null,
+    val displayName: String,
     val description: String? = null,
     val enumSet: Set<String>? = null,
     val seqName: String? = null,
+    val confirm: Boolean? = null,
     val relType: RelType? = null,
     val target: String? = null,
     val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
@@ -75,6 +76,7 @@ class Attribute(
             columnName,
             enumSet,
             seqName,
+            confirm,
             target,
             relType?.name,
             intermediate,
@@ -114,6 +116,7 @@ class Attribute(
             columnName == other.columnName &&
             enumSet == other.enumSet &&
             seqName == other.seqName &&
+            confirm == other.confirm &&
             target == other.target &&
             relType == other.relType &&
             intermediate == other.intermediate &&

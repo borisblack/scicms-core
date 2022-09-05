@@ -45,7 +45,6 @@ spec:
       displayName: Access Mask
       description: Access Mask
       required: true
-#      private: true
       minRange: 0
       maxRange: 31
     beginDate:

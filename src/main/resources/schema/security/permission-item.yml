@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      colWidth: 200
       fieldWidth: 300
     access:
       type: relation

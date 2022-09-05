@@ -38,6 +38,7 @@ spec:
       displayName: Description
       description: Description
       length: 250
+      colWidth: 200
     fileSize:
       type: int
       columnName: file_size
@@ -63,6 +64,7 @@ spec:
       required: true
       readOnly: true
       length: 500
+      colWidth: 300
     checksum:
       type: string
       columnName: checksum
@@ -71,4 +73,5 @@ spec:
       required: true
       readOnly: true
       length: 50
+      colWidth: 200
       fieldWidth: 300

@@ -83,5 +83,7 @@ class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : Muta
         const val ID_COL_NAME = "id"
         const val LOCKED_BY_COL_NAME = "locked_by_id"
         const val PERMISSION_COL_NAME = "permission_id"
+
+        const val PASSWORD_PLACEHOLDER = "********"
     }
 }

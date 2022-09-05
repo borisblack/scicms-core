@@ -9,4 +9,5 @@ spec:
       columnName: sort_order
       displayName: Sort Order
       description: Sort Order
+      colWidth: 180
       fieldWidth: 100

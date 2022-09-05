@@ -26,7 +26,7 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
                 Type.uuid -> parseUUID(rs.getString(i))
                 Type.string, Type.enum, Type.sequence, Type.email, Type.media, Type.location, Type.relation -> rs.getString(i)
                 Type.text -> parseText(rs.getObject(i))
-                Type.password -> rs.getString(i)
+                Type.password -> ItemRec.PASSWORD_PLACEHOLDER // rs.getString(i)
                 Type.int -> rs.getInt(i)
                 Type.long -> rs.getLong(i)
                 Type.float -> rs.getFloat(i)

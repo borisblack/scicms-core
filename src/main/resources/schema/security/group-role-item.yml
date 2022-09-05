@@ -30,6 +30,8 @@ spec:
       description: Role
       required: true
       length: 50
+      colWidth: 200
+      fieldWidth: 300
   indexes:
     sec_group_roles_uk:
       columns:

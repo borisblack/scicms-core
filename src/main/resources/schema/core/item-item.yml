@@ -32,6 +32,7 @@ spec:
       description: Display Name
       required: true
       length: 50
+      colWidth: 200
       fieldWidth: 300
     pluralName:
       type: string
@@ -79,6 +80,7 @@ spec:
       columnName: description
       displayName: Description
       description: Description
+      colWidth: 200
       length: 250
     icon:
       type: string

@@ -38,9 +38,6 @@ class RelationValidator(
             requireNotNull(attribute.intermediate) {
                 "The [$attrName] attribute does not have an intermediate field, which is required for the manyToMany relationship"
             }
-
-            if (attribute.inversedBy == null && attribute.mappedBy == null)
-                throw IllegalArgumentException("The [$attrName] attribute does not have an inversedBy or mappedBy field, which is required for the manyToMany relationship")
         }
     }
 

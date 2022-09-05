@@ -30,3 +30,4 @@ spec:
       displayName: Display Name
       description: Display Name
       length: 50
+      colWidth: 200

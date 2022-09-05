@@ -170,6 +170,12 @@ class ItemObjectTypes(
                     )
                     .build()
             )
+            .fieldDefinition(
+                FieldDefinition.newFieldDefinition()
+                    .name("meta")
+                    .type(NonNullType(TypeName("ResponseCollectionMeta")))
+                    .build()
+            )
             .build()
     }
 

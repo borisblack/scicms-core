@@ -86,7 +86,10 @@ class FindAllHandlerImpl(
         val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql, paramSource)
 
         return RelationResponseCollection(
-            data = itemRecList
+            data = itemRecList,
+            meta = ResponseCollectionMeta(
+                pagination = findAllQuery.pagination
+            )
         )
     }
 

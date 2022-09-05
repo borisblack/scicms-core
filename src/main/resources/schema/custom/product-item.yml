@@ -34,12 +34,14 @@ spec:
       displayName: Display Name
       description: Display Name
       length: 50
+      colWidth: 200
     description:
       type: string
       columnName: description
       displayName: Description
       description: Description
       length: 250
+      colWidth: 200
     parts:
       type: relation
       relType: oneToMany

@@ -176,7 +176,7 @@
           "maxLength": 50
         },
         "displayName": {
-          "description": "Display name (optional, null by default)",
+          "description": "Display name (required)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
@@ -202,6 +202,10 @@
             "maxLength": 50
           },
           "minItems": 1
+        },
+        "confirm": {
+          "description": "Password confirmation (in UI) flag (optional, used only for password type)",
+          "type": "boolean"
         },
         "relType": {
           "description": "Relation type (required for relation type)",
@@ -309,7 +313,7 @@
         }
       },
       "additionalProperties": false,
-      "required": ["type"]
+      "required": ["type", "displayName"]
     },
     "Index": {
       "type": "object",

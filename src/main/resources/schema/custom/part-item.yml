@@ -43,6 +43,7 @@ spec:
       displayName: Description
       description: Description
       length: 250
+      colWidth: 200
     product:
       type: relation
       relType: manyToOne
@@ -51,6 +52,7 @@ spec:
       columnName: product_id
       displayName: Product
       description: Product
+      required: true
     partType:
       type: enum
       columnName: part_type
@@ -138,16 +140,6 @@ spec:
 #      columnName: s
 #      displayName: S
 #      description: S
-    e:
-      type: email
-      columnName: e
-      displayName: E
-      description: E
-    txt:
-      type: text
-      columnName: txt
-      displayName: Txt
-      description: Txt
     ownedBy:
       type: relation
       relType: manyToOne
