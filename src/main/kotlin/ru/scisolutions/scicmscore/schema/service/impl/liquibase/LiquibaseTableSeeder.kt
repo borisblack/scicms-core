@@ -155,9 +155,6 @@ class LiquibaseTableSeeder(
             var isNeedRecreateTable = false
             val attributesToUpdate = mutableSetOf<String>()
             for ((attrName, attribute) in item.spec.attributes) {
-                if (attribute.type == AttrType.relation)
-                    continue
-
                 val existingAttribute = existingItemEntity.spec.attributes[attrName]
                 if (existingAttribute == null || attribute.hashCode() == existingAttribute.hashCode())
                     continue
@@ -257,7 +254,10 @@ class LiquibaseTableSeeder(
     }
 
     private fun cannotRecreateAttribute(attrName: String, attribute: Attribute, existingAttribute: Attribute, uniqueIndexColumns: Set<String>): Boolean =
-        attribute.keyed || attribute.required || attribute.unique
+        (attribute.keyed && !existingAttribute.keyed)
+            || attribute.type == AttrType.relation
+            || (attribute.required && !existingAttribute.required)
+            || (attribute.unique && !existingAttribute.unique)
             || (attribute.columnName ?: attrName.lowercase()) in uniqueIndexColumns
             || (attribute.length == null && existingAttribute.length != null)
             || (attribute.length != null && existingAttribute.length != null && attribute.length < existingAttribute.length)

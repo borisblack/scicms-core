@@ -7,16 +7,13 @@ import ru.scisolutions.scicmscore.schema.model.AbstractModel
 
 @Service
 class ModelsApplierImpl(private val appliers: List<ModelApplier>): ModelsApplier {
-    override fun apply(model: AbstractModel) {
-        var isApplied = false
+    override fun apply(model: AbstractModel): String {
         for (applier in appliers) {
             if (applier.supports(model::class.java)) {
-                applier.apply(model)
-                isApplied = true
+                return applier.apply(model)
             }
         }
 
-        if (!isApplied)
-            throw UnsupportedOperationException("Unsupported model [${model.metadata.name}]")
+        throw UnsupportedOperationException("Unsupported model [${model.metadata.name}]")
     }
 }

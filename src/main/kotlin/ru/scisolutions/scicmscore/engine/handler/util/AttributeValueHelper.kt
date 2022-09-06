@@ -128,13 +128,7 @@ class AttributeValueHelper(
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
-            Type.float -> {
-                if (value !is Float)
-                    throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
-
-                validateAttributeNumberValue(item, attrName, attribute, value)
-            }
-            Type.double -> {
+            Type.float, Type.double -> {
                 if (value !is Float && value !is Double)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 

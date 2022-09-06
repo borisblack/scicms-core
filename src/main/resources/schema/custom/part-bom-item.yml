@@ -10,6 +10,7 @@ metadata:
   displayPluralName: Part BOM
   dataSource: main
   tableName: part_bom
+  titleAttribute: target.data.name
   description: Part BOM
   core: false
   performDdl: true
@@ -26,6 +27,7 @@ spec:
       columnName: source_id
       displayName: Source Part
       description: Source Part
+      required: true
       indexed: true
     target:
       type: relation
@@ -34,6 +36,7 @@ spec:
       columnName: target_id
       displayName: Target Part
       description: Target Part
+      required: true
       indexed: true
     quantity:
       type: float
@@ -41,6 +44,7 @@ spec:
       displayName: Quantity
       description: Quantity
       minRange: 0
+      fieldWidth: 140
   indexes:
     _source_target_uk:
       columns:

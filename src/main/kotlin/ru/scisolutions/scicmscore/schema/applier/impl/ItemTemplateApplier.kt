@@ -21,7 +21,7 @@ class ItemTemplateApplier(
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
 
-    override fun apply(model: AbstractModel) {
+    override fun apply(model: AbstractModel): String {
         if (model !is ItemTemplate)
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
 
@@ -60,6 +60,8 @@ class ItemTemplateApplier(
         } else {
             logger.info("Item template [{}] is unchanged. Nothing to update", itemTemplateEntity.name)
         }
+
+        return itemTemplateEntity.id
     }
 
     private fun validateModel(model: ItemTemplate) {

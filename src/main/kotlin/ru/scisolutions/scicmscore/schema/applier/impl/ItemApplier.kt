@@ -18,7 +18,6 @@ import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
 import ru.scisolutions.scicmscore.util.Maps
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
@@ -33,7 +32,7 @@ class ItemApplier(
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java
 
-    override fun apply(model: AbstractModel) {
+    override fun apply(model: AbstractModel): String {
         if (model !is Item)
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
 
@@ -78,6 +77,8 @@ class ItemApplier(
         } else {
             logger.info("Item [{}] is unchanged. Nothing to update", itemEntity.name)
         }
+
+        return itemEntity.id
     }
 
     private fun includeTemplates(item: Item): Item {

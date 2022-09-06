@@ -9,7 +9,7 @@ metadata:
   displayPluralName: Change Notices
   dataSource: main
   tableName: change_notices
-  titleAttribute: displayName
+  titleAttribute: label
   description: Change Notices
   icon: FileExclamationOutlined
   core: false
@@ -39,6 +39,7 @@ spec:
         - ПИ
       displayName: Notice Type
       description: Notice Type
+      required: true
     cause:
       type: string
       columnName: cause

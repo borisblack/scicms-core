@@ -9,5 +9,6 @@ spec:
       columnName: sort_order
       displayName: Sort Order
       description: Sort Order
+      colHidden: true
       colWidth: 180
-      fieldWidth: 100
+      fieldWidth: 140

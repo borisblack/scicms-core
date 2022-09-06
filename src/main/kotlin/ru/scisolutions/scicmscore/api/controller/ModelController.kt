@@ -17,13 +17,15 @@ class ModelController(
     private val reloadIndicator: ReloadIndicator
 ) {
     @PostMapping("/apply")
-    fun apply(@RequestBody model: AbstractModel) {
+    fun apply(@RequestBody model: AbstractModel): String {
         model.checksum = null
 
         schemaLockService.lockOrThrow()
-        modelsApplier.apply(model)
+        val appliedModelId = modelsApplier.apply(model)
         schemaLockService.unlockOrThrow()
 
         reloadIndicator.setNeedReloadOnce(true)
+
+        return appliedModelId
     }
 }
