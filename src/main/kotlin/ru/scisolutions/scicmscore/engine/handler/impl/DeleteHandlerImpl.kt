@@ -20,7 +20,6 @@ import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import java.util.UUID
 
 @Service
 class DeleteHandlerImpl(
@@ -33,16 +32,13 @@ class DeleteHandlerImpl(
     private val aclItemRecDao: ACLItemRecDao
 ) : DeleteHandler {
     override fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
-        if (itemName in disabledItemNames)
-            throw IllegalArgumentException("Item [$itemName] cannot be deleted.")
-
-        if (itemName == REVISION_POLICY_ITEM_NAME && input.id == RevisionPolicy.DEFAULT_REVISION_POLICY_ID)
+        if (itemName == Item.REVISION_POLICY_ITEM_NAME && input.id == RevisionPolicy.DEFAULT_REVISION_POLICY_ID)
             throw IllegalArgumentException("Default revision policy cannot be deleted.")
 
-        if (itemName == LIFECYCLE_ITEM_NAME && input.id == Lifecycle.DEFAULT_LIFECYCLE_ID)
+        if (itemName == Item.LIFECYCLE_ITEM_NAME && input.id == Lifecycle.DEFAULT_LIFECYCLE_ID)
             throw IllegalArgumentException("Default lifecycle cannot be deleted.")
 
-        if (itemName == PERMISSION_ITEM_NAME && input.id == Permission.DEFAULT_PERMISSION_ID)
+        if (itemName == Item.PERMISSION_ITEM_NAME && input.id == Permission.DEFAULT_PERMISSION_ID)
             throw IllegalArgumentException("Default permission cannot be deleted.")
 
         val item = itemService.getByName(itemName)
@@ -52,6 +48,9 @@ class DeleteHandlerImpl(
 
         val itemRec = aclItemRecDao.findByIdForDelete(item, input.id)
             ?: throw AccessDeniedException("You are not allowed to delete item [$itemName] with ID [${input.id}].")
+
+        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && itemRec[ItemRec.CORE_ATTR_NAME] == true))
+            throw IllegalArgumentException("Item [$itemName] cannot be deleted.")
 
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
@@ -89,12 +88,6 @@ class DeleteHandlerImpl(
             itemRecDao.deleteById(item, id)
 
     companion object {
-        private const val ITEM_ITEM_NAME = "item"
-        private const val REVISION_POLICY_ITEM_NAME = "revisionPolicy"
-        private const val LIFECYCLE_ITEM_NAME = "lifecycle"
-        private const val PERMISSION_ITEM_NAME = "permission"
-
-        private val disabledItemNames = setOf(ITEM_ITEM_NAME)
         private val logger = LoggerFactory.getLogger(DeleteHandlerImpl::class.java)
     }
 }

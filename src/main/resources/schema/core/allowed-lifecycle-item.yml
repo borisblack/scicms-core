@@ -11,9 +11,10 @@ metadata:
   dataSource: main
   tableName: core_allowed_lifecycles
   description: Allowed Lifecycles
+  icon: SisternodeOutlined
   core: true
-  performDdl: false
   versioned: false
+  performDdl: false
 spec:
   attributes:
     source:

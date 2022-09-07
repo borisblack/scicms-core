@@ -83,6 +83,14 @@ class Item(
     override fun toString(): String = "Item(name=$name)"
 
     companion object {
+        const val ITEM_TEMPLATE_ITEM_NAME = "itemTemplate"
+        const val ITEM_ITEM_NAME = "item"
+        const val REVISION_POLICY_ITEM_NAME = "revisionPolicy"
+        const val LIFECYCLE_ITEM_NAME = "lifecycle"
+        const val PERMISSION_ITEM_NAME = "permission"
+        const val MEDIA_ITEM_NAME = "media"
+        const val EXAMPLE_ITEM_NAME = "example"
+
         private const val ID_ATTR_NAME = "id"
 
         private val whitespaceRegex = "\\s+".toRegex()

@@ -79,6 +79,7 @@ class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : Muta
         const val UPDATED_AT_ATTR_NAME = "updatedAt"
         const val UPDATED_BY_ATTR_NAME = "updatedBy"
         const val LOCKED_BY_ATTR_NAME = "lockedBy"
+        const val CORE_ATTR_NAME = "lockedBy"
 
         const val ID_COL_NAME = "id"
         const val LOCKED_BY_COL_NAME = "locked_by_id"

@@ -16,6 +16,7 @@ import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 
@@ -40,6 +41,9 @@ class UpdateHandlerImpl(
 
         val prevItemRec = aclItemRecDao.findByIdForWrite(item, input.id)
             ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found")
+
+        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && prevItemRec[ItemRec.CORE_ATTR_NAME] == true))
+            throw IllegalArgumentException("Item [$itemName] cannot be updated.")
 
         if (STATE_ATTR_NAME in input.data)
             throw IllegalArgumentException("State can be changed only by promote action")

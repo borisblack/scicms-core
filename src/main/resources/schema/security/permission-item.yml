@@ -11,8 +11,8 @@ metadata:
   tableName: sec_permissions
   titleAttribute: name
   description: Permission
-  icon: SafetyOutlined
   core: true
+  icon: SafetyCertificateOutlined
   performDdl: false
 spec:
   attributes:

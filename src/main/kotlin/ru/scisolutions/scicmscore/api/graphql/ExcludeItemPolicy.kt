@@ -12,13 +12,9 @@ class ExcludeItemPolicy {
     fun excludeFromUpdateMutation(item: Item) = item.name in excludedFromUpdateMutationItemNames
 
     companion object {
-        private const val EXAMPLE_ITEM_NAME = "example"
-        private const val ITEM_ITEM_NAME = "item"
-        private const val MEDIA_ITEM_NAME = "media"
-
-        private val excludedFromQueryItemNames = setOf(EXAMPLE_ITEM_NAME)
-        private val excludedFromMutationItemNames = excludedFromQueryItemNames.plus(setOf(ITEM_ITEM_NAME))
-        private val excludedFromCreateMutationItemNames = setOf(MEDIA_ITEM_NAME)
+        private val excludedFromQueryItemNames = setOf(Item.EXAMPLE_ITEM_NAME)
+        private val excludedFromMutationItemNames = excludedFromQueryItemNames + setOf(Item.ITEM_TEMPLATE_ITEM_NAME, Item.ITEM_ITEM_NAME)
+        private val excludedFromCreateMutationItemNames = setOf(Item.MEDIA_ITEM_NAME)
         private val excludedFromUpdateMutationItemNames = setOf<String>()
     }
 }

@@ -12,8 +12,9 @@ metadata:
   tableName: sec_allowed_permissions
   description: Allowed Permissions
   core: true
-  performDdl: false
   versioned: false
+  icon: SecurityScanOutlined
+  performDdl: false
 spec:
   attributes:
     source:

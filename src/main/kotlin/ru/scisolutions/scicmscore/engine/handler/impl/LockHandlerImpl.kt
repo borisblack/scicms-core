@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.LockHook
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
@@ -25,8 +26,9 @@ class LockHandlerImpl(
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 
-        if (!aclItemRecDao.existsByIdForWrite(item, id))
-            throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
+        val itemRec = aclItemRecDao.findByIdForWrite(item, id) ?: throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
+        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && itemRec[ItemRec.CORE_ATTR_NAME] == true))
+            throw IllegalArgumentException("Item [$itemName] cannot be locked.")
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, LockHook::class.java)
@@ -34,7 +36,6 @@ class LockHandlerImpl(
 
         val success = itemRecDao.lockById(item, id)
 
-        val itemRec = aclItemRecDao.findByIdForWrite(item, id) as ItemRec
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
@@ -52,8 +53,9 @@ class LockHandlerImpl(
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 
-        if (!itemRecDao.existsById(item, id))
-            throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
+        val itemRec = aclItemRecDao.findByIdForWrite(item, id) ?: throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
+        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && itemRec[ItemRec.CORE_ATTR_NAME] == true))
+            throw IllegalArgumentException("Item [$itemName] cannot be unlocked.")
 
         if (!aclItemRecDao.existsByIdForWrite(item, id))
             throw AccessDeniedException("You are not allowed to unlock item [$itemName] with ID [$id]")
@@ -64,7 +66,6 @@ class LockHandlerImpl(
 
         val success = itemRecDao.unlockById(item, id)
 
-        val itemRec = aclItemRecDao.findByIdForWrite(item, id) as ItemRec
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
