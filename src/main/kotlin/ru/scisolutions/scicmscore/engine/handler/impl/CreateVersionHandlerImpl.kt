@@ -45,7 +45,7 @@ class CreateVersionHandlerImpl(
         if (!item.versioned)
             throw IllegalArgumentException("Item [$itemName] is not versioned")
 
-        if (itemService.findByNameForCreate(item.name) == null)
+        if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create version for item [$itemName]")
 
         val prevItemRec = itemRecDao.findByIdOrThrow(item, input.id)

@@ -42,7 +42,7 @@ class UpdateHandlerImpl(
         val prevItemRec = aclItemRecDao.findByIdForWrite(item, input.id)
             ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found")
 
-        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && prevItemRec[ItemRec.CORE_ATTR_NAME] == true))
+        if ((itemName == Item.ITEM_TEMPLATE_ITEM_NAME || itemName == Item.ITEM_ITEM_NAME) && prevItemRec[ItemRec.CORE_ATTR_NAME] == true)
             throw IllegalArgumentException("Item [$itemName] cannot be updated.")
 
         if (STATE_ATTR_NAME in input.data)

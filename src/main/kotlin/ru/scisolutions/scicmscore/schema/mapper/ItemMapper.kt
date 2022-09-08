@@ -27,6 +27,7 @@ class ItemMapper {
         target.dataSource = metadata.dataSource
         target.tableName = metadata.tableName
         target.titleAttribute = metadata.titleAttribute
+        target.includeTemplates = source.includeTemplates
         target.description = metadata.description
         target.icon = metadata.icon
         target.core = metadata.core

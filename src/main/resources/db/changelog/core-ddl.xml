@@ -136,6 +136,7 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_item_templates_name_uk"/>
             </column>
+            <column name="core" type="tinyint"/>
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>
@@ -215,6 +216,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="title_attribute" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="include_templates" type="text" defaultValue="[]">
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(250)"/>

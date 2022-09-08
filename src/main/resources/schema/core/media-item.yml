@@ -1,7 +1,7 @@
 coreVersion: v1
 kind: Item
 includeTemplates:
-  - defaultItemTemplate
+  - default
 metadata:
   name: media
   displayName: Media

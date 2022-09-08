@@ -25,7 +25,7 @@ class MediaServiceImpl(private val mediaRepository: MediaRepository) :
     override fun findByIdForDelete(id: String): Media? = findByIdFor(id, Mask.DELETE)
 
     private fun findByIdFor(id: String, accessMask: Mask): Media? {
-        val authentication = SecurityContextHolder.getContext().authentication
+        val authentication = SecurityContextHolder.getContext().authentication ?: return null
         return mediaRepository.findByIdWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 

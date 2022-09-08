@@ -43,7 +43,7 @@ class CreateLocalizationHandlerImpl(
         if (!item.localized)
             throw IllegalArgumentException("Item [$itemName] is not localized")
 
-        if (itemService.findByNameForCreate(item.name) == null)
+        if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create localization for item [$itemName]")
 
         if (MAJOR_REV_ATTR_NAME in input.data)

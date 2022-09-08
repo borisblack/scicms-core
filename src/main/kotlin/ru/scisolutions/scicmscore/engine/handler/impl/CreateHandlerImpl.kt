@@ -42,7 +42,7 @@ class CreateHandlerImpl(
             throw IllegalArgumentException("Item [$itemName] cannot be created.")
 
         val item = itemService.getByName(itemName)
-        if (itemService.findByNameForCreate(item.name) == null)
+        if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
 
         // Get and call hook

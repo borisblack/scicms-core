@@ -1,9 +1,13 @@
 package ru.scisolutions.scicmscore.util
 
 object Maps {
-    fun <T> merge(source: Map<String, T>, target: Map<String, T>): Map<String, T> {
-        val merged = target.toMutableMap()
-        merged.putAll(source)
+    fun <T> merge(from: Map<String, T>, to: Map<String, T>, replace: Boolean = true): Map<String, T> {
+        val merged = to.toMutableMap()
+        if (replace) {
+            merged.putAll(from)
+        } else {
+            from.forEach { (k, v) -> merged.putIfAbsent(k, v) }
+        }
 
         return merged
     }

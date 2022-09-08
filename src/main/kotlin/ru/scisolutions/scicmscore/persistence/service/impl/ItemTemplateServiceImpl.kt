@@ -2,6 +2,8 @@ package ru.scisolutions.scicmscore.persistence.service.impl
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -9,6 +11,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
 import ru.scisolutions.scicmscore.persistence.repository.ItemTemplateRepository
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
+import ru.scisolutions.scicmscore.util.ACL
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -44,6 +47,14 @@ class ItemTemplateServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getByName(name: String): ItemTemplate = findByName(name) ?: throw IllegalArgumentException("Item Template [$name] not found")
+
+    @Transactional(readOnly = true)
+    override fun findByNameForWrite(name: String): ItemTemplate? = findByNameWithACL(name, ACL.Mask.WRITE)
+
+    private fun findByNameWithACL(name: String, accessMask: ACL.Mask): ItemTemplate? {
+        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        return itemTemplateRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+    }
 
     override fun save(itemTemplate: ItemTemplate): ItemTemplate {
         val savedItemTemplate = itemTemplateRepository.save(itemTemplate)

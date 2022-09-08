@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.persistence.entity
 import org.hibernate.annotations.Type
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
+import ru.scisolutions.scicmscore.persistence.converter.LinkedHashSetConverter
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
@@ -31,6 +32,9 @@ class Item(
 
     @Column(name = "title_attribute", nullable = false)
     var titleAttribute: String = ID_ATTR_NAME,
+
+    @Convert(converter = LinkedHashSetConverter::class)
+    var includeTemplates: Set<String> = LinkedHashSet(listOf(ItemTemplate.DEFAULT_ITEM_TEMPLATE_NAME)),
 
     var description: String? = null,
 

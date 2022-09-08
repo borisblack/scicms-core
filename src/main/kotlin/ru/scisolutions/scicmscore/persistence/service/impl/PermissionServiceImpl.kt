@@ -45,7 +45,7 @@ class PermissionServiceImpl(
 
     @Transactional(readOnly = true)
     override fun findIdsFor(accessMask: Mask): Set<String> {
-        val authentication = SecurityContextHolder.getContext().authentication
+        val authentication = SecurityContextHolder.getContext().authentication ?: return emptySet()
         return permissionIdsCache.get("${authentication.name}#${accessMask.name}") {
             permissionRepository.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
         }
@@ -67,7 +67,7 @@ class PermissionServiceImpl(
     override fun findAllForAdministration(): List<Permission> = findAllFor(Mask.ADMINISTRATION)
 
     private fun findAllFor(accessMask: Mask): List<Permission> {
-        val authentication = SecurityContextHolder.getContext().authentication
+        val authentication = SecurityContextHolder.getContext().authentication ?: return emptyList()
         return permissionRepository.findAllFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 }

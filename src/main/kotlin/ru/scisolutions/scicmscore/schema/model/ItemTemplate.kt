@@ -4,8 +4,8 @@ import ru.scisolutions.scicmscore.model.ItemSpec
 import java.util.Objects
 
 class ItemTemplate(
-    coreVersion: String,
-    metadata: BaseMetadata,
+    override val coreVersion: String,
+    override val metadata: ItemTemplateMetadata,
     val spec: ItemSpec
 ) : AbstractModel(coreVersion, metadata) {
     override fun equals(other: Any?): Boolean {

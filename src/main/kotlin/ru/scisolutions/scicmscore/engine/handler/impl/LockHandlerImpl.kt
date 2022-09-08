@@ -27,7 +27,7 @@ class LockHandlerImpl(
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 
         val itemRec = aclItemRecDao.findByIdForWrite(item, id) ?: throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
-        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && itemRec[ItemRec.CORE_ATTR_NAME] == true))
+        if ((itemName == Item.ITEM_TEMPLATE_ITEM_NAME || itemName == Item.ITEM_ITEM_NAME) && itemRec[ItemRec.CORE_ATTR_NAME] == true)
             throw IllegalArgumentException("Item [$itemName] cannot be locked.")
 
         // Get and call hook
@@ -54,7 +54,7 @@ class LockHandlerImpl(
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 
         val itemRec = aclItemRecDao.findByIdForWrite(item, id) ?: throw IllegalArgumentException("Item [$itemName] with ID [$id] not found")
-        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && itemRec[ItemRec.CORE_ATTR_NAME] == true))
+        if ((itemName == Item.ITEM_TEMPLATE_ITEM_NAME || itemName == Item.ITEM_ITEM_NAME) && itemRec[ItemRec.CORE_ATTR_NAME] == true)
             throw IllegalArgumentException("Item [$itemName] cannot be unlocked.")
 
         if (!aclItemRecDao.existsByIdForWrite(item, id))

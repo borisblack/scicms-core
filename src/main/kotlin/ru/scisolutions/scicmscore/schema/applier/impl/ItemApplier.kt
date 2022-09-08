@@ -45,9 +45,9 @@ class ItemApplier(
         if (itemEntity == null) {
             // schemaLockService.lockOrThrow()
 
-            if (item.checksum == null && itemService.findByNameForCreate(itemName) == null) {
+            if (item.checksum == null && !itemService.canCreate(ItemEntity.ITEM_ITEM_NAME)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("You has no CREATE permission for [$itemName] item")
+                throw AccessDeniedException("You has no CREATE permission for [${ItemEntity.ITEM_ITEM_NAME}] item")
             }
 
             tableSeeder.create(item) // create table
@@ -62,7 +62,7 @@ class ItemApplier(
         } else if (isChanged(item, itemEntity)) {
             // schemaLockService.lockOrThrow()
 
-            if (item.checksum == null && itemService.findByNameForWrite(itemName) == null) {
+            if (item.checksum == null && (itemEntity.core || itemService.findByNameForWrite(itemName) == null)) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You has no WRITE permission for [$itemName] item")
             }
@@ -95,12 +95,12 @@ class ItemApplier(
         metadata = item.metadata,
         checksum = item.checksum,
         includeTemplates = item.includeTemplates,
-        spec = mergeSpec(item.spec, itemTemplateEntity.spec)
+        spec = mergeSpec(itemTemplateEntity.spec, item.spec)
     )
 
-    private fun mergeSpec(source: ItemSpec, target: ItemSpec) = ItemSpec(
-        attributes = Maps.merge(source.attributes, target.attributes),
-        indexes = Maps.merge(source.indexes, target.indexes)
+    private fun mergeSpec(from: ItemSpec, to: ItemSpec) = ItemSpec(
+        attributes = Maps.merge(from.attributes, to.attributes),
+        indexes = Maps.merge(from.indexes, to.indexes)
     )
 
     private fun validateModel(model: Item) {

@@ -18,6 +18,7 @@ import ru.scisolutions.scicmscore.config.props.I18nProps
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.config.props.VersioningProps
 import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.Index
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
@@ -155,6 +156,9 @@ class LiquibaseTableSeeder(
             var isNeedRecreateTable = false
             val attributesToUpdate = mutableSetOf<String>()
             for ((attrName, attribute) in item.spec.attributes) {
+                if (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany))
+                    continue
+
                 val existingAttribute = existingItemEntity.spec.attributes[attrName]
                 if (existingAttribute == null || attribute.hashCode() == existingAttribute.hashCode())
                     continue
@@ -255,7 +259,7 @@ class LiquibaseTableSeeder(
 
     private fun cannotRecreateAttribute(attrName: String, attribute: Attribute, existingAttribute: Attribute, uniqueIndexColumns: Set<String>): Boolean =
         (attribute.keyed && !existingAttribute.keyed)
-            || attribute.type == AttrType.relation
+            || (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne))
             || (attribute.required && !existingAttribute.required)
             || (attribute.unique && !existingAttribute.unique)
             || (attribute.columnName ?: attrName.lowercase()) in uniqueIndexColumns

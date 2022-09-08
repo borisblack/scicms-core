@@ -66,7 +66,7 @@ class AddRelationHelper(
 
     private fun updateOrInsertWithDefaults(item: Item, id: String, itemRec: ItemRec): Int {
         if (item.versioned) {
-            if (itemService.findByNameForCreate(item.name) == null) {
+            if (!itemService.canCreate(item.name)) {
                 logger.warn("Create operation disabled for item [${item.name}].")
                 return 0
             }
@@ -86,7 +86,7 @@ class AddRelationHelper(
     }
 
     private fun addManyToManyRelation(intermediateItem: Item, sourceId: String, targetId: String) {
-        if (itemService.findByNameForCreate(intermediateItem.name) == null) {
+        if (!itemService.canCreate(intermediateItem.name)) {
             logger.warn("Create operation disabled for item [${intermediateItem.name}].")
             return
         }

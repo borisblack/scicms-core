@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.util
 
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 
@@ -32,6 +33,8 @@ object ACL {
 
     fun getPermissionIdsStatement(accessMask: Mask): String {
         val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
         val username = authentication.name
         val authorities = authentication.authorities
         val roles = AuthorityUtils.authorityListToSet(authorities)

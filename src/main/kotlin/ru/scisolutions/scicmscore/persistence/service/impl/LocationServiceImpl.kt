@@ -24,7 +24,7 @@ class LocationServiceImpl(private val locationRepository: LocationRepository) :
     override fun findByIdForDelete(id: String): Location? = findByIdFor(id, Mask.DELETE)
 
     private fun findByIdFor(id: String, accessMask: Mask): Location? {
-        val authentication = SecurityContextHolder.getContext().authentication
+        val authentication = SecurityContextHolder.getContext().authentication ?: return null
         return locationRepository.findByIdWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 

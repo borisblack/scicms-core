@@ -23,9 +23,6 @@ class ACLItemRecDaoImpl(
     override fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.WRITE)
 
-    override fun findByIdForCreate(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
-        findByIdFor(item, id, selectAttrNames, Mask.CREATE)
-
     override fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Mask.DELETE)
 
@@ -42,8 +39,6 @@ class ACLItemRecDaoImpl(
     override fun existsByIdForRead(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.READ)
 
     override fun existsByIdForWrite(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.WRITE)
-
-    override fun existsByIdForCreate(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.CREATE)
 
     override fun existsByIdForDelete(item: Item, id: String): Boolean = existsByIdFor(item, id, Mask.DELETE)
 

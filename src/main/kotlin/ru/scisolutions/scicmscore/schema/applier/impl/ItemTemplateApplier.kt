@@ -5,18 +5,21 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemTemplateMapper
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.schema.model.ItemTemplate
+import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate as ItemTemplateEntity
 
 @Service
 class ItemTemplateApplier(
     private val schemaProps: SchemaProps,
     private val itemTemplateService: ItemTemplateService,
+    private val itemService: ItemService,
     private val schemaLockService: SchemaLockService,
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
@@ -27,18 +30,18 @@ class ItemTemplateApplier(
 
         validateModel(model)
 
-        val name = model.metadata.name
-        var itemTemplateEntity = itemTemplateService.findByName(name)
+        val itemTemplateName = model.metadata.name
+        var itemTemplateEntity = itemTemplateService.findByName(itemTemplateName)
         if (itemTemplateEntity == null) {
             // schemaLockService.lockOrThrow()
 
-            if (model.checksum == null) {
+            if (model.checksum == null && !itemService.canCreate(ItemEntity.ITEM_TEMPLATE_ITEM_NAME)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("Item template can only be created from file")
+                throw AccessDeniedException("You has no CREATE permission for [${ItemEntity.ITEM_TEMPLATE_ITEM_NAME}] item")
             }
 
             // Add item template
-            logger.info("Creating the item template [{}]", name)
+            logger.info("Creating the item template [{}]", itemTemplateName)
             itemTemplateEntity = itemTemplateMapper.map(model)
 
             itemTemplateService.save(itemTemplateEntity)
@@ -47,9 +50,9 @@ class ItemTemplateApplier(
         } else if (isChanged(model, itemTemplateEntity)) {
             // schemaLockService.lockOrThrow()
 
-            if (model.checksum == null) {
+            if (model.checksum == null && (itemTemplateEntity.core || itemService.findByNameForWrite(itemTemplateName) == null)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("Item template can only be updated from file")
+                throw AccessDeniedException("You cannot update [$itemTemplateName] item template")
             }
 
             logger.info("Updating the item template [{}]", itemTemplateEntity.name)

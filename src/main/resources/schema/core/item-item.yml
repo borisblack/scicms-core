@@ -1,7 +1,7 @@
 coreVersion: v1
 kind: Item
 includeTemplates:
-  - defaultItemTemplate
+  - default
 metadata:
   name: item
   displayName: Item
@@ -51,15 +51,6 @@ spec:
       length: 50
       colWidth: 170
       fieldWidth: 300
-    titleAttribute:
-      type: string
-      columnName: title_attribute
-      displayName: Title Attribute Name
-      description: Title Attribute Name
-      required: true
-      length: 50
-      colWidth: 180
-      fieldWidth: 300
     dataSource:
       type: string
       columnName: data_source
@@ -75,6 +66,24 @@ spec:
       description: Table Name
       length: 50
       fieldWidth: 300
+    titleAttribute:
+      type: string
+      columnName: title_attribute
+      displayName: Title Attribute Name
+      description: Title Attribute Name
+      required: true
+      length: 50
+      colWidth: 180
+      fieldWidth: 300
+    includeTemplates:
+      type: array
+      columnName: include_templates
+      displayName: Included Templates
+      description: Included Templates
+      required: true
+      defaultValue: '[]'
+      colHidden: true
+      fieldHidden: true
     description:
       type: string
       columnName: description

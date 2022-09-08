@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import org.hibernate.annotations.Type
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
 import javax.persistence.Column
@@ -13,6 +14,10 @@ class ItemTemplate(
     @Column(nullable = false)
     var name: String,
 
+    @Column(columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    var core: Boolean = false,
+
     @Convert(converter = ItemSpecConverter::class)
     var spec: ItemSpec = ItemSpec(),
 
@@ -20,4 +25,8 @@ class ItemTemplate(
     var hash: String? = null
 ) : AbstractEntity() {
     override fun toString(): String = "ItemTemplate(name=$name)"
+
+    companion object {
+        const val DEFAULT_ITEM_TEMPLATE_NAME = "default"
+    }
 }

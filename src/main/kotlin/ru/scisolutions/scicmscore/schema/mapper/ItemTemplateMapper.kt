@@ -20,6 +20,7 @@ class ItemTemplateMapper {
         val metadata = source.metadata
         
         target.name = metadata.name
+        target.core = metadata.core
         target.lifecycleId = Lifecycle.DEFAULT_LIFECYCLE_ID
         target.permissionId = Permission.DEFAULT_PERMISSION_ID
         target.spec = source.spec

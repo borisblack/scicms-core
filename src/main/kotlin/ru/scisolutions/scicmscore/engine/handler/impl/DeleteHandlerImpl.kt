@@ -49,7 +49,7 @@ class DeleteHandlerImpl(
         val itemRec = aclItemRecDao.findByIdForDelete(item, input.id)
             ?: throw AccessDeniedException("You are not allowed to delete item [$itemName] with ID [${input.id}].")
 
-        if (itemName == Item.ITEM_TEMPLATE_ITEM_NAME || (itemName == Item.ITEM_ITEM_NAME && itemRec[ItemRec.CORE_ATTR_NAME] == true))
+        if ((itemName == Item.ITEM_TEMPLATE_ITEM_NAME || itemName == Item.ITEM_ITEM_NAME) && itemRec[ItemRec.CORE_ATTR_NAME] == true)
             throw IllegalArgumentException("Item [$itemName] cannot be deleted.")
 
         if (!item.notLockable)
