@@ -43,20 +43,22 @@ spec:
       type: string
       columnName: major_rev
       displayName: Major Rev
-      description: Major Rev
+      description: Major Revision
       indexed: true
       defaultValue: A
       length: 50
       colHidden: true
-      fieldWidth: 100
+      colWidth: 160
+      fieldWidth: 120
     minorRev:
       type: string
       columnName: minor_rev
       displayName: Minor Rev
-      description: Minor Rev
+      description: Minor Revision
       length: 50
       colHidden: true
-      fieldWidth: 100
+      colWidth: 160
+      fieldWidth: 120
     current:
       type: bool
       columnName: is_current
@@ -150,4 +152,5 @@ spec:
       description: Locked By
       readOnly: true
       colHidden: true
+      colWidth: 160
       fieldWidth: 400

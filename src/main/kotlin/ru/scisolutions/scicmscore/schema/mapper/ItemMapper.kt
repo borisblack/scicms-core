@@ -5,19 +5,19 @@ import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 class ItemMapper {
-    fun map(source: Item): ItemEntity {
+    fun mapToEntity(source: Item): ItemEntity {
         val metadata = source.metadata
         val target = ItemEntity(
             name = metadata.name,
             pluralName = metadata.pluralName,
             dataSource = metadata.dataSource
         )
-        copy(source, target)
+        copyToEntity(source, target)
 
         return target
     }
 
-    fun copy(source: Item, target: ItemEntity) {
+    fun copyToEntity(source: Item, target: ItemEntity) {
         val metadata = source.metadata
         
         target.name = metadata.name

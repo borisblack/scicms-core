@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      colWidth: 150
       fieldWidth: 300
     displayName:
       type: string
@@ -41,6 +42,7 @@ spec:
       description: Plural Name
       required: true
       length: 50
+      colWidth: 150
       fieldWidth: 300
     displayPluralName:
       type: string
@@ -49,7 +51,7 @@ spec:
       description: Display Plural Name
       required: true
       length: 50
-      colWidth: 170
+      colWidth: 220
       fieldWidth: 300
     dataSource:
       type: string
@@ -58,6 +60,7 @@ spec:
       description: Data Source
       required: true
       length: 50
+      colWidth: 150
       fieldWidth: 300
     tableName:
       type: string
@@ -69,11 +72,11 @@ spec:
     titleAttribute:
       type: string
       columnName: title_attribute
-      displayName: Title Attribute Name
+      displayName: Title Attribute
       description: Title Attribute Name
       required: true
       length: 50
-      colWidth: 180
+      colWidth: 160
       fieldWidth: 300
     includeTemplates:
       type: array
@@ -83,6 +86,7 @@ spec:
       required: true
       defaultValue: '[]'
       colHidden: true
+      colWidth: 180
       fieldHidden: true
     description:
       type: string
@@ -102,34 +106,36 @@ spec:
       type: bool
       columnName: core
       displayName: Core
-      description: Core
+      description: Core flag
     performDdl:
       type: bool
       columnName: perform_ddl
-      displayName: Perform DDL Create
-      description: Perform DDL Create
-      colWidth: 170
+      displayName: Perform DDL
+      description: Perform DDL operations
+      colWidth: 150
     notLockable:
       type: bool
       columnName: not_lockable
       displayName: Not Lockable
       description: Not Lockable
+      colWidth: 160
     localized:
       type: bool
       columnName: localized
       displayName: Localized
-      description: Localized
+      description: Localized flag
     versioned:
       type: bool
       columnName: versioned
       displayName: Versioned
-      description: Versioned
+      description: Versioned flag
+      colWidth: 160
     manualVersioning:
       type: bool
       columnName: manual_versioning
       displayName: Manual Versioning
-      description: Manual Versioning
-      colWidth: 160
+      description: Manual Versioning flag
+      colWidth: 210
     revisionPolicy:
       type: relation
       relType: manyToOne
@@ -137,6 +143,7 @@ spec:
       columnName: revision_policy_id
       displayName: Revision Policy
       description: Revision Policy
+      colWidth: 180
       fieldWidth: 400
     implementation:
       type: string

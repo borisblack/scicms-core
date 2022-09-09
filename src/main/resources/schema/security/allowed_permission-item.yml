@@ -34,6 +34,7 @@ spec:
       displayName: Target Permission
       description: Target Permission
       indexed: true
+      colWidth: 160
   indexes:
     sec_allowed_permissions_source_target_uk:
       columns:

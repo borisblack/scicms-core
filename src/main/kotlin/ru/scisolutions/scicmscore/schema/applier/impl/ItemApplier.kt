@@ -54,7 +54,7 @@ class ItemApplier(
 
             // Add item
             logger.info("Creating the item [{}]", itemName)
-            itemEntity = itemMapper.map(item)
+            itemEntity = itemMapper.mapToEntity(item)
 
             itemService.save(itemEntity)
 
@@ -70,7 +70,7 @@ class ItemApplier(
             tableSeeder.update(item, itemEntity) // update table
 
             logger.info("Updating the item [{}]", itemEntity.name)
-            itemMapper.copy(item, itemEntity)
+            itemMapper.copyToEntity(item, itemEntity)
             itemService.save(itemEntity)
 
             // schemaLockService.unlockOrThrow()
