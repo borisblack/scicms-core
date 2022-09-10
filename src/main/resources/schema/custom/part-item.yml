@@ -129,17 +129,19 @@ spec:
       columnName: m
       displayName: M
       description: M
+    # TODO: Remove after testing
     l:
       type: location
       columnName: l
       displayName: Loc
       description: Loc
-#    s:
-#      type: sequence
-#      seqName: mainSeq
-#      columnName: s
-#      displayName: S
-#      description: S
+    # TODO: Remove after testing
+    s:
+      type: sequence
+      seqName: mainSeq
+      columnName: s
+      displayName: S
+      description: S
     ownedBy:
       type: relation
       relType: manyToOne

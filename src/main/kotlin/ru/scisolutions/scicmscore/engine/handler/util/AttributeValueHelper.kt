@@ -46,6 +46,9 @@ class AttributeValueHelper(
     fun prepareValueToSave(item: Item, attrName: String, value: Any?): Any? {
         val attribute = item.spec.getAttributeOrThrow(attrName)
         if (value == null) {
+            if (attribute.defaultValue !== null)
+                return attribute.defaultValue
+
             if (attribute.required)
                 throw IllegalArgumentException("Item [${item.name}], attribute [${attrName}]: Value is required")
 

@@ -17,13 +17,13 @@ class Sequence(
     var suffix: String?,
 
     @Column(name = "initial_value", nullable = false)
-    var initialValue: Int,
+    var initialValue: Int = 0,
 
     @Column(name = "current_value")
     var currentValue: Int? = initialValue,
 
     @Column(nullable = false)
-    var step: Int,
+    var step: Int = 1,
 
     @Column(name = "pad_with")
     var padWith: Char?,

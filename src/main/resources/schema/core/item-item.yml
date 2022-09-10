@@ -87,7 +87,7 @@ spec:
       defaultValue: '[]'
       colHidden: true
       colWidth: 180
-      fieldHidden: true
+      fieldWidth: 200
     description:
       type: string
       columnName: description
