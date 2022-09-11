@@ -11,7 +11,7 @@ data class ItemMetadata(
     val description: String? = null,
     val icon: String? = null,
     val core: Boolean = false,
-    val performDdl: Boolean = true,
+    val performDdl: Boolean = false,
     val versioned: Boolean = false,
     val manualVersioning: Boolean = false,
     val localized: Boolean = false,

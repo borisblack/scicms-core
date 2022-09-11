@@ -33,6 +33,7 @@ class CopyRelationHelper(
 
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, relAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {
+                // TODO: Use pagination to avoid OOM error
                 val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.owningItem, relation.owningAttrName, prevItemRecId)
                 prevRelItemRecs.forEach {
                     it[relation.owningAttrName] = itemRecId
@@ -42,6 +43,7 @@ class CopyRelationHelper(
             is ManyToManyRelation -> {
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
+                        // TODO: Use pagination to avoid OOM error
                         val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, prevItemRecId)
                         prevRelItemRecs.forEach {
                             it[INTERMEDIATE_SOURCE_ATTR_NAME] = itemRecId
@@ -50,12 +52,14 @@ class CopyRelationHelper(
                     }
                     is ManyToManyBidirectionalRelation -> {
                         if (relation.isOwning) {
+                            // TODO: Use pagination to avoid OOM error
                             val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.intermediateItem, INTERMEDIATE_SOURCE_ATTR_NAME, prevItemRecId)
                             prevRelItemRecs.forEach {
                                 it[INTERMEDIATE_SOURCE_ATTR_NAME] = itemRecId
                                 insertWithDefaults(relation.intermediateItem, it)
                             }
                         } else {
+                            // TODO: Use pagination to avoid OOM error
                             val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.intermediateItem, INTERMEDIATE_TARGET_ATTR_NAME, prevItemRecId)
                             prevRelItemRecs.forEach {
                                 it[INTERMEDIATE_TARGET_ATTR_NAME] = itemRecId

@@ -73,3 +73,10 @@ spec:
       displayName: Checksum
       description: Checksum
       length: 50
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      private: true
+      length: 50
