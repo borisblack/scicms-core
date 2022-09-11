@@ -66,6 +66,7 @@ spec:
       required: true
       defaultValue: '{}'
       colHidden: true
+      colWidth: 300
       fieldHidden: true
     checksum:
       type: string
