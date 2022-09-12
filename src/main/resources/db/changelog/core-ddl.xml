@@ -218,7 +218,7 @@
             <column name="title_attribute" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="include_templates" type="text" defaultValue="[]">
+            <column name="include_templates" type="text" defaultValue='["default"]'>
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(250)"/>

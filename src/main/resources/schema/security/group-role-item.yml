@@ -23,6 +23,7 @@ spec:
       columnName: group_id
       displayName: Group
       description: Group
+      required: true
     role:
       type: string
       columnName: role

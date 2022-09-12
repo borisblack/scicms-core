@@ -1,0 +1,54 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: document
+  displayName: Document
+  pluralName: documents
+  displayPluralName: Documents
+  dataSource: main
+  tableName: documents
+  titleAttribute: name
+  description: Documents
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    part:
+      type: relation
+      relType: manyToOne
+      target: part
+      inversedBy: documents
+      columnName: part_id
+      displayName: Part
+      description: Part
+      required: true
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      colWidth: 200
+      length: 250
+    media:
+      type: media
+      columnName: media
+      displayName: Media
+      description: Media
+      required: true
+  indexes:
+    documents_part_name_uk:
+      columns:
+        - part_id
+        - name
+      unique: true

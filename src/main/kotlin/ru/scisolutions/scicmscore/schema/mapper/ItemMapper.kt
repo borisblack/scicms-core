@@ -1,7 +1,8 @@
 package ru.scisolutions.scicmscore.schema.mapper
 
-import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.persistence.entity.Permission
+import ru.scisolutions.scicmscore.schema.model.Item
+import ru.scisolutions.scicmscore.schema.model.ItemMetadata
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 class ItemMapper {
@@ -21,12 +22,12 @@ class ItemMapper {
         val metadata = source.metadata
         
         target.name = metadata.name
-        target.displayName = metadata.displayName
+        target.displayName = metadata.name.ifBlank { metadata.name }
         target.pluralName = metadata.pluralName
-        target.displayPluralName = metadata.displayPluralName
-        target.dataSource = metadata.dataSource
-        target.tableName = metadata.tableName
-        target.titleAttribute = metadata.titleAttribute
+        target.displayPluralName = metadata.displayPluralName.ifBlank { metadata.pluralName }
+        target.dataSource = metadata.dataSource.ifBlank { ItemMetadata.MAIN_DATA_SOURCE }
+        target.tableName = metadata.tableName.ifBlank { metadata.pluralName.lowercase() }
+        target.titleAttribute = metadata.titleAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }
         target.includeTemplates = source.includeTemplates
         target.description = metadata.description
         target.icon = metadata.icon

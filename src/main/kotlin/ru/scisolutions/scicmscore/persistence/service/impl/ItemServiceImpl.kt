@@ -55,8 +55,15 @@ class ItemServiceImpl(
     @Transactional(readOnly = true)
     override fun findByNameForWrite(name: String): Item? = findByNameWithACL(name, Mask.WRITE)
 
+    override fun findByIdForDelete(id: String): Item? = findByIdWithACL(id, Mask.DELETE)
+
     @Transactional(readOnly = true)
     override fun canCreate(name: String): Boolean = findByNameWithACL(name, Mask.CREATE) != null
+
+    private fun findByIdWithACL(id: String, accessMask: Mask): Item? {
+        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        return itemRepository.findByIdWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+    }
 
     private fun findByNameWithACL(name: String, accessMask: Mask): Item? {
         val authentication = SecurityContextHolder.getContext().authentication ?: return null

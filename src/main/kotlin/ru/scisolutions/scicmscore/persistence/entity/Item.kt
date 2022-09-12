@@ -46,7 +46,7 @@ class Item(
 
     @Column(name = "perform_ddl", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    var performDdl: Boolean = false,
+    var performDdl: Boolean = true,
 
     @Column(name = "versioned", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")

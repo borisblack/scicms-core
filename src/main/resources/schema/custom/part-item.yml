@@ -124,12 +124,6 @@ spec:
       displayName: T
       description: T
     # TODO: Remove after testing
-    m:
-      type: media
-      columnName: m
-      displayName: M
-      description: M
-    # TODO: Remove after testing
     l:
       type: location
       columnName: l
@@ -179,3 +173,10 @@ spec:
       mappedBy: source
       displayName: Part BOM
       description: Part BOM
+    documents:
+      type: relation
+      relType: oneToMany
+      target: document
+      mappedBy: part
+      displayName: Documents
+      description: Documents

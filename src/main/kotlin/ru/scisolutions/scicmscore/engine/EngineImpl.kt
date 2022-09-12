@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.handler.CreateHandler
@@ -34,6 +35,9 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.model.UserInfo
+import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.schema.service.TableSeeder
 
 /**
  * General facade for all operations with data
@@ -52,7 +56,9 @@ class EngineImpl(
     private val purgeHandler: PurgeHandler,
     private val lockHandler: LockHandler,
     private val promoteHandler: PromoteHandler,
-    private val customMethodHandler: CustomMethodHandler
+    private val customMethodHandler: CustomMethodHandler,
+    private val itemService: ItemService,
+    private val tableSeeder: TableSeeder
 ) : Engine {
     override fun me(): UserInfo? = userHandler.me()
 
@@ -129,10 +135,21 @@ class EngineImpl(
         updateHandler.update(itemName, input, selectAttrNames)
 
     override fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
+        val itemToDelete =
+            if (itemName == Item.ITEM_ITEM_NAME)
+                itemService.findByIdForDelete(input.id)
+                    ?: throw AccessDeniedException("You are not allowed to delete item with id [${input.id}].")
+            else null
+
         if (itemName == MEDIA_ITEM_NAME)
             mediaHandler.deleteById(input.id)
 
-        return deleteHandler.delete(itemName, input, selectAttrNames)
+        val res = deleteHandler.delete(itemName, input, selectAttrNames)
+
+        if (itemToDelete != null)
+            tableSeeder.delete(itemToDelete)
+
+        return res
     }
 
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =

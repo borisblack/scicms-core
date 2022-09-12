@@ -15,6 +15,8 @@ interface ItemService {
 
     fun findByNameForWrite(name: String): Item?
 
+    fun findByIdForDelete(id: String): Item?
+
     fun canCreate(name: String): Boolean
 
     fun save(item: Item): Item

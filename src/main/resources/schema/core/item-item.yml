@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      pattern: '^[a-z]\w*$'
       colWidth: 150
       fieldWidth: 300
     displayName:
@@ -31,7 +32,6 @@ spec:
       columnName: display_name
       displayName: Display Name
       description: Display Name
-      required: true
       length: 50
       colWidth: 200
       fieldWidth: 300
@@ -42,6 +42,7 @@ spec:
       description: Plural Name
       required: true
       length: 50
+      pattern: '^[a-z]\w*$'
       colWidth: 150
       fieldWidth: 300
     displayPluralName:
@@ -49,7 +50,6 @@ spec:
       columnName: display_plural_name
       displayName: Display Plural Name
       description: Display Plural Name
-      required: true
       length: 50
       colWidth: 220
       fieldWidth: 300
@@ -58,7 +58,6 @@ spec:
       columnName: data_source
       displayName: Data Source
       description: Data Source
-      required: true
       length: 50
       colWidth: 150
       fieldWidth: 300
@@ -74,7 +73,6 @@ spec:
       columnName: title_attribute
       displayName: Title Attribute
       description: Title Attribute Name
-      required: true
       length: 50
       colWidth: 160
       fieldWidth: 300
@@ -83,8 +81,7 @@ spec:
       columnName: include_templates
       displayName: Included Templates
       description: Included Templates
-      required: true
-      defaultValue: '[]'
+      defaultValue: '["default"]'
       colHidden: true
       colWidth: 180
       fieldWidth: 200
@@ -112,6 +109,7 @@ spec:
       columnName: perform_ddl
       displayName: Perform DDL
       description: Perform DDL operations
+      defaultValue: 1
       colWidth: 150
     notLockable:
       type: bool

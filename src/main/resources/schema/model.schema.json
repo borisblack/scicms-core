@@ -61,7 +61,7 @@
       "type": "object",
       "properties": {
         "name": {
-          "description": "Item name starting with a lowercase character (required)",
+          "description": "Item name (without whitespaces) starting with a lowercase character (required)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
@@ -73,7 +73,7 @@
           "maxLength": 50
         },
         "pluralName": {
-          "description": "Plural name (required)",
+          "description": "Plural name (without whitespaces) starting with a lowercase character (required)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
@@ -91,13 +91,13 @@
           "maxLength": 50
         },
         "dataSource": {
-          "description": "Data source name (required)",
+          "description": "Data source name (optional, 'main' is used by default)",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
         },
         "tableName": {
-          "description": "Table name (optional, pluralName in lowercase with whitespaces replaced by _ is used by default). Prefixes core_ and sec_ are not allowed",
+          "description": "Table name (optional, pluralName in lowercase is used by default). Prefixes core_ and sec_ are not allowed",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
@@ -119,7 +119,7 @@
           "type": "boolean"
         },
         "performDdl": {
-          "description": "DDL operation performing flag (optional, false by default)",
+          "description": "DDL operation performing flag (optional, true by default)",
           "type": "boolean"
         },
         "versioned": {
@@ -156,7 +156,7 @@
         }
       },
       "additionalProperties": false,
-      "required": ["name"]
+      "required": ["name", "pluralName"]
     },
     "Attribute": {
       "type": "object",
