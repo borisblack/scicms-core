@@ -26,6 +26,7 @@ spec:
       displayName: Source Item
       description: Source Item
       indexed: true
+      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -35,6 +36,7 @@ spec:
       description: Target Permission
       indexed: true
       colWidth: 160
+      fieldWidth: 400
   indexes:
     sec_allowed_permissions_source_target_uk:
       columns:

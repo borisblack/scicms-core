@@ -26,6 +26,7 @@ spec:
       displayName: Source Item
       description: Source Item
       indexed: true
+      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -34,6 +35,7 @@ spec:
       displayName: Target Lifecycle
       description: Target Lifecycle
       indexed: true
+      fieldWidth: 400
     default:
       type: bool
       columnName: is_default

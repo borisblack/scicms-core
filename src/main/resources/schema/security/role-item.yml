@@ -13,6 +13,7 @@ metadata:
   description: Roles
   core: true
   performDdl: false
+  icon: KeyOutlined
 spec:
   attributes:
     username:
@@ -22,6 +23,9 @@ spec:
       description: User
       required: true
       length: 50
+      colWidth: 200
+      fieldHidden: true
+      fieldWidth: 400
     role:
       type: string
       columnName: role
@@ -29,6 +33,8 @@ spec:
       description: Role
       required: true
       length: 50
+      colWidth: 200
+      fieldWidth: 300
   indexes:
     sec_roles_username_role_uk:
       columns:

@@ -13,6 +13,7 @@ metadata:
   description: Group Roles
   core: true
   performDdl: false
+  icon: KeyOutlined
 spec:
   attributes:
     group:
@@ -24,6 +25,7 @@ spec:
       displayName: Group
       description: Group
       required: true
+      fieldWidth: 400
     role:
       type: string
       columnName: role
@@ -34,7 +36,7 @@ spec:
       colWidth: 200
       fieldWidth: 300
   indexes:
-    sec_group_roles_uk:
+    sec_group_roles_group_role_uk:
       columns:
         - group_id
         - role

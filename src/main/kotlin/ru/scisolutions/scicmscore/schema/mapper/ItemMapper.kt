@@ -22,7 +22,7 @@ class ItemMapper {
         val metadata = source.metadata
         
         target.name = metadata.name
-        target.displayName = metadata.name.ifBlank { metadata.name }
+        target.displayName = metadata.displayName.ifBlank { metadata.name }
         target.pluralName = metadata.pluralName
         target.displayPluralName = metadata.displayPluralName.ifBlank { metadata.pluralName }
         target.dataSource = metadata.dataSource.ifBlank { ItemMetadata.MAIN_DATA_SOURCE }
