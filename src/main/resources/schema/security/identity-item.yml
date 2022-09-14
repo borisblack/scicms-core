@@ -29,13 +29,13 @@ spec:
       displayName: Principal
       description: Principal
       required: true
-    access:
+    accesses:
       type: relation
       relType: oneToMany
       target: access
       mappedBy: target
-      displayName: Access
-      description: Access
+      displayName: Accesses
+      description: Accesses
   indexes:
     sec_identities_name_principal_uk:
       columns:

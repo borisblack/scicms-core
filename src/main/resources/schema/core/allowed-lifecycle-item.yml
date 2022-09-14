@@ -10,6 +10,7 @@ metadata:
   displayPluralName: Allowed Lifecycles
   dataSource: main
   tableName: core_allowed_lifecycles
+  titleAttribute: label
   description: Allowed Lifecycles
   icon: SisternodeOutlined
   core: true
@@ -17,6 +18,17 @@ metadata:
   performDdl: false
 spec:
   attributes:
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      length: 50
+    default:
+      type: bool
+      columnName: is_default
+      displayName: Default
+      description: Default
     source:
       type: relation
       relType: manyToOne
@@ -25,6 +37,7 @@ spec:
       columnName: source_id
       displayName: Source Item
       description: Source Item
+      required: true
       indexed: true
       fieldWidth: 400
     target:
@@ -34,13 +47,9 @@ spec:
       columnName: target_id
       displayName: Target Lifecycle
       description: Target Lifecycle
+      required: true
       indexed: true
       fieldWidth: 400
-    default:
-      type: bool
-      columnName: is_default
-      displayName: Default
-      description: Default
   indexes:
     core_allowed_lifecycles_source_target_uk:
       columns:

@@ -10,7 +10,7 @@ metadata:
   displayPluralName: Part BOM
   dataSource: main
   tableName: part_bom
-  titleAttribute: target.data.name
+  titleAttribute: label
   description: Part BOM
   core: false
   performDdl: true
@@ -19,6 +19,12 @@ metadata:
   localized: true
 spec:
   attributes:
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      length: 50
     source:
       type: relation
       relType: manyToOne
@@ -29,6 +35,7 @@ spec:
       description: Source Part
       required: true
       indexed: true
+      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -38,6 +45,7 @@ spec:
       description: Target Part
       required: true
       indexed: true
+      fieldWidth: 400
     quantity:
       type: float
       columnName: quantity

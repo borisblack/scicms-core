@@ -10,7 +10,7 @@ metadata:
   displayPluralName: Accesses
   dataSource: main
   tableName: sec_access
-  titleAttribute: displayName
+  titleAttribute: label
   description: Access
   core: true
   performDdl: false
@@ -23,6 +23,8 @@ spec:
       displayName: Label
       description: Label
       length: 50
+      colWidth: 200
+      fieldWidth: 300
     source:
       type: relation
       relType: manyToOne
@@ -31,6 +33,9 @@ spec:
       columnName: source_id
       displayName: Source Permission
       description: Source Permission
+      required: true
+      indexed: true
+      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -39,6 +44,9 @@ spec:
       columnName: target_id
       displayName: Target Identity
       description: Target Identity
+      required: true
+      indexed: true
+      fieldWidth: 400
     mask:
       type: int
       columnName: mask
@@ -47,6 +55,8 @@ spec:
       required: true
       minRange: 0
       maxRange: 31
+      fieldHidden: true
+      fieldWidth: 400
     beginDate:
       type: datetime
       columnName: begin_date

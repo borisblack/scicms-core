@@ -26,11 +26,11 @@ spec:
       length: 50
       colWidth: 200
       fieldWidth: 300
-    access:
+    accesses:
       type: relation
       relType: oneToMany
       target: access
       mappedBy: source
-      displayName: Access
-      description: Access
+      displayName: Accesses
+      description: Accesses
       fieldWidth: 400

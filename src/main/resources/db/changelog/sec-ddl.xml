@@ -516,14 +516,15 @@
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
+            <column name="label" type="varchar(50)"/>
             <column name="sort_order" type="int"/>
+            <column name="is_default" type="tinyint"/>
             <column name="source_id" type="varchar(36)">
                 <constraints nullable="false" foreignKeyName="sec_allowed_permissions_source_fk" references="core_items(id)"/>
             </column>
             <column name="target_id" type="varchar(36)">
                 <constraints nullable="false" foreignKeyName="sec_allowed_permissions_target_fk" references="sec_permissions(id)"/>
             </column>
-            <column name="is_default" type="tinyint"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>

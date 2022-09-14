@@ -159,6 +159,7 @@
         <insert tableName="sec_access">
             <column name="id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
             <column name="config_id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
+            <column name="label" value="Default ROLE_ADMIN"/>
             <column name="sort_order" value="100"/>
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${adminRoleIdentityId}"/>
@@ -175,6 +176,7 @@
         <insert tableName="sec_access">
             <column name="id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
             <column name="config_id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
+            <column name="label" value="Default ROLE_USER"/>
             <column name="sort_order" value="200"/>
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${userRoleIdentityId}"/>
