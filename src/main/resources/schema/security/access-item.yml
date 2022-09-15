@@ -35,6 +35,7 @@ spec:
       description: Source Permission
       required: true
       indexed: true
+      colWidth: 180
       fieldWidth: 400
     target:
       type: relation
@@ -53,10 +54,9 @@ spec:
       displayName: Access Mask
       description: Access Mask
       required: true
+      defaultValue: 0
       minRange: 0
       maxRange: 31
-      fieldHidden: true
-      fieldWidth: 400
     beginDate:
       type: datetime
       columnName: begin_date

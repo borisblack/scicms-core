@@ -24,7 +24,6 @@ spec:
       required: true
       length: 50
       colWidth: 200
-      fieldHidden: true
       fieldWidth: 400
     role:
       type: string

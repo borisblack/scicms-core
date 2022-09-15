@@ -13,6 +13,7 @@ metadata:
   description: Identities
   core: true
   performDdl: false
+  icon: IdcardOutlined
 spec:
   attributes:
     name:
@@ -23,6 +24,8 @@ spec:
       required: true
       unique: true
       length: 50
+      colWidth: 200
+      fieldWidth: 300
     principal:
       type: bool
       columnName: principal

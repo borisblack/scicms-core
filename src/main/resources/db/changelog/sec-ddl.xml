@@ -452,7 +452,7 @@
             <column name="target_id" type="varchar(36)">
                 <constraints nullable="false" foreignKeyName="sec_access_target_fk" references="sec_identities(id)"/>
             </column>
-            <column name="mask" type="int">
+            <column name="mask" type="int" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
             <column name="begin_date" type="datetime">
