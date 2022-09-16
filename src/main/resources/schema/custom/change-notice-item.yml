@@ -26,6 +26,7 @@ spec:
       displayName: Label
       description: Label
       length: 50
+      fieldWidth: 300
     noticeType:
       type: enum
       columnName: notice_type
@@ -40,17 +41,20 @@ spec:
       displayName: Notice Type
       description: Notice Type
       required: true
+      fieldWidth: 140
     cause:
       type: string
       columnName: cause
       displayName: Cause
       description: Cause
       length: 250
+      fieldWidth: 300
     releaseDate:
       type: datetime
       columnName: release_date
       displayName: Release Date
       description: Release Date
+      colWidth: 170
     parts:
       type: relation
       relType: manyToMany

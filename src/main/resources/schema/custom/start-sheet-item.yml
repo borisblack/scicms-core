@@ -28,6 +28,7 @@ spec:
       required: true
       unique: true
       length: 50
+      fieldWidth: 300
     displayName:
       type: string
       columnName: display_name
@@ -35,6 +36,7 @@ spec:
       description: Display Name
       length: 50
       colWidth: 200
+      fieldWidth: 300
     parts:
       type: relation
       relType: oneToMany

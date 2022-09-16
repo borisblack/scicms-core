@@ -24,6 +24,8 @@ spec:
       required: true
       unique: true
       length: 50
+      colWidth: 150
+      fieldWidth: 300
     displayName:
       type: string
       columnName: display_name
@@ -31,19 +33,21 @@ spec:
       description: Display Name
       length: 50
       colWidth: 200
+      fieldWidth: 300
     description:
       type: string
       columnName: description
       displayName: Description
       description: Description
-      length: 250
       colWidth: 200
+      length: 250
     icon:
       type: string
       columnName: icon
       displayName: Icon
       description: Icon
       length: 50
+      fieldWidth: 300
     startState:
       type: string
       columnName: start_state
@@ -51,13 +55,15 @@ spec:
       description: Start State
       required: true
       length: 50
+      colWidth: 160
+      fieldWidth: 300
     implementation:
       type: string
       columnName: implementation
       displayName: Implementation
       description: Implementation
       length: 250
-      colWidth: 200
+      colWidth: 300
     spec:
       type: json
       columnName: spec
@@ -74,6 +80,9 @@ spec:
       displayName: Checksum
       description: Checksum
       length: 50
+      private: true
+      colWidth: 270
+      fieldWidth: 300
     hash:
       type: string
       columnName: hash

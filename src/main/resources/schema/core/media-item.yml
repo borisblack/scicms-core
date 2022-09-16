@@ -42,11 +42,13 @@ spec:
     fileSize:
       type: int
       columnName: file_size
-      displayName: File Size
-      description: File Size
+      displayName: File Size (B)
+      description: File Size (B)
       required: true
       readOnly: true
       minRange: 0
+      colWidth: 160
+      fieldWidth: 120
     mimeType:
       type: string
       columnName: mimetype
@@ -73,5 +75,5 @@ spec:
       required: true
       readOnly: true
       length: 50
-      colWidth: 200
+      colWidth: 270
       fieldWidth: 300

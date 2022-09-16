@@ -9,6 +9,7 @@ metadata:
   displayPluralName: Locations
   dataSource: main
   tableName: core_locations
+  titleAttribute: label
   description: Locations
   icon: AimOutlined
   core: true
@@ -21,12 +22,14 @@ spec:
       displayName: Latitude
       description: Latitude
       required: true
+      fieldWidth: 140
     longitude:
       type: decimal
       columnName: longitude
       displayName: Longitude
       description: Longitude
       required: true
+      fieldWidth: 140
     label:
       type: string
       columnName: label
@@ -34,10 +37,11 @@ spec:
       description: Label
       required: true
       length: 50
+      fieldWidth: 300
     sortOrder:
       type: int
       columnName: sort_order
       displayName: Sort Order
       description: Sort Order
       colWidth: 180
-      fieldWidth: 100
+      fieldWidth: 140

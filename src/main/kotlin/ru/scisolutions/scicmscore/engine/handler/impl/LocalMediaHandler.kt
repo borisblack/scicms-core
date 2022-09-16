@@ -11,7 +11,9 @@ import ru.scisolutions.scicmscore.engine.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.mapper.MediaMapper
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
+import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.persistence.entity.Media
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.io.File
 import java.nio.file.Files
@@ -22,7 +24,9 @@ import com.google.common.io.Files as GFiles
 @Service
 class LocalMediaHandler(
     private val mediaProps: MediaProps,
-    private val mediaService: MediaService
+    private val mediaService: MediaService,
+    private val itemService: ItemService,
+    private val permissionManager: PermissionManager
 ) : MediaHandler {
     init {
         if (mediaProps.provider != PROVIDER_LOCAL)
@@ -91,7 +95,7 @@ class LocalMediaHandler(
             path = filePath,
             checksum = md5.toString()
         ).apply {
-            permissionId = uploadInput.permissionId
+            permissionId = permissionManager.checkPermissionId(itemService.getMedia(), uploadInput.permissionId)
         }
 
         return mediaMapper.map(

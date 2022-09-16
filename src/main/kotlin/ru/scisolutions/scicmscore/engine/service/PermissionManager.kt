@@ -5,4 +5,6 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 
 interface PermissionManager {
     fun assignPermissionAttribute(item: Item, itemRec: ItemRec)
+
+    fun checkPermissionId(item: Item, permissionId: String?): String
 }

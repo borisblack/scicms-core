@@ -5,7 +5,7 @@ includeTemplates:
   - intermediate
 metadata:
   name: partBOM
-  displayName: Part BOM
+  displayName: Part BOM Entry
   pluralName: partBOMs
   displayPluralName: Part BOM
   dataSource: main
@@ -25,6 +25,7 @@ spec:
       displayName: Label
       description: Label
       length: 50
+      fieldWidth: 300
     source:
       type: relation
       relType: manyToOne
@@ -35,6 +36,7 @@ spec:
       description: Source Part
       required: true
       indexed: true
+      colWidth: 160
       fieldWidth: 400
     target:
       type: relation
@@ -45,6 +47,7 @@ spec:
       description: Target Part
       required: true
       indexed: true
+      colWidth: 160
       fieldWidth: 400
     quantity:
       type: float
