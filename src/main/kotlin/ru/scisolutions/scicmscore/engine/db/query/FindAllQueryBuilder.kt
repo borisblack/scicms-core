@@ -12,6 +12,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.db.Paginator
+import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
@@ -33,6 +34,7 @@ class FindAllQueryBuilder(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val paginator: Paginator,
     private val relationManager: RelationManager,
+    private val orderingsParser: OrderingsParser
 ) {
     class FindAllQuery(
         val sql: String,
@@ -64,8 +66,7 @@ class FindAllQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            val orderings = orderingsParser.parseOrderings(item, input.sort)
-            query.addCustomOrderings(*orderings.toTypedArray())
+            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
         }
 
         return FindAllQuery(
@@ -101,7 +102,7 @@ class FindAllQueryBuilder(
 
     private fun getPermissionCondition(table: DbTable): Condition {
         val permissionIds = permissionService.findIdsForRead()
-        val permissionIdCol = DbColumn(table, PERMISSION_ID_COL_NAME, null, null)
+        val permissionIdCol = DbColumn(table, ItemRec.PERMISSION_COL_NAME, null, null)
         return if (permissionIds.isEmpty()) {
             UnaryCondition.isNull(permissionIdCol)
         } else {
@@ -140,7 +141,7 @@ class FindAllQueryBuilder(
                     DbColumn(intermediateTable, parentRelation.getIntermediateSourceColumnName(), null, null)
                 val targetIntermediateCol =
                     DbColumn(intermediateTable, parentRelation.getIntermediateTargetColumnName(), null, null)
-                val idCol = DbColumn(table, ID_COL_NAME, null, null)
+                val idCol = DbColumn(table, ItemRec.ID_COL_NAME, null, null)
 
                 when (parentRelation) {
                     is ManyToManyUnidirectionalRelation -> {
@@ -180,21 +181,12 @@ class FindAllQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            val orderings = orderingsParser.parseOrderings(item, input.sort)
-            query.addCustomOrderings(*orderings.toTypedArray())
+            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
         }
 
         return FindAllQuery(
             sql = query.validate().toString(),
             pagination = pagination
         )
-    }
-
-    companion object {
-        private const val ID_ATTR_NAME = "id"
-        private const val ID_COL_NAME = "id"
-        private const val PERMISSION_ID_COL_NAME = "permission_id"
-
-        private val orderingsParser = OrderingsParser()
     }
 }
