@@ -20,39 +20,44 @@ class OrderingsParser(private val itemService: ItemService) {
         inputSortList.forEach { parseOrdering(item, it, schema, query, table) }
 
     private fun parseOrdering(item: Item, inputSort: String, schema: DbSchema, query: SelectQuery, table: DbTable) {
-        val matcher = sortFieldPattern.matcher(inputSort)
+        val matcher = sortAttrPattern.matcher(inputSort)
         if (!matcher.matches())
             throw IllegalArgumentException("Invalid sort expression: $inputSort")
 
         val attrName = matcher.group(1)
         val attribute = item.spec.getAttributeOrThrow(attrName)
         val col = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
-        val order = matcher.group(2) ?: "asc"
+        val nestedAttrName = matcher.group(2)
+        val order = matcher.group(3) ?: "asc"
         val orderDir = if (order == "desc") Dir.DESCENDING else Dir.ASCENDING
-        when (attribute.type) {
-            AttrType.relation -> {
-                if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
-                    throw IllegalArgumentException("Invalid sort attribute")
+        if (nestedAttrName == null) {
+            query.addOrdering(col, orderDir)
+        } else {
+            when (attribute.type) {
+                AttrType.relation -> {
+                    if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
+                        throw IllegalArgumentException("Invalid sort attribute")
 
-                val target = itemService.getByName(requireNotNull(attribute.target))
-                addOrdering(target, schema, query, table, col, orderDir)
+                    val target = itemService.getByName(requireNotNull(attribute.target))
+                    addOrdering(target, nestedAttrName, schema, query, table, col, orderDir)
+                }
+                AttrType.media -> addOrdering(itemService.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
+                AttrType.location -> addOrdering(itemService.getLocation(), nestedAttrName, schema, query, table, col, orderDir)
+                else -> query.addOrdering(col, orderDir)
             }
-            AttrType.media -> addOrdering(itemService.getMedia(), schema, query, table, col, orderDir)
-            AttrType.location -> addOrdering(itemService.getLocation(), schema, query, table, col, orderDir)
-            else -> query.addOrdering(col, orderDir)
         }
     }
 
-    private fun addOrdering(target: Item, schema: DbSchema, query: SelectQuery, table: DbTable, col: DbColumn, orderDir: Dir) {
+    private fun addOrdering(target: Item, targetAttrName: String, schema: DbSchema, query: SelectQuery, table: DbTable, col: DbColumn, orderDir: Dir) {
         val targetTable = schema.addTable(target.tableName)
-        val targetOrderingAttribute = target.spec.getAttributeOrThrow(target.titleAttribute)
-        val targetOrderingCol = DbColumn(targetTable, targetOrderingAttribute.columnName ?: target.titleAttribute.lowercase(), null, null)
+        val targetOrderingAttribute = target.spec.getAttributeOrThrow(targetAttrName)
+        val targetOrderingCol = DbColumn(targetTable, targetOrderingAttribute.columnName ?: targetAttrName.lowercase(), null, null)
         val targetIdCol = DbColumn(targetTable, ItemRec.ID_COL_NAME, null, null)
         query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
         query.addOrdering(targetOrderingCol, orderDir)
     }
 
     companion object {
-        private val sortFieldPattern = Pattern.compile("^(\\w+)(?::(asc|desc))?$", Pattern.CASE_INSENSITIVE)
+        private val sortAttrPattern = Pattern.compile("^(\\w+)\\.?(\\w+)?(?::(asc|desc))?\$", Pattern.CASE_INSENSITIVE)
     }
 }
