@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.repository.ItemRepository
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.util.ACL.Mask
+import ru.scisolutions.scicmscore.util.Acl.Mask
 import java.util.concurrent.TimeUnit
 
 @Service

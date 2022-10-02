@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.repository.PermissionRepository
 import ru.scisolutions.scicmscore.persistence.service.PermissionService
-import ru.scisolutions.scicmscore.util.ACL.Mask
+import ru.scisolutions.scicmscore.util.Acl.Mask
 import java.util.concurrent.TimeUnit
 
 @Service

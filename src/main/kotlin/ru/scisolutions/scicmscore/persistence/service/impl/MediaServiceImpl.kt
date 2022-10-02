@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.persistence.repository.MediaRepository
-import ru.scisolutions.scicmscore.persistence.service.MediaService
-import ru.scisolutions.scicmscore.util.ACL.Mask
+import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Service
 @Repository

@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.persistence.service
 
 import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.util.ACL.Mask
+import ru.scisolutions.scicmscore.util.Acl.Mask
 
 interface PermissionService {
     fun getDefaultPermission(): Permission

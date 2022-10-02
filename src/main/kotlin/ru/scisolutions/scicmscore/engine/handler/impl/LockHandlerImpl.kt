@@ -13,13 +13,15 @@ import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.UserService
 
 @Service
 class LockHandlerImpl(
     private val classService: ClassService,
     private val itemService: ItemService,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
+    private val userService: UserService
 ) : LockHandler {
     override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
@@ -35,6 +37,7 @@ class LockHandlerImpl(
         implInstance?.beforeLock(itemName, id)
 
         val success = itemRecDao.lockById(item, id)
+        itemRec.lockedBy = userService.getCurrentUser().id
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
@@ -65,6 +68,7 @@ class LockHandlerImpl(
         implInstance?.beforeUnlock(itemName, id)
 
         val success = itemRecDao.unlockById(item, id)
+        itemRec.lockedBy = null
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()

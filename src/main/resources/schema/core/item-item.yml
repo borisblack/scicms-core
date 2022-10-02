@@ -67,6 +67,7 @@ spec:
       displayName: Table Name
       description: Table Name
       length: 50
+      colWidth: 180
       fieldWidth: 300
     titleAttribute:
       type: string
@@ -98,6 +99,7 @@ spec:
       displayName: Icon
       description: Icon
       length: 50
+      colWidth: 180
       fieldWidth: 300
     core:
       type: bool

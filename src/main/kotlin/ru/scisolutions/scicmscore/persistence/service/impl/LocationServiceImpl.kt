@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Location
 import ru.scisolutions.scicmscore.persistence.repository.LocationRepository
-import ru.scisolutions.scicmscore.util.ACL.Mask
+import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Service
 @Repository

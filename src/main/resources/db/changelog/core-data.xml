@@ -56,9 +56,64 @@
             <column name="config_id" value="${defaultLifecycleId}"/>
             <column name="name" value="Default Lifecycle"/>
             <column name="display_name" value="Default Lifecycle"/>
-            <column name="start_state" value="draft"/>
+            <column name="start_state" value="Draft"/>
             <column name="implementation" value="ru.scisolutions.customimpl.lifecycle.DefaultLifecycleImpl"/>
-            <column name="spec" value='{"states": {"draft": {"displayName": "Draft", "transitions": {"published": {}}}, "published": {"displayName": "Published", "transitions": {}}}}'/>
+            <column name="spec">
+                <![CDATA[
+                <?xml version="1.0" encoding="UTF-8"?>
+                <bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+                    <bpmn:process id="Process_1" isExecutable="false">
+                        <bpmn:startEvent id="StartEvent_1">
+                            <bpmn:outgoing>Flow_142clz7</bpmn:outgoing>
+                        </bpmn:startEvent>
+                        <bpmn:task id="Activity_0ubsq8i" name="Draft">
+                            <bpmn:incoming>Flow_142clz7</bpmn:incoming>
+                            <bpmn:outgoing>Flow_1k1u0zq</bpmn:outgoing>
+                        </bpmn:task>
+                        <bpmn:sequenceFlow id="Flow_142clz7" sourceRef="StartEvent_1" targetRef="Activity_0ubsq8i" />
+                        <bpmn:task id="Activity_08hpsoh" name="Published">
+                            <bpmn:incoming>Flow_1k1u0zq</bpmn:incoming>
+                            <bpmn:outgoing>Flow_13oo29q</bpmn:outgoing>
+                        </bpmn:task>
+                        <bpmn:sequenceFlow id="Flow_1k1u0zq" sourceRef="Activity_0ubsq8i" targetRef="Activity_08hpsoh" />
+                        <bpmn:endEvent id="Event_1xdobbe">
+                            <bpmn:incoming>Flow_13oo29q</bpmn:incoming>
+                        </bpmn:endEvent>
+                        <bpmn:sequenceFlow id="Flow_13oo29q" sourceRef="Activity_08hpsoh" targetRef="Event_1xdobbe" />
+                    </bpmn:process>
+                    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+                        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+                            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+                                <dc:Bounds x="173" y="102" width="36" height="36" />
+                            </bpmndi:BPMNShape>
+                            <bpmndi:BPMNShape id="Activity_0ubsq8i_di" bpmnElement="Activity_0ubsq8i">
+                                <dc:Bounds x="260" y="80" width="100" height="80" />
+                                <bpmndi:BPMNLabel />
+                            </bpmndi:BPMNShape>
+                            <bpmndi:BPMNShape id="Activity_08hpsoh_di" bpmnElement="Activity_08hpsoh">
+                                <dc:Bounds x="420" y="80" width="100" height="80" />
+                                <bpmndi:BPMNLabel />
+                            </bpmndi:BPMNShape>
+                            <bpmndi:BPMNShape id="Event_1xdobbe_di" bpmnElement="Event_1xdobbe">
+                                <dc:Bounds x="582" y="102" width="36" height="36" />
+                            </bpmndi:BPMNShape>
+                            <bpmndi:BPMNEdge id="Flow_142clz7_di" bpmnElement="Flow_142clz7">
+                                <di:waypoint x="209" y="120" />
+                                <di:waypoint x="260" y="120" />
+                            </bpmndi:BPMNEdge>
+                            <bpmndi:BPMNEdge id="Flow_1k1u0zq_di" bpmnElement="Flow_1k1u0zq">
+                                <di:waypoint x="360" y="120" />
+                                <di:waypoint x="420" y="120" />
+                            </bpmndi:BPMNEdge>
+                            <bpmndi:BPMNEdge id="Flow_13oo29q_di" bpmnElement="Flow_13oo29q">
+                                <di:waypoint x="520" y="120" />
+                                <di:waypoint x="582" y="120" />
+                            </bpmndi:BPMNEdge>
+                        </bpmndi:BPMNPlane>
+                    </bpmndi:BPMNDiagram>
+                </bpmn:definitions>
+                ]]>
+            </column>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>

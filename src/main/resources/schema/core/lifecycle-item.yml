@@ -47,6 +47,7 @@ spec:
       displayName: Icon
       description: Icon
       length: 50
+      colWidth: 180
       fieldWidth: 300
     startState:
       type: string
@@ -65,12 +66,11 @@ spec:
       length: 250
       colWidth: 300
     spec:
-      type: json
+      type: text
       columnName: spec
       displayName: Specification
       description: Specification
       required: true
-      defaultValue: '{}'
       colHidden: true
       colWidth: 300
       fieldHidden: true

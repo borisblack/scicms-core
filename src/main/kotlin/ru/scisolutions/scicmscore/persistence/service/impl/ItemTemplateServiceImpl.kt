@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
 import ru.scisolutions.scicmscore.persistence.repository.ItemTemplateRepository
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
-import ru.scisolutions.scicmscore.util.ACL
+import ru.scisolutions.scicmscore.util.Acl
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -49,9 +49,9 @@ class ItemTemplateServiceImpl(
     override fun getByName(name: String): ItemTemplate = findByName(name) ?: throw IllegalArgumentException("Item Template [$name] not found")
 
     @Transactional(readOnly = true)
-    override fun findByNameForWrite(name: String): ItemTemplate? = findByNameWithACL(name, ACL.Mask.WRITE)
+    override fun findByNameForWrite(name: String): ItemTemplate? = findByNameWithACL(name, Acl.Mask.WRITE)
 
-    private fun findByNameWithACL(name: String, accessMask: ACL.Mask): ItemTemplate? {
+    private fun findByNameWithACL(name: String, accessMask: Acl.Mask): ItemTemplate? {
         val authentication = SecurityContextHolder.getContext().authentication ?: return null
         return itemTemplateRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }

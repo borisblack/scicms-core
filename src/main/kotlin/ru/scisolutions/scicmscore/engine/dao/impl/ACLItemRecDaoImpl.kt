@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.db.query.DaoQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.PermissionService
-import ru.scisolutions.scicmscore.util.ACL.Mask
+import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Service
 class ACLItemRecDaoImpl(

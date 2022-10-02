@@ -30,7 +30,7 @@ class LifecycleManagerImpl(
         if (state == null) {
             itemRec.state = lifecycle.startState
         } else {
-            if (state !in lifecycle.spec.states)
+            if (state !in lifecycle.parseSpec().states)
                 throw IllegalArgumentException("Lifecycle [${lifecycle.name}] doesn't contain state [$state]")
         }
     }

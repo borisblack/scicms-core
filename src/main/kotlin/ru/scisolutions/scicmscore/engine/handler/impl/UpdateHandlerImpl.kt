@@ -14,6 +14,7 @@ import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
@@ -25,6 +26,7 @@ class UpdateHandlerImpl(
     private val classService: ClassService,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
+    private val lifecycleManager: LifecycleManager,
     private val permissionManager: PermissionManager,
     private val auditManager: AuditManager,
     private val addRelationHelper: AddRelationHelper,
@@ -61,6 +63,7 @@ class UpdateHandlerImpl(
         val itemRec = ItemRec(filteredData.toMutableMap())
 
         // Assign other attributes
+        lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
         auditManager.assignUpdateAttributes(itemRec)
 

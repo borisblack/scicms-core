@@ -46,7 +46,7 @@ class PromoteHandlerImpl(
             if (input.state != lifecycle.startState)
                 throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
         } else {
-            val currentState = lifecycle.spec.getStateOrThrow(itemRec.state as String)
+            val currentState = lifecycle.parseSpec().getStateOrThrow(itemRec.state as String)
             if (input.state !in currentState.transitions)
                 throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
         }

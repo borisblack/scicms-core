@@ -510,7 +510,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="implementation" type="varchar(250)"/>
-            <column name="spec" type="text" defaultValue="{}">
+            <column name="spec" type="text">
                 <constraints nullable="false"/>
             </column>
             <column name="checksum" type="varchar(50)"/>

@@ -1,11 +1,15 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
 import ru.scisolutions.scicmscore.model.LifecycleSpec
-import ru.scisolutions.scicmscore.persistence.converter.LifecycleSpecConverter
+import ru.scisolutions.scicmscore.model.State
+import ru.scisolutions.scicmscore.model.bpmn.BpmnDefinitions
+import ru.scisolutions.scicmscore.model.bpmn.BpmnSequenceFlow
+import ru.scisolutions.scicmscore.model.bpmn.BpmnTask
+import ru.scisolutions.scicmscore.util.Jaxb
 import javax.persistence.Column
-import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.Table
+import javax.persistence.Transient
 
 @Entity
 @Table(name = "core_lifecycles")
@@ -24,12 +28,41 @@ class Lifecycle(
 
     var implementation: String? = null,
 
-    @Convert(converter = LifecycleSpecConverter::class)
-    var spec: LifecycleSpec = LifecycleSpec(),
+    var spec: String,
 
     var checksum: String? = null,
     var hash: String? = null,
 ) : AbstractEntity() {
+    @Transient
+    private var parsedSpec: LifecycleSpec? = null
+
+    fun parseSpec(): LifecycleSpec {
+        if (parsedSpec == null) {
+            val bpmnDefinitions: BpmnDefinitions = Jaxb.readXml(spec)
+            val process = bpmnDefinitions.bpmnProcess
+            val taskMap = process.tasks.associateBy { it.id }
+            val sequenceFlowMap = process.sequenceFlows.associateBy { it.id }
+            val states = process.tasks.associate { task ->
+                task.name to State(
+                    task.outgoings.asSequence()
+                        .filter { sequenceFlowId ->
+                            val sequenceFlow = sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow
+                            sequenceFlow.targetRef != process.endEvent.id
+                        }
+                        .map { sequenceFlowId ->
+                            val sequenceFlow = sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow
+                            val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
+                            targetTask.name
+                        }
+                        .toSet()
+                )
+            }
+            parsedSpec = LifecycleSpec(states)
+        }
+
+        return parsedSpec as LifecycleSpec
+    }
+
     override fun toString(): String = "Lifecycle(name=$name)"
 
     companion object {

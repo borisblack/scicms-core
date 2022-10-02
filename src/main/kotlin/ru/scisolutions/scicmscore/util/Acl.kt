@@ -4,7 +4,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 
-object ACL {
+object Acl {
     private const val QUOTE = "'"
     const val MASK_PARAM_NAME = "mask"
     const val USERNAME_PARAM_NAME = "username"
