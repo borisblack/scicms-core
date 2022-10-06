@@ -12,19 +12,19 @@ import ru.scisolutions.scicmscore.engine.model.LockHook
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.UserCache
 
 @Service
 class LockHandlerImpl(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
-    private val userService: UserService
+    private val userCache: UserCache
 ) : LockHandler {
     override fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 
@@ -37,7 +37,7 @@ class LockHandlerImpl(
         implInstance?.beforeLock(itemName, id)
 
         val success = itemRecDao.lockById(item, id)
-        itemRec.lockedBy = userService.getCurrentUser().id
+        itemRec.lockedBy = userCache.getCurrent().id
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
@@ -52,7 +52,7 @@ class LockHandlerImpl(
     }
 
     override fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (item.notLockable)
             throw IllegalArgumentException("Item [$itemName] is not lockable")
 

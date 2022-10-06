@@ -5,7 +5,7 @@ import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -22,7 +22,7 @@ import ru.scisolutions.scicmscore.schema.service.RelationValidator
 @Service
 class RelationManagerImpl(
     private val relationValidator: RelationValidator,
-    private val itemService: ItemService
+    private val itemCache: ItemCache
 ) : RelationManager {
     override fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): Relation {
         relationValidator.validateAttribute(item, attrName, attribute)
@@ -37,7 +37,7 @@ class RelationManagerImpl(
     }
 
     private fun getOneToOneAttributeRelation(item: Item, attrName: String, attribute: Attribute): OneToOneRelation {
-        val targetItem = itemService.getByName(requireNotNull(attribute.target))
+        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
 
         // Create context
         return if (attribute.inversedBy != null) { // owning side
@@ -69,7 +69,7 @@ class RelationManagerImpl(
         if (attribute.mappedBy != null)
             throw IllegalStateException("The mappedBy field cannot be set for manyToOne relation type")
 
-        val targetItem = itemService.getByName(requireNotNull(attribute.target))
+        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
 
         return if (attribute.inversedBy == null) {
             ManyToOneUnidirectionalRelation(
@@ -88,7 +88,7 @@ class RelationManagerImpl(
     }
 
     private fun getOneToManyAttributeRelation(item: Item, attrName: String, attribute: Attribute): OneToManyInversedBidirectionalRelation {
-        val owningItem = itemService.getByName(requireNotNull(attribute.target))
+        val owningItem = itemCache.getOrThrow(requireNotNull(attribute.target))
 
         return OneToManyInversedBidirectionalRelation(
             owningItem = owningItem,
@@ -99,8 +99,8 @@ class RelationManagerImpl(
     }
 
     private fun getManyToManyAttributeRelation(item: Item, attrName: String, attribute: Attribute): ManyToManyRelation {
-        val targetItem = itemService.getByName(requireNotNull(attribute.target))
-        val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
+        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+        val intermediateItem = itemCache.getOrThrow(requireNotNull(attribute.intermediate))
 
         // Create context
         return if (attribute.mappedBy == null && attribute.inversedBy == null) {

@@ -5,16 +5,16 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.persistence.service.AllowedPermissionService
+import ru.scisolutions.scicmscore.persistence.service.AllowedPermissionCache
 
 @Service
-class PermissionManagerImpl(private val allowedPermissionService: AllowedPermissionService) : PermissionManager {
+class PermissionManagerImpl(private val allowedPermissionCache: AllowedPermissionCache) : PermissionManager {
     override fun assignPermissionAttribute(item: Item, itemRec: ItemRec) {
         itemRec.permission = checkPermissionId(item, itemRec.permission)
     }
 
     override fun checkPermissionId(item: Item, permissionId: String?): String {
-        val allowedPermissions = allowedPermissionService.findAllByItemName(item.name)
+        val allowedPermissions = allowedPermissionCache.findAllByItemName(item.name)
         return if (permissionId == null) {
             allowedPermissions.find { it.isDefault }?.targetId ?: Permission.DEFAULT_PERMISSION_ID
         } else {

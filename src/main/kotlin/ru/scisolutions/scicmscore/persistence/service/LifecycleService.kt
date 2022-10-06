@@ -3,7 +3,5 @@ package ru.scisolutions.scicmscore.persistence.service
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 
 interface LifecycleService {
-    fun getDefaultLifecycle(): Lifecycle
-
-    fun getById(id: String): Lifecycle
+    fun findById(id: String): Lifecycle?
 }

@@ -1,12 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.6.2"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
-    kotlin("plugin.jpa") version "1.6.10"
-    kotlin("kapt") version "1.6.10"
+    id("org.springframework.boot") version "2.7.4"
+    id("io.spring.dependency-management") version "1.0.14.RELEASE"
+    kotlin("jvm") version "1.7.20"
+    kotlin("plugin.spring") version "1.7.20"
+    kotlin("plugin.jpa") version "1.7.20"
+    kotlin("kapt") version "1.7.20"
 }
 
 group = "ru.scisolutions"
@@ -23,10 +23,8 @@ repositories {
     mavenCentral()
 }
 
-object Constants {
-    const val jacksonVersion = "2.13.2"
-}
-
+val jacksonVersion: String by project
+val dgsVersion: String by project
 dependencies {
     implementation(files("/lib/sqlbuilder-3.0.2.jar"))
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -36,9 +34,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.liquibase:liquibase-core")
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", Constants.jacksonVersion)
-    implementation("com.fasterxml.jackson.dataformat", "jackson-dataformat-yaml", Constants.jacksonVersion)
-    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:5.0.5"))
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
+    implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:$dgsVersion"))
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation("io.jsonwebtoken:jjwt:0.9.1")

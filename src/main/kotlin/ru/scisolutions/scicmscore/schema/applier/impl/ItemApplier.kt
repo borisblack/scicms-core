@@ -7,10 +7,11 @@ import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemTemplateCache
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
-import ru.scisolutions.scicmscore.persistence.service.SequenceService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
@@ -23,11 +24,12 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 @Service
 class ItemApplier(
     private val schemaProps: SchemaProps,
+    private val itemTemplateCache: ItemTemplateCache,
     private val itemTemplateService: ItemTemplateService,
+    private val itemCache: ItemCache,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
     private val schemaLockService: SchemaLockService,
-    private val sequenceService: SequenceService,
     private val relationValidator: RelationValidator
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java
@@ -40,8 +42,8 @@ class ItemApplier(
 
         validateModel(item)
 
-        val itemName = item.metadata.name
-        var itemEntity = itemService.findByName(itemName)
+        val name = item.metadata.name
+        var itemEntity = itemCache[name]
         if (itemEntity == null) {
             // schemaLockService.lockOrThrow()
 
@@ -53,25 +55,25 @@ class ItemApplier(
             tableSeeder.create(item) // create table
 
             // Add item
-            logger.info("Creating the item [{}]", itemName)
+            logger.info("Creating the item [{}]", name)
             itemEntity = itemMapper.mapToEntity(item)
 
-            itemService.save(itemEntity)
+            itemCache[name] = itemEntity
 
             // schemaLockService.unlockOrThrow()
         } else if (isChanged(item, itemEntity)) {
             // schemaLockService.lockOrThrow()
 
-            if (item.checksum == null && (itemEntity.core || itemService.findByNameForWrite(itemName) == null)) {
+            if (item.checksum == null && (itemEntity.core || itemService.findByNameForWrite(name) == null)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("You has no WRITE permission for [$itemName] item")
+                throw AccessDeniedException("You has no WRITE permission for [$name] item")
             }
 
             tableSeeder.update(item, itemEntity) // update table
 
             logger.info("Updating the item [{}]", itemEntity.name)
             itemMapper.copyToEntity(item, itemEntity)
-            itemService.save(itemEntity)
+            itemCache[name] = itemEntity
 
             // schemaLockService.unlockOrThrow()
         } else {
@@ -84,7 +86,7 @@ class ItemApplier(
     private fun includeTemplates(item: Item): Item {
         var mergedItem: Item = item
         for (templateName in item.includeTemplates) {
-            val itemTemplate = itemTemplateService.getByName(templateName)
+            val itemTemplate = itemTemplateCache.getOrThrow(templateName)
             mergedItem = includeTemplate(mergedItem, itemTemplate)
         }
         return mergedItem

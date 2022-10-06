@@ -6,16 +6,16 @@ import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 
 @Component
 class ItemFiltersInputMapper(
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val relationValidator: RelationValidator
 ) {
     fun map(itemName: String, itemFiltersMap: Map<String, Any>): ItemFiltersInput {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         return map(item, itemFiltersMap)
     }
 
@@ -29,20 +29,20 @@ class ItemFiltersInputMapper(
                 .mapValues { (attrName, filterValue) ->
                     val attribute = item.spec.getAttributeOrThrow(attrName)
                     if (attribute.type == Type.media) {
-                        val media = itemService.getMedia()
+                        val media = itemCache.getMedia()
                         if (media.dataSource == item.dataSource)
                             map(MEDIA_ITEM_NAME, filterValue)
                         else
                             PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == Type.location) {
-                        val location = itemService.getLocation()
+                        val location = itemCache.getLocation()
                         if (location.dataSource == item.dataSource)
                             map(LOCATION_ITEM_NAME, filterValue)
                         else
                             PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == Type.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
-                        val targetItem = itemService.getByName(requireNotNull(attribute.target))
+                        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
                         if (targetItem.dataSource == item.dataSource) {
                             map(attribute.target, filterValue) // recursive
                         } else {

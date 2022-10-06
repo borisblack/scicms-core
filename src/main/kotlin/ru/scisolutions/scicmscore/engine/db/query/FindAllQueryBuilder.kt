@@ -19,7 +19,7 @@ import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
 import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.PermissionService
+import ru.scisolutions.scicmscore.persistence.service.PermissionCache
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -27,7 +27,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirec
 
 @Component
 class FindAllQueryBuilder(
-    private val permissionService: PermissionService,
+    private val permissionCache: PermissionCache,
     private val filterConditionBuilder: FilterConditionBuilder,
     private val versionConditionBuilder: VersionConditionBuilder,
     private val stateConditionBuilder: StateConditionBuilder,
@@ -101,7 +101,7 @@ class FindAllQueryBuilder(
     }
 
     private fun getPermissionCondition(table: DbTable): Condition {
-        val permissionIds = permissionService.findIdsForRead()
+        val permissionIds = permissionCache.findIdsForRead()
         val permissionIdCol = DbColumn(table, ItemRec.PERMISSION_COL_NAME, null, null)
         return if (permissionIds.isEmpty()) {
             UnaryCondition.isNull(permissionIdCol)

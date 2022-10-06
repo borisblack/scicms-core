@@ -19,12 +19,12 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
 @Service
 class DeleteHandlerImpl(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val deleteMediaHelper: DeleteMediaHelper,
     private val deleteLocationHelper: DeleteLocationHelper,
@@ -41,7 +41,7 @@ class DeleteHandlerImpl(
         if (itemName == Item.PERMISSION_ITEM_NAME && input.id == Permission.DEFAULT_PERMISSION_ID)
             throw IllegalArgumentException("Default permission cannot be deleted.")
 
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
 
         if (!itemRecDao.existsById(item, input.id))
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")

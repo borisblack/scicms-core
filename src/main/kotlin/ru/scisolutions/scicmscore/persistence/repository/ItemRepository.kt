@@ -19,4 +19,6 @@ interface ItemRepository : CrudRepository<Item, String> {
         nativeQuery = true
     )
     fun findByNameWithACL(name: String, mask: Set<Int>, username: String, roles: Set<String>): Item?
+
+    fun deleteByName(name: String)
 }

@@ -124,7 +124,6 @@
 
         <insert tableName="core_schema_lock">
             <column name="id" value="1"/>
-            <column name="locked" value="0"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

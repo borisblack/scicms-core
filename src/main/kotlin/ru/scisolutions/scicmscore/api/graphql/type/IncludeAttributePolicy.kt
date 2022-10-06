@@ -5,11 +5,11 @@ import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
 @Component
 class IncludeAttributePolicy(
-    private val itemService: ItemService
+    private val itemCache: ItemCache
 ) {
     fun includeInObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
         if (attribute.private)
@@ -34,19 +34,19 @@ class IncludeAttributePolicy(
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
 
-        if (attribute.type == Type.media && itemService.getMedia().dataSource != item.dataSource)
+        if (attribute.type == Type.media && itemCache.getMedia().dataSource != item.dataSource)
             return false
 
-        if (attribute.type == Type.location && itemService.getLocation().dataSource != item.dataSource)
+        if (attribute.type == Type.location && itemCache.getLocation().dataSource != item.dataSource)
             return false
 
         if (attribute.isCollection()) {
-            val targetItem = itemService.getByName(requireNotNull(attribute.target))
+            val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
             if (targetItem.dataSource != item.dataSource)
                 return false
 
             if (attribute.relType == RelType.manyToMany) {
-                val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
+                val intermediateItem = itemCache.getOrThrow(requireNotNull(attribute.intermediate))
                 if (intermediateItem.dataSource != item.dataSource)
                     return false
             }

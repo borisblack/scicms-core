@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.engine.handler.impl
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
@@ -18,13 +17,13 @@ import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.util.Maps
 
 @Service
 class UpdateHandlerImpl(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val attributeValueHelper: AttributeValueHelper,
     private val lifecycleManager: LifecycleManager,
     private val permissionManager: PermissionManager,
@@ -37,7 +36,7 @@ class UpdateHandlerImpl(
         if (itemName in disabledItemNames)
             throw IllegalArgumentException("Item [$itemName] cannot be updated.")
 
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (item.versioned)
             throw IllegalArgumentException("Item [$itemName] is versioned and cannot be updated")
 
@@ -95,6 +94,5 @@ class UpdateHandlerImpl(
         private const val STATE_ATTR_NAME = "state"
 
         private val disabledItemNames = setOf(ITEM_ITEM_NAME)
-        private val logger = LoggerFactory.getLogger(UpdateHandlerImpl::class.java)
     }
 }

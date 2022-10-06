@@ -3,7 +3,6 @@ package ru.scisolutions.scicmscore.persistence.service.impl
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Sequence
 import ru.scisolutions.scicmscore.persistence.repository.SequenceRepository
 import ru.scisolutions.scicmscore.persistence.service.SequenceService
@@ -11,10 +10,8 @@ import ru.scisolutions.scicmscore.persistence.service.SequenceService
 @Service
 @Repository
 @Transactional
-class SequenceServiceImpl(
-    dataProps: DataProps,
-    private val sequenceRepository: SequenceRepository
-) : SequenceService {
+class SequenceServiceImpl(private val sequenceRepository: SequenceRepository) : SequenceService {
+    @Transactional(readOnly = true)
     override fun existsByName(name: String): Boolean = sequenceRepository.existsByName(name)
 
     @Transactional(readOnly = true)

@@ -21,6 +21,7 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 import java.util.UUID
@@ -28,6 +29,7 @@ import java.util.UUID
 @Service
 class CreateVersionHandlerImpl(
     private val classService: ClassService,
+    private val itemCache: ItemCache,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -41,7 +43,7 @@ class CreateVersionHandlerImpl(
     private val itemRecDao: ItemRecDao,
 ) : CreateVersionHandler {
     override fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (!item.versioned)
             throw IllegalArgumentException("Item [$itemName] is not versioned")
 

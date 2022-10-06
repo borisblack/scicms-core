@@ -55,11 +55,79 @@
             <column name="is_current"/>
         </createIndex>
 
-<!--        <createIndex tableName="core_locales" indexName="core_locales_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
+        <createIndex tableName="core_locales" indexName="core_locales_lifecycle_idx">
+            <column name="lifecycle_id"/>
+        </createIndex>
 
         <createIndex tableName="core_locales" indexName="core_locales_state_idx">
+            <column name="state"/>
+        </createIndex>
+
+        <!--core_lifecycles-->
+        <createTable tableName="core_lifecycles">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="core_lifecycles_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="core_lifecycles_name_uk"/>
+            </column>
+            <column name="display_name" type="varchar(50)"/>
+            <column name="description" type="varchar(250)"/>
+            <column name="icon" type="varchar(50)"/>
+            <column name="start_state" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="implementation" type="varchar(250)"/>
+            <column name="spec" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checksum" type="varchar(50)"/>
+            <column name="hash" type="varchar(50)"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="is_current" type="tinyint" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_lifecycles_locale_fk" references="core_locales(name)"/>
+            </column>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_lifecycles_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_major_rev_idx">
+            <column name="major_rev"/>
+        </createIndex>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_is_current_idx">
+            <column name="is_current"/>
+        </createIndex>
+
+        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_state_idx">
             <column name="state"/>
         </createIndex>
 
@@ -92,7 +160,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_revision_policies_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_revision_policies_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -116,10 +186,6 @@
         <createIndex tableName="core_revision_policies" indexName="core_revision_policies_is_current_idx">
             <column name="is_current"/>
         </createIndex>
-
-<!--        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
 
         <createIndex tableName="core_revision_policies" indexName="core_revision_policies_state_idx">
             <column name="state"/>
@@ -156,7 +222,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_item_templates_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_item_templates_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -180,10 +248,6 @@
         <createIndex tableName="core_item_templates" indexName="core_item_templates_is_current_idx">
             <column name="is_current"/>
         </createIndex>
-
-<!--        <createIndex tableName="core_item_templates" indexName="core_item_templates_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
 
         <createIndex tableName="core_item_templates" indexName="core_item_templates_state_idx">
             <column name="state"/>
@@ -252,7 +316,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_items_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_items_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -276,10 +342,6 @@
         <createIndex tableName="core_items" indexName="core_items_is_current_idx">
             <column name="is_current"/>
         </createIndex>
-
-<!--        <createIndex tableName="core_items" indexName="core_items_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
 
         <createIndex tableName="core_items" indexName="core_items_state_idx">
             <column name="state"/>
@@ -322,7 +384,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_sequences_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_sequences_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -346,10 +410,6 @@
         <createIndex tableName="core_sequences" indexName="core_sequences_is_current_idx">
             <column name="is_current"/>
         </createIndex>
-
-<!--        <createIndex tableName="core_sequences" indexName="core_sequences_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
 
         <createIndex tableName="core_sequences" indexName="core_sequences_state_idx">
             <column name="state"/>
@@ -394,7 +454,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_media_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_media_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -418,10 +480,6 @@
         <createIndex tableName="core_media" indexName="core_media_is_current_idx">
             <column name="is_current"/>
         </createIndex>
-
-<!--        <createIndex tableName="core_media" indexName="core_media_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
 
         <createIndex tableName="core_media" indexName="core_media_state_idx">
             <column name="state"/>
@@ -459,7 +517,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_locations_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_locations_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -484,81 +544,7 @@
             <column name="is_current"/>
         </createIndex>
 
-<!--        <createIndex tableName="core_locations" indexName="core_locations_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
-
         <createIndex tableName="core_locations" indexName="core_locations_state_idx">
-            <column name="state"/>
-        </createIndex>
-
-        <!--core_lifecycles-->
-        <createTable tableName="core_lifecycles">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_lifecycles_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_lifecycles_name_uk"/>
-            </column>
-            <column name="display_name" type="varchar(50)"/>
-            <column name="description" type="varchar(250)"/>
-            <column name="icon" type="varchar(50)"/>
-            <column name="start_state" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="implementation" type="varchar(250)"/>
-            <column name="spec" type="text">
-                <constraints nullable="false"/>
-            </column>
-            <column name="checksum" type="varchar(50)"/>
-            <column name="hash" type="varchar(50)"/>
-            <column name="generation" type="int" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="major_rev" type="varchar(50)" defaultValue="A">
-                <constraints nullable="false"/>
-            </column>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="is_current" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_lifecycles_locale_fk" references="core_locales(name)"/>
-            </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
-            <column name="state" type="varchar(50)"/>
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
-
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-<!--        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_state_idx">
             <column name="state"/>
         </createIndex>
 
@@ -593,7 +579,9 @@
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="core_allowed_lifecycles_locale_fk" references="core_locales(name)"/>
             </column>
-            <column name="lifecycle_id" type="varchar(36)"/>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_allowed_lifecycles_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
                 <constraints nullable="false"/>
@@ -620,10 +608,6 @@
             <column name="is_current"/>
         </createIndex>
 
-<!--        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_lifecycle_idx">-->
-<!--            <column name="lifecycle_id"/>-->
-<!--        </createIndex>-->
-
         <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_state_idx">
             <column name="state"/>
         </createIndex>
@@ -632,9 +616,6 @@
         <createTable tableName="core_schema_lock">
             <column name="id" type="int">
                 <constraints primaryKey="true" primaryKeyName="core_schema_lock_pk"/>
-            </column>
-            <column name="locked" type="tinyint">
-                <constraints nullable="false"/>
             </column>
             <column name="locked_by" type="varchar(255)"/>
             <column name="lock_until" type="datetime"/>

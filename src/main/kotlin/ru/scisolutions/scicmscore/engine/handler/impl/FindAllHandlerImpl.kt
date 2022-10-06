@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.engine.handler.impl
 
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
@@ -15,12 +14,12 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollectionMeta
 import ru.scisolutions.scicmscore.engine.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
 @Service
 class FindAllHandlerImpl(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val findAllQueryBuilder: FindAllQueryBuilder,
     private val itemRecDao: ItemRecDao
 ) : FindAllHandler {
@@ -30,7 +29,7 @@ class FindAllHandlerImpl(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, FindAllHook::class.java)
@@ -68,8 +67,8 @@ class FindAllHandlerImpl(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
-        val item = itemService.getByName(itemName)
-        val parentItem = itemService.getByName(parentItemName)
+        val item = itemCache.getOrThrow(itemName)
+        val parentItem = itemCache.getOrThrow(parentItemName)
         val parentId = parentItemRec.id ?: throw IllegalArgumentException("Parent ID not found")
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val paramSource = AttributeSqlParameterSource()
@@ -91,9 +90,5 @@ class FindAllHandlerImpl(
                 pagination = findAllQuery.pagination
             )
         )
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(FindAllHandlerImpl::class.java)
     }
 }

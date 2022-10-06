@@ -4,19 +4,9 @@ import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.util.Acl.Mask
 
 interface PermissionService {
-    fun getDefaultPermission(): Permission
+    fun findById(id: String): Permission?
 
-    fun findIdsForRead(): Set<String>
-
-    fun findIdsForWrite(): Set<String>
-
-    fun findIdsForCreate(): Set<String>
-
-    fun findIdsForDelete(): Set<String>
-
-    fun findIdsForAdministration(): Set<String>
-
-    fun findIdsFor(accessMask: Mask): Set<String>
+    fun findIdsFor(mask: Set<Int>, username: String, roles: Set<String>): Set<String>
 
     fun findAllForRead(): List<Permission>
 

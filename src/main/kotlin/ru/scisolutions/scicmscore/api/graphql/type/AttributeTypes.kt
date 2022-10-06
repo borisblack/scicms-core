@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
@@ -17,7 +17,7 @@ private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) 
 
 @Component
 class AttributeTypes(
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val relationValidator: RelationValidator
 ) {
     fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
@@ -66,7 +66,7 @@ class AttributeTypes(
             AttrType.bool -> TypeNames.BOOLEAN_FILTER_INPUT
             AttrType.array, AttrType.json -> TypeNames.STRING_FILTER_INPUT
             AttrType.media -> {
-                val media = itemService.getMedia()
+                val media = itemCache.getMedia()
                 if (media.dataSource == item.dataSource)
                     TypeName("MediaFiltersInput")
                 else
@@ -74,7 +74,7 @@ class AttributeTypes(
             }
 
             AttrType.location -> {
-                val location = itemService.getLocation()
+                val location = itemCache.getLocation()
                 if (location.dataSource == item.dataSource)
                     TypeName("LocationFiltersInput")
                 else
@@ -84,7 +84,7 @@ class AttributeTypes(
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
-                val targetItem = itemService.getByName(requireNotNull(attribute.target))
+                val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
                 if (targetItem.dataSource == item.dataSource) {
                     val capitalizedTargetItemName = attribute.target.upperFirst()
                     TypeName("${capitalizedTargetItemName}FiltersInput")

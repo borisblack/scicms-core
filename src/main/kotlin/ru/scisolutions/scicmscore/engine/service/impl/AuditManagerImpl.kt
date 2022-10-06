@@ -4,17 +4,17 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.AuditManager
-import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.persistence.service.UserCache
 import java.time.OffsetDateTime
 
 @Service
 class AuditManagerImpl(
-    private val userService: UserService
+    private val userCache: UserCache
 ) : AuditManager {
     override fun assignAuditAttributes(itemRec: ItemRec) {
         val now = OffsetDateTime.now()
         val username = SecurityContextHolder.getContext().authentication.name
-        val currentUser = userService.getByUsername(username)
+        val currentUser = userCache.getOrThrow(username)
 
         with(itemRec) {
             createdAt = now
@@ -26,7 +26,7 @@ class AuditManagerImpl(
 
     override fun assignUpdateAttributes(itemRec: ItemRec) {
         val username = SecurityContextHolder.getContext().authentication.name
-        val currentUser = userService.getByUsername(username)
+        val currentUser = userCache.getOrThrow(username)
 
         with(itemRec) {
             updatedAt = OffsetDateTime.now()

@@ -14,12 +14,12 @@ import ru.scisolutions.scicmscore.engine.model.PurgeHook
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
 @Service
 class PurgeHandlerImpl(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val deleteMediaHelper: DeleteMediaHelper,
     private val deleteLocationHelper: DeleteLocationHelper,
@@ -27,7 +27,7 @@ class PurgeHandlerImpl(
     private val aclItemRecDao: ACLItemRecDao
 ) : PurgeHandler {
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (!item.versioned)
             throw IllegalArgumentException("Item [$itemName] is not versioned so it cannot be purged")
 

@@ -10,16 +10,16 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
 @Service
 class FindOneHandlerImpl(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemCache: ItemCache,
     private val aclItemRecDao: ACLItemRecDao
 ) : FindOneHandler {
     override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, FindOneHook::class.java)
@@ -54,7 +54,7 @@ class FindOneHandlerImpl(
             return RelationResponse()
         }
 
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val itemRec =
             if (isOnlyId(attrNames))

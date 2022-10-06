@@ -7,11 +7,9 @@ interface ItemTemplateService {
 
     fun findByName(name: String): ItemTemplate?
 
-    fun getByName(name: String): ItemTemplate
-
     fun findByNameForWrite(name: String): ItemTemplate?
 
     fun save(itemTemplate: ItemTemplate): ItemTemplate
 
-    fun delete(itemTemplate: ItemTemplate)
+    fun deleteByName(name: String)
 }

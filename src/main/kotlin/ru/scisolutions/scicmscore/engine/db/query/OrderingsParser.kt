@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import java.util.regex.Pattern
 import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 
 @Component
-class OrderingsParser(private val itemService: ItemService) {
+class OrderingsParser(private val itemCache: ItemCache) {
     fun parseOrderings(item: Item, inputSortList: List<String>, schema: DbSchema, query: SelectQuery, table: DbTable) =
         inputSortList.forEach { parseOrdering(item, it, schema, query, table) }
 
@@ -38,11 +38,11 @@ class OrderingsParser(private val itemService: ItemService) {
                     if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
                         throw IllegalArgumentException("Invalid sort attribute")
 
-                    val target = itemService.getByName(requireNotNull(attribute.target))
+                    val target = itemCache.getOrThrow(requireNotNull(attribute.target))
                     addOrdering(target, nestedAttrName, schema, query, table, col, orderDir)
                 }
-                AttrType.media -> addOrdering(itemService.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
-                AttrType.location -> addOrdering(itemService.getLocation(), nestedAttrName, schema, query, table, col, orderDir)
+                AttrType.media -> addOrdering(itemCache.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
+                AttrType.location -> addOrdering(itemCache.getLocation(), nestedAttrName, schema, query, table, col, orderDir)
                 else -> query.addOrdering(col, orderDir)
             }
         }

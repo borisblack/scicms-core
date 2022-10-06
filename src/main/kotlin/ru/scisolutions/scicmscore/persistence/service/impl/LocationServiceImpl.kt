@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Location
 import ru.scisolutions.scicmscore.persistence.repository.LocationRepository
+import ru.scisolutions.scicmscore.persistence.service.LocationService
 import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Service
 @Repository
 @Transactional
-class LocationServiceImpl(private val locationRepository: LocationRepository) :
-    ru.scisolutions.scicmscore.persistence.service.LocationService {
+class LocationServiceImpl(private val locationRepository: LocationRepository) : LocationService {
     @Transactional(readOnly = true)
     override fun findById(id: String): Location? = locationRepository.findById(id).orElse(null)
 

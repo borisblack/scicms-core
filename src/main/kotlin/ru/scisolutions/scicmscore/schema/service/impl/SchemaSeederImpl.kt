@@ -53,7 +53,7 @@ class SchemaSeederImpl(
         val itemTemplateEntities = itemTemplateService.findAll()
         itemTemplateEntities
             .filter { it.name !in itemTemplates }
-            .forEach { itemTemplateService.delete(it) }
+            .forEach { itemTemplateService.deleteByName(it.name) }
     }
 
     private fun deleteAbsentItems(items: Map<String, Item>) {
@@ -62,7 +62,7 @@ class SchemaSeederImpl(
             .filter { it.name !in items }
             .forEach {
                 tableSeeder.delete(it)
-                itemService.delete(it)
+                itemService.deleteByName(it.name)
             }
     }
 

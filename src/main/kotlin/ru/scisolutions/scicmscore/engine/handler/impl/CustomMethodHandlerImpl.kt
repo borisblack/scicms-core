@@ -16,16 +16,18 @@ import ru.scisolutions.scicmscore.engine.model.UpdateHook
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.lang.reflect.Modifier
 
 @Service
 class CustomMethodHandlerImpl(
     private val classService: ClassService,
+    private val itemCache: ItemCache,
     private val itemService: ItemService
 ) : CustomMethodHandler {
     override fun getCustomMethods(itemName: String): Set<String> {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         val implementation = item.implementation
         if (implementation.isNullOrBlank())
             throw IllegalArgumentException("Item [$itemName] has no implementation.")
@@ -53,7 +55,7 @@ class CustomMethodHandlerImpl(
     }
 
     override fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (itemService.findByNameForWrite(item.name) == null)
             throw AccessDeniedException("You are not allowed to call custom method.")
 

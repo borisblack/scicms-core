@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.persistence.repository.MediaRepository
+import ru.scisolutions.scicmscore.persistence.service.MediaService
 import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Service
 @Repository
 @Transactional
-class MediaServiceImpl(private val mediaRepository: MediaRepository) :
-    ru.scisolutions.scicmscore.persistence.service.MediaService {
+class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaService {
     @Transactional(readOnly = true)
     override fun findById(id: String): Media? = mediaRepository.findById(id).orElse(null)
 

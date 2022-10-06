@@ -5,17 +5,17 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
-import ru.scisolutions.scicmscore.persistence.service.AllowedLifecycleService
-import ru.scisolutions.scicmscore.persistence.service.LifecycleService
+import ru.scisolutions.scicmscore.persistence.service.AllowedLifecycleCache
+import ru.scisolutions.scicmscore.persistence.service.LifecycleCache
 
 @Service
 class LifecycleManagerImpl(
-    private val allowedLifecycleService: AllowedLifecycleService,
-    private val lifecycleService: LifecycleService
+    private val allowedLifecycleCache: AllowedLifecycleCache,
+    private val lifecycleCache: LifecycleCache
 ) : LifecycleManager {
     override fun assignLifecycleAttributes(item: Item, itemRec: ItemRec) {
         var lifecycleId = itemRec.lifecycle
-        val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
+        val allowedLifecycles = allowedLifecycleCache.findAllByItemName(item.name)
         if (lifecycleId == null) {
             lifecycleId = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID
             itemRec.lifecycle = lifecycleId
@@ -25,7 +25,7 @@ class LifecycleManagerImpl(
                 throw IllegalArgumentException("Lifecycle [$lifecycleId] is not allowed for item [${item.name}]")
         }
 
-        val lifecycle = lifecycleService.getById(lifecycleId)
+        val lifecycle = lifecycleCache.getOrThrow(lifecycleId)
         val state = itemRec.state
         if (state == null) {
             itemRec.state = lifecycle.startState

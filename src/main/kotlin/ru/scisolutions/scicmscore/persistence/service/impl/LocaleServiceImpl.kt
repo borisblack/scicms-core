@@ -9,8 +9,7 @@ import ru.scisolutions.scicmscore.persistence.service.LocaleService
 @Service
 @Repository
 @Transactional
-class LocaleServiceImpl(private val localeRepository: LocaleRepository) :
-    ru.scisolutions.scicmscore.persistence.service.LocaleService {
+class LocaleServiceImpl(private val localeRepository: LocaleRepository) : LocaleService {
     @Transactional(readOnly = true)
     override fun existsByName(name: String): Boolean = localeRepository.existsByName(name)
 }

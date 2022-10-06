@@ -7,12 +7,6 @@ interface ItemService {
 
     fun findByName(name: String): Item?
 
-    fun getByName(name: String): Item
-
-    fun getMedia(): Item
-
-    fun getLocation(): Item
-
     fun findByNameForWrite(name: String): Item?
 
     fun findByIdForDelete(id: String): Item?
@@ -21,5 +15,5 @@ interface ItemService {
 
     fun save(item: Item): Item
 
-    fun delete(item: Item)
+    fun deleteByName(name: String)
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
+import ru.scisolutions.scicmscore.persistence.service.ItemTemplateCache
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemTemplateMapper
@@ -18,7 +18,8 @@ import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate as ItemTemplat
 @Service
 class ItemTemplateApplier(
     private val schemaProps: SchemaProps,
-    private val itemTemplateService: ItemTemplateService,
+    private val itemTemplateCache: ItemTemplateCache,
+    // private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
     private val schemaLockService: SchemaLockService,
 ) : ModelApplier {
@@ -30,8 +31,8 @@ class ItemTemplateApplier(
 
         validateModel(model)
 
-        val itemTemplateName = model.metadata.name
-        var itemTemplateEntity = itemTemplateService.findByName(itemTemplateName)
+        val name = model.metadata.name
+        var itemTemplateEntity = itemTemplateCache[name]
         if (itemTemplateEntity == null) {
             // schemaLockService.lockOrThrow()
 
@@ -41,23 +42,23 @@ class ItemTemplateApplier(
             }
 
             // Add item template
-            logger.info("Creating the item template [{}]", itemTemplateName)
+            logger.info("Creating the item template [{}]", name)
             itemTemplateEntity = itemTemplateMapper.map(model)
 
-            itemTemplateService.save(itemTemplateEntity)
+            itemTemplateCache[name] = itemTemplateEntity
 
             // schemaLockService.unlockOrThrow()
         } else if (isChanged(model, itemTemplateEntity)) {
             // schemaLockService.lockOrThrow()
 
-            if (model.checksum == null && (itemTemplateEntity.core || itemService.findByNameForWrite(itemTemplateName) == null)) {
+            if (model.checksum == null && (itemTemplateEntity.core || itemService.findByNameForWrite(name) == null)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("You cannot update [$itemTemplateName] item template")
+                throw AccessDeniedException("You cannot update [$name] item template")
             }
 
             logger.info("Updating the item template [{}]", itemTemplateEntity.name)
             itemTemplateMapper.copy(model, itemTemplateEntity)
-            itemTemplateService.save(itemTemplateEntity)
+            itemTemplateCache[name] = itemTemplateEntity
 
             // schemaLockService.unlockOrThrow()
         } else {

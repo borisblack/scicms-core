@@ -20,6 +20,7 @@ import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.Maps
 import java.util.UUID
@@ -27,6 +28,7 @@ import java.util.UUID
 @Service
 class CreateLocalizationHandlerImpl(
     private val classService: ClassService,
+    private val itemCache: ItemCache,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -39,7 +41,7 @@ class CreateLocalizationHandlerImpl(
     private val itemRecDao: ItemRecDao,
 ) : CreateLocalizationHandler {
     override fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (!item.localized)
             throw IllegalArgumentException("Item [$itemName] is not localized")
 

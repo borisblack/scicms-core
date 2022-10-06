@@ -20,12 +20,14 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
 
 @Service
 class CreateHandlerImpl(
     private val classService: ClassService,
+    private val itemCache: ItemCache,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -41,7 +43,7 @@ class CreateHandlerImpl(
         if (itemName in disabledItemNames)
             throw IllegalArgumentException("Item [$itemName] cannot be created.")
 
-        val item = itemService.getByName(itemName)
+        val item = itemCache.getOrThrow(itemName)
         if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
 
