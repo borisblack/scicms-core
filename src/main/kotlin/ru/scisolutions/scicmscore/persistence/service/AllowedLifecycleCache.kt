@@ -3,5 +3,5 @@ package ru.scisolutions.scicmscore.persistence.service
 import ru.scisolutions.scicmscore.persistence.entity.AllowedLifecycle
 
 interface AllowedLifecycleCache {
-    fun findAllByItemName(itemName: String): List<AllowedLifecycle>
+    operator fun get(itemName: String): List<AllowedLifecycle>
 }

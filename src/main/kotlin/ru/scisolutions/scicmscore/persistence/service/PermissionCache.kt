@@ -1,20 +1,17 @@
 package ru.scisolutions.scicmscore.persistence.service
 
-import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.util.Acl.Mask
 
 interface PermissionCache {
-    fun getDefault(): Permission
+    fun idsForRead(): Set<String>
 
-    fun findIdsForRead(): Set<String>
+    fun idsForWrite(): Set<String>
 
-    fun findIdsForWrite(): Set<String>
+    fun idsForCreate(): Set<String>
 
-    fun findIdsForCreate(): Set<String>
+    fun idsForDelete(): Set<String>
 
-    fun findIdsForDelete(): Set<String>
+    fun idsForAdministration(): Set<String>
 
-    fun findIdsForAdministration(): Set<String>
-
-    fun findIdsFor(accessMask: Mask): Set<String>
+    fun idsFor(accessMask: Mask): Set<String>
 }

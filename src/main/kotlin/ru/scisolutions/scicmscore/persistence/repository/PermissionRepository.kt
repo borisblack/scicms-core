@@ -6,17 +6,9 @@ import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.util.Acl
 
 interface PermissionRepository : CrudRepository<Permission, String> {
-    fun getById(id: String): Permission
-
     @Query(
         value = Acl.PERMISSION_IDS_SELECT_SNIPPET,
         nativeQuery = true
     )
     fun findIdsFor(mask: Set<Int>, username: String, roles: Set<String>): Set<String>
-
-    @Query(
-        value = "SELECT * FROM sec_permissions p WHERE p.id IN (${Acl.PERMISSION_IDS_SELECT_SNIPPET})",
-        nativeQuery = true
-    )
-    fun findAllFor(mask: Set<Int>, username: String, roles: Set<String>): List<Permission>
 }

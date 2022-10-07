@@ -22,7 +22,7 @@ class AllowedLifecycleCacheImpl(
         .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
-    override fun findAllByItemName(itemName: String): List<AllowedLifecycle> = cache.get(itemName) {
+    override operator fun get(itemName: String): List<AllowedLifecycle> = cache.get(itemName) {
         allowedLifecycleService.findAllByItemName(itemName)
     }
 }

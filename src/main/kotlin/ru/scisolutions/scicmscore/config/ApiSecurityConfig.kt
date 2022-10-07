@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
@@ -19,6 +20,7 @@ import ru.scisolutions.scicmscore.security.filter.JwtTokenAuthenticationFilter
 import ru.scisolutions.scicmscore.security.filter.UsernamePasswordAuthenticationFilter
 import ru.scisolutions.scicmscore.security.provider.JwtTokenAuthenticationProvider
 import ru.scisolutions.scicmscore.security.provider.UsernamePasswordAuthenticationProvider
+import javax.annotation.PostConstruct
 import javax.servlet.Filter
 import javax.servlet.http.HttpServletResponse
 
@@ -28,6 +30,11 @@ class ApiSecurityConfig(
     private val securityProps: SecurityProps,
     private val usernamePasswordAuthenticationProvider: UsernamePasswordAuthenticationProvider
 ) : WebSecurityConfigurerAdapter() {
+    @PostConstruct
+    fun setGlobalSecurityContext() {
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL)
+    }
+
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()

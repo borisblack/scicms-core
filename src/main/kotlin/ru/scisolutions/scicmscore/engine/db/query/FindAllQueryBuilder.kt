@@ -101,7 +101,7 @@ class FindAllQueryBuilder(
     }
 
     private fun getPermissionCondition(table: DbTable): Condition {
-        val permissionIds = permissionCache.findIdsForRead()
+        val permissionIds = permissionCache.idsForRead()
         val permissionIdCol = DbColumn(table, ItemRec.PERMISSION_COL_NAME, null, null)
         return if (permissionIds.isEmpty()) {
             UnaryCondition.isNull(permissionIdCol)

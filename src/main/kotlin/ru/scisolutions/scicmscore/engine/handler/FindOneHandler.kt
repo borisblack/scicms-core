@@ -8,7 +8,6 @@ interface FindOneHandler {
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
     fun findOneRelated(
-        parentItemName: String,
         parentItemRec: ItemRec,
         parentAttrName: String,
         itemName: String,

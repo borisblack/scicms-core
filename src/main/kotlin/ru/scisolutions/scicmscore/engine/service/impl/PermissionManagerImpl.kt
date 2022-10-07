@@ -14,7 +14,7 @@ class PermissionManagerImpl(private val allowedPermissionCache: AllowedPermissio
     }
 
     override fun checkPermissionId(item: Item, permissionId: String?): String {
-        val allowedPermissions = allowedPermissionCache.findAllByItemName(item.name)
+        val allowedPermissions = allowedPermissionCache[item.name]
         return if (permissionId == null) {
             allowedPermissions.find { it.isDefault }?.targetId ?: Permission.DEFAULT_PERMISSION_ID
         } else {

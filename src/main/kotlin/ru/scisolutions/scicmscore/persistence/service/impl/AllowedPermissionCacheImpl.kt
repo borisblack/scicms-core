@@ -23,7 +23,7 @@ class AllowedPermissionCacheImpl(
         .build()
 
     @Transactional(readOnly = true)
-    override fun findAllByItemName(itemName: String): List<AllowedPermission> = cache.get(itemName) {
+    override operator fun get(itemName: String): List<AllowedPermission> = cache.get(itemName) {
         allowedPermissionService.findAllByItemName(itemName)
     }
 }

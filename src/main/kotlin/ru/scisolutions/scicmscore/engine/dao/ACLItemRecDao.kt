@@ -2,7 +2,6 @@ package ru.scisolutions.scicmscore.engine.dao
 
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import java.util.UUID
 
 interface ACLItemRecDao {
     fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
@@ -20,6 +19,8 @@ interface ACLItemRecDao {
     fun existsByIdForDelete(item: Item, id: String): Boolean
 
     fun existsByIdForAdministration(item: Item, id: String): Boolean
+
+    fun findAllByIdsForRead(item: Item, ids: Set<String>): List<ItemRec>
 
     fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec>
 

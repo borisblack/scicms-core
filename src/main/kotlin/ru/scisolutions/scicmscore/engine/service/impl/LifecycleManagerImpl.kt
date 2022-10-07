@@ -15,7 +15,7 @@ class LifecycleManagerImpl(
 ) : LifecycleManager {
     override fun assignLifecycleAttributes(item: Item, itemRec: ItemRec) {
         var lifecycleId = itemRec.lifecycle
-        val allowedLifecycles = allowedLifecycleCache.findAllByItemName(item.name)
+        val allowedLifecycles = allowedLifecycleCache[item.name]
         if (lifecycleId == null) {
             lifecycleId = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID
             itemRec.lifecycle = lifecycleId

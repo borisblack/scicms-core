@@ -42,7 +42,6 @@ class FindOneHandlerImpl(
     private fun isOnlyId(attrNames: Set<String>): Boolean = attrNames.size == 1 && ID_ATTR_NAME in attrNames
 
     override fun findOneRelated(
-        parentItemName: String,
         parentItemRec: ItemRec,
         parentAttrName: String,
         itemName: String,

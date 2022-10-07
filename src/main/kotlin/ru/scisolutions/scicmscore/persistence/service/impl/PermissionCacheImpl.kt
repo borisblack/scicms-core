@@ -21,20 +21,17 @@ class PermissionCacheImpl(
         .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
-    override fun getDefault(): Permission = permissionService.findById(Permission.DEFAULT_PERMISSION_ID)
-        ?: throw IllegalArgumentException("Permission [${Permission.DEFAULT_PERMISSION_ID}] not found")
+    override fun idsForRead(): Set<String> = idsFor(Mask.READ)
 
-    override fun findIdsForRead(): Set<String> = findIdsFor(Mask.READ)
+    override fun idsForWrite(): Set<String> = idsFor(Mask.WRITE)
 
-    override fun findIdsForWrite(): Set<String> = findIdsFor(Mask.WRITE)
+    override fun idsForCreate(): Set<String> = idsFor(Mask.CREATE)
 
-    override fun findIdsForCreate(): Set<String> = findIdsFor(Mask.CREATE)
+    override fun idsForDelete(): Set<String> = idsFor(Mask.DELETE)
 
-    override fun findIdsForDelete(): Set<String> = findIdsFor(Mask.DELETE)
+    override fun idsForAdministration(): Set<String> = idsFor(Mask.ADMINISTRATION)
 
-    override fun findIdsForAdministration(): Set<String> = findIdsFor(Mask.ADMINISTRATION)
-
-    override fun findIdsFor(accessMask: Mask): Set<String> {
+    override fun idsFor(accessMask: Mask): Set<String> {
         val authentication = SecurityContextHolder.getContext().authentication ?: return emptySet()
         return cache.get("${authentication.name}#${accessMask.name}") {
             permissionService.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
