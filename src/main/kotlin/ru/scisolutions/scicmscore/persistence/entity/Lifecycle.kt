@@ -25,7 +25,7 @@ class Lifecycle(
     var implementation: String? = null,
     var spec: String,
     var checksum: String? = null,
-    var hash: String? = null,
+    var hash: String? = null
 ) : AbstractEntity() {
     @Transient
     private var parsedSpec: LifecycleSpec? = null

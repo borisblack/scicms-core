@@ -1,0 +1,62 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: dashboard
+  displayName: Dashboard
+  pluralName: dashboards
+  displayPluralName: Dashboards
+  dataSource: main
+  tableName: core_dashboards
+  titleAttribute: name
+  description: Dashboards
+  icon: FundOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+      colWidth: 200
+      fieldWidth: 300
+    spec:
+      type: json
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      defaultValue: '{}'
+      colHidden: true
+      colWidth: 300
+      fieldHidden: true
+    checksum:
+      type: string
+      columnName: checksum
+      displayName: Checksum
+      description: Checksum
+      length: 50
+      private: true
+      colWidth: 270
+      fieldWidth: 300
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      private: true
+      length: 50

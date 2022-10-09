@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import ru.scisolutions.scicmscore.model.LifecycleSpec
+import ru.scisolutions.scicmscore.model.DashboardSpec
 import javax.persistence.AttributeConverter
 import javax.persistence.Converter
 
 @Converter
-class LifecycleSpecConverter : AttributeConverter<LifecycleSpec, String> {
-    override fun convertToDatabaseColumn(attribute: LifecycleSpec): String = objectMapper.writeValueAsString(attribute)
+class DashboardSpecConverter : AttributeConverter<DashboardSpec, String> {
+    override fun convertToDatabaseColumn(attribute: DashboardSpec): String = objectMapper.writeValueAsString(attribute)
 
-    override fun convertToEntityAttribute(dbData: String): LifecycleSpec = objectMapper.readValue(dbData, LifecycleSpec::class.java)
+    override fun convertToEntityAttribute(dbData: String): DashboardSpec = objectMapper.readValue(dbData, DashboardSpec::class.java)
 
     companion object {
         private val objectMapper = jacksonObjectMapper().apply {
