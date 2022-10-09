@@ -22,14 +22,8 @@ class Lifecycle(
 
     var description: String? = null,
     var icon: String? = null,
-
-    @Column(name = "start_state", nullable = false)
-    var startState: String,
-
     var implementation: String? = null,
-
     var spec: String,
-
     var checksum: String? = null,
     var hash: String? = null,
 ) : AbstractEntity() {
@@ -42,22 +36,33 @@ class Lifecycle(
             val process = bpmnDefinitions.bpmnProcess
             val taskMap = process.tasks.associateBy { it.id }
             val sequenceFlowMap = process.sequenceFlows.associateBy { it.id }
+
+            val startTransitions = process.startEvent.outgoings.asSequence()
+                .map { sequenceFlowId -> sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow }
+                .filter { sequenceFlow -> sequenceFlow.targetRef != process.endEvent.id }
+                .map { sequenceFlow ->
+                    val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
+                    targetTask.name
+                }
+                .toSet()
+
             val states = process.tasks.associate { task ->
                 task.name to State(
                     task.outgoings.asSequence()
-                        .filter { sequenceFlowId ->
-                            val sequenceFlow = sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow
-                            sequenceFlow.targetRef != process.endEvent.id
-                        }
-                        .map { sequenceFlowId ->
-                            val sequenceFlow = sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow
+                        .map { sequenceFlowId -> sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow }
+                        .filter { sequenceFlow -> sequenceFlow.targetRef != process.endEvent.id }
+                        .map { sequenceFlow ->
                             val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
                             targetTask.name
                         }
                         .toSet()
                 )
             }
-            parsedSpec = LifecycleSpec(states)
+
+            parsedSpec = LifecycleSpec(
+                startEvent = State(startTransitions),
+                states = states
+            )
         }
 
         return parsedSpec as LifecycleSpec

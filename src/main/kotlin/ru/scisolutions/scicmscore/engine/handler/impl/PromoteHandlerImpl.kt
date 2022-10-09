@@ -42,11 +42,12 @@ class PromoteHandlerImpl(
         if (itemRec.state == input.state)
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is already in the [${itemRec.state}] state.")
 
+        val spec = lifecycle.parseSpec()
         if (itemRec.state == null) {
-            if (input.state != lifecycle.startState)
+            if (input.state !in spec.startEvent.transitions)
                 throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
         } else {
-            val currentState = lifecycle.parseSpec().getStateOrThrow(itemRec.state as String)
+            val currentState = spec.getStateOrThrow(itemRec.state as String)
             if (input.state !in currentState.transitions)
                 throw IllegalArgumentException("Transition to the [${input.state}] state is not allowed.")
         }

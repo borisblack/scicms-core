@@ -49,15 +49,6 @@ spec:
       length: 50
       colWidth: 180
       fieldWidth: 300
-    startState:
-      type: string
-      columnName: start_state
-      displayName: Start State
-      description: Start State
-      required: true
-      length: 50
-      colWidth: 160
-      fieldWidth: 300
     implementation:
       type: string
       columnName: implementation

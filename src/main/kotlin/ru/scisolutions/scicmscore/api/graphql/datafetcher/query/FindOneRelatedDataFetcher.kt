@@ -45,9 +45,7 @@ class FindOneRelatedDataFetcher(private val dataLoaderBuilder: DataLoaderBuilder
 
     private fun registerDataLoaderIfAbsent(dfe: DataFetchingEnvironment, itemName: String) {
         if (dfe.getDataLoader<String, ItemRec>(itemName) == null)
-            dfe.dataLoaderRegistry.register(
-                itemName, DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(itemName))
-            )
+            dfe.dataLoaderRegistry.register(itemName, DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(itemName)))
     }
 
     companion object {

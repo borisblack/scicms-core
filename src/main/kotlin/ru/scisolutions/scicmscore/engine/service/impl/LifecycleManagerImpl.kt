@@ -27,11 +27,8 @@ class LifecycleManagerImpl(
 
         val lifecycle = lifecycleCache.getOrThrow(lifecycleId)
         val state = itemRec.state
-        if (state == null) {
-            itemRec.state = lifecycle.startState
-        } else {
-            if (state !in lifecycle.parseSpec().states)
-                throw IllegalArgumentException("Lifecycle [${lifecycle.name}] doesn't contain state [$state]")
+        if (state != null && state !in lifecycle.parseSpec().states) {
+            throw IllegalArgumentException("Lifecycle [${lifecycle.name}] doesn't contain state [$state]")
         }
     }
 }

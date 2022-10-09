@@ -56,7 +56,6 @@
             <column name="config_id" value="${defaultLifecycleId}"/>
             <column name="name" value="Default Lifecycle"/>
             <column name="display_name" value="Default Lifecycle"/>
-            <column name="start_state" value="Draft"/>
             <column name="implementation" value="ru.scisolutions.customimpl.lifecycle.DefaultLifecycleImpl"/>
             <column name="spec">
                 <![CDATA[
