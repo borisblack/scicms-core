@@ -70,39 +70,6 @@ class Attribute(
         }
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(
-            type.name,
-            columnName,
-            enumSet,
-            seqName,
-            confirm,
-            target,
-            relType?.name,
-            intermediate,
-            mappedBy,
-            inversedBy,
-            displayName,
-            description,
-            pattern,
-            defaultValue,
-            required,
-            readOnly,
-            keyed,
-            unique,
-            indexed,
-            private,
-            length,
-            precision,
-            scale,
-            minRange,
-            maxRange,
-            colHidden,
-            colWidth,
-            fieldWidth,
-            fieldHidden
-        )
-
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true
@@ -142,6 +109,39 @@ class Attribute(
             fieldHidden == other.fieldHidden &&
             fieldWidth == other.fieldWidth
     }
+
+    override fun hashCode(): Int =
+        Objects.hash(
+            type.name,
+            columnName,
+            enumSet,
+            seqName,
+            confirm,
+            target,
+            relType?.name,
+            intermediate,
+            mappedBy,
+            inversedBy,
+            displayName,
+            description,
+            pattern,
+            defaultValue,
+            required,
+            readOnly,
+            keyed,
+            unique,
+            indexed,
+            private,
+            length,
+            precision,
+            scale,
+            minRange,
+            maxRange,
+            colHidden,
+            colWidth,
+            fieldWidth,
+            fieldHidden
+        )
 
     enum class Type {
         uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal, date, time, datetime,

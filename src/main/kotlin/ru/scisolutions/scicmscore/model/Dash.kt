@@ -1,10 +1,13 @@
 package ru.scisolutions.scicmscore.model
 
 data class Dash(
-    val name: String = "",
+    val name: String,
     val displayName: String = name,
-    val rows: Int = 0,
-    val cols: Int = 0,
+    val type: String,
+    val x: Int,
+    val y: Int,
+    val w: Int,
+    val h: Int,
     val refreshIntervalSeconds: Int = DEFAULT_REFRESH_INTERVAL_SECONDS,
     val items: List<DashItem> = emptyList()
 ) {

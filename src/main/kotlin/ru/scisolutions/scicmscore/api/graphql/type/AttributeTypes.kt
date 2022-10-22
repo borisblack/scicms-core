@@ -116,7 +116,7 @@ class AttributeTypes(
             AttrType.datetime -> TypeNames.DATETIME
             AttrType.timestamp -> TypeNames.DATETIME
             AttrType.bool -> TypeNames.BOOLEAN
-            AttrType.array, AttrType.json -> TypeNames.STRING
+            AttrType.array, AttrType.json -> TypeNames.JSON
             AttrType.media, AttrType.location -> TypeNames.ID
             AttrType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
