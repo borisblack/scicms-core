@@ -57,9 +57,11 @@ class UpdateHandlerImpl(
         implInstance?.beforeUpdate(itemName, input)
 
         val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
-        val mergedData = Maps.merge(preparedData, prevItemRec).toMutableMap()
-        val filteredData = mergedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
-        val itemRec = ItemRec(filteredData.toMutableMap())
+        val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
+        val itemRec = ItemRec(mergedData).apply {
+            lockedBy = null
+        }
 
         // Assign other attributes
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
