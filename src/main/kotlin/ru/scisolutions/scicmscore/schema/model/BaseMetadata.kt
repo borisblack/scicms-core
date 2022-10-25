@@ -17,9 +17,7 @@ open class BaseMetadata(
         return name == other.name
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(name)
-    }
+    override fun hashCode(): Int = Objects.hash(name)
 
     override fun toString(): String = "BaseMetadata(name=$name)"
 }
