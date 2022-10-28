@@ -7,7 +7,7 @@ import ru.scisolutions.scicmscore.persistence.entity.SchemaLock
 import java.time.LocalDateTime
 
 interface SchemaLockRepository : CrudRepository<SchemaLock, String> {
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(
         "update SchemaLock l " +
         "set l.lockedBy = :lockedBy, l.lockUntil = :lockUntil " +
@@ -15,7 +15,7 @@ interface SchemaLockRepository : CrudRepository<SchemaLock, String> {
     )
     fun lock(lockedBy: String, lockUntil: LocalDateTime): Int
 
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(
         "update SchemaLock l " +
         "set l.lockedBy = null, l.lockUntil = null " +
