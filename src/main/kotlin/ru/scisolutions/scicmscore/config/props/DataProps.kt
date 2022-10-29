@@ -16,8 +16,8 @@ class DataProps {
     var trimStrings: Boolean = true
 
     companion object {
-        private const val DEFAULT_LIMIT = 25
-        private const val MAX_LIMIT = 5
+        private const val DEFAULT_LIMIT = 20
+        private const val MAX_LIMIT = 1000
         private const val DEFAULT_CACHE_EXPIRATION_MINUTES: Long = 10
         private const val DEFAULT_ITEM_TEMPLATE_CACHE_EXPIRATION_MINUTES: Long = 1440
         private const val DEFAULT_ITEM_CACHE_EXPIRATION_MINUTES: Long = 1440
