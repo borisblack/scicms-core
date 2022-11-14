@@ -85,7 +85,7 @@ spec:
       columnName: lifecycle_id
       displayName: Lifecycle
       description: Lifecycle
-#      indexed: true
+      indexed: true
       colHidden: true
       fieldWidth: 400
     state:
