@@ -3,7 +3,9 @@ package ru.scisolutions.scicmscore.schema.model
 import java.util.Objects
 
 open class BaseMetadata(
-    open val name: String // name must start with a lowercase character!
+    // name and pluralName must start with a lowercase character!
+    open val name: String,
+    open val pluralName: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other)
@@ -14,10 +16,10 @@ open class BaseMetadata(
 
         other as BaseMetadata
 
-        return name == other.name
+        return name == other.name && pluralName == other.pluralName
     }
 
-    override fun hashCode(): Int = Objects.hash(name)
+    override fun hashCode(): Int = Objects.hash(name, pluralName)
 
-    override fun toString(): String = "BaseMetadata(name=$name)"
+    override fun toString(): String = "BaseMetadata(name=$name, pluralName=$pluralName)"
 }

@@ -34,7 +34,6 @@ spec:
       displayName: Source Permission
       description: Source Permission
       required: true
-      indexed: true
       colWidth: 180
       fieldWidth: 400
     target:
@@ -46,7 +45,6 @@ spec:
       displayName: Target Identity
       description: Target Identity
       required: true
-      indexed: true
       fieldWidth: 400
     mask:
       type: int
@@ -68,9 +66,3 @@ spec:
       columnName: end_date
       displayName: End Date
       description: End Date
-  indexes:
-    sec_access_source_target_uk:
-      columns:
-        - source_id
-        - target_id
-      unique: true

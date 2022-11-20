@@ -2,6 +2,8 @@ coreVersion: v1
 kind: Item
 includeTemplates:
   - default
+  - versioned
+  - localized
   - intermediate
 metadata:
   name: partChange
@@ -15,8 +17,8 @@ metadata:
   performDdl: true
   versioned: true
   manualVersioning: false
-  notLockable: false
   localized: true
+  notLockable: false
 spec:
   attributes:
     source:
@@ -26,7 +28,6 @@ spec:
       columnName: source_id
       displayName: Source Part
       description: Source Part
-      indexed: true
     target:
       type: relation
       relType: manyToOne
@@ -34,10 +35,3 @@ spec:
       columnName: target_id
       displayName: Target Change Notice
       description: Target Change Notice
-      indexed: true
-  indexes:
-    _source_target_uk:
-      columns:
-        - source_id
-        - target_id
-      unique: true

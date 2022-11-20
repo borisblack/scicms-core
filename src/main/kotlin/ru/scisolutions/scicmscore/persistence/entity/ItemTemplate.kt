@@ -14,6 +14,9 @@ class ItemTemplate(
     @Column(nullable = false)
     var name: String,
 
+    @Column(name = "plural_name", nullable = false)
+    var pluralName: String,
+
     @Column(columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     var core: Boolean = false,

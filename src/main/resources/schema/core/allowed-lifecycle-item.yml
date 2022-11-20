@@ -38,7 +38,6 @@ spec:
       displayName: Source Item
       description: Source Item
       required: true
-      indexed: true
       fieldWidth: 400
     target:
       type: relation
@@ -48,11 +47,4 @@ spec:
       displayName: Target Lifecycle
       description: Target Lifecycle
       required: true
-      indexed: true
       fieldWidth: 400
-  indexes:
-    core_allowed_lifecycles_source_target_uk:
-      columns:
-        - source_id
-        - target_id
-      unique: true

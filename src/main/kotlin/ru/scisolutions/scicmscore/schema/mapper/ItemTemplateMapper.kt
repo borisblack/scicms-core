@@ -10,6 +10,7 @@ class ItemTemplateMapper {
         val metadata = source.metadata
         val target = ItemTemplateEntity(
             name = metadata.name,
+            pluralName = metadata.pluralName
         )
         copy(source, target)
 
@@ -20,6 +21,7 @@ class ItemTemplateMapper {
         val metadata = source.metadata
         
         target.name = metadata.name
+        target.pluralName = metadata.pluralName
         target.core = metadata.core
         target.lifecycleId = Lifecycle.DEFAULT_LIFECYCLE_ID
         target.permissionId = Permission.DEFAULT_PERMISSION_ID

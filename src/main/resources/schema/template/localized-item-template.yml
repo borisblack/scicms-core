@@ -1,0 +1,11 @@
+coreVersion: v1
+kind: ItemTemplate
+metadata:
+  name: localized
+  pluralName: localized
+  core: true
+spec:
+  indexes:
+    _locale_idx:
+      columns:
+        - locale

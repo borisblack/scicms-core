@@ -43,25 +43,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_locales" indexName="core_locales_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_locales" indexName="core_locales_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_locales" indexName="core_locales_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_locales" indexName="core_locales_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_locales" indexName="core_locales_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_locales" indexName="core_locales_lifecycle_idx">
-            <column name="lifecycle_id"/>
-        </createIndex>
-
-        <createIndex tableName="core_locales" indexName="core_locales_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_locales" indexName="core_locales_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_lifecycles-->
         <createTable tableName="core_lifecycles">
@@ -112,21 +108,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_lifecycles" indexName="core_lifecycles_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_lifecycles" indexName="core_lifecycles_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_revision_policies-->
         <createTable tableName="core_revision_policies">
@@ -172,21 +168,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_revision_policies" indexName="core_revision_policies_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_revision_policies" indexName="core_revision_policies_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_item_templates-->
         <createTable tableName="core_item_templates">
@@ -198,6 +194,9 @@
             </column>
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_item_templates_name_uk"/>
+            </column>
+            <column name="plural_name" type="varchar(50)">
+                <constraints nullable="false"/>
             </column>
             <column name="core" type="tinyint"/>
             <column name="spec" type="text" defaultValue="{}">
@@ -234,21 +233,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_item_templates" indexName="core_item_templates_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_item_templates" indexName="core_item_templates_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_item_templates" indexName="core_item_templates_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_item_templates" indexName="core_item_templates_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_item_templates" indexName="core_item_templates_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_item_templates" indexName="core_item_templates_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_item_templates" indexName="core_item_templates_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_items-->
         <createTable tableName="core_items">
@@ -328,21 +327,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_items" indexName="core_items_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_items" indexName="core_items_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_items" indexName="core_items_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_items" indexName="core_items_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_items" indexName="core_items_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_items" indexName="core_items_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_items" indexName="core_items_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_sequences-->
         <createTable tableName="core_sequences">
@@ -396,21 +395,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_sequences" indexName="core_sequences_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_sequences" indexName="core_sequences_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_sequences" indexName="core_sequences_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_sequences" indexName="core_sequences_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_sequences" indexName="core_sequences_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_sequences" indexName="core_sequences_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_sequences" indexName="core_sequences_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_media-->
         <createTable tableName="core_media">
@@ -466,21 +465,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_media" indexName="core_media_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_media" indexName="core_media_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_media" indexName="core_media_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_media" indexName="core_media_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_media" indexName="core_media_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_media" indexName="core_media_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_media" indexName="core_media_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_locations-->
         <createTable tableName="core_locations">
@@ -529,21 +528,21 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_locations" indexName="core_locations_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_locations" indexName="core_locations_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_locations" indexName="core_locations_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_locations" indexName="core_locations_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_locations" indexName="core_locations_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_locations" indexName="core_locations_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_locations" indexName="core_locations_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_allowed_lifecycles-->
         <createTable tableName="core_allowed_lifecycles">
@@ -593,21 +592,21 @@
 
         <addUniqueConstraint tableName="core_allowed_lifecycles" constraintName="core_allowed_lifecycles_source_target_uk" columnNames="source_id, target_id"/>
 
+<!--        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_allowed_lifecycles" indexName="core_allowed_lifecycles_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
 
         <!--core_schema_lock-->
         <createTable tableName="core_schema_lock">
@@ -664,20 +663,20 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+<!--        <createIndex tableName="core_dashboards" indexName="core_dashboards_config_idx">-->
+<!--            <column name="config_id"/>-->
+<!--        </createIndex>-->
+
         <createIndex tableName="core_dashboards" indexName="core_dashboards_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <createIndex tableName="core_dashboards" indexName="core_dashboards_major_rev_idx">
-            <column name="major_rev"/>
-        </createIndex>
+<!--        <createIndex tableName="core_dashboards" indexName="core_dashboards_major_rev_idx">-->
+<!--            <column name="major_rev"/>-->
+<!--        </createIndex>-->
 
-        <createIndex tableName="core_dashboards" indexName="core_dashboards_is_current_idx">
-            <column name="is_current"/>
-        </createIndex>
-
-        <createIndex tableName="core_dashboards" indexName="core_dashboards_state_idx">
-            <column name="state"/>
-        </createIndex>
+<!--        <createIndex tableName="core_dashboards" indexName="core_dashboards_is_current_idx">-->
+<!--            <column name="is_current"/>-->
+<!--        </createIndex>-->
     </changeSet>
 </databaseChangeLog>

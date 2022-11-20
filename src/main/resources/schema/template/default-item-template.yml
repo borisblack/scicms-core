@@ -2,6 +2,7 @@ coreVersion: v1
 kind: ItemTemplate
 metadata:
   name: default
+  pluralName: default
   core: true
 spec:
   attributes:
@@ -23,8 +24,6 @@ spec:
       displayName: Config ID
       description: Config ID
       required: true
-      unique: true
-      indexed: true
       readOnly: true
       length: 36
       colHidden: true
@@ -44,7 +43,6 @@ spec:
       columnName: major_rev
       displayName: Major Rev
       description: Major Revision
-      indexed: true
       defaultValue: A
       length: 50
       colHidden: true
@@ -66,7 +64,6 @@ spec:
       description: Current
       required: true
       defaultValue: 1
-      indexed: true
       readOnly: true
       colHidden: true
     locale:
@@ -74,7 +71,6 @@ spec:
       columnName: locale
       displayName: Locale
       description: Locale
-      indexed: true
       length: 50
       colHidden: true
       fieldWidth: 300
@@ -85,7 +81,6 @@ spec:
       columnName: lifecycle_id
       displayName: Lifecycle
       description: Lifecycle
-      indexed: true
       colHidden: true
       fieldWidth: 400
     state:
@@ -93,7 +88,6 @@ spec:
       columnName: state
       displayName: Lifecycle State
       description: Lifecycle State
-      indexed: true
       length: 50
       colHidden: true
       fieldWidth: 300

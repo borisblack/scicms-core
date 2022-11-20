@@ -2,6 +2,7 @@ coreVersion: v1
 kind: ItemTemplate
 metadata:
   name: intermediate
+  pluralName: intermediate
   core: true
 spec:
   attributes:
@@ -13,3 +14,15 @@ spec:
       colHidden: true
       colWidth: 180
       fieldWidth: 140
+  indexes:
+    _source_idx:
+      columns:
+        - source_id
+    _target_idx:
+      columns:
+        - target_id
+    _source_target_uk:
+      columns:
+        - source_id
+        - target_id
+      unique: true
