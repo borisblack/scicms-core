@@ -97,10 +97,19 @@
           "maxLength": 50
         },
         "tableName": {
-          "description": "Table name (optional, pluralName in lowercase is used by default). Prefixes core_ and sec_ are not allowed",
+          "description": "Table name (optional). Prefixes core_ and sec_ are not allowed",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
+        },
+        "query": {
+          "description": "SQL query (optional)",
+          "type": "string",
+          "minLength": 1
+        },
+        "readOnly": {
+          "description": "Read Only flag (optional, false by default)",
+          "type": "boolean"
         },
         "description": {
           "description": "Description (optional, null by default)",

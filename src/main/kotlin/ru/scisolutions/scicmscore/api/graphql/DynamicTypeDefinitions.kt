@@ -51,6 +51,7 @@ class DynamicTypeDefinitions(
         // Fill Mutation
         val mutationBuilder = ObjectTypeExtensionDefinition.newObjectTypeExtensionDefinition().name("Mutation")
         items.asSequence()
+            .filter { it.readOnly != true }
             .filter { !excludeItemPolicy.excludeFromMutation(it) }
             .forEach {
                 if (!excludeItemPolicy.excludeFromCreateMutation(it))

@@ -272,9 +272,8 @@
             <column name="data_source" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="table_name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="table_name" type="varchar(50)"/>
+            <column name="query" type="text"/>
             <column name="title_attribute" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
@@ -283,6 +282,7 @@
             </column>
             <column name="description" type="varchar(250)"/>
             <column name="icon" type="varchar(50)"/>
+            <column name="read_only" type="tinyint"/>
             <column name="core" type="tinyint"/>
             <column name="perform_ddl" type="tinyint"/>
             <column name="versioned" type="tinyint"/>

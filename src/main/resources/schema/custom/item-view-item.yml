@@ -3,14 +3,15 @@ kind: Item
 includeTemplates:
   - default
 metadata:
-  name: item
-  displayName: Item
-  pluralName: items
-  displayPluralName: Items
+  name: itemView
+  displayName: Item View
+  pluralName: itemViews
+  displayPluralName: Item Views
   dataSource: main
-  tableName: core_items
+  query: SELECT * FROM core_items
   titleAttribute: displayName
-  description: Items
+  description: Item Views
+  readOnly: true
   icon: AppstoreOutlined
   core: true
   performDdl: false
@@ -99,6 +100,11 @@ spec:
       description: Description
       length: 250
       colWidth: 200
+    readOnly:
+      type: bool
+      columnName: read_only
+      displayName: Read Only
+      description: Read Only flag
     icon:
       type: string
       columnName: icon
@@ -107,11 +113,6 @@ spec:
       length: 50
       colWidth: 180
       fieldWidth: 300
-    readOnly:
-      type: bool
-      columnName: read_only
-      displayName: Read Only
-      description: Read Only flag
     core:
       type: bool
       columnName: core

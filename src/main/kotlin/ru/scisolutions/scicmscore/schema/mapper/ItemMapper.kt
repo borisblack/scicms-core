@@ -26,10 +26,12 @@ class ItemMapper {
         target.pluralName = metadata.pluralName
         target.displayPluralName = metadata.displayPluralName.ifBlank { metadata.pluralName }
         target.dataSource = metadata.dataSource.ifBlank { ItemMetadata.MAIN_DATA_SOURCE }
-        target.tableName = metadata.tableName.ifBlank { metadata.pluralName.lowercase() }
+        target.tableName = metadata.tableName
+        target.query = metadata.query
         target.titleAttribute = metadata.titleAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }
         target.includeTemplates = source.includeTemplates
         target.description = metadata.description
+        target.readOnly = metadata.readOnly
         target.icon = metadata.icon
         target.core = metadata.core
         target.performDdl = metadata.performDdl

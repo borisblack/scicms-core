@@ -27,8 +27,11 @@ class Item(
     @Column(name = "data_source", nullable = false)
     var dataSource: String,
 
-    @Column(name = "table_name", nullable = false)
-    var tableName: String = whitespaceRegex.replace(pluralName.lowercase(), "_"),
+    @Column(name = "table_name")
+    var tableName: String? = null,
+
+    @Column(name = "query")
+    var query: String? = null,
 
     @Column(name = "title_attribute", nullable = false)
     var titleAttribute: String = ID_ATTR_NAME,
@@ -37,6 +40,9 @@ class Item(
     var includeTemplates: Set<String> = LinkedHashSet(listOf(ItemTemplate.DEFAULT_ITEM_TEMPLATE_NAME)),
 
     var description: String? = null,
+
+    @Column(name = "read_only")
+    var readOnly: Boolean? = false,
 
     var icon: String? = null,
 
@@ -85,6 +91,11 @@ class Item(
     // val allowedPermissions: MutableSet<Permission> = mutableSetOf()
 ) : AbstractEntity() {
     override fun toString(): String = "Item(name=$name)"
+
+    fun getQueryOrThrow(): String {
+        val q = if (query == null) null else "($query)"
+        return tableName ?: q ?: throw IllegalStateException("Table name anq query are empty")
+    }
 
     companion object {
         const val ITEM_TEMPLATE_ITEM_NAME = "itemTemplate"

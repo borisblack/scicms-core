@@ -49,7 +49,7 @@ class OrderingsParser(private val itemCache: ItemCache) {
     }
 
     private fun addOrdering(target: Item, targetAttrName: String, schema: DbSchema, query: SelectQuery, table: DbTable, col: DbColumn, orderDir: Dir) {
-        val targetTable = schema.addTable(target.tableName)
+        val targetTable = schema.addTable(requireNotNull(target.tableName))
         val targetOrderingAttribute = target.spec.getAttributeOrThrow(targetAttrName)
         val targetOrderingCol = DbColumn(targetTable, targetOrderingAttribute.columnName ?: targetAttrName.lowercase(), null, null)
         val targetIdCol = DbColumn(targetTable, ItemRec.ID_COL_NAME, null, null)

@@ -45,7 +45,7 @@ class FindAllQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
-        val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
+        val table = schema.findTable(item.getQueryOrThrow()) ?: throw IllegalArgumentException("Query for currentItem is not found in schema")
 
         // Version
         val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
@@ -76,7 +76,7 @@ class FindAllQueryBuilder(
     }
 
     private fun buildFindAllInitialQuery(item: Item, filters: ItemFiltersInput?, selectAttrNames: Set<String>, schema: DbSchema, paramSource: AttributeSqlParameterSource): SelectQuery {
-        val table = schema.addTable(item.tableName)
+        val table = schema.addTable(item.getQueryOrThrow())
 
         val columns = selectAttrNames
             .map {
@@ -128,7 +128,7 @@ class FindAllQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
-        val table = schema.findTable(item.tableName) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
+        val table = schema.findTable(requireNotNull(item.tableName)) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
         val parentAttribute = parentItem.spec.getAttributeOrThrow(parentAttrName)
         when (val parentRelation = relationManager.getAttributeRelation(parentItem, parentAttrName, parentAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {

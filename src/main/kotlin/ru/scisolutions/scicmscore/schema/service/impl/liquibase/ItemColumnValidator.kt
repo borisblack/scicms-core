@@ -6,7 +6,7 @@ import ru.scisolutions.scicmscore.schema.model.Item
 
 class ItemColumnValidator {
     fun validate(item: Item, attrName: String, attribute: Attribute) {
-        val tableName = item.metadata.tableName
+        val tableName = requireNotNull(item.metadata.tableName)
         val columnName = attribute.columnName ?: attrName.lowercase()
 
         if (attribute.type == Type.relation && attribute.isCollection())

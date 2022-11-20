@@ -50,7 +50,7 @@ class FilterConditionBuilder(
                 requireNotNull(target) { "The [$attrName] attribute does not have a target field." }
 
                 val targetItem = itemCache.getOrThrow(target)
-                val targetTable = DbTable(schema, targetItem.tableName)
+                val targetTable = DbTable(schema, requireNotNull(targetItem.tableName))
                 val idCol = DbColumn(table, ID_COL_NAME, null, null)
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
                 val relation =

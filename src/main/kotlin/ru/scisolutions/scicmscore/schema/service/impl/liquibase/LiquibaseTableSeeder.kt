@@ -57,6 +57,11 @@ class LiquibaseTableSeeder(
             return
         }
 
+        if (metadata.readOnly) {
+            logger.info("Item [{}] is read only. Updating skipped", metadata.name)
+            return
+        }
+
         if (isTableChanged(item, existingItemEntity)) {
             logger.info("Updating the table [{}]", metadata.tableName)
             updateTable(item, existingItemEntity)
@@ -223,7 +228,7 @@ class LiquibaseTableSeeder(
         val metadata = item.metadata
         val databaseChangeLog = DatabaseChangeLog()
         val changeSet = addChangeSet(databaseChangeLog, "rename-${metadata.tableName}")
-        addRenameTableChange(changeSet, itemEntity.tableName, metadata.tableName) // rename table
+        addRenameTableChange(changeSet, requireNotNull(itemEntity.tableName), requireNotNull(metadata.tableName)) // rename table
         val liquibase = newLiquibase(item.metadata.dataSource, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
@@ -241,7 +246,7 @@ class LiquibaseTableSeeder(
         val databaseChangeLog = DatabaseChangeLog()
         val changeSet = addChangeSet(databaseChangeLog, "update-${itemEntity.tableName}")
 
-        addDropTableChange(changeSet, itemEntity.tableName, false) // drop table
+        addDropTableChange(changeSet, requireNotNull(itemEntity.tableName), false) // drop table
 
         // Run changelog
         val liquibase = newLiquibase(itemEntity.dataSource, databaseChangeLog)
@@ -275,7 +280,7 @@ class LiquibaseTableSeeder(
         val changeSet = addChangeSet(databaseChangeLog, "drop-${existingItemEntity.tableName}-column")
 
         val attribute = existingItemEntity.spec.attributes[attrName] as Attribute
-        addDropColumnChange(changeSet, existingItemEntity.tableName, attribute.columnName ?: attrName.lowercase())
+        addDropColumnChange(changeSet, requireNotNull(existingItemEntity.tableName), attribute.columnName ?: attrName.lowercase())
 
         // Run changelog
         val liquibase = newLiquibase(existingItemEntity.dataSource, databaseChangeLog)

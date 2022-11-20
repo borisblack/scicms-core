@@ -6,7 +6,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 interface ManyToManyRelation : Relation {
     val intermediateItem: Item
 
-    fun getIntermediateTableName(): String = intermediateItem.tableName
+    fun getIntermediateTableName(): String = requireNotNull(intermediateItem.tableName)
 
     fun getIntermediateSourceAttribute(): Attribute = intermediateItem.spec.getAttributeOrThrow(INTERMEDIATE_SOURCE_ATTR_NAME)
 

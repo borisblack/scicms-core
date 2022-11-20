@@ -51,7 +51,7 @@ class DaoQueryBuilder {
     private fun createTable(item: Item): DbTable {
         val spec = DbSpec()
         val schema = spec.addDefaultSchema()
-        return DbTable(schema, item.tableName)
+        return DbTable(schema, item.getQueryOrThrow())
     }
 
     fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {

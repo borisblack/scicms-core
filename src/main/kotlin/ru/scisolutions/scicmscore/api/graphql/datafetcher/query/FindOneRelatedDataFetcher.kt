@@ -25,7 +25,7 @@ class FindOneRelatedDataFetcher(private val dataLoaderBuilder: DataLoaderBuilder
 
         val id = parentItemRec[parentAttrName] as String?
         if (id == null) {
-            logger.debug("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
+            logger.trace("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
             return CompletableFuture.supplyAsync { RelationResponse() }
         }
 

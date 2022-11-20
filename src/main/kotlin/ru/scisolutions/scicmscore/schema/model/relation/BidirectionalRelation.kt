@@ -10,11 +10,11 @@ interface BidirectionalRelation : Relation {
     val inversedItem: Item
     val inversedAttrName: String
 
-    fun getOwningTableName(): String = owningItem.tableName
+    fun getOwningTableName(): String = requireNotNull(owningItem.tableName)
 
     fun getOwningAttribute(): Attribute = owningItem.spec.getAttributeOrThrow(owningAttrName)
 
-    fun getInversedTableName(): String = inversedItem.tableName
+    fun getInversedTableName(): String = requireNotNull(inversedItem.tableName)
 
     fun getInversedAttribute(): Attribute = inversedItem.spec.getAttributeOrThrow(inversedAttrName)
 }
