@@ -5,23 +5,7 @@ metadata:
   pluralName: versioned
   core: true
 spec:
-  attributes:
-    configId:
-      type: string
-      columnName: config_id
-      displayName: Config ID
-      description: Config ID
-      required: true
-      unique: true
-      readOnly: true
-      length: 36
-      colHidden: true
-      colWidth: 290
-      fieldWidth: 300
   indexes:
-    _config_idx:
-      columns:
-        - config_id
     _major_rev_idx:
       columns:
         - major_rev

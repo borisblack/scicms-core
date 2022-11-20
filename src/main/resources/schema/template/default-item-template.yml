@@ -24,6 +24,7 @@ spec:
       displayName: Config ID
       description: Config ID
       required: true
+      unique: true
       readOnly: true
       length: 36
       colHidden: true

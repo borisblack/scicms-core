@@ -68,10 +68,10 @@ class LiquibaseIndexes(
                     return listOf(uniqueIndexFromAttribute(item, attribute))
                 }
             }
-        } else {
-            // Add non-unique indexes
-            attributeIndexes.add(indexFromAttribute(item, attribute))
         }
+
+        // Add non-unique index
+        attributeIndexes.add(indexFromAttribute(item, attribute))
 
         return attributeIndexes
     }
