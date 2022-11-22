@@ -40,7 +40,7 @@ class ApiSecurityConfig(
             .authorizeRequests()
             .antMatchers(
                 "/api/auth/local/register",
-                "/graphiql",
+                "/graphiql/**",
                 // "/schema.json", "/graphql", "/api/**"
             ).permitAll()
             .anyRequest().authenticated()
