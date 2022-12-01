@@ -10,7 +10,6 @@ import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateCache
-import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemMapper
@@ -25,7 +24,6 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 class ItemApplier(
     private val schemaProps: SchemaProps,
     private val itemTemplateCache: ItemTemplateCache,
-    private val itemTemplateService: ItemTemplateService,
     private val itemCache: ItemCache,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
