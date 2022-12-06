@@ -41,7 +41,8 @@ class Item(
 
     var description: String? = null,
 
-    @Column(name = "read_only")
+    @Column(name = "read_only", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     var readOnly: Boolean? = false,
 
     var icon: String? = null,
