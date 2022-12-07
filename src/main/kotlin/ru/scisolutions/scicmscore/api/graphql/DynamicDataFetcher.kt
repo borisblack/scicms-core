@@ -61,7 +61,7 @@ class DynamicDataFetcher(
 
         // Mutation
         items.asSequence()
-            .filter { it.readOnly != true }
+            .filter { !it.readOnly }
             .filter { !excludeItemPolicy.excludeFromMutation(it) }
             .forEach {
                 val capitalizedItemName = it.name.upperFirst()
