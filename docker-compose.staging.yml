@@ -46,7 +46,7 @@ x-backend: &backend
   build:
     <<: *args
     context: .
-    dockerfile: ./.docker/Dockerfiles/app.producction.Dockerfile
+    dockerfile: ./.docker/Dockerfiles/app.production.Dockerfile
     labels:
       <<: *common-labels
 
