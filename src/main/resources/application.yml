@@ -3,18 +3,21 @@ scicms-core:
     data-sources:
       main:
 #        driver-class-name: oracle.jdbc.OracleDriver
-        jdbc-url: jdbc:oracle:thin:@//localhost:1521/xepdb1
-        username: scicms
-        password: scicms
+#        jdbc-url: jdbc:oracle:thin:@//localhost:1521/xepdb1
+#        username: scicms
+#        password: scicms
+        jdbc-url: jdbc:${MAIN_DB_TYPE}://${MAIN_DB_HOST}:${MAIN_DB_PORT:5432}/${MAIN_DB_NAME}
+        username: ${MAIN_DB_USERNAME}
+        password: ${MAIN_DB_PASSWORD}
         maximum-pool-size: 5
         minimum-idle: 1
-      aux:
-#        driver-class-name: org.postgresql.Driver
-        jdbc-url: jdbc:postgresql://localhost:5432/scicms
-        username: scicms
-        password: scicms
-        maximum-pool-size: 5
-        minimum-idle: 1
+#      aux:
+##        driver-class-name: org.postgresql.Driver
+#        jdbc-url: jdbc:postgresql://localhost:5432/scicms
+#        username: scicms
+#        password: scicms
+#        maximum-pool-size: 5
+#        minimum-idle: 1
     default-limit: 20
     max-limit: 1000
     cache-expiration-minutes: 10

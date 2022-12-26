@@ -9,7 +9,7 @@ metadata:
   displayName: Product
   pluralName: products
   displayPluralName: Products
-  dataSource: aux
+  dataSource: main
   tableName: products
   titleAttribute: name
   description: Products
