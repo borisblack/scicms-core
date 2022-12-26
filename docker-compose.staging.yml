@@ -55,6 +55,8 @@ services:
   scicms-core--app--staging:
     <<: *backend
     container_name: scicms-core--app--staging
+    env_file:
+      - .env
     working_dir: /app
 
   scicms-core--nginx--staging:
