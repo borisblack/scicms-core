@@ -58,6 +58,7 @@ server:
   port: 8079
 
 spring:
+  config.import: optional:file:.env
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
   mail:
