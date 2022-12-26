@@ -12,7 +12,7 @@ RUN mkdir /app/.gradle
 RUN chown -R gradle /app
 
 USER gradle
-RUN ./gradlew build
+RUN ./gradlew build -x test
 
 # Deploy
 FROM docker-hub-proxy.iss-reshetnev.ru/openjdk:11
