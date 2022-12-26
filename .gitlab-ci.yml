@@ -13,6 +13,7 @@ build-staging:
   stage: build
   extends: .common_script
   script:
+    - cp $DOTENV_STAGING .env
     - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging build
     - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging push
     - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" pull
@@ -27,6 +28,7 @@ build-production:
   stage: build
   extends: .common_script
   script:
+    - cp $DOTENV_PRODUCTION .env
     - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production build
     - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production push
     - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" pull
