@@ -21,5 +21,4 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/scicms-core-0.1.0-SNAPSHOT.jar scicms-core-0.1.0-SNAPSHOT.jar
 
-ENTRYPOINT ["sleep", "100000000"]
-# ENTRYPOINT ["java", "-jar", "scicms-core-0.1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "scicms-core-0.1.0-SNAPSHOT.jar"]
