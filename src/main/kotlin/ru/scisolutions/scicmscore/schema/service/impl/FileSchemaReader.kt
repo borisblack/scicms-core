@@ -16,7 +16,10 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.io.path.name
-import kotlin.streams.toList
+import kotlin.sequences.filter
+import kotlin.sequences.map
+import kotlin.sequences.toList
+import kotlin.streams.asSequence
 import com.google.common.io.Files as GFiles
 
 @Service
@@ -26,7 +29,7 @@ class FileSchemaReader(
     override fun read(): DbSchema {
         val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")
         logger.info("Reading the models path [{}]", schemaPath)
-        val models = Files.walk(Paths.get(schemaPath))
+        val models = Files.walk(Paths.get(schemaPath)).asSequence()
             .filter(Files::isRegularFile)
             .filter { !it.name.endsWith("schema.json") }
             .map { readModel(it.toFile()) }

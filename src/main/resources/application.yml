@@ -30,7 +30,7 @@ scicms-core:
       base-path: D:/storage
       create-directories: true
   schema:
-    path: src/main/resources/schema
+    path: build/resources/main/schema
     use-file-checksum: false # TODO: true in production to prevent restoring changed (made via API) items from scheme files
     seed-on-init: true
     delete-if-absent: false
