@@ -19,8 +19,7 @@ FROM docker-hub-proxy.iss-reshetnev.ru/openjdk:11
 
 WORKDIR /app
 
-#COPY --from=builder /app/build/libs/scicms-core-0.1.0-SNAPSHOT.jar build/libs/scicms-core-0.1.0-SNAPSHOT.jar
-#COPY --from=builder /app/build/libs/scicms-core-0.1.0-SNAPSHOT.jar build/libs/scicms-core-0.1.0-SNAPSHOT.jar
-COPY --from=builder /app/build build
+COPY --from=builder /app/build/libs/scicms-core-0.1.0-SNAPSHOT.jar build/libs/scicms-core-0.1.0-SNAPSHOT.jar
+COPY --from=builder /app/build/resources/main/schema build/resources/main/schema
 
 ENTRYPOINT ["java", "-jar", "build/libs/scicms-core-0.1.0-SNAPSHOT.jar"]
