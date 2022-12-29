@@ -26,7 +26,7 @@ class FileSchemaReader(
     override fun read(): DbSchema {
         val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")
         logger.info("Reading the models path [{}]", schemaPath)
-        val models = Files.walk(Paths.get(ClassLoader.getSystemResource(schemaPath).toURI()))
+        val models = Files.walk(Paths.get(schemaPath))
             .filter(Files::isRegularFile)
             .filter { !it.name.endsWith("schema.json") }
             .map { readModel(it.toFile()) }
