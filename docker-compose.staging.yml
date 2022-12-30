@@ -73,6 +73,8 @@ services:
         <<: *common-labels
       context: .
       dockerfile: .docker/Dockerfiles/nginx.production.Dockerfile
+    ports:
+      - "443:8079"
     image: ${CI_REGISTRY_IMAGE}/scicms-core--nginx--staging
     container_name: scicms-core--nginx--staging
     depends_on:
