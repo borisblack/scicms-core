@@ -74,7 +74,8 @@ services:
       context: .
       dockerfile: .docker/Dockerfiles/nginx.production.Dockerfile
     ports:
-      - "24202:8079"
+      - "28202:80"
+      - "24202:443"
     image: ${CI_REGISTRY_IMAGE}/scicms-core--nginx--staging
     container_name: scicms-core--nginx--staging
     depends_on:
