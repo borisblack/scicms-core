@@ -10,7 +10,7 @@ metadata:
   dataSource: main
   query: "
     SELECT
-      n.n_nationkey AS id, n.n_nationkey AS config_id,
+      n.n_nationkey::text AS id, n.n_nationkey::text AS config_id,
       n.n_name AS nation_name, SUM(o.o_totalprice) AS total_price,
       1 AS generation, 'A' AS major_rev, NULL AS minor_rev, 1 AS is_current, NULL AS locale,
       NULL AS lifecycle_id, NULL AS state,
