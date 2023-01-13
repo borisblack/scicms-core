@@ -1,6 +1,6 @@
 # Build
-FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:jammy AS builder
-#FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:alpine AS builder
+FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:alpine AS builder
+#FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:jammy AS builder
 
 ARG APP_ROOT
 
