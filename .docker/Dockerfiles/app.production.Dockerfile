@@ -1,5 +1,6 @@
 # Build
-FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:alpine AS builder
+FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:jammy AS builder
+#FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:alpine AS builder
 
 ARG APP_ROOT
 
@@ -16,7 +17,8 @@ USER gradle
 RUN ./gradlew build -x test
 
 # Deploy
-FROM docker-hub-proxy.iss-reshetnev.ru/openjdk:11
+#FROM docker-hub-proxy.iss-reshetnev.ru/openjdk:11
+FROM docker-hub.iss-reshetnev.ru/registry/languages/java/712/gradle:jammy
 
 WORKDIR /app
 

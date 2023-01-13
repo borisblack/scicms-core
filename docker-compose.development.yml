@@ -25,7 +25,7 @@ x-app: &app
 #  volumes:
 #    - ./:/app
   networks:
-    - scicms-core--staging
+    - scicms-core--development
   tmpfs:
     - /tmp
 
@@ -34,9 +34,9 @@ services:
     <<: *app
     <<: *jsonlog-driver
 #    <<: *syslog-driver
-    container_name: scicms-core--staging
+    container_name: scicms-core--development
     working_dir: /app
 
 
 networks:
-  scicms-core--staging:
+  scicms-core--development:
