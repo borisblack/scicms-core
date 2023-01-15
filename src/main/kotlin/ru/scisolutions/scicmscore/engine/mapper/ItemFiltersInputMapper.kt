@@ -34,12 +34,6 @@ class ItemFiltersInputMapper(
                             map(MEDIA_ITEM_NAME, filterValue)
                         else
                             PrimitiveFilterInput.fromMap(attribute.type, filterValue)
-                    } else if (attribute.type == Type.location) {
-                        val location = itemCache.getLocation()
-                        if (location.dataSource == item.dataSource)
-                            map(LOCATION_ITEM_NAME, filterValue)
-                        else
-                            PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == Type.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
@@ -76,7 +70,6 @@ class ItemFiltersInputMapper(
 
     companion object {
         private const val MEDIA_ITEM_NAME = "media"
-        private const val LOCATION_ITEM_NAME = "location"
         private val excludedKeys = setOf(AbstractFilterInput.AND_KEY, AbstractFilterInput.OR_KEY, AbstractFilterInput.NOT_KEY)
     }
 }

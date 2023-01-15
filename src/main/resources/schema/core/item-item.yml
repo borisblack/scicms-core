@@ -58,6 +58,7 @@ spec:
       columnName: data_source
       displayName: Data Source
       description: Data Source
+      required: true
       length: 50
       colWidth: 150
       fieldWidth: 300

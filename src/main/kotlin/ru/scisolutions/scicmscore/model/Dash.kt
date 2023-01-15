@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.model
 
 import java.util.Objects
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 
 data class Dash(
     val name: String,
@@ -10,10 +9,8 @@ data class Dash(
     val y: Int,
     val w: Int,
     val h: Int,
-    val refreshIntervalSeconds: Int = DEFAULT_REFRESH_INTERVAL_SECONDS,
-    val metricType: AttrType,
-    val temporalType: AttrType?,
-    val datasets: List<Dataset> = emptyList()
+    val dataset: String,
+    val refreshIntervalSeconds: Int = DEFAULT_REFRESH_INTERVAL_SECONDS
 ) {
 
     companion object {
@@ -25,17 +22,14 @@ data class Dash(
         if (javaClass != other?.javaClass) return false
 
         other as Dash
-
         return name == other.name &&
             type == other.type &&
             x == other.x &&
             y == other.y &&
             w == other.w &&
             h == other.h &&
-            refreshIntervalSeconds == other.refreshIntervalSeconds &&
-            metricType == other.metricType &&
-            temporalType == other.temporalType &&
-            datasets == other.datasets
+            dataset == other.dataset &&
+            refreshIntervalSeconds == other.refreshIntervalSeconds
     }
 
     override fun hashCode(): Int = Objects.hash(
@@ -45,9 +39,7 @@ data class Dash(
         y,
         w,
         h,
-        refreshIntervalSeconds,
-        metricType,
-        temporalType,
-        datasets
+        dataset,
+        refreshIntervalSeconds
     )
 }

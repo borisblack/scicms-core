@@ -37,9 +37,6 @@ class IncludeAttributePolicy(
         if (attribute.type == Type.media && itemCache.getMedia().dataSource != item.dataSource)
             return false
 
-        if (attribute.type == Type.location && itemCache.getLocation().dataSource != item.dataSource)
-            return false
-
         if (attribute.isCollection()) {
             val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
             if (targetItem.dataSource != item.dataSource)

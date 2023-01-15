@@ -47,7 +47,6 @@ class MediaController(
         @RequestParam("permissions") permissions: Array<String>
     ): List<MediaInfo> {
         val uploadInputList = files.mapIndexed { i, file ->
-            val label = labels[i].ifBlank { null }
             UploadInput(
                 file = file,
                 label = labels[i].ifBlank { null },

@@ -18,7 +18,7 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 
-class DaoQueryBuilder {
+class ItemQueryBuilder {
     fun buildFindByIdQuery(item: Item, id: String, paramSource: AttributeSqlParameterSource, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
         val table = createTable(item)
         val idCol = DbColumn(table, ItemRec.ID_COL_NAME, null, null)

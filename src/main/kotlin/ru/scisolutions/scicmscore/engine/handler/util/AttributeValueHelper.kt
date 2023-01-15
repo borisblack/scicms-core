@@ -13,7 +13,6 @@ import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
-import ru.scisolutions.scicmscore.persistence.service.LocationService
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -26,7 +25,6 @@ class AttributeValueHelper(
     private val dataProps: DataProps,
     private val itemCache: ItemCache,
     private val mediaService: MediaService,
-    private val locationService: LocationService,
     private val itemRecDao: ItemRecDao
 ) {
     fun prepareValuesToSave(item: Item, attributes: Map<String, Any?>): Map<String, Any?> {
@@ -65,7 +63,7 @@ class AttributeValueHelper(
             Type.date, Type.time, Type.datetime, Type.timestamp -> value
             Type.bool -> value
             Type.array, Type.json -> objectMapper.writeValueAsString(value)
-            Type.media, Type.location -> value
+            Type.media -> value
             Type.relation -> if (attribute.isCollection()) (value as List<*>).toSet() else value
         }
     }
@@ -73,7 +71,7 @@ class AttributeValueHelper(
     private fun validateAttributeValue(item: Item, attrName: String, attribute: Attribute, value: Any) {
         when (attribute.type) {
             Type.uuid -> {}
-            Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media, Type.location -> {
+            Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media -> {
                 if (value !is String)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
@@ -110,10 +108,6 @@ class AttributeValueHelper(
                     Type.media -> {
                         if (!mediaService.existsById(value))
                             throw IllegalArgumentException("Media with ID [$value] does not exist")
-                    }
-                    Type.location -> {
-                        if (!locationService.existsById(value))
-                            throw IllegalArgumentException("Location with ID [$value] does not exist")
                     }
                     else -> throw IllegalArgumentException("Unsupported attribute type")
                 }
@@ -251,7 +245,7 @@ class AttributeValueHelper(
             Type.datetime, Type.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
             Type.bool -> value
             Type.array, Type.json -> if (value == null) null else objectMapper.readValue(value as String, Map::class.java)
-            Type.media, Type.location, Type.relation -> value
+            Type.media, Type.relation -> value
         }
     }
 

@@ -6,7 +6,7 @@ import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.db.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
-import ru.scisolutions.scicmscore.engine.db.query.DaoQueryBuilder
+import ru.scisolutions.scicmscore.engine.db.query.ItemQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
@@ -25,7 +25,7 @@ class ItemRecDaoImpl(
 ) : BaseItemRecDao(jdbcTemplateMap), ItemRecDao {
     override fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
         val paramSource = AttributeSqlParameterSource()
-        val query =  daoQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
+        val query =  itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
         return findOne(item, query.toString(), paramSource)
     }
 
@@ -38,7 +38,7 @@ class ItemRecDaoImpl(
 
     private fun countByIds(item: Item, ids: Set<String>): Int {
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildFindByIdsQuery(item, ids, paramSource)
+        val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource)
         return count(item, query.toString(), paramSource)
     }
 
@@ -49,7 +49,7 @@ class ItemRecDaoImpl(
 
     override fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource)
+        val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         return jdbcTemplateMap.getOrThrow(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
@@ -57,7 +57,7 @@ class ItemRecDaoImpl(
 
     override fun insert(item: Item, itemRec: ItemRec): Int {
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
+        val query = itemQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
@@ -84,7 +84,7 @@ class ItemRecDaoImpl(
 
     override fun updateByAttributes(item: Item, whereAttributes: Map<String, Any?>, updateAttributes: Map<String, Any?>): Int {
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
+        val query = itemQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
@@ -94,7 +94,7 @@ class ItemRecDaoImpl(
 
     override fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
+        val query = itemQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         return jdbcTemplateMap.getOrThrow(item.dataSource).update(sql, paramSource)
@@ -205,7 +205,7 @@ class ItemRecDaoImpl(
 
         val user = userCache.getCurrent()
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
+        val query = itemQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
@@ -237,7 +237,7 @@ class ItemRecDaoImpl(
 
         val user = userCache.getCurrent()
         val paramSource = AttributeSqlParameterSource()
-        val query = daoQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
+        val query = itemQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
@@ -249,6 +249,6 @@ class ItemRecDaoImpl(
         private const val UNLOCK_FAIL_MSG = "Cannot unlock item %s with ID [%s]"
 
         private val logger = LoggerFactory.getLogger(ItemRecDaoImpl::class.java)
-        private val daoQueryBuilder = DaoQueryBuilder()
+        private val itemQueryBuilder = ItemQueryBuilder()
     }
 }

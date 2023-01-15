@@ -6,7 +6,6 @@ import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.PurgeHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.handler.util.DeleteLocationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.model.ItemRec
@@ -22,7 +21,6 @@ class PurgeHandlerImpl(
     private val itemCache: ItemCache,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val deleteMediaHelper: DeleteMediaHelper,
-    private val deleteLocationHelper: DeleteLocationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : PurgeHandler {
@@ -44,14 +42,13 @@ class PurgeHandlerImpl(
         val itemRecsToPurge = itemRecDao.findAllByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String)
         logger.info("${itemRecsToPurge.size} item(s) will be purged")
 
-        // Process relations, media and locations
+        // Process relations and media
         itemRecsToPurge.forEach {
             deleteRelationHelper.processRelations(item, it, input.deletingStrategy)
 
             // Can be used by another versions or localizations
             if (!item.versioned && !item.localized) {
                 deleteMediaHelper.processMedia(item, itemRec)
-                deleteLocationHelper.processLocations(item, itemRec)
             }
         }
 

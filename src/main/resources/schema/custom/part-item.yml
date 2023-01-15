@@ -137,12 +137,6 @@ spec:
       displayName: T
       description: T
     # TODO: Remove after testing
-    l:
-      type: location
-      columnName: l
-      displayName: Loc
-      description: Loc
-    # TODO: Remove after testing
     s:
       type: sequence
       seqName: mainSeq

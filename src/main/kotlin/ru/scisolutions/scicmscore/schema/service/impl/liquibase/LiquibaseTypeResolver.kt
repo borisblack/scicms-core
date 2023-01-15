@@ -21,7 +21,7 @@ class LiquibaseTypeResolver {
         itemColumnValidator.validate(item, attrName, attribute)
 
         return when (attribute.type) {
-            Type.uuid, Type.media, Type.location, Type.relation -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
+            Type.uuid, Type.media, Type.relation -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
             Type.string -> VarcharType().apply { addParameter(attribute.length) }.toString()
             Type.text, Type.array, Type.json -> ClobType().toString()
             Type.enum, Type.sequence, Type.email, Type.password -> VarcharType().apply { addParameter(DEFAULT_STRING_LENGTH) }.toString()

@@ -7,7 +7,6 @@ import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.DeleteHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.handler.util.DeleteLocationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.model.DeleteHook
@@ -27,7 +26,6 @@ class DeleteHandlerImpl(
     private val itemCache: ItemCache,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val deleteMediaHelper: DeleteMediaHelper,
-    private val deleteLocationHelper: DeleteLocationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) : DeleteHandler {
@@ -64,7 +62,6 @@ class DeleteHandlerImpl(
         // Can be used by another versions or localizations
         if (!item.versioned && !item.localized) {
             deleteMediaHelper.processMedia(item, itemRec)
-            deleteLocationHelper.processLocations(item, itemRec)
         }
 
         deleteById(item, input.id) // delete

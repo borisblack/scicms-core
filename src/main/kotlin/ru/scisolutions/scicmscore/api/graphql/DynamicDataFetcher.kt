@@ -118,7 +118,7 @@ class DynamicDataFetcher(
     private fun addAttributeDataFetchers(codeRegistryBuilder: GraphQLCodeRegistry.Builder, item: Item) {
         val capitalizedItemName = item.name.upperFirst()
         item.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Type.relation || attribute.type == Type.media || attribute.type == Type.location }
+            .filter { (_, attribute) -> attribute.type == Type.relation || attribute.type == Type.media }
             .forEach { (attrName, attribute) ->
                 if (attribute.type == Type.relation) {
                     if (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne) {

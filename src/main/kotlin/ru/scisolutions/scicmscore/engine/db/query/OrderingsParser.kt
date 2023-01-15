@@ -42,7 +42,6 @@ class OrderingsParser(private val itemCache: ItemCache) {
                     addOrdering(target, nestedAttrName, schema, query, table, col, orderDir)
                 }
                 AttrType.media -> addOrdering(itemCache.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
-                AttrType.location -> addOrdering(itemCache.getLocation(), nestedAttrName, schema, query, table, col, orderDir)
                 else -> query.addOrdering(col, orderDir)
             }
         }
