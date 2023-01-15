@@ -108,6 +108,7 @@ spec:
       displayName: Aggregate Type
       description: Aggregate Type
       enumSet:
+        - countAll
         - count
         - sum
         - avg
