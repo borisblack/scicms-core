@@ -580,10 +580,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="unit" type="varchar(50)"/>
-            <column name="is_aggregate" type="tinyint" defaultValue="0">
-                <constraints nullable="false"/>
-            </column>
-            <column name="aggregate_type" type="varchar(50)"/>
             <column name="temporal_type" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

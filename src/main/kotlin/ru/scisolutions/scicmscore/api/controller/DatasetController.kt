@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.engine.dao.DatasetDao
+import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.service.DatasetService
 
 @RestController
@@ -20,9 +21,10 @@ class DatasetController(
         @PathVariable("datasetName") datasetName: String,
         @RequestParam(name = "start", required = false) start: String?,
         @RequestParam(name = "end", required = false) end: String?,
+        @RequestParam(name = "aggregate", required = false) aggregateType: AggregateType?,
     ): ResponseEntity<*> {
         val dataset = datasetService.findByNameForRead(datasetName) ?: return ResponseEntity.notFound().build<Unit>()
 
-        return ResponseEntity.ok(datasetDao.findAll(dataset, start, end))
+        return ResponseEntity.ok(datasetDao.findAll(dataset, start, end, aggregateType))
     }
 }

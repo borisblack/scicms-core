@@ -95,26 +95,6 @@ spec:
       length: 50
       colWidth: 150
       fieldWidth: 200
-    isAggregate:
-      type: bool
-      columnName: is_aggregate
-      displayName: Aggregate
-      description: Aggregate
-      required: true
-      defaultValue: 0
-    aggregateType:
-      type: enum
-      columnName: aggregate_type
-      displayName: Aggregate Type
-      description: Aggregate Type
-      enumSet:
-        - countAll
-        - count
-        - sum
-        - avg
-        - min
-        - max
-      fieldWidth: 140
     temporalType:
       type: enum
       columnName: temporal_type

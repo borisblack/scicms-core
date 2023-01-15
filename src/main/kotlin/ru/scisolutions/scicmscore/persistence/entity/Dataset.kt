@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -31,13 +30,6 @@ class Dataset(
 
     val unit: String? = null,
 
-    @Column(name = "is_aggregate", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    var isAggregate: Boolean = false,
-
-    @Column(name = "aggregate_type")
-    var aggregateType: AggregateType? = null,
-
     @Column(nullable = false, name = "temporal_type")
     var temporalType: TemporalType,
 
@@ -59,10 +51,6 @@ class Dataset(
 
     enum class TemporalType {
         date, time, datetime, timestamp
-    }
-
-    enum class AggregateType {
-        countAll, count, sum, avg, min, max
     }
 
     fun getQueryOrThrow(): String {

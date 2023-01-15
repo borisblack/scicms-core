@@ -7,15 +7,21 @@ import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
+import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
-import ru.scisolutions.scicmscore.persistence.entity.Dataset.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset.TemporalType
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.OffsetTime
 
 class DatasetQueryBuilder {
-    fun buildFindAllQuery(dataset: Dataset, start: String?, end: String?, paramSource: DatasetSqlParameterSource): SelectQuery {
+    fun buildFindAllQuery(
+        dataset: Dataset,
+        start: String?,
+        end: String?,
+        aggregateType: AggregateType?,
+        paramSource: DatasetSqlParameterSource
+    ): SelectQuery {
         val spec = DbSpec()
         val schema = spec.addDefaultSchema()
         val table = DbTable(schema, dataset.getQueryOrThrow())
@@ -36,8 +42,7 @@ class DatasetQueryBuilder {
             paramSource.addValue(sqlParamName, endTemporal, dataset.temporalType)
         }
 
-        if (dataset.isAggregate) {
-            val aggregateType = dataset.aggregateType ?: throw IllegalArgumentException("Aggregate type is not specified.")
+        if (aggregateType != null) {
             val wrapTable = DbTable(schema, "(${query.validate()})")
             val labelCol = DbColumn(wrapTable, dataset.labelField, null, null)
             val metricCol = DbColumn(wrapTable, dataset.metricField, null, null)
