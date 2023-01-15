@@ -88,7 +88,7 @@ class CustomUserDetailsManager(
         val now = LocalDateTime.now()
         jdbcTemplate!!.update(
             insertGroupAuthoritySql, newId, newId, groupId, authority.authority,
-            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, DEFAULT_IS_CURRENT, DEFAULT_PERMISSION_ID,
+            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
             now, ROOT_USER_ID, now, ROOT_USER_ID
         )
     }
@@ -112,7 +112,7 @@ class CustomUserDetailsManager(
         val now = LocalDateTime.now()
         jdbcTemplate!!.update(
             insertGroupMemberSql, newId, newId, groupId, username,
-            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, DEFAULT_IS_CURRENT, DEFAULT_PERMISSION_ID,
+            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
             now, ROOT_USER_ID, now, ROOT_USER_ID
         )
         userCache.removeUserFromCache(username)
@@ -124,8 +124,8 @@ class CustomUserDetailsManager(
         val username = user.username
         val now = LocalDateTime.now()
         jdbcTemplate!!.update(
-            createUserSql, newId, newId, username, user.password, user.isEnabled,
-            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, DEFAULT_IS_CURRENT, DEFAULT_PERMISSION_ID,
+            createUserSql, newId, newId, username, user.password, if (user.isEnabled) 1 else 0,
+            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
             now, ROOT_USER_ID, now, ROOT_USER_ID
         )
         if (enableAuthorities)
@@ -154,7 +154,7 @@ class CustomUserDetailsManager(
             val newId = generateUUID()
             jdbcTemplate!!.update(
                 createAuthoritySql, newId, newId, user.username, auth.authority,
-                DEFAULT_GENERATION, DEFAULT_MAJOR_REV, DEFAULT_IS_CURRENT, DEFAULT_PERMISSION_ID,
+                DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
                 now, ROOT_USER_ID, now, ROOT_USER_ID
             )
         }
@@ -174,7 +174,7 @@ class CustomUserDetailsManager(
         val now = LocalDateTime.now()
         jdbcTemplate!!.update(
             insertGroupSql, newId, newId, groupName,
-            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, DEFAULT_IS_CURRENT, DEFAULT_PERMISSION_ID,
+            DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
             now, ROOT_USER_ID, now, ROOT_USER_ID
         )
         val groupId = findGroupId(groupName)
@@ -183,7 +183,7 @@ class CustomUserDetailsManager(
             val authority = a.authority
             jdbcTemplate!!.update(
                 insertGroupAuthoritySql, groupAuthorityId, groupAuthorityId, groupId, authority,
-                DEFAULT_GENERATION, DEFAULT_MAJOR_REV, DEFAULT_IS_CURRENT, DEFAULT_PERMISSION_ID,
+                DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
                 now, ROOT_USER_ID, now, ROOT_USER_ID
             )
         }
@@ -247,7 +247,7 @@ class CustomUserDetailsManager(
 
     override fun updateUser(user: UserDetails) {
         validateUserDetails(user)
-        jdbcTemplate!!.update(updateUserSql, user.password, user.isEnabled, user.username)
+        jdbcTemplate!!.update(updateUserSql, user.password, if (user.isEnabled) 1 else 0, user.username)
         if (enableAuthorities) {
             deleteUserAuthorities(user.username)
             insertUserAuthorities(user)
