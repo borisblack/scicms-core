@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.persistence.service.impl
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -32,9 +33,18 @@ class PermissionCacheImpl(
     override fun idsForAdministration(): Set<String> = idsFor(Mask.ADMINISTRATION)
 
     override fun idsFor(accessMask: Mask): Set<String> {
-        val authentication = SecurityContextHolder.getContext().authentication ?: return emptySet()
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication == null) {
+            logger.warn("Authentication is null, returning empty permission set")
+            return emptySet()
+        }
+
         return cache.get("${authentication.name}#${accessMask.name}") {
             permissionService.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(PermissionCacheImpl::class.java)
     }
 }

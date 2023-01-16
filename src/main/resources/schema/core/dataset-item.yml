@@ -113,7 +113,7 @@ spec:
       displayName: Temporal Field
       description: Temporal Field Name
       length: 50
-      colWidth: 150
+      colWidth: 180
       fieldWidth: 300
     latitudeField:
       type: string
@@ -137,5 +137,5 @@ spec:
       displayName: Location Label Field
       description: Location Label Field Name
       length: 50
-      colWidth: 150
+      colWidth: 240
       fieldWidth: 300

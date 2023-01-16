@@ -17,7 +17,7 @@ class DatasetController(
     private val datasetDao: DatasetDao
 ) {
     @GetMapping("/{datasetName}")
-    fun findAll(
+    fun loadData(
         @PathVariable("datasetName") datasetName: String,
         @RequestParam(name = "start", required = false) start: String?,
         @RequestParam(name = "end", required = false) end: String?,
