@@ -25,7 +25,6 @@ class DeleteRelationHelper(
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
     private val deleteMediaHelper: DeleteMediaHelper,
-    private val deleteLocationHelper: DeleteLocationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDaoImpl
 ) {
@@ -89,7 +88,6 @@ class DeleteRelationHelper(
                             // Can be used by another versions or localizations
                             if (!item.versioned && !item.localized) {
                                 deleteMediaHelper.processMedia(item, targetItemRec)
-                                deleteLocationHelper.processLocations(item, targetItemRec)
                             }
 
                             deleteById(targetItem, targetId)

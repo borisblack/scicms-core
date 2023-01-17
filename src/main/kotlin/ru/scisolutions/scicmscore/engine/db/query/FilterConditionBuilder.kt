@@ -42,7 +42,6 @@ class FilterConditionBuilder(
             val target =
                 when (attribute.type) {
                     AttrType.media -> MEDIA_ITEM_NAME
-                    AttrType.location -> LOCATION_ITEM_NAME
                     else -> attribute.target
                 }
 
@@ -56,11 +55,6 @@ class FilterConditionBuilder(
                 val relation =
                     when (attribute.type) {
                         AttrType.media -> OneToOneUnidirectionalRelation(
-                            item = item,
-                            attrName = attrName,
-                            targetItem = targetItem
-                        )
-                        AttrType.location -> OneToOneUnidirectionalRelation(
                             item = item,
                             attrName = attrName,
                             targetItem = targetItem
@@ -249,7 +243,6 @@ class FilterConditionBuilder(
 
     companion object {
         private const val MEDIA_ITEM_NAME = "media"
-        private const val LOCATION_ITEM_NAME = "location"
         private const val ID_COL_NAME = "id"
     }
 }

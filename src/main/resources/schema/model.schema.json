@@ -175,7 +175,7 @@
           "type": "string",
           "enum": [
             "uuid", "string", "text", "enum", "sequence", "email", "password", "int", "long", "float", "double",
-            "decimal", "date", "time", "datetime", "timestamp", "bool", "array", "json", "media", "location", "relation"
+            "decimal", "date", "time", "datetime", "timestamp", "bool", "array", "json", "media", "relation"
           ]
         },
         "columnName": {

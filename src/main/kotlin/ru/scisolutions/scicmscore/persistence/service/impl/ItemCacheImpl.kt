@@ -33,8 +33,6 @@ class ItemCacheImpl(
 
     override fun getMedia(): Item = getOrThrow(MEDIA_ITEM_NAME)
 
-    override fun getLocation(): Item = getOrThrow(LOCATION_ITEM_NAME)
-
     override operator fun set(name: String, item: Item) {
         val savedItem = itemService.save(item)
         cache.put(name, savedItem)
@@ -47,6 +45,5 @@ class ItemCacheImpl(
 
     companion object {
         private const val MEDIA_ITEM_NAME = "media"
-        private const val LOCATION_ITEM_NAME = "location"
     }
 }

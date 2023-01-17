@@ -9,8 +9,6 @@ interface ItemCache {
 
     fun getMedia(): Item
 
-    fun getLocation(): Item
-
     operator fun set(name: String, item: Item)
 
     fun delete(name: String)

@@ -22,7 +22,6 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             AttrType.email,
             AttrType.password,
             AttrType.media,
-            AttrType.location,
             AttrType.relation -> this.addValue(paramName, value, Types.VARCHAR)
             AttrType.bool -> this.addValue(paramName, value, Types.SMALLINT)
             AttrType.int,

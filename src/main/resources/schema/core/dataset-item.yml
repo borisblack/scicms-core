@@ -1,0 +1,141 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: dataset
+  displayName: Dataset
+  pluralName: datasets
+  displayPluralName: Datasets
+  dataSource: main
+  tableName: core_datasets
+  titleAttribute: name
+  description: Datasets
+  icon: DatabaseOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    dataSource:
+      type: string
+      columnName: data_source
+      displayName: Data Source
+      description: Data Source
+      required: true
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    tableName:
+      type: string
+      columnName: table_name
+      displayName: Table Name
+      description: Table Name
+      length: 50
+      colWidth: 180
+      fieldWidth: 300
+    query:
+      type: text
+      columnName: query
+      displayName: Query
+      description: Query
+      colHidden: true
+      colWidth: 300
+    labelField:
+      type: string
+      columnName: label_field
+      displayName: Label Field
+      description: Label Field Name
+      required: true
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    metricType:
+      type: enum
+      columnName: metric_type
+      displayName: Metric Type
+      description: Metric Type
+      enumSet:
+        - int
+        - long
+        - float
+        - double
+        - decimal
+        - date
+        - time
+        - datetime
+        - timestamp
+        - bool
+      required: true
+      colWidth: 150
+      fieldWidth: 200
+    metricField:
+      type: string
+      columnName: metric_field
+      displayName: Metric Field
+      description: Metric Field
+      required: true
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    unit:
+      type: string
+      columnName: unit
+      displayName: Unit
+      description: Unit
+      length: 50
+      colWidth: 150
+      fieldWidth: 200
+    temporalType:
+      type: enum
+      columnName: temporal_type
+      displayName: Temporal Type
+      description: Temporal Type
+      enumSet:
+        - date
+        - time
+        - datetime
+        - timestamp
+      required: true
+      fieldWidth: 140
+    temporalField:
+      type: string
+      columnName: temporal_field
+      displayName: Temporal Field
+      description: Temporal Field Name
+      length: 50
+      colWidth: 180
+      fieldWidth: 300
+    latitudeField:
+      type: string
+      columnName: latitude_field
+      displayName: Latitude Field
+      description: Latitude Field Name
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    longitudeField:
+      type: string
+      columnName: longitude_field
+      displayName: Longitude Field
+      description: Longitude Field Name
+      length: 50
+      colWidth: 150
+      fieldWidth: 300
+    locationLabelField:
+      type: string
+      columnName: location_label_field
+      displayName: Location Label Field
+      description: Location Label Field Name
+      length: 50
+      colWidth: 240
+      fieldWidth: 300
