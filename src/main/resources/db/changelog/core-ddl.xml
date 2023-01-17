@@ -643,6 +643,11 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_dashboards_name_uk"/>
             </column>
+            <column name="spec" type="text" defaultValue="{}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checksum" type="varchar(50)"/>
+            <column name="hash" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>

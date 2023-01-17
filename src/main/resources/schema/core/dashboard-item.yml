@@ -26,14 +26,6 @@ spec:
       length: 50
       colWidth: 150
       fieldWidth: 300
-    displayName:
-      type: string
-      columnName: display_name
-      displayName: Display Name
-      description: Display Name
-      length: 50
-      colWidth: 200
-      fieldWidth: 300
     spec:
       type: json
       columnName: spec
