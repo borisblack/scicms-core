@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.service.impl
 
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -24,7 +25,9 @@ class MediaServiceImpl(private val mediaRepository: MediaRepository) : MediaServ
     override fun findByIdForDelete(id: String): Media? = findByIdFor(id, Mask.DELETE)
 
     private fun findByIdFor(id: String, accessMask: Mask): Media? {
-        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
         return mediaRepository.findByIdWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 
