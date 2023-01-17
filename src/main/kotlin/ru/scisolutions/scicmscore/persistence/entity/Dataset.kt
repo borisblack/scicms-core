@@ -2,6 +2,8 @@ package ru.scisolutions.scicmscore.persistence.entity
 
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Table
 
 @Entity
@@ -22,6 +24,7 @@ class Dataset(
     @Column(nullable = false, name = "label_field")
     var labelField: String,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "metric_type")
     var metricType: MetricType,
 
@@ -30,6 +33,7 @@ class Dataset(
 
     val unit: String? = null,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "temporal_type")
     var temporalType: TemporalType,
 
