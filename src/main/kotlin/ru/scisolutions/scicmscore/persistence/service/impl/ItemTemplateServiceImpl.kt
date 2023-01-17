@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.service.impl
 
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -28,7 +29,9 @@ class ItemTemplateServiceImpl(
     override fun findByNameForWrite(name: String): ItemTemplate? = findByNameWithACL(name, Acl.Mask.WRITE)
 
     private fun findByNameWithACL(name: String, accessMask: Acl.Mask): ItemTemplate? {
-        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
         return itemTemplateRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 

@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.service.impl
 
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -18,7 +19,9 @@ class DatasetServiceImpl(private val datasetRepository: DatasetRepository) : Dat
     override fun findByNameForRead(id: String): Dataset? = findByNameFor(id, Mask.READ)
 
     private fun findByNameFor(id: String, accessMask: Mask): Dataset? {
-        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
         return datasetRepository.findByNameWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 }

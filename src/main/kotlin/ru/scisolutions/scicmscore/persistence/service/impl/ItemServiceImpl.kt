@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.service.impl
 
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -33,12 +34,16 @@ class ItemServiceImpl(
     override fun canCreate(name: String): Boolean = findByNameWithACL(name, Mask.CREATE) != null
 
     private fun findByIdWithACL(id: String, accessMask: Mask): Item? {
-        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
         return itemRepository.findByIdWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 
     private fun findByNameWithACL(name: String, accessMask: Mask): Item? {
-        val authentication = SecurityContextHolder.getContext().authentication ?: return null
+        val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
         return itemRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 
