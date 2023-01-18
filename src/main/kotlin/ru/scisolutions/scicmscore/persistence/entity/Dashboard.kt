@@ -13,9 +13,6 @@ class Dashboard(
     @Column(nullable = false)
     var name: String,
 
-    @Column(name = "display_name")
-    var displayName: String? = name,
-
     @Convert(converter = DashboardSpecConverter::class)
     var spec: DashboardSpec,
 

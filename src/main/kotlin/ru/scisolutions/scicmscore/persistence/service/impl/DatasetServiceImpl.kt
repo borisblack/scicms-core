@@ -16,12 +16,12 @@ import ru.scisolutions.scicmscore.util.Acl.Mask
 @Transactional
 class DatasetServiceImpl(private val datasetRepository: DatasetRepository) : DatasetService {
     @Transactional(readOnly = true)
-    override fun findByNameForRead(id: String): Dataset? = findByNameFor(id, Mask.READ)
+    override fun findByNameForRead(name: String): Dataset? = findByNameFor(name, Mask.READ)
 
-    private fun findByNameFor(id: String, accessMask: Mask): Dataset? {
+    private fun findByNameFor(name: String, accessMask: Mask): Dataset? {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw AccessDeniedException("User is not authenticated")
 
-        return datasetRepository.findByNameWithACL(id, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+        return datasetRepository.findByNameWithACL(name, accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
     }
 }

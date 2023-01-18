@@ -85,7 +85,7 @@ class AttributeValueHelper(
 
                         if (!attribute.pattern.isNullOrBlank()) {
                             val regex = attribute.pattern.toRegex()
-                            if (regex.matches(value))
+                            if (!regex.matches(value))
                                 throw IllegalArgumentException("The string [$value] does not match pattern [${attribute.pattern}]")
                         }
                     }

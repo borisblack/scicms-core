@@ -24,6 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
+      pattern: '^[a-z]\w*$'
       colWidth: 150
       fieldWidth: 300
     dataSource:

@@ -25,7 +25,9 @@ class DatasetQueryBuilder {
         val spec = DbSpec()
         val schema = spec.addDefaultSchema()
         val table = DbTable(schema, dataset.getQueryOrThrow())
-        val query = SelectQuery().addAllColumns()
+        val query = SelectQuery()
+            .addAllColumns()
+            .addFromTable(table)
 
         val temporalCol = DbColumn(table, dataset.temporalField, null, null)
         if (start != null) {
@@ -48,12 +50,15 @@ class DatasetQueryBuilder {
             val metricCol = DbColumn(wrapTable, dataset.metricField, null, null)
             val wrapQuery = SelectQuery()
                 .addCustomColumns(
-                    labelCol,
-                    getFunctionCall(metricCol, aggregateType)
+                    CustomSql("${getFunctionCall(metricCol, aggregateType)} AS ${dataset.metricField}")
                 )
+                .addFromTable(wrapTable)
 
-            if (aggregateType != AggregateType.countAll)
-                wrapQuery.addGroupings(labelCol)
+            if (aggregateType != AggregateType.countAll) {
+                wrapQuery
+                    .addColumns(labelCol)
+                    .addGroupings(labelCol)
+            }
 
             return wrapQuery.validate()
         }
