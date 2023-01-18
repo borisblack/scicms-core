@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.db.query
 import com.healthmarketscience.sqlbuilder.BinaryCondition
 import com.healthmarketscience.sqlbuilder.CustomSql
 import com.healthmarketscience.sqlbuilder.FunctionCall
+import com.healthmarketscience.sqlbuilder.OrderObject.Dir
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
@@ -20,6 +21,7 @@ class DatasetQueryBuilder {
         start: String?,
         end: String?,
         aggregateType: AggregateType?,
+        groupBy: String?,
         paramSource: DatasetSqlParameterSource
     ): SelectQuery {
         val spec = DbSpec()
@@ -29,24 +31,27 @@ class DatasetQueryBuilder {
             .addAllColumns()
             .addFromTable(table)
 
-        val temporalCol = DbColumn(table, dataset.temporalField, null, null)
-        if (start != null) {
-            val startTemporal = parseTemporal(start, dataset.temporalType)
-            val sqlParamName = "${table.alias}_start"
-            query.addCondition(BinaryCondition.greaterThanOrEq(temporalCol, CustomSql(":$sqlParamName")))
-            paramSource.addValue(sqlParamName, startTemporal, dataset.temporalType)
-        }
+        if (dataset.temporalField != null) {
+            val temporalCol = DbColumn(table, dataset.temporalField, null, null)
+            if (start != null) {
+                val startTemporal = parseTemporal(start, dataset.temporalType)
+                val sqlParamName = "${table.alias}_start"
+                query.addCondition(BinaryCondition.greaterThanOrEq(temporalCol, CustomSql(":$sqlParamName")))
+                paramSource.addValue(sqlParamName, startTemporal, dataset.temporalType)
+            }
 
-        if (end != null) {
-            val endTemporal = parseTemporal(end, dataset.temporalType)
-            val sqlParamName = "${table.alias}_end"
-            query.addCondition(BinaryCondition.lessThanOrEq(temporalCol, CustomSql(":$sqlParamName")))
-            paramSource.addValue(sqlParamName, endTemporal, dataset.temporalType)
+            if (end != null) {
+                val endTemporal = parseTemporal(end, dataset.temporalType)
+                val sqlParamName = "${table.alias}_end"
+                query.addCondition(BinaryCondition.lessThanOrEq(temporalCol, CustomSql(":$sqlParamName")))
+                paramSource.addValue(sqlParamName, endTemporal, dataset.temporalType)
+            }
+
+            query.addOrdering(temporalCol, Dir.ASCENDING)
         }
 
         if (aggregateType != null) {
             val wrapTable = DbTable(schema, "(${query.validate()})")
-            val labelCol = DbColumn(wrapTable, dataset.labelField, null, null)
             val metricCol = DbColumn(wrapTable, dataset.metricField, null, null)
             val wrapQuery = SelectQuery()
                 .addCustomColumns(
@@ -55,9 +60,13 @@ class DatasetQueryBuilder {
                 .addFromTable(wrapTable)
 
             if (aggregateType != AggregateType.countAll) {
+                if (groupBy == null)
+                    throw IllegalArgumentException("The groupBy parameter must be specified")
+
+                val groupByCol = DbColumn(wrapTable, groupBy, null, null)
                 wrapQuery
-                    .addColumns(labelCol)
-                    .addGroupings(labelCol)
+                    .addColumns(groupByCol)
+                    .addGroupings(groupByCol)
             }
 
             return wrapQuery.validate()

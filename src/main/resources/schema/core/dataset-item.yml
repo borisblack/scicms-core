@@ -51,15 +51,6 @@ spec:
       description: Query
       colHidden: true
       colWidth: 300
-    labelField:
-      type: string
-      columnName: label_field
-      displayName: Label Field
-      description: Label Field Name
-      required: true
-      length: 50
-      colWidth: 150
-      fieldWidth: 300
     metricType:
       type: enum
       columnName: metric_type

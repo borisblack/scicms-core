@@ -12,9 +12,15 @@ import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 @Service
 class DatasetDaoImpl(private val jdbcTemplateMap: JdbcTemplateMap) : DatasetDao {
-    override fun findAll(dataset: Dataset, start: String?, end: String?, aggregateType: AggregateType?): List<Map<String, Any?>> {
+    override fun findAll(
+        dataset: Dataset,
+        start: String?,
+        end: String?,
+        aggregateType: AggregateType?,
+        groupBy: String?
+    ): List<Map<String, Any?>> {
         val paramSource = DatasetSqlParameterSource()
-        val query = datasetQueryBuilder.buildFindAllQuery(dataset, start, end, aggregateType, paramSource)
+        val query = datasetQueryBuilder.buildFindAllQuery(dataset, start, end, aggregateType, groupBy, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
         val jdbcTemplate = jdbcTemplateMap.getOrThrow(dataset.dataSource)

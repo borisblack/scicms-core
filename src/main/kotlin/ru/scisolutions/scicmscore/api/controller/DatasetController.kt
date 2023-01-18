@@ -22,9 +22,10 @@ class DatasetController(
         @RequestParam(name = "start", required = false) start: String?,
         @RequestParam(name = "end", required = false) end: String?,
         @RequestParam(name = "aggregate", required = false) aggregateType: AggregateType?,
+        @RequestParam(name = "groupBy", required = false) groupBy: String?,
     ): ResponseEntity<*> {
         val dataset = datasetService.findByNameForRead(datasetName) ?: return ResponseEntity.notFound().build<Unit>()
 
-        return ResponseEntity.ok(datasetDao.findAll(dataset, start, end, aggregateType))
+        return ResponseEntity.ok(datasetDao.findAll(dataset, start, end, aggregateType, groupBy))
     }
 }
