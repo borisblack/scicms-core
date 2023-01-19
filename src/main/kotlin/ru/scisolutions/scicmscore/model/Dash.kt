@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.model
 
-import java.util.*
+import java.util.Objects
 
 data class Dash(
     val name: String,
@@ -10,6 +10,7 @@ data class Dash(
     val w: Int,
     val h: Int,
     val dataset: String,
+    val labelField: String,
     val isAggregate: Boolean = false,
     val aggregateType: AggregateType? = null,
     val refreshIntervalSeconds: Int = DEFAULT_REFRESH_INTERVAL_SECONDS
@@ -31,6 +32,9 @@ data class Dash(
             w == other.w &&
             h == other.h &&
             dataset == other.dataset &&
+            labelField == other.labelField &&
+            isAggregate == other.isAggregate &&
+            aggregateType == other.aggregateType &&
             refreshIntervalSeconds == other.refreshIntervalSeconds
     }
 
@@ -42,6 +46,9 @@ data class Dash(
         w,
         h,
         dataset,
+        labelField,
+        isAggregate,
+        aggregateType,
         refreshIntervalSeconds
     )
 }

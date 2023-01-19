@@ -570,9 +570,6 @@
             </column>
             <column name="table_name" type="varchar(50)"/>
             <column name="query" type="text"/>
-            <column name="label_field" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
             <column name="metric_type" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

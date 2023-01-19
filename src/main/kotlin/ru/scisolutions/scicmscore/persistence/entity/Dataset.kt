@@ -10,44 +10,41 @@ import javax.persistence.Table
 @Table(name = "core_datasets")
 class Dataset(
     @Column(nullable = false)
-    var name: String,
+    val name: String,
 
     @Column(name = "data_source", nullable = false)
-    var dataSource: String,
+    val dataSource: String,
 
     @Column(name = "table_name")
-    var tableName: String? = null,
+    val tableName: String? = null,
 
     @Column(name = "query")
-    var query: String? = null,
-
-    @Column(nullable = false, name = "label_field")
-    var labelField: String,
+    val query: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "metric_type")
-    var metricType: MetricType,
+    val metricType: MetricType,
 
     @Column(nullable = false, name = "metric_field")
-    var metricField: String,
+    val metricField: String,
 
     val unit: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "temporal_type")
-    var temporalType: TemporalType,
+    val temporalType: TemporalType,
 
     @Column(name = "temporal_field")
-    var temporalField: String? = null,
+    val temporalField: String? = null,
 
     @Column(name = "latitude_field")
-    var latitudeField: String? = null,
+    val latitudeField: String? = null,
 
     @Column(name = "longitude_field")
-    var longitudeField: String? = null,
+    val longitudeField: String? = null,
 
     @Column(name = "location_label_field")
-    var locationLabelField: String? = null
+    val locationLabelField: String? = null
 ) : AbstractEntity() {
     enum class MetricType {
         int, long, float, double, decimal, date, time, datetime, timestamp, bool

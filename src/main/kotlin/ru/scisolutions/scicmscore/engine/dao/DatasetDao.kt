@@ -4,5 +4,11 @@ import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 interface DatasetDao {
-    fun findAll(dataset: Dataset, start: String?, end: String?, aggregateType: AggregateType?): List<Map<String, Any?>>
+    fun findAll(
+        dataset: Dataset,
+        start: String?,
+        end: String?,
+        aggregateType: AggregateType?,
+        groupBy: String?
+    ): List<Map<String, Any?>>
 }
