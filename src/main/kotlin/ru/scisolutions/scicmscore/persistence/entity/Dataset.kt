@@ -47,7 +47,7 @@ class Dataset(
     val locationLabelField: String? = null
 ) : AbstractEntity() {
     enum class MetricType {
-        int, long, float, double, decimal, date, time, datetime, timestamp, bool
+        int, long, float, double, decimal, date, time, datetime, timestamp
     }
 
     enum class TemporalType {
