@@ -13,7 +13,7 @@ class DatasetFilterInput(
     val gteFilter: Any?,
     val ltFilter: Any?,
     val lteFilter: Any?,
-    val betweenFilter: Pair?,
+    val betweenFilter: Between?,
     val inFilter: List<Any?>?,
     val notInFilter: List<Any?>?,
     val nullFilter: Boolean?,
@@ -22,11 +22,6 @@ class DatasetFilterInput(
     orFilterList: List<DatasetFilterInput>?,
     notFilter: DatasetFilterInput?
 ) : AbstractFilterInput<DatasetFilterInput>(andFilterList, orFilterList, notFilter) {
-    class Pair(
-        val left: Any,
-        val right: Any
-    )
-
     companion object {
         private const val CONTAINS_KEY = "\$contains"
         private const val CONTAINSI_KEY = "\$containsi"
@@ -66,7 +61,7 @@ class DatasetFilterInput(
 
             betweenFilter = filters[BETWEEN_KEY]?.let {
                 if (it is List<*> && it.size == 2 && it[0] != null && it[1] != null)
-                    Pair(it[0] as Any, it[1] as Any)
+                    Between(it[0] as Any, it[1] as Any)
                 else
                     throw IllegalArgumentException("Invalid BETWEEN filter")
             },
