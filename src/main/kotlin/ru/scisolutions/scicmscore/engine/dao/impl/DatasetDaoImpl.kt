@@ -7,12 +7,14 @@ import ru.scisolutions.scicmscore.engine.dao.DatasetDao
 import ru.scisolutions.scicmscore.engine.db.DatasetRowMapper
 import ru.scisolutions.scicmscore.engine.db.query.DatasetQueryBuilder
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
+import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
+import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
 import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 @Service
 class DatasetDaoImpl(private val jdbcTemplateMap: JdbcTemplateMap) : DatasetDao {
-    override fun findAll(
+    override fun load(
         dataset: Dataset,
         start: String?,
         end: String?,
@@ -26,6 +28,10 @@ class DatasetDaoImpl(private val jdbcTemplateMap: JdbcTemplateMap) : DatasetDao 
         val jdbcTemplate = jdbcTemplateMap.getOrThrow(dataset.dataSource)
 
         return jdbcTemplate.query(sql, paramSource, DatasetRowMapper())
+    }
+
+    override fun load(dataset: Dataset, input: DatasetInput): DatasetResponse {
+        TODO("Not yet implemented")
     }
 
     companion object {

@@ -49,6 +49,10 @@ class PrimitiveFilterInput(
         private const val NULL_KEY = "null"
         private const val NOT_NULL_KEY = "notNull"
 
+        const val AND_KEY = "and"
+        const val OR_KEY = "or"
+        const val NOT_KEY = "not"
+
         fun fromMap(attrType: AttrType, filters: Map<String, Any>): PrimitiveFilterInput = PrimitiveFilterInput(
             attrType = attrType,
             containsFilter = filters[CONTAINS_KEY]?.toString(),
@@ -65,15 +69,18 @@ class PrimitiveFilterInput(
             lteFilter = filters[LTE_KEY],
 
             betweenFilter = filters[BETWEEN_KEY]?.let {
-                if (it is List<*> && it.size == 2 && it[0] != null && it[1] != null) Pair(it[0] as Any, it[1] as Any) else null
+                if (it is List<*> && it.size == 2 && it[0] != null && it[1] != null)
+                    Pair(it[0] as Any, it[1] as Any)
+                else
+                    throw IllegalArgumentException("Invalid BETWEEN filter")
             },
 
             inFilter = filters[IN_KEY]?.let {
-                if (it is List<*>) it.filterNotNull() else null
+                if (it is List<*>) it.filterNotNull() else throw IllegalArgumentException("Invalid IN filter")
             },
 
             notInFilter = filters[NOT_IN_KEY]?.let {
-                if (it is List<*>) it.filterNotNull() else null
+                if (it is List<*>) it.filterNotNull() else throw IllegalArgumentException("Invalid NOT IN filter")
             },
 
             nullFilter = filters[NULL_KEY] as Boolean?,
@@ -83,20 +90,25 @@ class PrimitiveFilterInput(
                 if (list is List<*>) {
                     list.filterIsInstance<Map<*, *>>()
                         .map { fromMap(attrType, it as Map<String, Any>) }
-                } else
-                    null
+                } else {
+                    throw IllegalArgumentException("Invalid AND clause")
+                }
             },
 
             orFilterList = filters[OR_KEY]?.let { list ->
                 if (list is List<*>) {
                     list.filterIsInstance<Map<*, *>>()
                         .map { fromMap(attrType, it as Map<String, Any>) }
-                } else
-                    null
+                } else {
+                    throw IllegalArgumentException("Invalid OR clause")
+                }
             },
 
             notFilter = filters[NOT_KEY]?.let {
-                if (it is Map<*, *>) fromMap(attrType, it as Map<String, Any>) else null
+                if (it is Map<*, *>)
+                    fromMap(attrType, it as Map<String, Any>)
+                else
+                    throw IllegalArgumentException("Invalid NOT clause")
             }
         )
     }

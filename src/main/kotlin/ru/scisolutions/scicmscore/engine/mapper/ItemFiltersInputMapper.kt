@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
+import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput.Companion.AND_KEY
+import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput.Companion.NOT_KEY
+import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput.Companion.OR_KEY
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
@@ -48,17 +51,17 @@ class ItemFiltersInputMapper(
                     } else PrimitiveFilterInput.fromMap(attribute.type, filterValue)
                 }
 
-        val andFiltersList = itemFiltersMapOfLists[AbstractFilterInput.AND_KEY]?.let { list ->
+        val andFiltersList = itemFiltersMapOfLists[AND_KEY]?.let { list ->
             list.filterIsInstance<Map<*, *>>()
                 .map { map(item, it as Map<String, Any>) } // recursive
         }
 
-        val orFiltersList = itemFiltersMapOfLists[AbstractFilterInput.OR_KEY]?.let { list ->
+        val orFiltersList = itemFiltersMapOfLists[OR_KEY]?.let { list ->
             list.filterIsInstance<Map<*, *>>()
                 .map { map(item, it as Map<String, Any>) } // recursive
         }
 
-        val notFilters = itemFiltersMapOfMaps[AbstractFilterInput.NOT_KEY]?.let { map(item, it) } // recursive
+        val notFilters = itemFiltersMapOfMaps[NOT_KEY]?.let { map(item, it) } // recursive
 
         return ItemFiltersInput(
             attributeFilters = attributeFilters,
@@ -70,6 +73,6 @@ class ItemFiltersInputMapper(
 
     companion object {
         private const val MEDIA_ITEM_NAME = "media"
-        private val excludedKeys = setOf(AbstractFilterInput.AND_KEY, AbstractFilterInput.OR_KEY, AbstractFilterInput.NOT_KEY)
+        private val excludedKeys = setOf(AND_KEY, OR_KEY, NOT_KEY)
     }
 }
