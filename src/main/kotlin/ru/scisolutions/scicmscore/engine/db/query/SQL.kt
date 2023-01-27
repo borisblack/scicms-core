@@ -19,4 +19,28 @@ object SQL {
             is OffsetDateTime -> JdbcEscape.timestamp(value)
             else -> value
         }
+
+    fun toSqlValueHeuristic(value: Any?) =
+        when (value) {
+            is String -> {
+                if (Numeric.isInt(value)) {
+                    value.toInt()
+                } else if (Numeric.isLong(value)) {
+                    value.toLong()
+                } else if (Numeric.isFloat(value)) {
+                    value.toFloat()
+                } else if (Numeric.isDouble(value)) {
+                    value.toDouble()
+                } else if (value == "true" || value == "false") {
+                    value.toBoolean()
+                } else if (DateTime.isDate(value)) {
+                    JdbcEscape.date(DateTime.parseDate(value))
+                } else if (DateTime.isTime(value)) {
+                    JdbcEscape.timestamp(DateTime.parseTime(value).atDate(LocalDate.EPOCH)) // JdbcEscape.time not works on Oracle DATE type
+                } else if (DateTime.isDateTime(value)) {
+                    JdbcEscape.timestamp(DateTime.parseDateTime(value))
+                } else value
+            }
+            else -> toSqlValue(value)
+        }
 }

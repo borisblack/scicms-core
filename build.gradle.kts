@@ -20,8 +20,7 @@ configurations {
 }
 
 repositories {
-   // mavenCentral()
-    maven(url = "https://nexus.iss-reshetnev.ru/repository/maven-central")
+   mavenCentral()
 }
 
 val jacksonVersion: String by project

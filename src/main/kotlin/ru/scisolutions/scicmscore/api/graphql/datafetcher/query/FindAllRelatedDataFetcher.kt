@@ -27,7 +27,7 @@ class FindAllRelatedDataFetcher(
         val parentAttrName = dfe.field.name
         val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
         val selectAttrNames = dfe.selectDataFields()
-        val selectPaginationFields = dfe.selectionSet.getFields("pagination/*").asSequence()
+        val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
             .map { it.name }
             .toSet()
 

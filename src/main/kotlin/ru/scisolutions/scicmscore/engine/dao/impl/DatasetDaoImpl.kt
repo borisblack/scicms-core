@@ -7,7 +7,6 @@ import ru.scisolutions.scicmscore.engine.dao.DatasetDao
 import ru.scisolutions.scicmscore.engine.db.DatasetRowMapper
 import ru.scisolutions.scicmscore.engine.db.query.DatasetQueryBuilder
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
-import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 @Service
@@ -15,22 +14,6 @@ class DatasetDaoImpl(
     private val jdbcTemplateMap: JdbcTemplateMap,
     private val datasetQueryBuilder: DatasetQueryBuilder
 ) : DatasetDao {
-    override fun load(
-        dataset: Dataset,
-        start: String?,
-        end: String?,
-        aggregateType: AggregateType?,
-        groupBy: String?
-    ): List<Map<String, Any?>> {
-        val paramSource = DatasetSqlParameterSource()
-        val query = datasetQueryBuilder.buildLoadQuery(dataset, start, end, aggregateType, groupBy, paramSource)
-        val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        val jdbcTemplate = jdbcTemplateMap.getOrThrow(dataset.dataSource)
-
-        return jdbcTemplate.query(sql, paramSource, DatasetRowMapper())
-    }
-
     override fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> {
         logger.debug("Running SQL: {}", sql)
         return jdbcTemplateMap.getOrThrow(dataset.dataSource).query(sql, paramSource, DatasetRowMapper())

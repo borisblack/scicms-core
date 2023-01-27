@@ -2,11 +2,11 @@ package ru.scisolutions.scicmscore.engine.mapper
 
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput
+import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Companion.AND_KEY
+import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Companion.NOT_KEY
+import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Companion.OR_KEY
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
-import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
-import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput.Companion.AND_KEY
-import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput.Companion.NOT_KEY
-import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput.Companion.OR_KEY
+import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
 import ru.scisolutions.scicmscore.model.Attribute.Type
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
@@ -17,12 +17,12 @@ class ItemFiltersInputMapper(
     private val itemCache: ItemCache,
     private val relationValidator: RelationValidator
 ) {
-    fun map(itemName: String, itemFiltersMap: Map<String, Any>): ItemFiltersInput {
+    fun map(itemName: String, itemFiltersMap: Map<String, Any>, opPrefix: String = ""): ItemFiltersInput {
         val item = itemCache.getOrThrow(itemName)
-        return map(item, itemFiltersMap)
+        return map(item, itemFiltersMap, opPrefix)
     }
 
-    private fun map(item: Item, itemFiltersMap: Map<String, Any>): ItemFiltersInput {
+    private fun map(item: Item, itemFiltersMap: Map<String, Any>, opPrefix: String = ""): ItemFiltersInput {
         val itemFiltersMapOfMaps = itemFiltersMap.filterValues { it is Map<*, *> } as Map<String, Map<String, Any>>
         val itemFiltersMapOfLists = itemFiltersMap.filterValues { it is List<*> } as Map<String, List<Any>>
 
@@ -34,34 +34,34 @@ class ItemFiltersInputMapper(
                     if (attribute.type == Type.media) {
                         val media = itemCache.getMedia()
                         if (media.dataSource == item.dataSource)
-                            map(MEDIA_ITEM_NAME, filterValue)
+                            map(MEDIA_ITEM_NAME, filterValue, opPrefix)
                         else
-                            PrimitiveFilterInput.fromMap(attribute.type, filterValue)
+                            TypedPrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == Type.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
                         if (targetItem.dataSource == item.dataSource) {
-                            map(attribute.target, filterValue) // recursive
+                            map(attribute.target, filterValue, opPrefix) // recursive
                         } else {
                             if (attribute.isCollection())
                                 throw IllegalArgumentException("Filtering collections from different datasource is not supported")
 
-                            PrimitiveFilterInput.fromMap(attribute.type, filterValue)
+                            TypedPrimitiveFilterInput.fromMap(attribute.type, filterValue)
                         }
-                    } else PrimitiveFilterInput.fromMap(attribute.type, filterValue)
+                    } else TypedPrimitiveFilterInput.fromMap(attribute.type, filterValue)
                 }
 
-        val andFiltersList = itemFiltersMapOfLists[AND_KEY]?.let { list ->
+        val andFiltersList = itemFiltersMapOfLists["${opPrefix}$AND_KEY"]?.let { list ->
             list.filterIsInstance<Map<*, *>>()
-                .map { map(item, it as Map<String, Any>) } // recursive
+                .map { map(item, it as Map<String, Any>, opPrefix) } // recursive
         }
 
-        val orFiltersList = itemFiltersMapOfLists[OR_KEY]?.let { list ->
+        val orFiltersList = itemFiltersMapOfLists["${opPrefix}$OR_KEY"]?.let { list ->
             list.filterIsInstance<Map<*, *>>()
-                .map { map(item, it as Map<String, Any>) } // recursive
+                .map { map(item, it as Map<String, Any>, opPrefix) } // recursive
         }
 
-        val notFilters = itemFiltersMapOfMaps[NOT_KEY]?.let { map(item, it) } // recursive
+        val notFilters = itemFiltersMapOfMaps["${opPrefix}$NOT_KEY"]?.let { map(item, it, opPrefix) } // recursive
 
         return ItemFiltersInput(
             attributeFilters = attributeFilters,

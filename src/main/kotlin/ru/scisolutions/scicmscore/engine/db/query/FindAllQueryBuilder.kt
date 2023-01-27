@@ -34,7 +34,7 @@ class FindAllQueryBuilder(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val itemPaginator: ItemPaginator,
     private val relationManager: RelationManager,
-    private val orderingsParser: OrderingsParser
+    private val orderingsParser: ItemOrderingsParser
 ) {
     class FindAllQuery(
         val sql: String,
@@ -66,7 +66,7 @@ class FindAllQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
+            orderingsParser.parseOrderings(item, input.sort, schema, table, query)
         }
 
         return FindAllQuery(
@@ -181,7 +181,7 @@ class FindAllQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
+            orderingsParser.parseOrderings(item, input.sort, schema, table, query)
         }
 
         return FindAllQuery(

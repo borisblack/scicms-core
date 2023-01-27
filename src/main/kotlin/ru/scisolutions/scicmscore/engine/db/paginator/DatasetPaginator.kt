@@ -16,7 +16,7 @@ class DatasetPaginator(
 ) : AbstractPaginator(dataProps) {
     fun paginate(
         dataset: Dataset,
-        paginationInput: PaginationInput?,
+        paginationInput: PaginationInput,
         query: SelectQuery,
         paramSource: DatasetSqlParameterSource
     ): Pagination {

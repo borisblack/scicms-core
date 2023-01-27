@@ -15,7 +15,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
-import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
+import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
 import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
@@ -111,7 +111,7 @@ class ItemFilterConditionBuilder(
                     }
                 }
                 nestedConditions.add(newFilterCondition(targetItem, attrFilter, schema, targetTable, query, paramSource))
-            } else if (attrFilter is PrimitiveFilterInput) {
+            } else if (attrFilter is TypedPrimitiveFilterInput) {
                 val column = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
                 nestedConditions.add(newPrimitiveCondition(attrFilter, table, column, paramSource))
             }
@@ -134,107 +134,107 @@ class ItemFilterConditionBuilder(
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
     }
 
-    private fun newPrimitiveCondition(primitiveFilterInput: PrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
+    private fun newPrimitiveCondition(typedPrimitiveFilterInput: TypedPrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
         val nestedConditions = mutableListOf<Condition>()
         val sqlParamName = "${table.alias}_${column.name}"
 
-        primitiveFilterInput.containsFilter?.let {
+        typedPrimitiveFilterInput.containsFilter?.let {
             nestedConditions.add(BinaryCondition.like(column, "%$it%"))
         }
 
-        primitiveFilterInput.containsiFilter?.let {
+        typedPrimitiveFilterInput.containsiFilter?.let {
             nestedConditions.add(BinaryCondition.like(CustomSql("LOWER(${table.alias}.${column.name})"), "%${it.lowercase()}%"))
         }
 
-        primitiveFilterInput.notContainsFilter?.let {
+        typedPrimitiveFilterInput.notContainsFilter?.let {
             nestedConditions.add(BinaryCondition.notLike(column, "%$it%"))
         }
 
-        primitiveFilterInput.notContainsiFilter?.let {
+        typedPrimitiveFilterInput.notContainsiFilter?.let {
             nestedConditions.add(BinaryCondition.notLike(CustomSql("LOWER(${table.alias}.${column.name})"), "%${it.lowercase()}%"))
         }
 
-        primitiveFilterInput.startsWithFilter?.let {
+        typedPrimitiveFilterInput.startsWithFilter?.let {
             nestedConditions.add(BinaryCondition.like(column, "$it%"))
         }
 
-        primitiveFilterInput.endsWithFilter?.let {
+        typedPrimitiveFilterInput.endsWithFilter?.let {
             nestedConditions.add(BinaryCondition.like(column, "%$it"))
         }
 
-        primitiveFilterInput.eqFilter?.let {
+        typedPrimitiveFilterInput.eqFilter?.let {
             val eqSqlParamName = "${sqlParamName}_eq"
             nestedConditions.add(BinaryCondition.equalTo(column, CustomSql(":$eqSqlParamName")))
-            paramSource.addValue(eqSqlParamName, it, primitiveFilterInput.attrType)
+            paramSource.addValue(eqSqlParamName, it, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.neFilter?.let {
+        typedPrimitiveFilterInput.neFilter?.let {
             val neSqlParamName = "${sqlParamName}_ne"
             nestedConditions.add(BinaryCondition.notEqualTo(column, CustomSql(":$neSqlParamName")))
-            paramSource.addValue(neSqlParamName, it, primitiveFilterInput.attrType)
+            paramSource.addValue(neSqlParamName, it, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.gtFilter?.let {
+        typedPrimitiveFilterInput.gtFilter?.let {
             val gtSqlParamName = "${sqlParamName}_gt"
             nestedConditions.add(BinaryCondition.greaterThan(column, CustomSql(":$gtSqlParamName")))
-            paramSource.addValue(gtSqlParamName, it, primitiveFilterInput.attrType)
+            paramSource.addValue(gtSqlParamName, it, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.gteFilter?.let {
+        typedPrimitiveFilterInput.gteFilter?.let {
             val gteSqlParamName = "${sqlParamName}_gte"
             nestedConditions.add(BinaryCondition.greaterThanOrEq(column, CustomSql(":$gteSqlParamName")))
-            paramSource.addValue(gteSqlParamName, it, primitiveFilterInput.attrType)
+            paramSource.addValue(gteSqlParamName, it, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.ltFilter?.let {
+        typedPrimitiveFilterInput.ltFilter?.let {
             val ltSqlParamName = "${sqlParamName}_lt"
             nestedConditions.add(BinaryCondition.lessThan(column, CustomSql(":$ltSqlParamName")))
-            paramSource.addValue(ltSqlParamName, it, primitiveFilterInput.attrType)
+            paramSource.addValue(ltSqlParamName, it, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.lteFilter?.let {
+        typedPrimitiveFilterInput.lteFilter?.let {
             val lteSqlParamName = "${sqlParamName}_lte"
             nestedConditions.add(BinaryCondition.lessThanOrEq(column, CustomSql(":$lteSqlParamName")))
-            paramSource.addValue(lteSqlParamName, it, primitiveFilterInput.attrType)
+            paramSource.addValue(lteSqlParamName, it, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.betweenFilter?.let {
+        typedPrimitiveFilterInput.betweenFilter?.let {
             val leftSqlParamName = "${sqlParamName}_left"
             val rightSqlParamName = "${sqlParamName}_right"
             nestedConditions.add(BetweenCondition(column, CustomSql(":$leftSqlParamName"), CustomSql(":$rightSqlParamName")))
-            paramSource.addValue(leftSqlParamName, it.left, primitiveFilterInput.attrType)
-            paramSource.addValue(rightSqlParamName, it.right, primitiveFilterInput.attrType)
+            paramSource.addValue(leftSqlParamName, it.left, typedPrimitiveFilterInput.attrType)
+            paramSource.addValue(rightSqlParamName, it.right, typedPrimitiveFilterInput.attrType)
         }
 
-        primitiveFilterInput.inFilter?.let { list ->
+        typedPrimitiveFilterInput.inFilter?.let { list ->
             val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
             nestedConditions.add(InCondition(column, *arr))
         }
 
-        primitiveFilterInput.notInFilter?.let { list ->
+        typedPrimitiveFilterInput.notInFilter?.let { list ->
             val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
             nestedConditions.add(NotCondition(InCondition(column, *arr)))
         }
 
-        if (primitiveFilterInput.nullFilter == true) {
+        if (typedPrimitiveFilterInput.nullFilter == true) {
             nestedConditions.add(UnaryCondition.isNull(column))
         }
 
-        if (primitiveFilterInput.notNullFilter == true) {
+        if (typedPrimitiveFilterInput.notNullFilter == true) {
             nestedConditions.add(UnaryCondition.isNotNull(column))
         }
 
-        primitiveFilterInput.andFilterList?.let { list ->
+        typedPrimitiveFilterInput.andFilterList?.let { list ->
             val andConditions = list.map { newPrimitiveCondition(it, table, column, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
         }
 
-        primitiveFilterInput.orFilterList?.let { list ->
+        typedPrimitiveFilterInput.orFilterList?.let { list ->
             val orConditions = list.map { newPrimitiveCondition(it, table, column, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
         }
 
-        primitiveFilterInput.notFilter?.let {
+        typedPrimitiveFilterInput.notFilter?.let {
             nestedConditions.add(NotCondition(newPrimitiveCondition(it, table, column, paramSource)))
         }
 
