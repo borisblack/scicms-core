@@ -1,7 +1,8 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
 class DatasetInput(
-    filters: DatasetFilterInput?,
-    pagination: PaginationInput?,
-    sort: List<String>?
+    val filters: DatasetFilterInput?,
+    val fields: List<String>?,
+    val pagination: PaginationInput?,
+    val sort: List<String>?
 )

@@ -1,13 +1,20 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.healthmarketscience.sqlbuilder.BinaryCondition
 import com.healthmarketscience.sqlbuilder.CustomSql
 import com.healthmarketscience.sqlbuilder.FunctionCall
 import com.healthmarketscience.sqlbuilder.OrderObject.Dir
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
+import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.db.paginator.DatasetPaginator
+import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
+import ru.scisolutions.scicmscore.engine.model.response.Pagination
 import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import ru.scisolutions.scicmscore.persistence.entity.Dataset.TemporalType
@@ -15,8 +22,18 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.OffsetTime
 
-class DatasetQueryBuilder {
-    fun buildFindAllQuery(
+@Component
+class DatasetQueryBuilder(
+    private val datasetFilterConditionBuilder: DatasetFilterConditionBuilder,
+    private val datasetPaginator: DatasetPaginator
+) {
+    @JsonInclude(Include.NON_NULL)
+    class DatasetQuery(
+        val sql: String,
+        val pagination: Pagination
+    )
+
+    fun buildLoadQuery(
         dataset: Dataset,
         start: String?,
         end: String?,
@@ -91,4 +108,52 @@ class DatasetQueryBuilder {
             AggregateType.min -> FunctionCall.min().addColumnParams(metricCol)
             AggregateType.max -> FunctionCall.max().addColumnParams(metricCol)
         }
+
+    fun buildLoadQuery(dataset: Dataset, input: DatasetInput, paramSource: DatasetSqlParameterSource): DatasetQuery {
+        val spec = DbSpec()
+        val schema: DbSchema = spec.addDefaultSchema()
+        val query = buildInitialLoadQuery(dataset, input, schema, paramSource)
+        val table = schema.findTable(dataset.getQueryOrThrow()) ?: throw IllegalArgumentException("Query for dataset not found in schema")
+
+        val pagination = datasetPaginator.paginate(dataset, input.pagination, query, paramSource)
+
+        // Sort
+        if (!input.sort.isNullOrEmpty()) {
+            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
+        }
+
+        return DatasetQuery(
+            sql = query.validate().toString(),
+            pagination = pagination
+        )
+    }
+
+    private fun buildInitialLoadQuery(dataset: Dataset, input: DatasetInput, schema: DbSchema, paramSource: DatasetSqlParameterSource): SelectQuery {
+        val table = schema.addTable(dataset.getQueryOrThrow())
+        val query = SelectQuery()
+
+        if (input.fields == null) {
+            query.addAllColumns()
+        } else {
+            val columns = input.fields
+                .map { DbColumn(table, it, null, null) }
+                .toTypedArray()
+            query.addColumns(*columns)
+        }
+
+        // Filters
+        if (input.filters != null) {
+            query.addCondition(
+                datasetFilterConditionBuilder.newFilterCondition(
+                    datasetFilterInput = input.filters,
+                    schema = schema,
+                    table = table,
+                    query = query,
+                    paramSource = paramSource
+                )
+            )
+        }
+
+        return query.validate()
+    }
 }

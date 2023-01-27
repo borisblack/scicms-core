@@ -22,7 +22,7 @@ class FindAllDataFetcher(
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val responseCollectionInput = findAllInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
-        val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
+        val selectPaginationFields = dfe.selectionSet.getFields("pagination/*").asSequence()
             .map { it.name }
             .toSet()
 
