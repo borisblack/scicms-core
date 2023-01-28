@@ -16,27 +16,9 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
 
     constructor(values: Map<String?, *>?) : super(values)
 
-    fun addValueHeuristic(paramName: String, value: Any?): DatasetSqlParameterSource {
+    fun addValueWithParsing(paramName: String, value: Any?): DatasetSqlParameterSource {
         when (value) {
-            is String -> {
-                if (Numeric.isInt(value)) {
-                    this.addValue(paramName, value.toInt(), Types.INTEGER)
-                } else if (Numeric.isLong(value)) {
-                    this.addValue(paramName, value.toLong(), Types.BIGINT)
-                } else if (Numeric.isFloat(value)) {
-                    this.addValue(paramName, value.toFloat(), Types.FLOAT)
-                } else if (Numeric.isDouble(value)) {
-                    this.addValue(paramName, value.toDouble(), Types.DOUBLE)
-                } else if (value == "true" || value == "false") {
-                    this.addValue(paramName, value.toBoolean(), Types.BOOLEAN)
-                } else if (DateTime.isDate(value)) {
-                    this.addValue(paramName, DateTime.parseDate(value), Types.DATE)
-                } else if (DateTime.isTime(value)) {
-                    this.addValue(paramName, DateTime.parseTime(value), Types.TIME)
-                } else if (DateTime.isDateTime(value)) {
-                    this.addValue(paramName, DateTime.parseDateTime(value), Types.TIMESTAMP)
-                } else this.addValue(paramName, value, Types.VARCHAR)
-            }
+            is String -> this.addStringValue(paramName, value)
             is UUID -> this.addValue(paramName, value.toString(), Types.VARCHAR)
             is LocalDate -> this.addValue(paramName, value, Types.DATE)
             is LocalTime -> this.addValue(paramName, value, Types.TIME)
@@ -48,4 +30,23 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
 
         return this
     }
+
+    private fun addStringValue(paramName: String, value: String): Any =
+        if (Numeric.isInt(value)) {
+            this.addValue(paramName, value.toInt(), Types.INTEGER)
+        } else if (Numeric.isLong(value)) {
+            this.addValue(paramName, value.toLong(), Types.BIGINT)
+        } else if (Numeric.isFloat(value)) {
+            this.addValue(paramName, value.toFloat(), Types.FLOAT)
+        } else if (Numeric.isDouble(value)) {
+            this.addValue(paramName, value.toDouble(), Types.DOUBLE)
+        } else if (value == "true" || value == "false") {
+            this.addValue(paramName, value.toBoolean(), Types.BOOLEAN)
+        } else if (DateTime.isDate(value)) {
+            this.addValue(paramName, DateTime.parseDate(value), Types.DATE)
+        } else if (DateTime.isTime(value)) {
+            this.addValue(paramName, DateTime.parseTime(value), Types.TIME)
+        } else if (DateTime.isDateTime(value)) {
+            this.addValue(paramName, DateTime.parseDateTime(value), Types.TIMESTAMP)
+        } else this.addValue(paramName, value, Types.VARCHAR)
 }

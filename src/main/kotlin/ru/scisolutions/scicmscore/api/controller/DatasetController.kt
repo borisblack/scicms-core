@@ -24,7 +24,7 @@ class DatasetController(
         @PathVariable("datasetName") datasetName: String
     ): DatasetResponse {
         val qsObject = QS.parse(req.queryString)
-        val input = datasetInputMapper.map(qsObject.filterKeys { it in  datasetInputKeys})
+        val input = datasetInputMapper.map(qsObject.filterKeys { it in  datasetInputKeys}, "$")
 
         return engine.loadDataset(datasetName, input)
     }

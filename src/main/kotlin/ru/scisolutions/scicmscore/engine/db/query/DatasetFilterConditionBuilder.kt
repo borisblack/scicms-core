@@ -80,37 +80,37 @@ class DatasetFilterConditionBuilder {
         primitiveFilterInput.eqFilter?.let {
             val eqSqlParamName = "${sqlParamName}_eq"
             nestedConditions.add(BinaryCondition.equalTo(column, CustomSql(":$eqSqlParamName")))
-            paramSource.addValueHeuristic(eqSqlParamName, it)
+            paramSource.addValueWithParsing(eqSqlParamName, it)
         }
 
         primitiveFilterInput.neFilter?.let {
             val neSqlParamName = "${sqlParamName}_ne"
             nestedConditions.add(BinaryCondition.notEqualTo(column, CustomSql(":$neSqlParamName")))
-            paramSource.addValueHeuristic(neSqlParamName, it)
+            paramSource.addValueWithParsing(neSqlParamName, it)
         }
 
         primitiveFilterInput.gtFilter?.let {
             val gtSqlParamName = "${sqlParamName}_gt"
             nestedConditions.add(BinaryCondition.greaterThan(column, CustomSql(":$gtSqlParamName")))
-            paramSource.addValueHeuristic(gtSqlParamName, it)
+            paramSource.addValueWithParsing(gtSqlParamName, it)
         }
 
         primitiveFilterInput.gteFilter?.let {
             val gteSqlParamName = "${sqlParamName}_gte"
             nestedConditions.add(BinaryCondition.greaterThanOrEq(column, CustomSql(":$gteSqlParamName")))
-            paramSource.addValueHeuristic(gteSqlParamName, it)
+            paramSource.addValueWithParsing(gteSqlParamName, it)
         }
 
         primitiveFilterInput.ltFilter?.let {
             val ltSqlParamName = "${sqlParamName}_lt"
             nestedConditions.add(BinaryCondition.lessThan(column, CustomSql(":$ltSqlParamName")))
-            paramSource.addValueHeuristic(ltSqlParamName, it)
+            paramSource.addValueWithParsing(ltSqlParamName, it)
         }
 
         primitiveFilterInput.lteFilter?.let {
             val lteSqlParamName = "${sqlParamName}_lte"
             nestedConditions.add(BinaryCondition.lessThanOrEq(column, CustomSql(":$lteSqlParamName")))
-            paramSource.addValueHeuristic(lteSqlParamName, it)
+            paramSource.addValueWithParsing(lteSqlParamName, it)
         }
 
         primitiveFilterInput.betweenFilter?.let {
@@ -118,17 +118,17 @@ class DatasetFilterConditionBuilder {
             val rightSqlParamName = "${sqlParamName}_right"
             nestedConditions.add(BetweenCondition(column, CustomSql(":$leftSqlParamName"), CustomSql(":$rightSqlParamName")))
             paramSource
-                .addValueHeuristic(leftSqlParamName, it.left)
-                .addValueHeuristic(rightSqlParamName, it.right)
+                .addValueWithParsing(leftSqlParamName, it.left)
+                .addValueWithParsing(rightSqlParamName, it.right)
         }
 
         primitiveFilterInput.inFilter?.let { list ->
-            val arr = list.map { SQL.toSqlValueHeuristic(it) }.toTypedArray()
+            val arr = list.map { SQL.toSqlValueWithParsing(it) }.toTypedArray()
             nestedConditions.add(InCondition(column, *arr))
         }
 
         primitiveFilterInput.notInFilter?.let { list ->
-            val arr = list.map { SQL.toSqlValueHeuristic(it) }.toTypedArray()
+            val arr = list.map { SQL.toSqlValueWithParsing(it) }.toTypedArray()
             nestedConditions.add(NotCondition(InCondition(column, *arr)))
         }
 

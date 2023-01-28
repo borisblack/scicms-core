@@ -5,7 +5,7 @@ import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
 import ru.scisolutions.scicmscore.model.AggregateType
 
 class DatasetInputMapper() {
-    fun map(arguments: Map<String, Any?>): DatasetInput {
+    fun map(arguments: Map<String, Any?>, opPrefix: String = ""): DatasetInput {
         val datasetFiltersMap = arguments[FILTERS_ARG_NAME] as Map<String, Any>?
         val fields = arguments[FIELDS_ARG_NAME] as List<String>?
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int>?
@@ -15,7 +15,7 @@ class DatasetInputMapper() {
         val groupField = arguments[GROUP_FIELD_ARG_NAME] as String?
 
         return DatasetInput(
-            filters = datasetFiltersMap?.let { datasetFiltersInputMapper.map(it) },
+            filters = datasetFiltersMap?.let { datasetFiltersInputMapper.map(it, opPrefix) },
             fields = fields,
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
             sort = sort,

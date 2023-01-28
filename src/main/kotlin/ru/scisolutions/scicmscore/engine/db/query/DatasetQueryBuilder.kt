@@ -30,7 +30,8 @@ class DatasetQueryBuilder(
     fun buildLoadQuery(dataset: Dataset, input: DatasetInput, paramSource: DatasetSqlParameterSource): DatasetQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val query = buildInitialLoadQuery(dataset, input, schema, paramSource)
+        val table = schema.addTable(dataset.getQueryOrThrow())
+        val query = buildInitialLoadQuery(input, schema, table, paramSource)
 
         if (input.aggregate != null && input.aggregateField != null) {
             val wrapTable = DbTable(schema, "(${query.validate()})")
@@ -52,7 +53,8 @@ class DatasetQueryBuilder(
             }
 
             val pagination: Pagination? =
-                if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)
+                if (input.pagination == null || input.aggregate == AggregateType.countAll) null
+                else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)
 
             return DatasetQuery(
                 sql = aggregateQuery.validate().toString(),
@@ -62,7 +64,6 @@ class DatasetQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            val table = schema.findTable(dataset.getQueryOrThrow()) ?: throw IllegalArgumentException("Query for dataset not found in schema")
             datasetOrderingsParser.parseOrderings(input.sort, schema, table, query)
         }
 
@@ -75,8 +76,12 @@ class DatasetQueryBuilder(
         )
     }
 
-    private fun buildInitialLoadQuery(dataset: Dataset, input: DatasetInput, schema: DbSchema, paramSource: DatasetSqlParameterSource): SelectQuery {
-        val table = schema.addTable(dataset.getQueryOrThrow())
+    private fun buildInitialLoadQuery(
+        input: DatasetInput,
+        schema: DbSchema,
+        table: DbTable,
+        paramSource: DatasetSqlParameterSource
+    ): SelectQuery {
         val query = SelectQuery()
 
         if (input.fields == null) {
