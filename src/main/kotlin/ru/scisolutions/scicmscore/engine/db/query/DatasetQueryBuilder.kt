@@ -38,7 +38,7 @@ class DatasetQueryBuilder(
             val aggregateCol = DbColumn(wrapTable, input.aggregateField, null, null)
             val aggregateQuery = SelectQuery()
                 .addCustomColumns(
-                    CustomSql("${getFunctionCall(aggregateCol, input.aggregate)} AS ${input.aggregateField}")
+                    CustomSql("${buildAggregateFunctionCall(aggregateCol, input.aggregate)} AS ${input.aggregateField}")
                 )
                 .addFromTable(wrapTable)
 
@@ -109,14 +109,14 @@ class DatasetQueryBuilder(
         return query.validate()
     }
 
-    private fun getFunctionCall(metricCol: DbColumn, aggregateType: AggregateType): FunctionCall =
+    private fun buildAggregateFunctionCall(aggregateCol: DbColumn, aggregateType: AggregateType): FunctionCall =
         when (aggregateType) {
             AggregateType.countAll -> FunctionCall.countAll()
-            AggregateType.count -> FunctionCall.count().addColumnParams(metricCol)
-            AggregateType.sum -> FunctionCall.sum().addColumnParams(metricCol)
-            AggregateType.avg -> FunctionCall.avg().addColumnParams(metricCol)
-            AggregateType.min -> FunctionCall.min().addColumnParams(metricCol)
-            AggregateType.max -> FunctionCall.max().addColumnParams(metricCol)
+            AggregateType.count -> FunctionCall.count().addColumnParams(aggregateCol)
+            AggregateType.sum -> FunctionCall.sum().addColumnParams(aggregateCol)
+            AggregateType.avg -> FunctionCall.avg().addColumnParams(aggregateCol)
+            AggregateType.min -> FunctionCall.min().addColumnParams(aggregateCol)
+            AggregateType.max -> FunctionCall.max().addColumnParams(aggregateCol)
         }
 
     companion object {
