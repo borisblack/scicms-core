@@ -86,6 +86,7 @@ class DatasetQueryBuilder(
 
         if (input.fields == null) {
             query.addAllColumns()
+                .addFromTable(table)
         } else {
             val columns = input.fields
                 .map { DbColumn(table, it, null, null) }
