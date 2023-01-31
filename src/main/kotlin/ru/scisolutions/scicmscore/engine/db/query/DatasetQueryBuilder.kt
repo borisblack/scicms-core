@@ -33,7 +33,7 @@ class DatasetQueryBuilder(
         val table = schema.addTable(dataset.getQueryOrThrow())
         val query = buildInitialLoadQuery(input, schema, table, paramSource)
 
-        if (input.aggregate != null && input.aggregateField != null) {
+        if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {
             val wrapTable = DbTable(schema, "(${query.validate()})")
             val aggregateCol = DbColumn(wrapTable, input.aggregateField, null, null)
             val aggregateQuery = SelectQuery()
@@ -42,10 +42,7 @@ class DatasetQueryBuilder(
                 )
                 .addFromTable(wrapTable)
 
-            if (input.aggregate != AggregateType.countAll) {
-                if (input.groupField == null)
-                    throw IllegalArgumentException("The groupField parameter must be specified")
-
+            if (input.aggregate != AggregateType.countAll && !input.groupField.isNullOrBlank()) {
                 val groupCol = DbColumn(wrapTable, input.groupField, null, null)
                 aggregateQuery
                     .addColumns(groupCol)
