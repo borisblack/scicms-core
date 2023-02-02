@@ -1,0 +1,82 @@
+version: "3.9"
+
+x-common-labels: &common-labels
+  project-name: "SciCMS-Core Backend"
+  comment: ""
+  domain: ""
+  environment: "staging"
+  git: "https://gitlab.iss-reshetnev.ru/712/7123-group/scicms/scicms-core.git"
+  maintainer: "ChernishBA@iss-reshetnev.ru"
+  devops-engineer: "ShestakovAP@iss-reshetnev.ru"
+
+x-syslog-driver: &syslog-driver
+  logging:
+    driver: syslog
+    options:
+      syslog-address: "${SYSLOG_URL}"
+      tag: "{{.Name}}/{{.ID}}"
+
+x-jsonlog-driver: &jsonlog-driver
+  logging:
+    driver: "json-file"
+
+x-common: &common
+  restart: unless-stopped
+  stdin_open: true
+  tty: true
+
+x-env: &envs
+  environment:
+    - TZ=Asia/Krasnoyarsk
+
+x-args: &args
+  args:
+    - APP_ROOT=/app
+    - APP_HOSTNAME=sandbox-712
+    - ENVIRONMENT=staging
+
+x-backend: &backend
+  <<: *common
+#  <<: *syslog-driver
+  <<: *jsonlog-driver
+  <<: *envs
+  labels:
+    <<: *common-labels
+  image:  ${CI_REGISTRY_IMAGE}/scicms-core--app--staging
+  build:
+    <<: *args
+    context: .
+    dockerfile: ./.docker/Dockerfiles/app.production.Dockerfile
+    labels:
+      <<: *common-labels
+
+
+services:
+  scicms-core--app--staging:
+    <<: *backend
+    container_name: scicms-core--app--staging
+    volumes:
+      - /app:/data/storage/scicms/app
+    env_file:
+      - .env
+    working_dir: /app
+
+  scicms-core--nginx--staging:
+#    <<: *syslog-driver
+    <<: *jsonlog-driver
+    <<: *common
+    labels:
+      <<: *common-labels
+    build:
+      <<: *args
+      labels:
+        <<: *common-labels
+      context: .
+      dockerfile: .docker/Dockerfiles/nginx.production.Dockerfile
+    ports:
+      - "28202:80"
+      - "24202:443"
+    image: ${CI_REGISTRY_IMAGE}/scicms-core--nginx--staging
+    container_name: scicms-core--nginx--staging
+    depends_on:
+      - scicms-core--app--staging

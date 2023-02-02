@@ -5,31 +5,25 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.dao.DatasetDao
 import ru.scisolutions.scicmscore.engine.db.DatasetRowMapper
-import ru.scisolutions.scicmscore.engine.db.query.DatasetQueryBuilder
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
-import ru.scisolutions.scicmscore.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 @Service
-class DatasetDaoImpl(private val jdbcTemplateMap: JdbcTemplateMap) : DatasetDao {
-    override fun findAll(
-        dataset: Dataset,
-        start: String?,
-        end: String?,
-        aggregateType: AggregateType?,
-        groupBy: String?
-    ): List<Map<String, Any?>> {
-        val paramSource = DatasetSqlParameterSource()
-        val query = datasetQueryBuilder.buildFindAllQuery(dataset, start, end, aggregateType, groupBy, paramSource)
-        val sql = query.toString()
+class DatasetDaoImpl(
+    private val jdbcTemplateMap: JdbcTemplateMap
+) : DatasetDao {
+    override fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> {
         logger.debug("Running SQL: {}", sql)
-        val jdbcTemplate = jdbcTemplateMap.getOrThrow(dataset.dataSource)
+        return jdbcTemplateMap.getOrThrow(dataset.dataSource).query(sql, paramSource, DatasetRowMapper())
+    }
 
-        return jdbcTemplate.query(sql, paramSource, DatasetRowMapper())
+    override fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): Int {
+        val countSQL = "SELECT COUNT(*) FROM ($sql) t"
+        logger.debug("Running SQL: {}", countSQL)
+        return jdbcTemplateMap.getOrThrow(dataset.dataSource).queryForObject(countSQL, paramSource, Int::class.java) as Int
     }
 
     companion object {
         private val logger = LoggerFactory.getLogger(DatasetDaoImpl::class.java)
-        private val datasetQueryBuilder = DatasetQueryBuilder()
     }
 }

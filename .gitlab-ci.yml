@@ -1,0 +1,40 @@
+.common_script:
+  before_script:
+    - mkdir -p ~/.ssh
+    - cp "$DEPLOY_KEY" ~/.ssh/id_ed25519
+    - chmod -R 700 ~/.ssh
+    - ssh-keyscan $DEPLOY_SERVER >> ~/.ssh/known_hosts
+    - ssh-keyscan $(getent hosts $DEPLOY_SERVER | cut -d' ' -f1) >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
+    - export COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1
+
+build-staging:
+  stage: build
+  extends: .common_script
+  script:
+    - cp $DOTENV_STAGING .env
+    - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging build
+    - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging push
+    - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" pull
+    - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" down --remove-orphans
+    - docker-compose -f docker-compose.staging.yml -p $CI_PROJECT_NAME-staging -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" up -d
+  tags:
+    - docker
+  only:
+    - dockerize
+
+build-production:
+  stage: build
+  extends: .common_script
+  script:
+    - cp $DOTENV_PRODUCTION .env
+    - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production build
+    - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production push
+    - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" pull
+    - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" down --remove-orphans
+    - docker-compose -f docker-compose.production.yml -p $CI_PROJECT_NAME-production -H "ssh://$DEPLOY_USER@$DEPLOY_SERVER" up -d
+  tags:
+    - docker
+  only:
+    - main

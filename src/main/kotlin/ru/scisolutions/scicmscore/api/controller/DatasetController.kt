@@ -1,31 +1,45 @@
 package ru.scisolutions.scicmscore.api.controller
 
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import ru.scisolutions.scicmscore.engine.dao.DatasetDao
-import ru.scisolutions.scicmscore.model.AggregateType
-import ru.scisolutions.scicmscore.persistence.service.DatasetService
+import com.qs.core.QS
+import org.springframework.web.bind.annotation.*
+import ru.scisolutions.scicmscore.engine.Engine
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.AGGREGATE_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.AGGREGATE_FIELD_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.FIELDS_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.FILTERS_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.GROUP_FIELD_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.PAGINATION_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.SORT_ARG_NAME
+import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/dataset")
 class DatasetController(
-    private val datasetService: DatasetService,
-    private val datasetDao: DatasetDao
+    private val engine: Engine
 ) {
     @GetMapping("/{datasetName}")
-    fun loadData(
-        @PathVariable("datasetName") datasetName: String,
-        @RequestParam(name = "start", required = false) start: String?,
-        @RequestParam(name = "end", required = false) end: String?,
-        @RequestParam(name = "aggregate", required = false) aggregateType: AggregateType?,
-        @RequestParam(name = "groupBy", required = false) groupBy: String?,
-    ): ResponseEntity<*> {
-        val dataset = datasetService.findByNameForRead(datasetName) ?: return ResponseEntity.notFound().build<Unit>()
+    fun load(
+        req: HttpServletRequest,
+        @PathVariable("datasetName") datasetName: String
+    ): DatasetResponse {
+        val qsObject = QS.parse(req.queryString)
+        val input = datasetInputMapper.map(qsObject.filterKeys { it in  datasetInputKeys}, "$")
 
-        return ResponseEntity.ok(datasetDao.findAll(dataset, start, end, aggregateType, groupBy))
+        return engine.loadDataset(datasetName, input)
+    }
+
+    companion object {
+        private val datasetInputKeys = setOf(
+            FILTERS_ARG_NAME,
+            FIELDS_ARG_NAME,
+            PAGINATION_ARG_NAME,
+            SORT_ARG_NAME,
+            AGGREGATE_ARG_NAME,
+            AGGREGATE_FIELD_ARG_NAME,
+            GROUP_FIELD_ARG_NAME
+        )
+        private val datasetInputMapper = DatasetInputMapper()
     }
 }

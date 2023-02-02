@@ -8,6 +8,7 @@ import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
+import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
@@ -15,6 +16,7 @@ import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
+import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
@@ -85,4 +87,6 @@ interface Engine {
     fun getCustomMethods(itemName: String): Set<String>
 
     fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse
+
+    fun loadDataset(datasetName: String, input: DatasetInput): DatasetResponse
 }

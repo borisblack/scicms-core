@@ -11,7 +11,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.engine.db.Paginator
+import ru.scisolutions.scicmscore.engine.db.paginator.ItemPaginator
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
@@ -28,13 +28,13 @@ import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirec
 @Component
 class FindAllQueryBuilder(
     private val permissionCache: PermissionCache,
-    private val filterConditionBuilder: FilterConditionBuilder,
+    private val itemFilterConditionBuilder: ItemFilterConditionBuilder,
     private val versionConditionBuilder: VersionConditionBuilder,
     private val stateConditionBuilder: StateConditionBuilder,
     private val localeConditionBuilder: LocaleConditionBuilder,
-    private val paginator: Paginator,
+    private val itemPaginator: ItemPaginator,
     private val relationManager: RelationManager,
-    private val orderingsParser: OrderingsParser
+    private val orderingsParser: ItemOrderingsParser
 ) {
     class FindAllQuery(
         val sql: String,
@@ -62,11 +62,11 @@ class FindAllQueryBuilder(
         if (stateCondition != null)
             query.addCondition(stateCondition)
 
-        val pagination = paginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
+        val pagination = itemPaginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
+            orderingsParser.parseOrderings(item, input.sort, schema, table, query)
         }
 
         return FindAllQuery(
@@ -90,7 +90,7 @@ class FindAllQueryBuilder(
         // Filters
         if (filters != null) {
             query.addCondition(
-                filterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource)
+                itemFilterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource)
             )
         }
 
@@ -177,11 +177,11 @@ class FindAllQueryBuilder(
             else -> throw IllegalArgumentException("Invalid relation")
         }
 
-        val pagination = paginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
+        val pagination = itemPaginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            orderingsParser.parseOrderings(item, input.sort, schema, query, table)
+            orderingsParser.parseOrderings(item, input.sort, schema, table, query)
         }
 
         return FindAllQuery(

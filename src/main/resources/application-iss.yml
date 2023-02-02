@@ -2,20 +2,9 @@ scicms-core:
   data:
     data-sources:
       main:
-#        driver-class-name: oracle.jdbc.OracleDriver
-#        jdbc-url: jdbc:oracle:thin:@//localhost:1521/xepdb1
-#        username: scicms
-#        password: scicms
-        jdbc-url: jdbc:${MAIN_DB_TYPE}://${MAIN_DB_HOST}:${MAIN_DB_PORT:5432}/${MAIN_DB_NAME}
+        jdbc-url: jdbc:postgresql://${MAIN_DB_HOST}:${MAIN_DB_PORT:5432}/${MAIN_DB_NAME}
         username: ${MAIN_DB_USERNAME}
         password: ${MAIN_DB_PASSWORD}
-        maximum-pool-size: 5
-        minimum-idle: 1
-      hr:
-#        driver-class-name: oracle.jdbc.OracleDriver
-        jdbc-url: jdbc:oracle:thin:@//zrsvr:1521/zrp
-        username: ${HR_DB_USERNAME}
-        password: ${HR_DB_PASSWORD}
         maximum-pool-size: 5
         minimum-idle: 1
     default-limit: 20
@@ -33,7 +22,7 @@ scicms-core:
       base-path: D:/storage
       create-directories: true
   schema:
-    path: build/resources/main/schema
+    path: src/main/resources/schema
     use-file-checksum: false # TODO: true in production to prevent restoring changed (made via API) items from scheme files
     seed-on-init: true
     delete-if-absent: false

@@ -15,8 +15,8 @@ import java.util.regex.Pattern
 import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
 
 @Component
-class OrderingsParser(private val itemCache: ItemCache) {
-    fun parseOrderings(item: Item, inputSortList: List<String>, schema: DbSchema, query: SelectQuery, table: DbTable) =
+class ItemOrderingsParser(private val itemCache: ItemCache) {
+    fun parseOrderings(item: Item, inputSortList: List<String>, schema: DbSchema, table: DbTable, query: SelectQuery) =
         inputSortList.forEach { parseOrdering(item, it, schema, query, table) }
 
     private fun parseOrdering(item: Item, inputSort: String, schema: DbSchema, query: SelectQuery, table: DbTable) {

@@ -570,20 +570,6 @@
             </column>
             <column name="table_name" type="varchar(50)"/>
             <column name="query" type="text"/>
-            <column name="metric_type" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="metric_field" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="unit" type="varchar(50)"/>
-            <column name="temporal_type" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="temporal_field" type="varchar(50)"/>
-            <column name="latitude_field" type="varchar(50)"/>
-            <column name="longitude_field" type="varchar(50)"/>
-            <column name="location_label_field" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>

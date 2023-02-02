@@ -1,6 +1,9 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-class PrimitiveFilterInput(
+import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+
+class TypedPrimitiveFilterInput(
+    val attrType: AttrType,
     val containsFilter: String?,
     val notContainsFilter: String?,
     val containsiFilter: String?,
@@ -18,12 +21,13 @@ class PrimitiveFilterInput(
     val notInFilter: List<Any?>?,
     val nullFilter: Boolean?,
     val notNullFilter: Boolean?,
-    andFilterList: List<PrimitiveFilterInput>?,
-    orFilterList: List<PrimitiveFilterInput>?,
-    notFilter: PrimitiveFilterInput?
-) : AbstractFilterInput<PrimitiveFilterInput>(andFilterList, orFilterList, notFilter) {
+    andFilterList: List<TypedPrimitiveFilterInput>?,
+    orFilterList: List<TypedPrimitiveFilterInput>?,
+    notFilter: TypedPrimitiveFilterInput?
+) : AbstractFilterInput<TypedPrimitiveFilterInput>(andFilterList, orFilterList, notFilter) {
     companion object {
-        fun fromMap(filters: Map<String, Any>, opPrefix: String = ""): PrimitiveFilterInput = PrimitiveFilterInput(
+        fun fromMap(attrType: AttrType, filters: Map<String, Any>, opPrefix: String = ""): TypedPrimitiveFilterInput = TypedPrimitiveFilterInput(
+            attrType = attrType,
             containsFilter = filters["${opPrefix}$CONTAINS_KEY"]?.toString(),
             notContainsFilter = filters["${opPrefix}$NOT_CONTAINS_KEY"]?.toString(),
             containsiFilter = filters["${opPrefix}$CONTAINSI_KEY"]?.toString(),
@@ -55,27 +59,27 @@ class PrimitiveFilterInput(
             nullFilter = filters["${opPrefix}$NULL_KEY"] as Boolean?,
             notNullFilter = filters["${opPrefix}$NOT_NULL_KEY"] as Boolean?,
 
-            andFilterList = filters["${opPrefix}$AND_KEY"]?.let { list ->
+            andFilterList = filters[AND_KEY]?.let { list ->
                 if (list is List<*>) {
                     list.filterIsInstance<Map<*, *>>()
-                        .map { fromMap(it as Map<String, Any>, opPrefix) }
+                        .map { fromMap(attrType, it as Map<String, Any>, opPrefix) }
                 } else {
                     throw IllegalArgumentException("Invalid AND clause")
                 }
             },
 
-            orFilterList = filters["${opPrefix}$OR_KEY"]?.let { list ->
+            orFilterList = filters[OR_KEY]?.let { list ->
                 if (list is List<*>) {
                     list.filterIsInstance<Map<*, *>>()
-                        .map { fromMap(it as Map<String, Any>, opPrefix) }
+                        .map { fromMap(attrType, it as Map<String, Any>, opPrefix) }
                 } else {
                     throw IllegalArgumentException("Invalid OR clause")
                 }
             },
 
-            notFilter = filters["${opPrefix}$NOT_KEY"]?.let {
+            notFilter = filters[NOT_KEY]?.let {
                 if (it is Map<*, *>)
-                    fromMap(it as Map<String, Any>, opPrefix)
+                    fromMap(attrType, it as Map<String, Any>, opPrefix)
                 else
                     throw IllegalArgumentException("Invalid NOT clause")
             }

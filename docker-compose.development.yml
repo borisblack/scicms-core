@@ -1,0 +1,42 @@
+version: "3.9"
+
+x-syslog-driver: &syslog-driver
+  logging:
+    driver: syslog
+    options:
+      syslog-address: "${SYSLOG_URL}"
+      tag: "{{.Name}}/{{.ID}}"
+
+x-jsonlog-driver: &jsonlog-driver
+  logging:
+    driver: "json-file"
+
+x-common: &common
+  restart: unless-stopped
+  stdin_open: true
+  tty: true
+
+x-app: &app
+  <<: *common
+#  image:  ${CI_REGISTRY_IMAGE}--staging
+  build:
+    context: .
+    dockerfile: ./.docker/Dockerfiles/app.development.Dockerfile
+#  volumes:
+#    - ./:/app
+  networks:
+    - scicms-core--development
+  tmpfs:
+    - /tmp
+
+services:
+  app:
+    <<: *app
+    <<: *jsonlog-driver
+#    <<: *syslog-driver
+    container_name: scicms-core--development
+    working_dir: /app
+
+
+networks:
+  scicms-core--development:
