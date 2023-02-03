@@ -49,5 +49,5 @@ spec:
       columnName: query
       displayName: Query
       description: Query
-      colHidden: true
-      colWidth: 300
+      colHidden: false
+      colWidth: 600

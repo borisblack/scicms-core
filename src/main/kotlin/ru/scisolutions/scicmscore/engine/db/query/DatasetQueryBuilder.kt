@@ -49,6 +49,11 @@ class DatasetQueryBuilder(
                     .addGroupings(groupCol)
             }
 
+            // Sort
+            if (!input.sort.isNullOrEmpty() && input.aggregate != AggregateType.countAll) {
+                datasetOrderingsParser.parseOrderings(input.sort, schema, wrapTable, aggregateQuery)
+            }
+
             val pagination: Pagination? =
                 if (input.pagination == null || input.aggregate == AggregateType.countAll) null
                 else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)

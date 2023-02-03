@@ -20,10 +20,10 @@ class JwtTokenAuthenticationFilter(private val authenticationManager: Authentica
         val jwtToken = getJwtToken(req)
         try {
             if (jwtToken != null) {
-                logger.debug("Trying to authenticate user by JWT token [$jwtToken]")
+                logger.trace("Trying to authenticate user by JWT token [$jwtToken]")
                 processJwtTokenAuthentication(jwtToken)
             }
-            logger.debug("Passing request down the filter chain")
+            logger.trace("Passing request down the filter chain")
             chain.doFilter(req, res)
         } catch (e: InternalAuthenticationServiceException) {
             SecurityContextHolder.clearContext()

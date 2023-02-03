@@ -37,11 +37,11 @@ class UsernamePasswordAuthenticationFilter(
         try {
             if (postToAuthenticate(req)) {
                 val authRequest = getAuthRequest(req)
-                logger.debug("Trying to authenticate user by username [${authRequest.identifier}]")
+                logger.trace("Trying to authenticate user by username [${authRequest.identifier}]")
                 processUsernamePasswordAuthentication(req, res, authRequest.identifier, authRequest.password)
                 return // don't proceed with filter chain
             }
-            logger.debug("Passing request down the filter chain")
+            logger.trace("Passing request down the filter chain")
             chain.doFilter(req, res)
         } catch (e: InternalAuthenticationServiceException) {
             SecurityContextHolder.clearContext()
