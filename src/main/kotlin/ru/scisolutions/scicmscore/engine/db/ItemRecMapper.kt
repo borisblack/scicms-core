@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import java.sql.Clob
 import java.sql.ResultSet
 import java.time.ZoneOffset
-import java.util.UUID
+import java.util.*
 
 class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
     override fun mapRow(rs: ResultSet, rowNum: Int): ItemRec {
@@ -20,7 +20,7 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
         val metaData = rs.metaData
         for (i in 1..metaData.columnCount) {
             val columnName = metaData.getColumnName(i).lowercase()
-            val attrName = item.spec.columnNameToAttrNameMap[columnName] as String
+            val attrName = item.spec.columnNameToAttrNameMap[columnName] ?: continue
             val attribute = item.spec.attributes[attrName] as Attribute
             val value: Any? = when (attribute.type) {
                 Type.uuid -> parseUUID(rs.getString(i))
