@@ -34,7 +34,7 @@ spec:
       description: Data Source
       required: true
       length: 50
-      colWidth: 150
+      colWidth: 160
       fieldWidth: 300
     tableName:
       type: string
