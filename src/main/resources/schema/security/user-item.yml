@@ -39,6 +39,7 @@ spec:
       columnName: enabled
       displayName: Enabled
       description: Enabled
+      defaultValue: true
   indexes:
     sec_users_username_uk:
       columns:
