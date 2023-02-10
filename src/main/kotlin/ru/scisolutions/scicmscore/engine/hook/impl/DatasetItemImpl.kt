@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import ru.scisolutions.scicmscore.persistence.service.DatasetService
 
 @Service
@@ -15,7 +16,7 @@ class DatasetItemImpl(private val datasetService: DatasetService) : UpdateHook {
     override fun afterUpdate(itemName: String, response: Response) {
         val dataset = datasetService.getById(response.data?.id as String)
         datasetService.actualizeSpec(dataset)
-        response.data["spec"] = dataset.spec
-        response.data["hash"] = dataset.hash
+        response.data[Dataset::spec.name] = dataset.spec
+        response.data[Dataset::hash.name] = dataset.hash
     }
 }
