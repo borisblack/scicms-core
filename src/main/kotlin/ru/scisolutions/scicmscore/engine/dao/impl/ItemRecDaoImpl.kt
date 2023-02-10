@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.db.ItemRecMapper
+import ru.scisolutions.scicmscore.engine.db.mapper.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.db.query.ItemQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec

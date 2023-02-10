@@ -1,9 +1,9 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.FieldType
 
 class TypedPrimitiveFilterInput(
-    val attrType: AttrType,
+    val attrType: FieldType,
     val containsFilter: String?,
     val notContainsFilter: String?,
     val containsiFilter: String?,
@@ -26,7 +26,7 @@ class TypedPrimitiveFilterInput(
     notFilter: TypedPrimitiveFilterInput?
 ) : AbstractFilterInput<TypedPrimitiveFilterInput>(andFilterList, orFilterList, notFilter) {
     companion object {
-        fun fromMap(attrType: AttrType, filters: Map<String, Any>, opPrefix: String = ""): TypedPrimitiveFilterInput = TypedPrimitiveFilterInput(
+        fun fromMap(attrType: FieldType, filters: Map<String, Any>, opPrefix: String = ""): TypedPrimitiveFilterInput = TypedPrimitiveFilterInput(
             attrType = attrType,
             containsFilter = filters["${opPrefix}$CONTAINS_KEY"]?.toString(),
             notContainsFilter = filters["${opPrefix}$NOT_CONTAINS_KEY"]?.toString(),

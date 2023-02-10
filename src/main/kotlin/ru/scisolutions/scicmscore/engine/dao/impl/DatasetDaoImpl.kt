@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.PersistenceConfig.JdbcTemplateMap
 import ru.scisolutions.scicmscore.engine.dao.DatasetDao
-import ru.scisolutions.scicmscore.engine.db.DatasetRowMapper
+import ru.scisolutions.scicmscore.engine.db.mapper.DatasetRowMapper
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 

@@ -13,7 +13,7 @@ import liquibase.datatype.core.TimestampType
 import liquibase.datatype.core.TinyIntType
 import liquibase.datatype.core.VarcharType
 import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.schema.model.Item
 
 class LiquibaseTypeResolver {
@@ -21,25 +21,25 @@ class LiquibaseTypeResolver {
         itemColumnValidator.validate(item, attrName, attribute)
 
         return when (attribute.type) {
-            Type.uuid, Type.media, Type.relation -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
-            Type.string -> VarcharType().apply { addParameter(attribute.length) }.toString()
-            Type.text, Type.array, Type.json -> ClobType().toString()
-            Type.enum, Type.sequence, Type.email, Type.password -> VarcharType().apply { addParameter(DEFAULT_STRING_LENGTH) }.toString()
-            Type.int -> IntType().toString()
-            Type.long -> BigIntType().toString()
-            Type.float -> FloatType().toString()
-            Type.double -> DoubleType().toString()
-            Type.decimal -> {
+            FieldType.uuid, FieldType.media, FieldType.relation -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
+            FieldType.string -> VarcharType().apply { addParameter(attribute.length) }.toString()
+            FieldType.text, FieldType.array, FieldType.json -> ClobType().toString()
+            FieldType.enum, FieldType.sequence, FieldType.email, FieldType.password -> VarcharType().apply { addParameter(DEFAULT_STRING_LENGTH) }.toString()
+            FieldType.int -> IntType().toString()
+            FieldType.long -> BigIntType().toString()
+            FieldType.float -> FloatType().toString()
+            FieldType.double -> DoubleType().toString()
+            FieldType.decimal -> {
                 DecimalType().apply {
                     addParameter(attribute.precision)
                     addParameter(attribute.scale)
                 }.toString()
             }
-            Type.date -> DateType().toString()
-            Type.time -> TimeType().toString()
-            Type.datetime -> DateTimeType().toString()
-            Type.timestamp -> TimestampType().toString()
-            Type.bool -> TinyIntType().toString()
+            FieldType.date -> DateType().toString()
+            FieldType.time -> TimeType().toString()
+            FieldType.datetime -> DateTimeType().toString()
+            FieldType.timestamp -> TimestampType().toString()
+            FieldType.bool -> TinyIntType().toString()
         }
     }
 

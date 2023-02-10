@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.handler.CreateHandler
 import ru.scisolutions.scicmscore.engine.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.model.CreateHook
+import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
@@ -19,7 +19,7 @@ import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
@@ -76,7 +76,7 @@ class CreateHandlerImpl(
         addRelationHelper.processRelations(
             item,
             itemRec.id as String,
-            preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == Type.relation } as Map<String, Any>
+            preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == FieldType.relation } as Map<String, Any>
         )
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)

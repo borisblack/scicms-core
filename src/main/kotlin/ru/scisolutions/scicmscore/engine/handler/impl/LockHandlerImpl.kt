@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.LockHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.engine.model.LockHook
+import ru.scisolutions.scicmscore.engine.hook.LockHook
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Item

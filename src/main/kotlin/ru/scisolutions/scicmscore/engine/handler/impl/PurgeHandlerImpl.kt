@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.engine.model.PurgeHook
+import ru.scisolutions.scicmscore.engine.hook.PurgeHook
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.service.ClassService

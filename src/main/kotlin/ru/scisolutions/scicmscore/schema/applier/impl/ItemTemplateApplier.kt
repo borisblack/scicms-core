@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
-import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateCache
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
@@ -74,7 +74,7 @@ class ItemTemplateApplier(
             throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character")
 
         model.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Attribute.Type.relation }
+            .filter { (_, attribute) -> attribute.type == FieldType.relation }
             .forEach { (_, attribute) -> attribute.validate() }
     }
 

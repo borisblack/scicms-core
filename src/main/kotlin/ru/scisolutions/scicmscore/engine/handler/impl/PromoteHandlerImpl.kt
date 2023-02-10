@@ -7,7 +7,7 @@ import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.PromoteHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.engine.model.Promotable
+import ru.scisolutions.scicmscore.engine.lifecycle.Promotable
 import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager

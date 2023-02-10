@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
-import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
@@ -117,11 +117,11 @@ class ItemApplier(
             .forEach { (attrName, attribute) ->
                 attribute.validate()
 
-                if (attribute.type == Attribute.Type.relation)
+                if (attribute.type == FieldType.relation)
                     relationValidator.validateAttribute(model, attrName, attribute)
 
                 // Sequence might not exist while item is creating
-                // if (attribute.type == AttrType.sequence && !sequenceService.existsByName(requireNotNull(attribute.seqName)))
+                // if (attribute.type == FieldType.sequence && !sequenceService.existsByName(requireNotNull(attribute.seqName)))
                 //     throw IllegalArgumentException("Sequence [${attribute.seqName}] does not exist")
             }
 

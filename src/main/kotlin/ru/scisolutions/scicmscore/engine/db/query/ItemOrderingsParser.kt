@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import java.util.regex.Pattern
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.FieldType
 
 @Component
 class ItemOrderingsParser(private val itemCache: ItemCache) {
@@ -34,14 +34,14 @@ class ItemOrderingsParser(private val itemCache: ItemCache) {
             query.addOrdering(col, orderDir)
         } else {
             when (attribute.type) {
-                AttrType.relation -> {
+                FieldType.relation -> {
                     if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
                         throw IllegalArgumentException("Invalid sort attribute")
 
                     val target = itemCache.getOrThrow(requireNotNull(attribute.target))
                     addOrdering(target, nestedAttrName, schema, query, table, col, orderDir)
                 }
-                AttrType.media -> addOrdering(itemCache.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
+                FieldType.media -> addOrdering(itemCache.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
                 else -> query.addOrdering(col, orderDir)
             }
         }

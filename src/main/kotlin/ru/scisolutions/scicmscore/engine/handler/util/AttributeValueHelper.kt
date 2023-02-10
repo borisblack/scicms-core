@@ -1,19 +1,16 @@
 package ru.scisolutions.scicmscore.engine.handler.util
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.MediaService
+import ru.scisolutions.scicmscore.util.Json
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -31,7 +28,7 @@ class AttributeValueHelper(
         val result = attributes
             .filterKeys {
                 val attribute = item.spec.getAttributeOrThrow(it)
-                !attribute.private && attribute.type != Type.sequence && it !in excludeAttrNames
+                !attribute.private && attribute.type != FieldType.sequence && it !in excludeAttrNames
             }
             .mapValues { (attrName, value) -> prepareValueToSave(item, attrName, value) }
 
@@ -56,27 +53,27 @@ class AttributeValueHelper(
         validateAttributeValue(item, attrName, attribute, value)
 
         return when (attribute.type) {
-            Type.uuid, Type.string, Type.text, Type.enum, Type.email -> value
-            Type.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
-            Type.password -> passwordEncoder.encode(value as String).toString()
-            Type.int, Type.long, Type.float, Type.double, Type.decimal -> value
-            Type.date, Type.time, Type.datetime, Type.timestamp -> value
-            Type.bool -> value
-            Type.array, Type.json -> objectMapper.writeValueAsString(value)
-            Type.media -> value
-            Type.relation -> if (attribute.isCollection()) (value as List<*>).toSet() else value
+            FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email -> value
+            FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
+            FieldType.password -> passwordEncoder.encode(value as String).toString()
+            FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
+            FieldType.date, FieldType.time, FieldType.datetime, FieldType.timestamp -> value
+            FieldType.bool -> value
+            FieldType.array, FieldType.json -> Json.objectMapper.writeValueAsString(value)
+            FieldType.media -> value
+            FieldType.relation -> if (attribute.isCollection()) (value as List<*>).toSet() else value
         }
     }
 
     private fun validateAttributeValue(item: Item, attrName: String, attribute: Attribute, value: Any) {
         when (attribute.type) {
-            Type.uuid -> {}
-            Type.string, Type.text, Type.enum, Type.email, Type.password, Type.media -> {
+            FieldType.uuid -> {}
+            FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.password, FieldType.media -> {
                 if (value !is String)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                 when (attribute.type) {
-                    Type.string -> {
+                    FieldType.string -> {
                         if (attribute.length == null)
                             throw IllegalArgumentException("The length is required for the string type")
 
@@ -89,83 +86,83 @@ class AttributeValueHelper(
                                 throw IllegalArgumentException("The string [$value] does not match pattern [${attribute.pattern}]")
                         }
                     }
-                    Type.text -> {}
-                    Type.enum -> {
+                    FieldType.text -> {}
+                    FieldType.enum -> {
                         if (attribute.enumSet == null)
                             throw IllegalArgumentException("enumSet is required for the enum type")
 
                         if (value !in attribute.enumSet)
                             throw IllegalArgumentException("Enumeration set does not contain value [$value]. Possible values: ${attribute.enumSet.joinToString()}")
                     }
-                    Type.email -> {
+                    FieldType.email -> {
                         if (!simpleEmailRegex.matches(value))
                             throw IllegalArgumentException("The string [$value] does not match the email pattern")
                     }
-                    Type.password -> {
+                    FieldType.password -> {
                         if (value.isBlank())
                             throw IllegalArgumentException("Password string cannot be blank")
                     }
-                    Type.media -> {
+                    FieldType.media -> {
                         if (!mediaService.existsById(value))
                             throw IllegalArgumentException("Media with ID [$value] does not exist")
                     }
                     else -> throw IllegalArgumentException("Unsupported attribute type")
                 }
             }
-            Type.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
-            Type.int -> {
+            FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
+            FieldType.int -> {
                 if (value !is Int)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                 validateAttributeNumberValue(item, attrName, attribute, value)
             }
-            Type.long -> {
+            FieldType.long -> {
                 if (value !is Int && value !is Long)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
-            Type.float, Type.double -> {
+            FieldType.float, FieldType.double -> {
                 if (value !is Float && value !is Double)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
-            Type.decimal -> {
+            FieldType.decimal -> {
                 if (value !is Float && value !is Double && value !is BigDecimal)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
-            Type.date -> {
+            FieldType.date -> {
                 if (value !is LocalDate)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.time -> {
+            FieldType.time -> {
                 if (value !is OffsetTime)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.datetime -> {
+            FieldType.datetime -> {
                 if (value !is OffsetDateTime)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.timestamp -> {
+            FieldType.timestamp -> {
                 if (value !is OffsetDateTime)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.bool -> {
+            FieldType.bool -> {
                 if (value !is Boolean)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.array -> {
+            FieldType.array -> {
                 if (value !is List<*>)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.json -> {
+            FieldType.json -> {
                 if (value !is Map<*, *>)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
-            Type.relation -> {
+            FieldType.relation -> {
                 val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
                 if (attribute.isCollection()) {
                     if (value !is List<*>)
@@ -237,15 +234,16 @@ class AttributeValueHelper(
         val attribute = item.spec.getAttributeOrThrow(attrName)
 
         return when (attribute.type) {
-            Type.uuid, Type.string, Type.text, Type.enum, Type.email, Type.sequence -> value
-            Type.password -> ItemRec.PASSWORD_PLACEHOLDER
-            Type.int, Type.long, Type.float, Type.double, Type.decimal -> value
-            Type.date -> value
-            Type.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
-            Type.datetime, Type.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
-            Type.bool -> value
-            Type.array, Type.json -> if (value == null) null else objectMapper.readValue(value as String, Map::class.java)
-            Type.media, Type.relation -> value
+            FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.sequence -> value
+            FieldType.password -> ItemRec.PASSWORD_PLACEHOLDER
+            FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
+            FieldType.date -> value
+            FieldType.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
+            FieldType.datetime, FieldType.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
+            FieldType.bool -> value
+            FieldType.array -> if (value is String) Json.objectMapper.readValue(value, List::class.java) else value
+            FieldType.json -> if (value is String) Json.objectMapper.readValue(value, Map::class.java) else value
+            FieldType.media, FieldType.relation -> value
         }
     }
 
@@ -260,10 +258,5 @@ class AttributeValueHelper(
         private val excludeAttrNames = setOf(MAJOR_REV_ATTR_NAME, LOCALE_ATTR_NAME, STATE_ATTR_NAME)
         private val simpleEmailRegex = Regex("\\w+@\\w+\\.\\w+")
         private val passwordEncoder = BCryptPasswordEncoder()
-        private val objectMapper = jacksonObjectMapper().apply {
-            this.registerModule(JavaTimeModule())
-            this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            this.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        }
     }
 }

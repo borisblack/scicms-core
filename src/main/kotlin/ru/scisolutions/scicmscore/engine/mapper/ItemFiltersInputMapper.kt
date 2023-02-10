@@ -7,7 +7,7 @@ import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Compani
 import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Companion.OR_KEY
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
@@ -31,13 +31,13 @@ class ItemFiltersInputMapper(
                 .filterKeys { it !in excludedKeys }
                 .mapValues { (attrName, filterValue) ->
                     val attribute = item.spec.getAttributeOrThrow(attrName)
-                    if (attribute.type == Type.media) {
+                    if (attribute.type == FieldType.media) {
                         val media = itemCache.getMedia()
                         if (media.dataSource == item.dataSource)
                             map(MEDIA_ITEM_NAME, filterValue, opPrefix)
                         else
                             TypedPrimitiveFilterInput.fromMap(attribute.type, filterValue)
-                    } else if (attribute.type == Type.relation) {
+                    } else if (attribute.type == FieldType.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
                         if (targetItem.dataSource == item.dataSource) {

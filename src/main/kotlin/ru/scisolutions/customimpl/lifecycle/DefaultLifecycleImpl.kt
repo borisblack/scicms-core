@@ -1,7 +1,7 @@
 package ru.scisolutions.customimpl.lifecycle
 
 import org.slf4j.LoggerFactory
-import ru.scisolutions.scicmscore.engine.model.Promotable
+import ru.scisolutions.scicmscore.engine.lifecycle.Promotable
 
 class DefaultLifecycleImpl : Promotable {
     override fun promote(itemName: String, id: String, state: String) {

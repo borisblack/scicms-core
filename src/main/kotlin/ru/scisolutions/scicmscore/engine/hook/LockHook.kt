@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.engine.model
+package ru.scisolutions.scicmscore.engine.hook
 
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 

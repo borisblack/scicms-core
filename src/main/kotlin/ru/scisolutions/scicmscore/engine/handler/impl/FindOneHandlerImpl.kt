@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.FindOneHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.model.FindOneHook
+import ru.scisolutions.scicmscore.engine.hook.FindOneHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.Response

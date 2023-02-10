@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.mapper
 
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
-import ru.scisolutions.scicmscore.model.AggregateType
+import ru.scisolutions.scicmscore.engine.model.AggregateType
 
 class DatasetInputMapper() {
     fun map(arguments: Map<String, Any?>, opPrefix: String = ""): DatasetInput {

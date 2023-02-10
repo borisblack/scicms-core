@@ -1,6 +1,9 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import ru.scisolutions.scicmscore.model.DatasetSpec
+import ru.scisolutions.scicmscore.persistence.converter.DatasetSpecConverter
 import javax.persistence.Column
+import javax.persistence.Convert
 import javax.persistence.Entity
 import javax.persistence.Table
 
@@ -17,7 +20,13 @@ class Dataset(
     val tableName: String? = null,
 
     @Column(name = "query")
-    val query: String? = null
+    val query: String? = null,
+
+    @Convert(converter = DatasetSpecConverter::class)
+    var spec: DatasetSpec = DatasetSpec(),
+
+    var checksum: String? = null,
+    var hash: String? = null
 ) : AbstractEntity() {
     fun getQueryOrThrow(): String {
         val t = if (tableName.isNullOrBlank()) null else tableName

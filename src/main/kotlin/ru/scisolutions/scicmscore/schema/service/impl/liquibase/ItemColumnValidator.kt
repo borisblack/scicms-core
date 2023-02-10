@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.schema.service.impl.liquibase
 
 import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.schema.model.Item
 
 class ItemColumnValidator {
@@ -9,7 +9,7 @@ class ItemColumnValidator {
         val tableName = requireNotNull(item.metadata.tableName)
         val columnName = attribute.columnName ?: attrName.lowercase()
 
-        if (attribute.type == Type.relation && attribute.isCollection())
+        if (attribute.type == FieldType.relation && attribute.isCollection())
             throw IllegalArgumentException("Column [${tableName}.${columnName}] has invalid relation type (${attribute.relType})")
     }
 }

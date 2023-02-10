@@ -24,7 +24,7 @@ import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
@@ -161,7 +161,7 @@ class LiquibaseTableSeeder(
             var isNeedRecreateTable = false
             val attributesToUpdate = mutableSetOf<String>()
             for ((attrName, attribute) in item.spec.attributes) {
-                if (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany))
+                if (attribute.type == FieldType.relation && (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany))
                     continue
 
                 val existingAttribute = existingItemEntity.spec.attributes[attrName]
@@ -182,7 +182,7 @@ class LiquibaseTableSeeder(
                 createTable(item)
             } else {
                 val attributesToRemove: Set<String> = existingItemEntity.spec.attributes
-                    .filter { (_, attribute) -> attribute.type != AttrType.relation }
+                    .filter { (_, attribute) -> attribute.type != FieldType.relation }
                     .filter { (attrName, _) -> attrName !in item.spec.attributes }
                     .keys
 
@@ -205,7 +205,7 @@ class LiquibaseTableSeeder(
                 }
 
                 val attributesToAdd: Set<String> = item.spec.attributes
-                    .filter { (_, attribute) -> attribute.type != AttrType.relation }
+                    .filter { (_, attribute) -> attribute.type != FieldType.relation }
                     .filter { (attrName, _) -> attrName !in existingItemEntity.spec.attributes }
                     .keys
 
@@ -264,7 +264,7 @@ class LiquibaseTableSeeder(
 
     private fun cannotRecreateAttribute(attrName: String, attribute: Attribute, existingAttribute: Attribute, uniqueIndexColumns: Set<String>): Boolean =
         (attribute.keyed && !existingAttribute.keyed)
-            || (attribute.type == AttrType.relation && (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne))
+            || (attribute.type == FieldType.relation && (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne))
             || (attribute.required && !existingAttribute.required)
             || (attribute.unique && !existingAttribute.unique)
             || (attribute.columnName ?: attrName.lowercase()) in uniqueIndexColumns

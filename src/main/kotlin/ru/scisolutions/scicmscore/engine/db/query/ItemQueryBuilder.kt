@@ -16,7 +16,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.FieldType
 
 class ItemQueryBuilder {
     fun buildFindByIdQuery(item: Item, id: String, paramSource: AttributeSqlParameterSource, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
@@ -39,7 +39,7 @@ class ItemQueryBuilder {
 
         val sqlParamName = "${table.alias}_${ItemRec.ID_COL_NAME}"
         query.addCondition(BinaryCondition.equalTo(idCol, CustomSql(":$sqlParamName")))
-        paramSource.addValue(sqlParamName, id, AttrType.string)
+        paramSource.addValue(sqlParamName, id, FieldType.string)
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
         if (permissionCondition != null)

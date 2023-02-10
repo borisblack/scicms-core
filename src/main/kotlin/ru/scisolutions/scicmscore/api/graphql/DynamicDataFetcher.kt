@@ -21,7 +21,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneDataFetch
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneRelatedDataFetcher
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.util.upperFirst
@@ -118,9 +118,9 @@ class DynamicDataFetcher(
     private fun addAttributeDataFetchers(codeRegistryBuilder: GraphQLCodeRegistry.Builder, item: Item) {
         val capitalizedItemName = item.name.upperFirst()
         item.spec.attributes.asSequence()
-            .filter { (_, attribute) -> attribute.type == Type.relation || attribute.type == Type.media }
+            .filter { (_, attribute) -> attribute.type == FieldType.relation || attribute.type == FieldType.media }
             .forEach { (attrName, attribute) ->
-                if (attribute.type == Type.relation) {
+                if (attribute.type == FieldType.relation) {
                     if (attribute.relType == RelType.oneToOne || attribute.relType == RelType.manyToOne) {
                         codeRegistryBuilder
                             .dataFetcher(FieldCoordinates.coordinates(capitalizedItemName, attrName), findOneRelatedDataFetcher)

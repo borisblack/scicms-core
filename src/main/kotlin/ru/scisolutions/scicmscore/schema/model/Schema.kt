@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.schema.model
 
-class DbSchema {
+class Schema {
     private val itemTemplates = mutableMapOf<String, ItemTemplate>()
     private val items = mutableMapOf<String, Item>()
 

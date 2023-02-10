@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-import ru.scisolutions.scicmscore.model.AggregateType
+import ru.scisolutions.scicmscore.engine.model.AggregateType
 
 class DatasetInput(
     val filters: DatasetFiltersInput?,

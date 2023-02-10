@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
@@ -40,7 +40,7 @@ class DeleteRelationHelper(
         val oneToOneRelAttributes = itemRec
             .filterKeys {
                 val attribute = item.spec.getAttributeOrThrow(it)
-                attribute.type == Type.relation && attribute.relType == RelType.oneToOne
+                attribute.type == FieldType.relation && attribute.relType == RelType.oneToOne
             }
             .filterValues { it != null } as Map<String, String>
 

@@ -8,7 +8,7 @@ import graphql.language.ListType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.util.upperFirst
 
@@ -75,13 +75,13 @@ class ItemInputObjectTypes(
 
     fun enumTypes(item: Item): List<EnumTypeDefinition> =
         item.spec.attributes
-            .filter { (_, attribute) -> attribute.type == Type.enum }
+            .filter { (_, attribute) -> attribute.type == FieldType.enum }
             .map { (attrName, attribute) ->
                 enumType(item, attrName, attribute)
             }
 
     private fun enumType(item: Item, attrName: String, attribute: Attribute): EnumTypeDefinition {
-        if (attribute.type != Type.enum)
+        if (attribute.type != FieldType.enum)
             throw IllegalArgumentException("Attribute [$attrName] is not enumeration.")
 
         if (attribute.enumSet.isNullOrEmpty())

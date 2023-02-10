@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import java.util.Objects
 
 class Attribute(
-    val type: Type,
+    val type: FieldType,
     val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
     val displayName: String,
     val description: String? = null,
@@ -35,34 +35,34 @@ class Attribute(
     val fieldWidth: Int? = null // field width in UI form
 ) {
     @JsonIgnore
-    fun isCollection() = (type == Type.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
+    fun isCollection() = (type == FieldType.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
 
     fun validate() {
         when (type) {
-            Type.string -> {
+            FieldType.string -> {
                 if (length == null || length <= 0)
                     throw IllegalArgumentException("Invalid string length (${length})")
             }
-            Type.enum -> {
+            FieldType.enum -> {
                 if (enumSet == null)
                     throw IllegalArgumentException("The enumSet is required for the enum type")
             }
-            Type.sequence -> {
+            FieldType.sequence -> {
                 if (seqName == null)
                     throw IllegalArgumentException("The seqName is required for the sequence type")
             }
-            Type.int, Type.long, Type.float, Type.double -> {
+            FieldType.int, FieldType.long, FieldType.float, FieldType.double -> {
                 if (minRange != null && maxRange != null && minRange > maxRange)
                     throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
             }
-            Type.decimal -> {
+            FieldType.decimal -> {
                 if ((precision != null && precision <= 0) || (scale != null && scale < 0))
                     throw IllegalArgumentException("Invalid precision and/or scale (${precision}, ${scale})")
 
                 if (minRange != null && maxRange != null && minRange > maxRange)
                     throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
             }
-            Type.relation -> {
+            FieldType.relation -> {
                 if (isCollection() && required)
                     throw IllegalArgumentException("Collection relation attribute cannot be required")
             }
@@ -142,12 +142,6 @@ class Attribute(
             fieldWidth,
             fieldHidden
         )
-
-    enum class Type {
-        uuid, string, text, enum, sequence, email, password, int, long, float, double, decimal,
-        date, time, datetime, timestamp,
-        bool, array, json, media, relation
-    }
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
 }

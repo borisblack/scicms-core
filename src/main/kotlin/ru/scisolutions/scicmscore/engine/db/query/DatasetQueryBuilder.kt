@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.db.paginator.DatasetPaginator
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
-import ru.scisolutions.scicmscore.model.AggregateType
+import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 @Component

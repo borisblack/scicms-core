@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.schema.service
 
-import ru.scisolutions.scicmscore.schema.model.DbSchema
+import ru.scisolutions.scicmscore.schema.model.Schema
 
 interface SchemaSeeder {
-    fun seedSchema(dbSchema: DbSchema)
+    fun seedSchema(schema: Schema)
 }

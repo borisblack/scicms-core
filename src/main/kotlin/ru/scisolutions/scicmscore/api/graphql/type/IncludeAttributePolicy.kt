@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.api.graphql.type
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
@@ -34,7 +34,7 @@ class IncludeAttributePolicy(
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
 
-        if (attribute.type == Type.media && itemCache.getMedia().dataSource != item.dataSource)
+        if (attribute.type == FieldType.media && itemCache.getMedia().dataSource != item.dataSource)
             return false
 
         if (attribute.isCollection()) {
@@ -70,7 +70,7 @@ class IncludeAttributePolicy(
         if (attrName == STATE_ATTR_NAME) // use [promote] for state change
             return false
 
-        if (attribute.type == Type.sequence)
+        if (attribute.type == FieldType.sequence)
             return false
 
         return true

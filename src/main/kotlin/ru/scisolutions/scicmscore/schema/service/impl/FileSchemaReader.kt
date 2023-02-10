@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
-import ru.scisolutions.scicmscore.schema.model.DbSchema
+import ru.scisolutions.scicmscore.schema.model.Schema
 import ru.scisolutions.scicmscore.schema.service.SchemaReader
 import java.io.File
 import java.nio.file.Files
@@ -26,7 +26,7 @@ import com.google.common.io.Files as GFiles
 class FileSchemaReader(
     private val schemaProps: SchemaProps
 ) : SchemaReader {
-    override fun read(): DbSchema {
+    override fun read(): Schema {
         val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")
         logger.info("Reading the models path [{}]", schemaPath)
         val models = Files.walk(Paths.get(schemaPath)).asSequence()
@@ -37,10 +37,10 @@ class FileSchemaReader(
 
         logger.info("Read {} models", models.size)
 
-        val dbSchema = DbSchema()
-        dbSchema.putModels(models)
+        val schema = Schema()
+        schema.putModels(models)
 
-        return dbSchema
+        return schema
     }
 
     private fun readModel(file: File): AbstractModel {

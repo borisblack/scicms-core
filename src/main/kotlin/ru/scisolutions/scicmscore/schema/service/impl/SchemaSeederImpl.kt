@@ -7,7 +7,7 @@ import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelsApplier
-import ru.scisolutions.scicmscore.schema.model.DbSchema
+import ru.scisolutions.scicmscore.schema.model.Schema
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.model.ItemTemplate
 import ru.scisolutions.scicmscore.schema.service.SchemaReader
@@ -31,17 +31,17 @@ class SchemaSeederImpl(
         }
     }
 
-    final override fun seedSchema(dbSchema: DbSchema) {
+    final override fun seedSchema(schema: Schema) {
         schemaLockService.lockOrThrow()
 
         // Process item templates
-        val itemTemplates = dbSchema.getItemTemplates()
+        val itemTemplates = schema.getItemTemplates()
         itemTemplates.forEach { (_, itemTemplate) -> modelsApplier.apply(itemTemplate) }
         if (schemaProps.deleteIfAbsent)
             deleteAbsentItemTemplates(itemTemplates)
 
         // Process items
-        val items = dbSchema.getItems()
+        val items = schema.getItems()
         items.forEach { (_, item) -> modelsApplier.apply(item) }
         if (schemaProps.deleteIfAbsent)
             deleteAbsentItems(items)

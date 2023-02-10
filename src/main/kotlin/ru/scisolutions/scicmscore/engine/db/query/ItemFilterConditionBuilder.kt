@@ -27,7 +27,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneUnidirectionalR
 import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToOneUnidirectionalRelation
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.FieldType
 
 @Component
 class ItemFilterConditionBuilder(
@@ -41,7 +41,7 @@ class ItemFilterConditionBuilder(
             val attribute = item.spec.getAttributeOrThrow(attrName)
             val target =
                 when (attribute.type) {
-                    AttrType.media -> MEDIA_ITEM_NAME
+                    FieldType.media -> MEDIA_ITEM_NAME
                     else -> attribute.target
                 }
 
@@ -54,7 +54,7 @@ class ItemFilterConditionBuilder(
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
                 val relation =
                     when (attribute.type) {
-                        AttrType.media -> OneToOneUnidirectionalRelation(
+                        FieldType.media -> OneToOneUnidirectionalRelation(
                             item = item,
                             attrName = attrName,
                             targetItem = targetItem

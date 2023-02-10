@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.engine.db
+package ru.scisolutions.scicmscore.engine.db.mapper
 
 import org.springframework.jdbc.core.RowMapper
 import java.sql.Clob

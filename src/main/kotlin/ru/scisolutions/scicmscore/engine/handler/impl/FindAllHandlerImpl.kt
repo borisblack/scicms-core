@@ -6,7 +6,7 @@ import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.db.query.FindAllQueryBuilder
 import ru.scisolutions.scicmscore.engine.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.model.FindAllHook
+import ru.scisolutions.scicmscore.engine.hook.FindAllHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput

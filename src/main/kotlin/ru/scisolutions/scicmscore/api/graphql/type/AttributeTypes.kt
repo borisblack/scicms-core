@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
-import ru.scisolutions.scicmscore.model.Attribute.Type as AttrType
+import ru.scisolutions.scicmscore.model.FieldType
 
 private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) NonNullType(this) else this
 
@@ -25,19 +25,19 @@ class AttributeTypes(
             return TypeNames.ID.nonNull(attribute.required)
 
         return when (attribute.type) {
-            AttrType.uuid -> TypeNames.UUID.nonNull(attribute.required)
-            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence -> TypeNames.STRING.nonNull(attribute.required)
-            AttrType.email -> TypeNames.EMAIL.nonNull(attribute.required)
-            AttrType.password -> TypeNames.STRING.nonNull(attribute.required)
-            AttrType.int, AttrType.long -> TypeNames.INT.nonNull(attribute.required)
-            AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT.nonNull(attribute.required)
-            AttrType.date -> TypeNames.DATE.nonNull(attribute.required)
-            AttrType.time -> TypeNames.TIME.nonNull(attribute.required)
-            AttrType.datetime, AttrType.timestamp -> TypeNames.DATETIME.nonNull(attribute.required)
-            AttrType.bool -> TypeNames.BOOLEAN.nonNull(attribute.required)
-            AttrType.array, AttrType.json -> TypeNames.JSON.nonNull(attribute.required)
-            AttrType.media -> TypeName("MediaRelationResponse").nonNull(attribute.required)
-            AttrType.relation -> {
+            FieldType.uuid -> TypeNames.UUID.nonNull(attribute.required)
+            FieldType.string, FieldType.text, FieldType.enum, FieldType.sequence -> TypeNames.STRING.nonNull(attribute.required)
+            FieldType.email -> TypeNames.EMAIL.nonNull(attribute.required)
+            FieldType.password -> TypeNames.STRING.nonNull(attribute.required)
+            FieldType.int, FieldType.long -> TypeNames.INT.nonNull(attribute.required)
+            FieldType.float, FieldType.double, FieldType.decimal -> TypeNames.FLOAT.nonNull(attribute.required)
+            FieldType.date -> TypeNames.DATE.nonNull(attribute.required)
+            FieldType.time -> TypeNames.TIME.nonNull(attribute.required)
+            FieldType.datetime, FieldType.timestamp -> TypeNames.DATETIME.nonNull(attribute.required)
+            FieldType.bool -> TypeNames.BOOLEAN.nonNull(attribute.required)
+            FieldType.array, FieldType.json -> TypeNames.JSON.nonNull(attribute.required)
+            FieldType.media -> TypeName("MediaRelationResponse").nonNull(attribute.required)
+            FieldType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
                 val capitalizedTargetItemName = requireNotNull(attribute.target).upperFirst()
@@ -54,18 +54,18 @@ class AttributeTypes(
             return TypeNames.ID_FILTER_INPUT
 
         return when (attribute.type) {
-            AttrType.uuid -> TypeNames.UUID_FILTER_INPUT
-            AttrType.string, AttrType.text, AttrType.enum, AttrType.sequence, AttrType.email, AttrType.password -> TypeNames.STRING_FILTER_INPUT
-            AttrType.int, AttrType.long -> TypeNames.INT_FILTER_INPUT
-            AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT_FILTER_INPUT
-            AttrType.date -> TypeNames.DATE_FILTER_INPUT
-            AttrType.time -> TypeNames.TIME_FILTER_INPUT
-            AttrType.datetime -> TypeNames.DATETIME_FILTER_INPUT
-            AttrType.timestamp -> TypeNames.DATETIME_FILTER_INPUT
-            AttrType.bool -> TypeNames.BOOLEAN_FILTER_INPUT
-            AttrType.array, AttrType.json -> TypeNames.STRING_FILTER_INPUT
+            FieldType.uuid -> TypeNames.UUID_FILTER_INPUT
+            FieldType.string, FieldType.text, FieldType.enum, FieldType.sequence, FieldType.email, FieldType.password -> TypeNames.STRING_FILTER_INPUT
+            FieldType.int, FieldType.long -> TypeNames.INT_FILTER_INPUT
+            FieldType.float, FieldType.double, FieldType.decimal -> TypeNames.FLOAT_FILTER_INPUT
+            FieldType.date -> TypeNames.DATE_FILTER_INPUT
+            FieldType.time -> TypeNames.TIME_FILTER_INPUT
+            FieldType.datetime -> TypeNames.DATETIME_FILTER_INPUT
+            FieldType.timestamp -> TypeNames.DATETIME_FILTER_INPUT
+            FieldType.bool -> TypeNames.BOOLEAN_FILTER_INPUT
+            FieldType.array, FieldType.json -> TypeNames.STRING_FILTER_INPUT
 
-            AttrType.media -> {
+            FieldType.media -> {
                 val media = itemCache.getMedia()
                 if (media.dataSource == item.dataSource)
                     TypeName("MediaFiltersInput")
@@ -73,7 +73,7 @@ class AttributeTypes(
                     TypeNames.ID_FILTER_INPUT
             }
 
-            AttrType.relation -> {
+            FieldType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
                 val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
@@ -95,22 +95,22 @@ class AttributeTypes(
             return TypeNames.ID
 
         return when (attribute.type) {
-            AttrType.uuid -> TypeNames.UUID
-            AttrType.string, AttrType.text -> TypeNames.STRING
-            // AttrType.enum -> TypeName("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
-            AttrType.enum, AttrType.sequence -> TypeNames.STRING
-            AttrType.email -> TypeNames.EMAIL
-            AttrType.password -> TypeNames.STRING
-            AttrType.int, AttrType.long -> TypeNames.INT
-            AttrType.float, AttrType.double, AttrType.decimal -> TypeNames.FLOAT
-            AttrType.date -> TypeNames.DATE
-            AttrType.time -> TypeNames.TIME
-            AttrType.datetime -> TypeNames.DATETIME
-            AttrType.timestamp -> TypeNames.DATETIME
-            AttrType.bool -> TypeNames.BOOLEAN
-            AttrType.array, AttrType.json -> TypeNames.JSON
-            AttrType.media -> TypeNames.ID
-            AttrType.relation -> {
+            FieldType.uuid -> TypeNames.UUID
+            FieldType.string, FieldType.text -> TypeNames.STRING
+            // FieldType.enum -> TypeName("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
+            FieldType.enum, FieldType.sequence -> TypeNames.STRING
+            FieldType.email -> TypeNames.EMAIL
+            FieldType.password -> TypeNames.STRING
+            FieldType.int, FieldType.long -> TypeNames.INT
+            FieldType.float, FieldType.double, FieldType.decimal -> TypeNames.FLOAT
+            FieldType.date -> TypeNames.DATE
+            FieldType.time -> TypeNames.TIME
+            FieldType.datetime -> TypeNames.DATETIME
+            FieldType.timestamp -> TypeNames.DATETIME
+            FieldType.bool -> TypeNames.BOOLEAN
+            FieldType.array, FieldType.json -> TypeNames.JSON
+            FieldType.media -> TypeNames.ID
+            FieldType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
                 if (attribute.isCollection()) ListType(TypeNames.ID) else TypeNames.ID

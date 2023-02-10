@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.model.Attribute.Type
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
@@ -19,7 +19,7 @@ class RelationValidator(
     }
 
     private fun validateAttribute(attrName: String, attribute: Attribute) {
-        if (attribute.type != Type.relation)
+        if (attribute.type != FieldType.relation)
             throw IllegalArgumentException("Unsupported attribute type")
 
         requireNotNull(attribute.relType) { "The [$attrName] attribute has a relation type, but relType is null." }
