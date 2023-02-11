@@ -309,7 +309,7 @@
           "type": "boolean"
         },
         "colWidth": {
-          "description": "Column width in UI table (optional, null by default)",
+          "description": "Column width in UI table, px (optional, null by default)",
           "type": "number"
         },
         "fieldHidden": {
@@ -317,7 +317,7 @@
           "type": "boolean"
         },
         "fieldWidth": {
-          "description": "Field width in UI form (optional, null by default)",
+          "description": "Field width in UI form, colspan (optional, null by default)",
           "type": "number"
         }
       },

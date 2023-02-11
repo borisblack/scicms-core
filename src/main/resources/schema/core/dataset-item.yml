@@ -49,7 +49,7 @@ spec:
       description: Query
       colHidden: false
       colWidth: 600
-      fieldWidth: 3
+      fieldWidth: 18
     spec:
       type: json
       columnName: spec

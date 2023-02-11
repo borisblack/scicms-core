@@ -71,7 +71,7 @@ spec:
       description: Query
       colHidden: true
       colWidth: 300
-      fieldWidth: 2
+      fieldWidth: 12
     titleAttribute:
       type: string
       columnName: title_attribute

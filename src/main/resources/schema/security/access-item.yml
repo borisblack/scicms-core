@@ -63,4 +63,4 @@ spec:
       defaultValue: 0
       minRange: 0
       maxRange: 31
-      fieldWidth: 2
+      fieldWidth: 12

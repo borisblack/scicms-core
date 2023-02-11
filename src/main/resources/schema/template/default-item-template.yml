@@ -46,7 +46,7 @@ spec:
       length: 50
       colHidden: true
       colWidth: 160
-      fieldWidth: 0.5
+      fieldWidth: 3
     minorRev:
       type: string
       columnName: minor_rev
@@ -55,7 +55,7 @@ spec:
       length: 50
       colHidden: true
       colWidth: 160
-      fieldWidth: 0.5
+      fieldWidth: 3
     current:
       type: bool
       columnName: is_current
