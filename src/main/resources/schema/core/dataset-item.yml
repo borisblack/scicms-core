@@ -62,15 +62,6 @@ spec:
       colHidden: true
       colWidth: 300
       fieldHidden: true
-    checksum:
-      type: string
-      columnName: checksum
-      displayName: Checksum
-      description: Checksum
-      length: 50
-      private: true
-      colWidth: 270
-      fieldWidth: 300
     hash:
       type: string
       columnName: hash

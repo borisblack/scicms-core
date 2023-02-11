@@ -573,7 +573,6 @@
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>
-            <column name="checksum" type="varchar(50)"/>
             <column name="hash" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
@@ -634,7 +633,6 @@
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>
-            <column name="checksum" type="varchar(50)"/>
             <column name="hash" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>

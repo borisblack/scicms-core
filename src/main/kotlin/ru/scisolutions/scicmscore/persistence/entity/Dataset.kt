@@ -25,7 +25,6 @@ class Dataset(
     @Convert(converter = DatasetSpecConverter::class)
     var spec: DatasetSpec = DatasetSpec(),
 
-    var checksum: String? = null,
     var hash: String? = null
 ) : AbstractEntity() {
     fun getQueryOrThrow(): String {
