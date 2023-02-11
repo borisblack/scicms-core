@@ -24,14 +24,12 @@ spec:
       required: true
       readOnly: true
       length: 100
-      fieldWidth: 300
     label:
       type: string
       columnName: label
       displayName: Label
       description: Label
       length: 50
-      fieldWidth: 300
     description:
       type: string
       columnName: description
@@ -48,7 +46,6 @@ spec:
       readOnly: true
       minRange: 0
       colWidth: 160
-      fieldWidth: 120
     mimeType:
       type: string
       columnName: mimetype
@@ -57,7 +54,6 @@ spec:
       required: true
       readOnly: true
       length: 50
-      fieldWidth: 300
     path:
       type: string
       columnName: path
@@ -76,4 +72,3 @@ spec:
       readOnly: true
       length: 50
       colWidth: 270
-      fieldWidth: 300

@@ -38,7 +38,6 @@ spec:
       displayName: Source Item
       description: Source Item
       required: true
-      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -48,4 +47,3 @@ spec:
       description: Target Permission
       required: true
       colWidth: 160
-      fieldWidth: 400

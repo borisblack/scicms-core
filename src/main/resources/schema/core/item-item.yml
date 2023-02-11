@@ -26,7 +26,6 @@ spec:
       length: 50
       pattern: '^[a-z]\w*$'
       colWidth: 150
-      fieldWidth: 300
     displayName:
       type: string
       columnName: display_name
@@ -34,7 +33,6 @@ spec:
       description: Display Name
       length: 50
       colWidth: 200
-      fieldWidth: 300
     pluralName:
       type: string
       columnName: plural_name
@@ -44,7 +42,6 @@ spec:
       length: 50
       pattern: '^[a-z]\w*$'
       colWidth: 150
-      fieldWidth: 300
     displayPluralName:
       type: string
       columnName: display_plural_name
@@ -52,7 +49,6 @@ spec:
       description: Display Plural Name
       length: 50
       colWidth: 220
-      fieldWidth: 300
     dataSource:
       type: string
       columnName: data_source
@@ -61,7 +57,6 @@ spec:
       required: true
       length: 50
       colWidth: 160
-      fieldWidth: 300
     tableName:
       type: string
       columnName: table_name
@@ -69,7 +64,6 @@ spec:
       description: Table Name
       length: 50
       colWidth: 180
-      fieldWidth: 300
     query:
       type: text
       columnName: query
@@ -77,6 +71,7 @@ spec:
       description: Query
       colHidden: true
       colWidth: 300
+      fieldWidth: 2
     titleAttribute:
       type: string
       columnName: title_attribute
@@ -84,7 +79,6 @@ spec:
       description: Title Attribute Name
       length: 50
       colWidth: 160
-      fieldWidth: 300
     includeTemplates:
       type: array
       columnName: include_templates
@@ -93,7 +87,6 @@ spec:
       defaultValue: '["default"]'
       colHidden: true
       colWidth: 180
-      fieldWidth: 200
     description:
       type: string
       columnName: description
@@ -108,7 +101,6 @@ spec:
       description: Icon
       length: 50
       colWidth: 180
-      fieldWidth: 300
     readOnly:
       type: bool
       columnName: read_only
@@ -157,7 +149,6 @@ spec:
       displayName: Revision Policy
       description: Revision Policy
       colWidth: 180
-      fieldWidth: 400
     implementation:
       type: string
       columnName: implementation

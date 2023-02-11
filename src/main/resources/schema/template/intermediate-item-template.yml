@@ -13,7 +13,6 @@ spec:
       description: Sort Order
       colHidden: true
       colWidth: 180
-      fieldWidth: 140
   indexes:
     _source_idx:
       columns:

@@ -25,7 +25,6 @@ spec:
       displayName: Label
       description: Label
       length: 50
-      fieldWidth: 300
     source:
       type: relation
       relType: manyToOne
@@ -36,7 +35,6 @@ spec:
       description: Source Part
       required: true
       colWidth: 160
-      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -46,11 +44,9 @@ spec:
       description: Target Part
       required: true
       colWidth: 160
-      fieldWidth: 400
     quantity:
       type: float
       columnName: quantity
       displayName: Quantity
       description: Quantity
       minRange: 0
-      fieldWidth: 140

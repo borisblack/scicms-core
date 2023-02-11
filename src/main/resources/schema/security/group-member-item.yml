@@ -24,7 +24,6 @@ spec:
       columnName: group_id
       displayName: Group
       description: Group
-      fieldWidth: 400
     username:
       type: string
       columnName: username
@@ -33,7 +32,6 @@ spec:
       required: true
       length: 50
       colWidth: 200
-      fieldWidth: 400
   indexes:
     sec_group_members_group_username_uk:
       columns:

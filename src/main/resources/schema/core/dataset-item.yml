@@ -27,7 +27,6 @@ spec:
       length: 50
       pattern: '^[a-z]\w*$'
       colWidth: 150
-      fieldWidth: 300
     dataSource:
       type: string
       columnName: data_source
@@ -36,7 +35,6 @@ spec:
       required: true
       length: 50
       colWidth: 160
-      fieldWidth: 300
     tableName:
       type: string
       columnName: table_name
@@ -44,7 +42,6 @@ spec:
       description: Table Name
       length: 50
       colWidth: 180
-      fieldWidth: 300
     query:
       type: text
       columnName: query
@@ -52,6 +49,7 @@ spec:
       description: Query
       colHidden: false
       colWidth: 600
+      fieldWidth: 3
     spec:
       type: json
       columnName: spec

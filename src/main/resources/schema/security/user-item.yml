@@ -24,7 +24,6 @@ spec:
       required: true
       length: 50
       colWidth: 200
-      fieldWidth: 300
     password:
       type: password
       columnName: passwd
@@ -33,7 +32,6 @@ spec:
       confirm: true
       length: 50
       colHidden: true
-      fieldWidth: 300
     enabled:
       type: bool
       columnName: enabled

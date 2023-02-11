@@ -17,7 +17,6 @@ spec:
       length: 36
       colHidden: true
       colWidth: 290
-      fieldWidth: 300
     configId:
       type: string
       columnName: config_id
@@ -29,7 +28,6 @@ spec:
       length: 36
       colHidden: true
       colWidth: 290
-      fieldWidth: 300
     generation:
       type: int
       columnName: generation
@@ -48,7 +46,7 @@ spec:
       length: 50
       colHidden: true
       colWidth: 160
-      fieldWidth: 120
+      fieldWidth: 0.5
     minorRev:
       type: string
       columnName: minor_rev
@@ -57,7 +55,7 @@ spec:
       length: 50
       colHidden: true
       colWidth: 160
-      fieldWidth: 120
+      fieldWidth: 0.5
     current:
       type: bool
       columnName: is_current
@@ -74,7 +72,6 @@ spec:
       description: Locale
       length: 50
       colHidden: true
-      fieldWidth: 300
     lifecycle:
       type: relation
       relType: manyToOne
@@ -83,7 +80,6 @@ spec:
       displayName: Lifecycle
       description: Lifecycle
       colHidden: true
-      fieldWidth: 400
     state:
       type: string
       columnName: state
@@ -91,7 +87,6 @@ spec:
       description: Lifecycle State
       length: 50
       colHidden: true
-      fieldWidth: 300
     permission:
       type: relation
       relType: manyToOne
@@ -101,7 +96,6 @@ spec:
       description: Permission
       indexed: true
       colHidden: true
-      fieldWidth: 400
     createdAt:
       type: datetime
       columnName: created_at
@@ -120,7 +114,6 @@ spec:
       required: true
       readOnly: true
       colHidden: true
-      fieldWidth: 400
     updatedAt:
       type: datetime
       columnName: updated_at
@@ -137,7 +130,6 @@ spec:
       description: Updated By
       readOnly: true
       colHidden: true
-      fieldWidth: 400
     lockedBy:
       type: relation
       relType: manyToOne
@@ -148,4 +140,3 @@ spec:
       readOnly: true
       colHidden: true
       colWidth: 160
-      fieldWidth: 400

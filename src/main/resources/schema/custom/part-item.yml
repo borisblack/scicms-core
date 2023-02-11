@@ -33,7 +33,6 @@ spec:
       required: true
       unique: true
       colWidth: 150
-      fieldWidth: 300
     displayName:
       type: string
       columnName: display_name
@@ -41,7 +40,6 @@ spec:
       description: Display Name
       length: 50
       colWidth: 200
-      fieldWidth: 300
     description:
       type: string
       columnName: description
@@ -58,7 +56,6 @@ spec:
       displayName: Product
       description: Product
       required: true
-      fieldWidth: 400
     partType:
       type: enum
       columnName: part_type
@@ -69,7 +66,6 @@ spec:
         - Программа
       displayName: Part Type
       description: Part Type
-      fieldWidth: 140
     ownershipType:
       type: enum
       columnName: ownership_type
@@ -79,7 +75,6 @@ spec:
         - Покупное
       displayName: Ownership Type
       description: Ownership Type
-      fieldWidth: 140
     units:
       type: enum
       columnName: units
@@ -88,7 +83,6 @@ spec:
         - Кг
       displayName: Units
       description: Units
-      fieldWidth: 140
     cost:
       type: decimal
       columnName: cost
@@ -97,7 +91,6 @@ spec:
       precision: 14
       scale: 4
       minRange: 0
-      fieldWidth: 140
     weight:
       type: decimal
       columnName: weight
@@ -106,7 +99,6 @@ spec:
       precision: 14
       scale: 4
       minRange: 0
-      fieldWidth: 140
     releaseDate:
       type: datetime
       columnName: release_date
@@ -150,7 +142,6 @@ spec:
       columnName: owned_by_id
       displayName: Owned By
       description: Owned By
-      fieldWidth: 400
     managedBy:
       type: relation
       relType: manyToOne
@@ -158,7 +149,6 @@ spec:
       columnName: managed_by_id
       displayName: Managed By
       description: Managed By
-      fieldWidth: 400
     startSheet:
       type: relation
       relType: manyToOne
@@ -167,7 +157,6 @@ spec:
       columnName: start_sheet_id
       displayName: Start Sheet
       description: Start Sheet
-      fieldWidth: 400
     changeNotices:
       type: relation
       relType: manyToMany

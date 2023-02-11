@@ -24,7 +24,6 @@ spec:
       description: Label
       length: 50
       colWidth: 200
-      fieldWidth: 300
     source:
       type: relation
       relType: manyToOne
@@ -35,7 +34,6 @@ spec:
       description: Source Permission
       required: true
       colWidth: 180
-      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -45,16 +43,6 @@ spec:
       displayName: Target Identity
       description: Target Identity
       required: true
-      fieldWidth: 400
-    mask:
-      type: int
-      columnName: mask
-      displayName: Access Mask
-      description: Access Mask
-      required: true
-      defaultValue: 0
-      minRange: 0
-      maxRange: 31
     beginDate:
       type: datetime
       columnName: begin_date
@@ -66,3 +54,13 @@ spec:
       columnName: end_date
       displayName: End Date
       description: End Date
+    mask:
+      type: int
+      columnName: mask
+      displayName: Access Mask
+      description: Access Mask
+      required: true
+      defaultValue: 0
+      minRange: 0
+      maxRange: 31
+      fieldWidth: 2

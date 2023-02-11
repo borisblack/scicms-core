@@ -25,7 +25,6 @@ spec:
       unique: true
       length: 50
       colWidth: 200
-      fieldWidth: 300
     core:
       type: bool
       columnName: core

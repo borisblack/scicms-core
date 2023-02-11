@@ -25,7 +25,6 @@ spec:
       unique: true
       length: 50
       colWidth: 150
-      fieldWidth: 300
     spec:
       type: json
       columnName: spec

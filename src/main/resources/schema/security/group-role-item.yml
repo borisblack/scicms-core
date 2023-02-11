@@ -25,7 +25,6 @@ spec:
       displayName: Group
       description: Group
       required: true
-      fieldWidth: 400
     role:
       type: string
       columnName: role
@@ -34,7 +33,6 @@ spec:
       required: true
       length: 50
       colWidth: 200
-      fieldWidth: 300
   indexes:
     sec_group_roles_group_role_uk:
       columns:

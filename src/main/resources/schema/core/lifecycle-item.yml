@@ -25,7 +25,6 @@ spec:
       unique: true
       length: 50
       colWidth: 150
-      fieldWidth: 300
     displayName:
       type: string
       columnName: display_name
@@ -33,7 +32,6 @@ spec:
       description: Display Name
       length: 50
       colWidth: 200
-      fieldWidth: 300
     description:
       type: string
       columnName: description
@@ -48,7 +46,6 @@ spec:
       description: Icon
       length: 50
       colWidth: 180
-      fieldWidth: 300
     implementation:
       type: string
       columnName: implementation
@@ -73,7 +70,6 @@ spec:
       length: 50
       private: true
       colWidth: 270
-      fieldWidth: 300
     hash:
       type: string
       columnName: hash

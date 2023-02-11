@@ -38,7 +38,6 @@ spec:
       displayName: Source Item
       description: Source Item
       required: true
-      fieldWidth: 400
     target:
       type: relation
       relType: manyToOne
@@ -47,4 +46,3 @@ spec:
       displayName: Target Lifecycle
       description: Target Lifecycle
       required: true
-      fieldWidth: 400

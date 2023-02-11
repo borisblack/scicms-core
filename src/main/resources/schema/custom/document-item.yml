@@ -32,7 +32,6 @@ spec:
       required: true
       length: 50
       colWidth: 150
-      fieldWidth: 300
     description:
       type: string
       columnName: description
