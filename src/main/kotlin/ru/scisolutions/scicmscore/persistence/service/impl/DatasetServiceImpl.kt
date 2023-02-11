@@ -18,6 +18,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import ru.scisolutions.scicmscore.persistence.repository.DatasetRepository
 import ru.scisolutions.scicmscore.persistence.service.DatasetService
 import ru.scisolutions.scicmscore.util.Acl.Mask
+import java.util.Objects
 
 @Service
 @Repository
@@ -41,7 +42,11 @@ class DatasetServiceImpl(
     }
 
     override fun actualizeSpec(dataset: Dataset) {
-        val hash = dataset.getQueryOrThrow().hashCode().toString()
+        val hash = Objects.hash(
+            dataset.dataSource,
+            dataset.getQueryOrThrow()
+        ).toString()
+
         if (dataset.hash == hash)
             return
 

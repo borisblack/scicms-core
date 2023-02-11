@@ -76,5 +76,7 @@ spec:
       columnName: hash
       displayName: Hash
       description: Hash
-      private: true
+      readOnly: true
       length: 50
+      colHidden: true
+      fieldHidden: true
