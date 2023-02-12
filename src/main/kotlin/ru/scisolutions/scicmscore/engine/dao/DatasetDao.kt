@@ -7,4 +7,6 @@ interface DatasetDao {
     fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>>
 
     fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): Int
+
+    fun actualizeSpec(dataset: Dataset)
 }

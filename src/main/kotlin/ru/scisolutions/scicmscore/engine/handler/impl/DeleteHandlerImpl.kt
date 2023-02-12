@@ -55,7 +55,7 @@ class DeleteHandlerImpl(
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, DeleteHook::class.java)
-        implInstance?.beforeDelete(itemName, input)
+        implInstance?.beforeDelete(itemName, input, itemRec)
 
         deleteRelationHelper.processRelations(item, itemRec, input.deletingStrategy) // process relations
 

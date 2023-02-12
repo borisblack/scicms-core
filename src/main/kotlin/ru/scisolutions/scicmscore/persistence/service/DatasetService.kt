@@ -6,6 +6,4 @@ interface DatasetService {
     fun getById(id: String): Dataset
 
     fun findByNameForRead(name: String): Dataset?
-
-    fun actualizeSpec(dataset: Dataset)
 }

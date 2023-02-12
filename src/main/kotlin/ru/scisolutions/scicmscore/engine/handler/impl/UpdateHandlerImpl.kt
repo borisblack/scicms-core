@@ -7,8 +7,8 @@ import ru.scisolutions.scicmscore.engine.handler.UpdateHandler
 import ru.scisolutions.scicmscore.engine.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
-import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
+import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
@@ -52,10 +52,6 @@ class UpdateHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
-        // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, UpdateHook::class.java)
-        implInstance?.beforeUpdate(itemName, input)
-
         val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
@@ -69,6 +65,10 @@ class UpdateHandlerImpl(
         auditManager.assignUpdateAttributes(itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, UpdateHook::class.java)
+        implInstance?.beforeUpdate(itemName, input, itemRec)
 
         itemRecDao.updateById(item, input.id, itemRec) // update
 

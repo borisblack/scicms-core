@@ -37,18 +37,16 @@ class CustomMethodHandlerImpl(
         return clazz.declaredMethods.asSequence()
             .filter { Modifier.isPublic(it.modifiers) }
             .filter {
-                if (it.parameterCount != 1 || it.parameterTypes[0] != CustomMethodInput::class.java || it.returnType != CustomMethodResponse::class.java) {
-                    logger.info("Method [{}#{}] has invalid signature. Skipping this method", clazz.simpleName, it.name)
+                if (it.name in reservedMethodNames) {
+                    logger.debug("Method [{}#{}] name is reserved. Skipping this method", clazz.simpleName, it.name)
                     false
-                } else
-                    true
+                } else true
             }
             .filter {
-                if (it.name in reservedMethodNames) {
-                    logger.info("Method [{}#{}] name is reserved. Skipping this method", clazz.simpleName, it.name)
+                if (it.parameterCount != 1 || it.parameterTypes[0] != CustomMethodInput::class.java || it.returnType != CustomMethodResponse::class.java) {
+                    logger.warn("Method [{}#{}] has invalid signature. Skipping this method", clazz.simpleName, it.name)
                     false
-                } else
-                    true
+                } else true
             }
             .map { it.name }
             .toSet()

@@ -58,10 +58,6 @@ class CreateLocalizationHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id) // lock
 
-        // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
-        implInstance?.beforeCreateLocalization(itemName, input)
-
         val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val filteredData = preparedData
             .filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
@@ -94,6 +90,10 @@ class CreateLocalizationHandlerImpl(
                     ItemRec.CURRENT_ATTR_NAME to false
                 )
             )
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
+        implInstance?.beforeCreateLocalization(itemName, input, itemRec)
 
         itemRecDao.insert(item, itemRec) // insert
 

@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.persistence.service.impl
+package ru.scisolutions.scicmscore.engine.db.mapper
 
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
 import ru.scisolutions.scicmscore.model.Column

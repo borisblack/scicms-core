@@ -75,7 +75,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="username" type="varchar(50)">
-                <constraints nullable="false" foreignKeyName="sec_roles_username_fk" references="sec_users(username)"/>
+                <constraints nullable="false"/>
             </column>
             <column name="role" type="varchar(50)">
                 <constraints nullable="false"/>
@@ -110,6 +110,8 @@
         </createTable>
 
         <addUniqueConstraint tableName="sec_roles" constraintName="sec_roles_username_role_uk" columnNames="username, role"/>
+        <addForeignKeyConstraint constraintName="sec_roles_username_fk" baseTableName="sec_roles" baseColumnNames="username"
+                                 referencedTableName="sec_users" referencedColumnNames="username" onUpdate="CASCADE" onDelete="CASCADE"/>
 
 <!--        <createIndex tableName="sec_roles" indexName="sec_roles_config_idx">-->
 <!--            <column name="config_id"/>-->
@@ -288,6 +290,8 @@
         </createTable>
 
         <addUniqueConstraint tableName="sec_group_members" constraintName="sec_group_members_group_username_uk" columnNames="group_id, username"/>
+        <addForeignKeyConstraint constraintName="sec_group_members_username_fk" baseTableName="sec_group_members" baseColumnNames="username"
+                                 referencedTableName="sec_users" referencedColumnNames="username" onUpdate="CASCADE" onDelete="CASCADE"/>
 
 <!--        <createIndex tableName="sec_group_members" indexName="sec_group_members_config_idx">-->
 <!--            <column name="config_id"/>-->

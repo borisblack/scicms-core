@@ -88,7 +88,7 @@ class UsernamePasswordAuthenticationFilter(
         if (resultAuthentication == null || !resultAuthentication.isAuthenticated)
             throw InternalAuthenticationServiceException("Unable to authenticate user for provided credentials")
 
-        logger.debug("User successfully authenticated")
+        logger.trace("User successfully authenticated")
         return resultAuthentication
     }
 

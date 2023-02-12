@@ -1,6 +1,10 @@
 package ru.scisolutions.scicmscore.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import ru.scisolutions.scicmscore.util.Json
+import java.time.LocalDate
+import java.time.OffsetDateTime
+import java.time.OffsetTime
 import java.util.Objects
 
 class Attribute(
@@ -69,6 +73,25 @@ class Attribute(
             else -> {}
         }
     }
+
+    fun parseDefaultValue(): Any? =
+        if (defaultValue == null) null
+        else when (type) {
+            FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.sequence, FieldType.password -> defaultValue
+            FieldType.int -> defaultValue.toInt()
+            FieldType.long -> defaultValue.toLong()
+            FieldType.float -> defaultValue.toFloat()
+            FieldType.double -> defaultValue.toDouble()
+            FieldType.decimal -> defaultValue.toBigDecimal()
+            FieldType.date -> LocalDate.parse(defaultValue)
+            FieldType.time -> OffsetTime.parse(defaultValue)
+            FieldType.datetime, FieldType.timestamp -> OffsetDateTime.parse(defaultValue)
+            FieldType.bool -> defaultValue == "1" || defaultValue == "true"
+            FieldType.array -> Json.objectMapper.readValue(defaultValue, List::class.java)
+            FieldType.json -> Json.objectMapper.readValue(defaultValue, Map::class.java)
+            FieldType.media -> defaultValue
+            FieldType.relation -> if (isCollection()) Json.objectMapper.readValue(defaultValue, List::class.java).toSet() else defaultValue
+        }
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

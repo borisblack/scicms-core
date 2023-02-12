@@ -36,7 +36,7 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             FieldType.timestamp -> this.addValue(paramName, if (value is OffsetDateTime) value.toLocalDateTime() else value, Types.TIMESTAMP)
             FieldType.text -> this.addValue(paramName, value)
             FieldType.array,
-            FieldType.json -> this.addValue(paramName, Json.objectMapper.writeValueAsString(value))
+            FieldType.json -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
         }
 
         return this

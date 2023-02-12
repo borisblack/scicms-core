@@ -57,10 +57,6 @@ class CreateVersionHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
-        // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, CreateVersionHook::class.java)
-        implInstance?.beforeCreateVersion(itemName, input)
-
         val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
         val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
@@ -92,6 +88,10 @@ class CreateVersionHandlerImpl(
             )
         )
 
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, CreateVersionHook::class.java)
+        implInstance?.beforeCreateVersion(itemName, input, itemRec)
+        
         itemRecDao.insert(item, itemRec) // insert
 
         // Update relations

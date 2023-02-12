@@ -31,10 +31,6 @@ class FindAllHandlerImpl(
     ): ResponseCollection {
         val item = itemCache.getOrThrow(itemName)
 
-        // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, FindAllHook::class.java)
-        implInstance?.beforeFindAll(itemName, input)
-
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val paramSource = AttributeSqlParameterSource()
         val findAllQuery = findAllQueryBuilder.buildFindAllQuery(
@@ -44,6 +40,11 @@ class FindAllHandlerImpl(
             selectPaginationFields = selectPaginationFields,
             paramSource = paramSource
         )
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, FindAllHook::class.java)
+        implInstance?.beforeFindAll(itemName, input)
+
         val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql, paramSource)
 
         val response = ResponseCollection(

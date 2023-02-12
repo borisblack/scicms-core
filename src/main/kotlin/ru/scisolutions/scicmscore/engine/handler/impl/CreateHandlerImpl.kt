@@ -47,10 +47,6 @@ class CreateHandlerImpl(
         if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
 
-        // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
-        implInstance?.beforeCreate(itemName, input)
-
         val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
         val nonCollectionData = preparedData
             .filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
@@ -70,6 +66,10 @@ class CreateHandlerImpl(
         auditManager.assignAuditAttributes(itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
+        implInstance?.beforeCreate(itemName, input, itemRec)
 
         itemRecDao.insert(item, itemRec) // insert
 

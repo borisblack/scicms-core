@@ -21,11 +21,12 @@ class FindOneHandlerImpl(
     override fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemCache.getOrThrow(itemName)
 
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, FindOneHook::class.java)
         implInstance?.beforeFindOne(itemName, id)
-
-        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        
         val itemRec =
             if (isOnlyId(attrNames))
                 ItemRec().apply { this.id = id }

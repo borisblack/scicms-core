@@ -24,13 +24,28 @@ class AttributeValueHelper(
     private val mediaService: MediaService,
     private val itemRecDao: ItemRecDao
 ) {
-    fun prepareValuesToSave(item: Item, attributes: Map<String, Any?>): Map<String, Any?> {
-        val result = attributes
+    fun prepareValuesToSave(item: Item, values: Map<String, Any?>): Map<String, Any?> {
+        val map = values
             .filterKeys {
                 val attribute = item.spec.getAttributeOrThrow(it)
                 !attribute.private && attribute.type != FieldType.sequence && it !in excludeAttrNames
             }
-            .mapValues { (attrName, value) -> prepareValueToSave(item, attrName, value) }
+            .toMutableMap()
+
+        // Set default values
+        val requiredAttributesWithDefaultValue =
+            item.spec.attributes
+                .filterKeys { it !in excludeAttrNames }
+                .filterValues {
+                !it.private && it.type != FieldType.sequence && it.required && it.defaultValue != null
+            }
+
+        requiredAttributesWithDefaultValue.forEach { (attrName, attr) ->
+            if (map[attrName] == null)
+                map[attrName] = attr.parseDefaultValue()
+        }
+
+        val result = map.mapValues { (attrName, value) -> prepareValueToSave(item, attrName, value) }
 
         if (dataProps.trimStrings)
             return result.mapValues { (_, value) -> if (value is String) value.trim() else value }
@@ -42,7 +57,7 @@ class AttributeValueHelper(
         val attribute = item.spec.getAttributeOrThrow(attrName)
         if (value == null) {
             if (attribute.defaultValue !== null)
-                return attribute.defaultValue
+                return attribute.parseDefaultValue()
 
             if (attribute.required)
                 throw IllegalArgumentException("Item [${item.name}], attribute [${attrName}]: Value is required")
@@ -59,7 +74,7 @@ class AttributeValueHelper(
             FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
             FieldType.date, FieldType.time, FieldType.datetime, FieldType.timestamp -> value
             FieldType.bool -> value
-            FieldType.array, FieldType.json -> Json.objectMapper.writeValueAsString(value)
+            FieldType.array, FieldType.json -> value
             FieldType.media -> value
             FieldType.relation -> if (attribute.isCollection()) (value as List<*>).toSet() else value
         }
@@ -155,11 +170,11 @@ class AttributeValueHelper(
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
             FieldType.array -> {
-                if (value !is List<*>)
+                if (value !is String && value !is List<*>)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
             FieldType.json -> {
-                if (value !is Map<*, *>)
+                if (value !is String && value !is Map<*, *>)
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
             FieldType.relation -> {
@@ -251,11 +266,13 @@ class AttributeValueHelper(
         private const val WRONG_VALUE_TYPE_MSG = "Item [%s], attribute [%s], value [%s]: Wrong value type"
         private const val VALUE_LESS_THAN_MIN_MSG = "Item [%s], attribute [%s], value [%s]: The value is less than minRange"
         private const val VALUE_MORE_THAN_MAX_MSG = "Item [%s], attribute [%s], value [%s]: The value is more than maxRange"
-        private const val MAJOR_REV_ATTR_NAME = "majorRev"
-        private const val LOCALE_ATTR_NAME = "locale"
-        private const val STATE_ATTR_NAME = "state"
 
-        private val excludeAttrNames = setOf(MAJOR_REV_ATTR_NAME, LOCALE_ATTR_NAME, STATE_ATTR_NAME)
+        private val excludeAttrNames = setOf(
+            ItemRec.MAJOR_REV_ATTR_NAME,
+            ItemRec.CURRENT_ATTR_NAME,
+            ItemRec.LOCALE_ATTR_NAME,
+            ItemRec.STATE_ATTR_NAME
+        )
         private val simpleEmailRegex = Regex("\\w+@\\w+\\.\\w+")
         private val passwordEncoder = BCryptPasswordEncoder()
     }

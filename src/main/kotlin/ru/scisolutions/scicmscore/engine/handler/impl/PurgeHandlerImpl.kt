@@ -8,8 +8,8 @@ import ru.scisolutions.scicmscore.engine.handler.PurgeHandler
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
-import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.hook.PurgeHook
+import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.service.ClassService
@@ -35,12 +35,12 @@ class PurgeHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
-        // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, PurgeHook::class.java)
-        implInstance?.beforePurge(itemName, input)
-
         val itemRecsToPurge = itemRecDao.findAllByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String)
         logger.info("${itemRecsToPurge.size} item(s) will be purged")
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, PurgeHook::class.java)
+        implInstance?.beforePurge(itemName, input, itemRec)
 
         // Process relations and media
         itemRecsToPurge.forEach {

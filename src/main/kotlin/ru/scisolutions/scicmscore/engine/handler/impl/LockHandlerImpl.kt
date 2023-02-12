@@ -34,7 +34,7 @@ class LockHandlerImpl(
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, LockHook::class.java)
-        implInstance?.beforeLock(itemName, id)
+        implInstance?.beforeLock(itemName, id, itemRec)
 
         val success = itemRecDao.lockById(item, id)
         itemRec.lockedBy = userCache.getCurrent().id
@@ -65,7 +65,7 @@ class LockHandlerImpl(
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, LockHook::class.java)
-        implInstance?.beforeUnlock(itemName, id)
+        implInstance?.beforeUnlock(itemName, id, itemRec)
 
         val success = itemRecDao.unlockById(item, id)
         itemRec.lockedBy = null
