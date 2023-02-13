@@ -52,7 +52,7 @@ spec:
       displayName: Implementation
       description: Implementation
       length: 250
-      colWidth: 300
+      colWidth: 350
     spec:
       type: text
       columnName: spec
