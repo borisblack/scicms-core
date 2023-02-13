@@ -310,7 +310,9 @@
         },
         "colWidth": {
           "description": "Column width in UI table, px (optional, null by default)",
-          "type": "number"
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 24
         },
         "fieldHidden": {
           "description": "Hide field in UI form (optional, null by default)",
@@ -318,7 +320,8 @@
         },
         "fieldWidth": {
           "description": "Field width in UI form, colspan (optional, null by default)",
-          "type": "number"
+          "type": "integer",
+          "minimum": 1
         }
       },
       "additionalProperties": false,
