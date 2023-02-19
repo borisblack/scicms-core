@@ -11,9 +11,9 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.db.paginator.DatasetPaginator
+import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
-import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 @Component
@@ -42,21 +42,21 @@ class DatasetQueryBuilder(
                 )
                 .addFromTable(wrapTable)
 
-            if (input.aggregate != AggregateType.countAll && !input.groupField.isNullOrBlank()) {
-                val groupCol = DbColumn(wrapTable, input.groupField, null, null)
-                aggregateQuery
-                    .addColumns(groupCol)
-                    .addGroupings(groupCol)
+            if (!input.groupFields.isNullOrEmpty()) {
+                for (groupField in input.groupFields) {
+                    val groupCol = DbColumn(wrapTable, groupField, null, null)
+                    aggregateQuery
+                        .addColumns(groupCol)
+                        .addGroupings(groupCol)
+                }
             }
 
             // Sort
-            if (!input.sort.isNullOrEmpty() && input.aggregate != AggregateType.countAll) {
+            if (!input.sort.isNullOrEmpty())
                 datasetOrderingsParser.parseOrderings(input.sort, schema, wrapTable, aggregateQuery)
-            }
 
             val pagination: Pagination? =
-                if (input.pagination == null || input.aggregate == AggregateType.countAll) null
-                else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)
+                if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)
 
             return DatasetQuery(
                 sql = aggregateQuery.validate().toString(),
@@ -65,9 +65,8 @@ class DatasetQueryBuilder(
         }
 
         // Sort
-        if (!input.sort.isNullOrEmpty()) {
+        if (!input.sort.isNullOrEmpty())
             datasetOrderingsParser.parseOrderings(input.sort, schema, table, query)
-        }
 
         val pagination: Pagination? =
             if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, query, paramSource)
@@ -78,15 +77,10 @@ class DatasetQueryBuilder(
         )
     }
 
-    private fun buildInitialLoadQuery(
-        input: DatasetInput,
-        schema: DbSchema,
-        table: DbTable,
-        paramSource: DatasetSqlParameterSource
-    ): SelectQuery {
+    private fun buildInitialLoadQuery(input: DatasetInput, schema: DbSchema, table: DbTable, paramSource: DatasetSqlParameterSource): SelectQuery {
         val query = SelectQuery()
 
-        if (input.fields == null) {
+        if (input.fields.isNullOrEmpty()) {
             query.addAllColumns()
                 .addFromTable(table)
         } else {
@@ -114,7 +108,6 @@ class DatasetQueryBuilder(
 
     private fun buildAggregateFunctionCall(aggregateCol: DbColumn, aggregateType: AggregateType): FunctionCall =
         when (aggregateType) {
-            AggregateType.countAll -> FunctionCall.countAll()
             AggregateType.count -> FunctionCall.count().addColumnParams(aggregateCol)
             AggregateType.sum -> FunctionCall.sum().addColumnParams(aggregateCol)
             AggregateType.avg -> FunctionCall.avg().addColumnParams(aggregateCol)

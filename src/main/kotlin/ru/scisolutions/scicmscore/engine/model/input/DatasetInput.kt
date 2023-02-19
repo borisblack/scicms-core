@@ -9,5 +9,5 @@ class DatasetInput(
     val sort: List<String>?,
     val aggregate: AggregateType?,
     val aggregateField: String?,
-    val groupField: String?
+    val groupFields: List<String>?
 )

@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.AGG
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.AGGREGATE_FIELD_ARG_NAME
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.FIELDS_ARG_NAME
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.FILTERS_ARG_NAME
-import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.GROUP_FIELD_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.GROUP_FIELDS_ARG_NAME
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.PAGINATION_ARG_NAME
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.SORT_ARG_NAME
 import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
@@ -38,7 +38,7 @@ class DatasetController(
             SORT_ARG_NAME,
             AGGREGATE_ARG_NAME,
             AGGREGATE_FIELD_ARG_NAME,
-            GROUP_FIELD_ARG_NAME
+            GROUP_FIELDS_ARG_NAME
         )
         private val datasetInputMapper = DatasetInputMapper()
     }

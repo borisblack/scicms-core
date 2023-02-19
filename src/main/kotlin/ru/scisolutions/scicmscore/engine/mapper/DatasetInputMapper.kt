@@ -1,8 +1,8 @@
 package ru.scisolutions.scicmscore.engine.mapper
 
+import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
-import ru.scisolutions.scicmscore.engine.model.AggregateType
 
 class DatasetInputMapper() {
     fun map(arguments: Map<String, Any?>, opPrefix: String = ""): DatasetInput {
@@ -12,7 +12,7 @@ class DatasetInputMapper() {
         val sort = arguments[SORT_ARG_NAME] as List<String>?
         val aggregate = arguments[AGGREGATE_ARG_NAME] as String?
         val aggregateField = arguments[AGGREGATE_FIELD_ARG_NAME] as String?
-        val groupField = arguments[GROUP_FIELD_ARG_NAME] as String?
+        val groupFields = arguments[GROUP_FIELDS_ARG_NAME] as List<String>?
 
         return DatasetInput(
             filters = datasetFiltersMap?.let { datasetFiltersInputMapper.map(it, opPrefix) },
@@ -21,7 +21,7 @@ class DatasetInputMapper() {
             sort = sort,
             aggregate = if (aggregate == null) null else AggregateType.valueOf(aggregate),
             aggregateField = aggregateField,
-            groupField = groupField
+            groupFields = groupFields
         )
     }
     companion object {
@@ -31,7 +31,7 @@ class DatasetInputMapper() {
         const val SORT_ARG_NAME = "sort"
         const val AGGREGATE_ARG_NAME = "aggregate"
         const val AGGREGATE_FIELD_ARG_NAME = "aggregateField"
-        const val GROUP_FIELD_ARG_NAME = "groupField"
+        const val GROUP_FIELDS_ARG_NAME = "groupFields"
 
         private val datasetFiltersInputMapper = DatasetFiltersInputMapper()
     }
