@@ -13,6 +13,8 @@ class Dataset(
     @Column(nullable = false)
     val name: String,
 
+    var description: String? = null,
+
     @Column(name = "data_source", nullable = false)
     val dataSource: String,
 

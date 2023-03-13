@@ -19,6 +19,7 @@ class DatasetItemImpl(private val datasetDao: DatasetDao) : CreateHook, UpdateHo
     private fun actualizeSpec(data: ItemRec) {
         val dataset = Dataset(
             name = data[Dataset::name.name] as String,
+            description = data[Dataset::description.name] as String?,
             dataSource = data[Dataset::dataSource.name] as String,
             tableName = data[Dataset::tableName.name] as String?,
             query = data[Dataset::query.name] as String?,

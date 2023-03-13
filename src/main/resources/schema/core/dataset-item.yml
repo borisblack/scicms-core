@@ -27,6 +27,13 @@ spec:
       length: 50
       pattern: '^[a-z]\w*$'
       colWidth: 150
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+      colWidth: 200
     dataSource:
       type: string
       columnName: data_source

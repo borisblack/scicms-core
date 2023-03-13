@@ -570,6 +570,7 @@
             </column>
             <column name="table_name" type="varchar(50)"/>
             <column name="query" type="text"/>
+            <column name="description" type="varchar(250)"/>
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>
