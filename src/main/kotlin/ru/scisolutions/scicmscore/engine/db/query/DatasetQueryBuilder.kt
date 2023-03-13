@@ -53,7 +53,7 @@ class DatasetQueryBuilder(
 
             // Sort
             if (!input.sort.isNullOrEmpty())
-                datasetOrderingsParser.parseOrderings(input.sort, schema, wrapTable, aggregateQuery)
+                datasetOrderingsParser.parseOrderings(input.sort, null, aggregateQuery)
 
             val pagination: Pagination? =
                 if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)
@@ -66,7 +66,7 @@ class DatasetQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty())
-            datasetOrderingsParser.parseOrderings(input.sort, schema, table, query)
+            datasetOrderingsParser.parseOrderings(input.sort, table, query)
 
         val pagination: Pagination? =
             if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, query, paramSource)
