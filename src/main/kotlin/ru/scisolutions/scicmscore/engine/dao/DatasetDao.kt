@@ -8,5 +8,5 @@ interface DatasetDao {
 
     fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): Int
 
-    fun actualizeSpec(dataset: Dataset)
+    fun actualizeSpec(dataset: Dataset): Boolean
 }

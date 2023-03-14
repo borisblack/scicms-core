@@ -23,11 +23,13 @@ class DatasetItemImpl(private val datasetDao: DatasetDao) : CreateHook, UpdateHo
             dataSource = data[Dataset::dataSource.name] as String,
             tableName = data[Dataset::tableName.name] as String?,
             query = data[Dataset::query.name] as String?,
-            hash = data[Dataset::hash.name] as String?
+            hash = data[Dataset::hash.name] as String?,
         )
-        datasetDao.actualizeSpec(dataset)
-        data[Dataset::spec.name] = dataset.spec
-        data[Dataset::hash.name] = dataset.hash
+
+        if (datasetDao.actualizeSpec(dataset)) {
+            data[Dataset::spec.name] = dataset.spec
+            data[Dataset::hash.name] = dataset.hash
+        }
     }
 
     override fun afterCreate(itemName: String, response: Response) {

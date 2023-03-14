@@ -47,12 +47,9 @@ class CreateHandlerImpl(
         if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
 
-        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
-        val nonCollectionData = preparedData
-            .filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
-            .toMutableMap()
-
-        val itemRec = ItemRec(nonCollectionData).apply {
+        val nonCollectionData = input.data.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, nonCollectionData)
+        val itemRec = ItemRec(preparedData.toMutableMap()).apply {
             id = UUID.randomUUID().toString()
             configId = id
         }

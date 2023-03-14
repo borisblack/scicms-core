@@ -14,7 +14,9 @@ import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.engine.service.LifecycleManager
+import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
+import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
@@ -25,6 +27,8 @@ class UpdateHandlerImpl(
     private val classService: ClassService,
     private val itemCache: ItemCache,
     private val attributeValueHelper: AttributeValueHelper,
+    private val versionManager: VersionManager,
+    private val localizationManager: LocalizationManager,
     private val lifecycleManager: LifecycleManager,
     private val permissionManager: PermissionManager,
     private val auditManager: AuditManager,
@@ -52,14 +56,16 @@ class UpdateHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
-        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
-        val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
-        val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
-        val itemRec = ItemRec(mergedData).apply {
+        val nonCollectionData = input.data.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val mergedData = Maps.merge(nonCollectionData, prevItemRec).toMutableMap()
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
+        val itemRec = ItemRec(preparedData.toMutableMap()).apply {
             lockedBy = null
         }
 
         // Assign other attributes
+        versionManager.assignVersionAttributes(item, itemRec, null)
+        localizationManager.assignLocaleAttribute(item, itemRec, null)
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
         auditManager.assignUpdateAttributes(itemRec)

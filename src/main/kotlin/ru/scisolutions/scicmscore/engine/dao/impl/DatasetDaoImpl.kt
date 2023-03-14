@@ -31,7 +31,7 @@ class DatasetDaoImpl(
         return jdbcTemplateMap.getOrThrow(dataset.dataSource).queryForObject(countSQL, paramSource, Int::class.java) as Int
     }
 
-    override fun actualizeSpec(dataset: Dataset) {
+    override fun actualizeSpec(dataset: Dataset): Boolean {
         val hash = Objects.hash(
             dataset.dataSource,
             dataset.getQueryOrThrow()
@@ -39,7 +39,7 @@ class DatasetDaoImpl(
 
         if (dataset.hash == hash) {
             logger.debug("Dataset has not changed. Skip actualizing")
-            return
+            return false
         }
 
         logger.debug("Dataset has changed. Reloading meta")
@@ -47,6 +47,8 @@ class DatasetDaoImpl(
             columns = columnsMapper.map(loadMetaData(dataset))
         )
         dataset.hash = hash
+
+        return true
     }
 
     private fun loadMetaData(dataset: Dataset): SqlRowSetMetaData {

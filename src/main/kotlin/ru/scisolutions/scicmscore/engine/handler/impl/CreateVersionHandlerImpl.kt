@@ -57,10 +57,10 @@ class CreateVersionHandlerImpl(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
-        val preparedData = attributeValueHelper.prepareValuesToSave(item, input.data)
-        val filteredData = preparedData.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
-        val mergedData = Maps.merge(filteredData, prevItemRec).toMutableMap()
-        val itemRec = ItemRec(mergedData).apply {
+        val nonCollectionData = input.data.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val mergedData = Maps.merge(nonCollectionData, prevItemRec).toMutableMap()
+        val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
+        val itemRec = ItemRec(preparedData.toMutableMap()).apply {
             id = UUID.randomUUID().toString()
             lockedBy = null
         }

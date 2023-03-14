@@ -32,13 +32,13 @@ class AttributeValueHelper(
             }
             .toMutableMap()
 
-        // Set default values
+        // Set default values for required attributes
         val requiredAttributesWithDefaultValue =
             item.spec.attributes
                 .filterKeys { it !in excludeAttrNames }
                 .filterValues {
-                !it.private && it.type != FieldType.sequence && it.required && it.defaultValue != null
-            }
+                    !it.private && it.type != FieldType.sequence && it.required && it.defaultValue != null
+                }
 
         requiredAttributesWithDefaultValue.forEach { (attrName, attr) ->
             if (map[attrName] == null)
