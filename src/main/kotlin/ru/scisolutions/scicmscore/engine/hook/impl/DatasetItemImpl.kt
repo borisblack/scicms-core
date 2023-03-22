@@ -39,6 +39,9 @@ class DatasetItemImpl(private val datasetDao: DatasetDao) : CreateHook, UpdateHo
         if (spec == null)
             return DatasetSpec()
 
+        if (spec is DatasetSpec)
+            return spec
+
         if (spec is String)
             return objectMapper.readValue(spec, DatasetSpec::class.java)
 
