@@ -3,20 +3,19 @@ package ru.scisolutions.scicmscore.engine.db.mapper
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
 import ru.scisolutions.scicmscore.model.Column
 import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import java.math.BigDecimal
-import java.sql.Blob
-import java.sql.Clob
-import java.sql.Date
-import java.sql.Time
-import java.sql.Timestamp
-import java.sql.Types
+import java.sql.*
 
 class ColumnsMapper {
-    fun map(metaData: SqlRowSetMetaData): Map<String, Column> {
+    fun map(dataset: Dataset, metaData: SqlRowSetMetaData): Map<String, Column> {
+        val prevColumns = dataset.spec.columns
         val columns = mutableMapOf<String, Column>()
         for (i in 1..metaData.columnCount) {
-            columns[metaData.getColumnName(i).lowercase()] = Column(
-                type = getColumnType(metaData.getColumnType(i))
+            val colName = metaData.getColumnName(i).lowercase()
+            columns[colName] = Column(
+                type = getColumnType(metaData.getColumnType(i)),
+                alias = prevColumns[colName]?.alias
             )
         }
 

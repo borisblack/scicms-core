@@ -44,7 +44,7 @@ class DatasetDaoImpl(
 
         logger.debug("Dataset has changed. Reloading meta")
         dataset.spec = DatasetSpec(
-            columns = columnsMapper.map(loadMetaData(dataset))
+            columns = columnsMapper.map(dataset, loadMetaData(dataset))
         )
         dataset.hash = hash
 
