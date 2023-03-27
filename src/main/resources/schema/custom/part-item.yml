@@ -128,13 +128,6 @@ spec:
       columnName: t
       displayName: T
       description: T
-    # TODO: Remove after testing
-    s:
-      type: sequence
-      seqName: mainSeq
-      columnName: s
-      displayName: S
-      description: S
     ownedBy:
       type: relation
       relType: manyToOne

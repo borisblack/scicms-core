@@ -152,7 +152,7 @@
           "type": "string"
         },
         "permission": {
-          "description": "Permission ID (optional, Default Access ID by default)",
+          "description": "Permission ID (optional, Default Permission ID by default)",
           "type": "string"
         },
         "notLockable": {

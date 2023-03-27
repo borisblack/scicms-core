@@ -33,7 +33,7 @@ spec:
       displayName: Source Permission
       description: Source Permission
       required: true
-      colWidth: 180
+      colWidth: 200
     target:
       type: relation
       relType: manyToOne

@@ -8,11 +8,15 @@
     <property name="now" value="getdate()" dbms="mssql"/>
     <property name="adminGroupId" value="ec024ec7-7a24-4578-bd0a-074108aef96a"/>
     <property name="userGroupId" value="f84ce926-bff0-4d82-8a6b-499291dfce9a"/>
+    <property name="analystGroupId" value="937ff859-0dc5-43c9-a395-af3ff99984fe"/>
     <property name="rootUserId" value="0c924266-3c61-4362-81d7-9d69403fbe32"/>
     <property name="regularUserId" value="8ee059eb-bfe7-471b-9b90-a0537b7db1c8"/>
     <property name="defaultPermissionId" value="6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"/>
+    <property name="securityPermissionId" value="4e1f310d-570f-4a16-9f41-cbc80b08ab8e"/>
+    <property name="biPermissionId" value="874e089e-cd9a-428a-962f-0c3d994cd371"/>
     <property name="adminRoleIdentityId" value="c666c861-3be0-4a97-a49d-15296fc37870"/>
     <property name="userRoleIdentityId" value="e7501f6f-db02-49d1-b02f-d9ef70316a7d"/>
+    <property name="analystRoleIdentityId" value="03331043-4385-4489-970c-a624c69adaf1"/>
     <changeSet id="2022-04-05-init-sec-data" author="bchernysh">
         <insert tableName="sec_users">
             <column name="id" value="${rootUserId}"/>
@@ -23,7 +27,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -37,7 +41,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -49,7 +53,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -61,7 +65,19 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_groups">
+            <column name="id" value="${analystGroupId}"/>
+            <column name="config_id" value="${analystGroupId}"/>
+            <column name="group_name" value="Analysts"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -74,7 +90,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -87,7 +103,20 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_group_roles">
+            <column name="id" value="120e069f-0be8-4a01-b79a-dd9419c1c18f"/>
+            <column name="config_id" value="120e069f-0be8-4a01-b79a-dd9419c1c18f"/>
+            <column name="group_id" value="${analystGroupId}"/>
+            <column name="role" value="ROLE_ANALYST"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -100,7 +129,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -113,7 +142,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -126,7 +155,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -139,7 +168,20 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_identities">
+            <column name="id" value="${analystRoleIdentityId}"/>
+            <column name="config_id" value="${analystRoleIdentityId}"/>
+            <column name="name" value="ROLE_ANALYST"/>
+            <column name="principal" value="0"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -147,11 +189,35 @@
         <insert tableName="sec_permissions">
             <column name="id" value="${defaultPermissionId}"/>
             <column name="config_id" value="${defaultPermissionId}"/>
-            <column name="name" value="Default Access"/>
+            <column name="name" value="Default Permission"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_permissions">
+            <column name="id" value="${securityPermissionId}"/>
+            <column name="config_id" value="${securityPermissionId}"/>
+            <column name="name" value="Security Permission"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_permissions">
+            <column name="id" value="${biPermissionId}"/>
+            <column name="config_id" value="${biPermissionId}"/>
+            <column name="name" value="BI Permission"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -159,7 +225,7 @@
         <insert tableName="sec_access">
             <column name="id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
             <column name="config_id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
-            <column name="label" value="Default ROLE_ADMIN"/>
+            <column name="label" value="ROLE_ADMIN Access"/>
             <column name="sort_order" value="100"/>
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${adminRoleIdentityId}"/>
@@ -168,7 +234,7 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
@@ -176,7 +242,7 @@
         <insert tableName="sec_access">
             <column name="id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
             <column name="config_id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
-            <column name="label" value="Default ROLE_USER"/>
+            <column name="label" value="ROLE_USER Access"/>
             <column name="sort_order" value="200"/>
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${userRoleIdentityId}"/>
@@ -185,7 +251,58 @@
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_access">
+            <column name="id" value="014bf07a-93cf-49b6-b64b-78ae9e74202e"/>
+            <column name="config_id" value="014bf07a-93cf-49b6-b64b-78ae9e74202e"/>
+            <column name="label" value="ROLE_ADMIN Access"/>
+            <column name="sort_order" value="100"/>
+            <column name="source_id" value="${securityPermissionId}"/>
+            <column name="target_id" value="${adminRoleIdentityId}"/>
+            <column name="mask" value="31"/>
+            <column name="begin_date" valueDate="${now}"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_access">
+            <column name="id" value="1d12b2b1-4487-4240-8370-cfa020bc3cf7"/>
+            <column name="config_id" value="1d12b2b1-4487-4240-8370-cfa020bc3cf7"/>
+            <column name="label" value="ROLE_ADMIN Access"/>
+            <column name="sort_order" value="100"/>
+            <column name="source_id" value="${biPermissionId}"/>
+            <column name="target_id" value="${adminRoleIdentityId}"/>
+            <column name="mask" value="31"/>
+            <column name="begin_date" valueDate="${now}"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_access">
+            <column name="id" value="9b04804d-82de-4f14-bc78-b07cc289f270"/>
+            <column name="config_id" value="9b04804d-82de-4f14-bc78-b07cc289f270"/>
+            <column name="label" value="ROLE_ANALYST Access"/>
+            <column name="sort_order" value="200"/>
+            <column name="source_id" value="${biPermissionId}"/>
+            <column name="target_id" value="${analystRoleIdentityId}"/>
+            <column name="mask" value="31"/>
+            <column name="begin_date" valueDate="${now}"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${securityPermissionId}"/>
             <column name="created_at" valueDate="${now}"/>
             <column name="created_by_id" value="${rootUserId}"/>
         </insert>
