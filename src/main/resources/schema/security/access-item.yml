@@ -23,7 +23,7 @@ spec:
       displayName: Label
       description: Label
       length: 50
-      colWidth: 200
+      colWidth: 240
     source:
       type: relation
       relType: manyToOne
@@ -43,6 +43,7 @@ spec:
       displayName: Target Identity
       description: Target Identity
       required: true
+      colWidth: 160
     beginDate:
       type: datetime
       columnName: begin_date
