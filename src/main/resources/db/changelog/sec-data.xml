@@ -225,7 +225,7 @@
         <insert tableName="sec_access">
             <column name="id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
             <column name="config_id" value="8098b3c4-6b1e-4cbc-b3ac-c386b4d51a1e"/>
-            <column name="label" value="ROLE_ADMIN Access"/>
+            <column name="label" value="Default ROLE_ADMIN Access"/>
             <column name="sort_order" value="100"/>
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${adminRoleIdentityId}"/>
@@ -242,7 +242,7 @@
         <insert tableName="sec_access">
             <column name="id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
             <column name="config_id" value="e8bee98d-913c-4cbc-8e13-b64fba4d70ba"/>
-            <column name="label" value="ROLE_USER Access"/>
+            <column name="label" value="Default ROLE_USER Access"/>
             <column name="sort_order" value="200"/>
             <column name="source_id" value="${defaultPermissionId}"/>
             <column name="target_id" value="${userRoleIdentityId}"/>
@@ -259,7 +259,7 @@
         <insert tableName="sec_access">
             <column name="id" value="014bf07a-93cf-49b6-b64b-78ae9e74202e"/>
             <column name="config_id" value="014bf07a-93cf-49b6-b64b-78ae9e74202e"/>
-            <column name="label" value="ROLE_ADMIN Access"/>
+            <column name="label" value="Security ROLE_ADMIN Access"/>
             <column name="sort_order" value="100"/>
             <column name="source_id" value="${securityPermissionId}"/>
             <column name="target_id" value="${adminRoleIdentityId}"/>
@@ -276,7 +276,7 @@
         <insert tableName="sec_access">
             <column name="id" value="1d12b2b1-4487-4240-8370-cfa020bc3cf7"/>
             <column name="config_id" value="1d12b2b1-4487-4240-8370-cfa020bc3cf7"/>
-            <column name="label" value="ROLE_ADMIN Access"/>
+            <column name="label" value="BI ROLE_ADMIN Access"/>
             <column name="sort_order" value="100"/>
             <column name="source_id" value="${biPermissionId}"/>
             <column name="target_id" value="${adminRoleIdentityId}"/>
@@ -293,7 +293,7 @@
         <insert tableName="sec_access">
             <column name="id" value="9b04804d-82de-4f14-bc78-b07cc289f270"/>
             <column name="config_id" value="9b04804d-82de-4f14-bc78-b07cc289f270"/>
-            <column name="label" value="ROLE_ANALYST Access"/>
+            <column name="label" value="BI ROLE_ANALYST Access"/>
             <column name="sort_order" value="200"/>
             <column name="source_id" value="${biPermissionId}"/>
             <column name="target_id" value="${analystRoleIdentityId}"/>
