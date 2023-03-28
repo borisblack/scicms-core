@@ -29,6 +29,7 @@ spec:
       columnName: is_default
       displayName: Default
       description: Default
+      defaultValue: false
     source:
       type: relation
       relType: manyToOne
