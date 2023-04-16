@@ -4,6 +4,48 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
     <changeSet id="2022-04-05-init-sec-ddl" author="bchernysh">
+        <!--sec_permissions-->
+        <createTable tableName="sec_permissions">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="sec_permissions_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="sec_permissions_name_uk"/>
+            </column>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="is_current" type="tinyint" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_permissions_permission_fk" references="sec_permissions(id)"/>
+            </column>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="sec_permissions_locale_fk" references="core_locales(name)"/>
+            </column>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_permissions_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
         <!--sec_users-->
         <createTable tableName="sec_users">
             <column name="id" type="varchar(36)">
@@ -31,7 +73,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_users_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_users_locale_fk" references="core_locales(name)"/>
             </column>
@@ -49,22 +93,6 @@
             <column name="updated_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
-
-<!--        <createIndex tableName="sec_users" indexName="sec_users_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_users" indexName="sec_users_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_users" indexName="sec_users_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_users" indexName="sec_users_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
 
         <!--sec_roles-->
         <createTable tableName="sec_roles">
@@ -90,7 +118,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_roles_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_roles_locale_fk" references="core_locales(name)"/>
             </column>
@@ -113,22 +143,6 @@
         <addForeignKeyConstraint constraintName="sec_roles_username_fk" baseTableName="sec_roles" baseColumnNames="username"
                                  referencedTableName="sec_users" referencedColumnNames="username" onUpdate="CASCADE" onDelete="CASCADE"/>
 
-<!--        <createIndex tableName="sec_roles" indexName="sec_roles_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_roles" indexName="sec_roles_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_roles" indexName="sec_roles_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_roles" indexName="sec_roles_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
-
         <!--sec_groups-->
         <createTable tableName="sec_groups">
             <column name="id" type="varchar(36)">
@@ -150,7 +164,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_groups_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_groups_locale_fk" references="core_locales(name)"/>
             </column>
@@ -168,22 +184,6 @@
             <column name="updated_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
-
-<!--        <createIndex tableName="sec_groups" indexName="sec_groups_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_groups" indexName="sec_groups_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_groups" indexName="sec_groups_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_groups" indexName="sec_groups_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
 
         <!--sec_group_roles-->
         <createTable tableName="sec_group_roles">
@@ -209,7 +209,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_group_roles_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_group_roles_locale_fk" references="core_locales(name)"/>
             </column>
@@ -229,22 +231,6 @@
         </createTable>
 
         <addUniqueConstraint tableName="sec_group_roles" constraintName="sec_group_roles_group_role_uk" columnNames="group_id, role"/>
-
-<!--        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_group_roles" indexName="sec_group_roles_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
 
         <!--sec_group_members-->
         <createTable tableName="sec_group_members">
@@ -270,7 +256,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_group_members_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_group_members_locale_fk" references="core_locales(name)"/>
             </column>
@@ -292,22 +280,6 @@
         <addUniqueConstraint tableName="sec_group_members" constraintName="sec_group_members_group_username_uk" columnNames="group_id, username"/>
         <addForeignKeyConstraint constraintName="sec_group_members_username_fk" baseTableName="sec_group_members" baseColumnNames="username"
                                  referencedTableName="sec_users" referencedColumnNames="username" onUpdate="CASCADE" onDelete="CASCADE"/>
-
-<!--        <createIndex tableName="sec_group_members" indexName="sec_group_members_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_group_members" indexName="sec_group_members_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_group_members" indexName="sec_group_members_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_group_members" indexName="sec_group_members_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
 
         <!--sec_identities-->
         <createTable tableName="sec_identities">
@@ -333,7 +305,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_identities_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_identities_locale_fk" references="core_locales(name)"/>
             </column>
@@ -354,78 +328,6 @@
 
         <addUniqueConstraint tableName="sec_identities" constraintName="sec_identities_name_principal_uk" columnNames="name, principal"/>
 
-<!--        <createIndex tableName="sec_identities" indexName="sec_identities_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_identities" indexName="sec_identities_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_identities" indexName="sec_identities_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_identities" indexName="sec_identities_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
-
-        <!--sec_permissions-->
-        <createTable tableName="sec_permissions">
-            <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="sec_permissions_pk"/>
-            </column>
-            <column name="config_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="sec_permissions_name_uk"/>
-            </column>
-            <column name="generation" type="int" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="major_rev" type="varchar(50)" defaultValue="A">
-                <constraints nullable="false"/>
-            </column>
-            <column name="minor_rev" type="varchar(50)"/>
-            <column name="is_current" type="tinyint" defaultValue="1">
-                <constraints nullable="false"/>
-            </column>
-            <column name="permission_id" type="varchar(36)"/>
-            <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="sec_permissions_locale_fk" references="core_locales(name)"/>
-            </column>
-            <column name="lifecycle_id" type="varchar(36)">
-                <constraints foreignKeyName="sec_permissions_lifecycle_fk" references="core_lifecycles(id)"/>
-            </column>
-            <column name="state" type="varchar(50)"/>
-            <column name="created_at" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by_id" type="varchar(36)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_at" type="datetime"/>
-            <column name="updated_by_id" type="varchar(36)"/>
-            <column name="locked_by_id" type="varchar(36)"/>
-        </createTable>
-
-<!--        <createIndex tableName="sec_permissions" indexName="sec_permissions_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_permissions" indexName="sec_permissions_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_permissions" indexName="sec_permissions_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_permissions" indexName="sec_permissions_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
-
         <!--sec_access-->
         <createTable tableName="sec_access">
             <column name="id" type="varchar(36)">
@@ -445,6 +347,9 @@
             <column name="mask" type="int" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
+            <column name="granting" type="tinyint" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
             <column name="begin_date" type="datetime">
                 <constraints nullable="false"/>
             </column>
@@ -459,7 +364,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec_access_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_access_locale_fk" references="core_locales(name)"/>
             </column>
@@ -480,21 +387,12 @@
 
         <addUniqueConstraint tableName="sec_access" constraintName="sec_access_source_target_uk" columnNames="source_id, target_id"/>
 
-<!--        <createIndex tableName="sec_access" indexName="sec_access_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_access" indexName="sec_access_permission_idx">
-            <column name="permission_id"/>
+        <createIndex tableName="sec_access" indexName="sec_access_idx">
+            <column name="mask"/>
+            <column name="granting"/>
+            <column name="begin_date"/>
+            <column name="end_date"/>
         </createIndex>
-
-<!--        <createIndex tableName="sec_access" indexName="sec_access_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_access" indexName="sec_access_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
 
         <!--sec_allowed_permissions-->
         <createTable tableName="sec_allowed_permissions">
@@ -523,7 +421,9 @@
             <column name="is_current" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="permission_id" type="varchar(36)"/>
+            <column name="permission_id" type="varchar(36)">
+                <constraints foreignKeyName="sec__allowed_permissions_permission_fk" references="sec_permissions(id)"/>
+            </column>
             <column name="locale" type="varchar(50)">
                 <constraints foreignKeyName="sec_allowed_permissions_locale_fk" references="core_locales(name)"/>
             </column>
@@ -543,21 +443,5 @@
         </createTable>
 
         <addUniqueConstraint tableName="sec_allowed_permissions" constraintName="sec_allowed_permissions_source_target_uk" columnNames="source_id, target_id"/>
-
-<!--        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_config_idx">-->
-<!--            <column name="config_id"/>-->
-<!--        </createIndex>-->
-
-        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_permission_idx">
-            <column name="permission_id"/>
-        </createIndex>
-
-<!--        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_major_rev_idx">-->
-<!--            <column name="major_rev"/>-->
-<!--        </createIndex>-->
-
-<!--        <createIndex tableName="sec_allowed_permissions" indexName="sec_allowed_permissions_is_current_idx">-->
-<!--            <column name="is_current"/>-->
-<!--        </createIndex>-->
     </changeSet>
 </databaseChangeLog>

@@ -7,10 +7,10 @@ import ru.scisolutions.scicmscore.persistence.entity.Media
 
 interface MediaRepository : CrudRepository<Media, String> {
     @Query(
-        value = "SELECT * FROM core_media m WHERE m.id = :id AND (m.permission_id IS NULL OR m.permission_id IN (${Acl.PERMISSION_IDS_SELECT_SNIPPET}))",
+        value = "SELECT * FROM core_media m WHERE m.id = :id AND (m.permission_id IS NULL OR m.permission_id IN :permissionIds)",
         nativeQuery = true
     )
-    fun findByIdWithACL(id: String, mask: Set<Int>, username: String, roles: Set<String>): Media?
+    fun findByIdWithACL(id: String, permissionIds: Set<String>): Media?
 
     fun getById(id: String): Media
 }

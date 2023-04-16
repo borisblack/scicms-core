@@ -7,5 +7,5 @@ interface PermissionService {
 
     fun getDefault(): Permission
 
-    fun findIdsFor(mask: Set<Int>, username: String, roles: Set<String>): Set<String>
+    fun findIdsByMask(mask: Set<Int>): Set<String>
 }

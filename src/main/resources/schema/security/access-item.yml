@@ -65,3 +65,10 @@ spec:
       minRange: 0
       maxRange: 31
       fieldWidth: 12
+    granting:
+      type: bool
+      columnName: granting
+      displayName: Granting
+      description: Granting
+      required: true
+      defaultValue: true

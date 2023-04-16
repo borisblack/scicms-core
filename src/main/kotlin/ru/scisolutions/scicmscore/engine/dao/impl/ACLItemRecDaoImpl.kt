@@ -30,7 +30,7 @@ class ACLItemRecDaoImpl(
         findByIdFor(item, id, selectAttrNames, Mask.ADMINISTRATION)
 
     private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Mask): ItemRec? {
-        val permissionIds: Set<String> = permissionCache.idsFor(accessMask)
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
         val paramSource = AttributeSqlParameterSource()
         val query =  itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames, permissionIds)
         return findOne(item, query.toString(), paramSource)
@@ -49,7 +49,7 @@ class ACLItemRecDaoImpl(
     override fun findAllByIdsForRead(item: Item, ids: Set<String>): List<ItemRec> = findAllByIdsFor(item, ids, Mask.READ)
 
     private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Mask): List<ItemRec> {
-        val permissionIds: Set<String> = permissionCache.idsFor(accessMask)
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
         val sql = query.toString()
@@ -58,7 +58,7 @@ class ACLItemRecDaoImpl(
     }
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Mask): Int {
-        val permissionIds: Set<String> = permissionCache.idsFor(accessMask)
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
         return count(item, query.toString(), paramSource)
@@ -80,7 +80,7 @@ class ACLItemRecDaoImpl(
         findAllByAttributeFor(item, attrName, attrValue, Mask.ADMINISTRATION)
 
     private fun findAllByAttributeFor(item: Item, attrName: String, attrValue: Any, accessMask: Mask): List<ItemRec> {
-        val permissionIds: Set<String> = permissionCache.idsFor(accessMask)
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource, permissionIds)
         val sql = query.toString()

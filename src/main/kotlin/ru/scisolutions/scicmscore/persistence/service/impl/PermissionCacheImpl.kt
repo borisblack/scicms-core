@@ -4,7 +4,6 @@ import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
-import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
@@ -22,22 +21,22 @@ class PermissionCacheImpl(
         .expireAfterWrite(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
-    override fun idsForRead(): Set<String> = idsFor(Mask.READ)
+    override fun idsForRead(): Set<String> = idsByAccessMask(Mask.READ)
 
-    override fun idsForWrite(): Set<String> = idsFor(Mask.WRITE)
+    override fun idsForWrite(): Set<String> = idsByAccessMask(Mask.WRITE)
 
-    override fun idsForCreate(): Set<String> = idsFor(Mask.CREATE)
+    override fun idsForCreate(): Set<String> = idsByAccessMask(Mask.CREATE)
 
-    override fun idsForDelete(): Set<String> = idsFor(Mask.DELETE)
+    override fun idsForDelete(): Set<String> = idsByAccessMask(Mask.DELETE)
 
-    override fun idsForAdministration(): Set<String> = idsFor(Mask.ADMINISTRATION)
+    override fun idsForAdministration(): Set<String> = idsByAccessMask(Mask.ADMINISTRATION)
 
-    override fun idsFor(accessMask: Mask): Set<String> {
+    override fun idsByAccessMask(accessMask: Mask): Set<String> {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw AccessDeniedException("User is not authenticated")
 
         return cache.get("${authentication.name}#${accessMask.name}") {
-            permissionService.findIdsFor(accessMask.mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
+            permissionService.findIdsByMask(accessMask.mask)
         }
     }
 

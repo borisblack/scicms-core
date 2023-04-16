@@ -13,5 +13,5 @@ interface PermissionCache {
 
     fun idsForAdministration(): Set<String>
 
-    fun idsFor(accessMask: Mask): Set<String>
+    fun idsByAccessMask(accessMask: Mask): Set<String>
 }

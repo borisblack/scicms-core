@@ -18,6 +18,42 @@
     <property name="userRoleIdentityId" value="e7501f6f-db02-49d1-b02f-d9ef70316a7d"/>
     <property name="analystRoleIdentityId" value="03331043-4385-4489-970c-a624c69adaf1"/>
     <changeSet id="2022-04-05-init-sec-data" author="bchernysh">
+        <insert tableName="sec_permissions">
+            <column name="id" value="${defaultPermissionId}"/>
+            <column name="config_id" value="${defaultPermissionId}"/>
+            <column name="name" value="Default Permission"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_permissions">
+            <column name="id" value="${securityPermissionId}"/>
+            <column name="config_id" value="${securityPermissionId}"/>
+            <column name="name" value="Security Permission"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
+        <insert tableName="sec_permissions">
+            <column name="id" value="${biPermissionId}"/>
+            <column name="config_id" value="${biPermissionId}"/>
+            <column name="name" value="BI Permission"/>
+            <column name="generation" value="1"/>
+            <column name="major_rev" value="A"/>
+            <column name="is_current" value="1"/>
+            <column name="permission_id" value="${defaultPermissionId}"/>
+            <column name="created_at" valueDate="${now}"/>
+            <column name="created_by_id" value="${rootUserId}"/>
+        </insert>
+
         <insert tableName="sec_users">
             <column name="id" value="${rootUserId}"/>
             <column name="config_id" value="${rootUserId}"/>
@@ -178,42 +214,6 @@
             <column name="config_id" value="${analystRoleIdentityId}"/>
             <column name="name" value="ROLE_ANALYST"/>
             <column name="principal" value="0"/>
-            <column name="generation" value="1"/>
-            <column name="major_rev" value="A"/>
-            <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
-            <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId}"/>
-        </insert>
-
-        <insert tableName="sec_permissions">
-            <column name="id" value="${defaultPermissionId}"/>
-            <column name="config_id" value="${defaultPermissionId}"/>
-            <column name="name" value="Default Permission"/>
-            <column name="generation" value="1"/>
-            <column name="major_rev" value="A"/>
-            <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
-            <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId}"/>
-        </insert>
-
-        <insert tableName="sec_permissions">
-            <column name="id" value="${securityPermissionId}"/>
-            <column name="config_id" value="${securityPermissionId}"/>
-            <column name="name" value="Security Permission"/>
-            <column name="generation" value="1"/>
-            <column name="major_rev" value="A"/>
-            <column name="is_current" value="1"/>
-            <column name="permission_id" value="${defaultPermissionId}"/>
-            <column name="created_at" valueDate="${now}"/>
-            <column name="created_by_id" value="${rootUserId}"/>
-        </insert>
-
-        <insert tableName="sec_permissions">
-            <column name="id" value="${biPermissionId}"/>
-            <column name="config_id" value="${biPermissionId}"/>
-            <column name="name" value="BI Permission"/>
             <column name="generation" value="1"/>
             <column name="major_rev" value="A"/>
             <column name="is_current" value="1"/>
