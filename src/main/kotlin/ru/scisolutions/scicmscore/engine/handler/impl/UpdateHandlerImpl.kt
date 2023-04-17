@@ -66,8 +66,8 @@ class UpdateHandlerImpl(
         // Assign other attributes
         versionManager.assignVersionAttributes(item, itemRec, null)
         localizationManager.assignLocaleAttribute(item, itemRec, null)
-        lifecycleManager.assignLifecycleAttributes(item, itemRec)
-        permissionManager.assignPermissionAttribute(item, itemRec)
+        lifecycleManager.assignLifecycleAttributes(item, prevItemRec, itemRec)
+        permissionManager.assignPermissionAttribute(item, prevItemRec, itemRec)
         auditManager.assignUpdateAttributes(itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
