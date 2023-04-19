@@ -16,8 +16,8 @@ class PrimitiveFilterInput(
     val betweenFilter: BetweenPair?,
     val inFilter: List<Any?>?,
     val notInFilter: List<Any?>?,
-    val nullFilter: Boolean?,
-    val notNullFilter: Boolean?,
+    val nullFilter: Any?,
+    val notNullFilter: Any?,
     andFilterList: List<PrimitiveFilterInput>?,
     orFilterList: List<PrimitiveFilterInput>?,
     notFilter: PrimitiveFilterInput?
@@ -52,8 +52,8 @@ class PrimitiveFilterInput(
                 if (it is List<*>) it.filterNotNull() else throw IllegalArgumentException("Invalid NOT IN filter")
             },
 
-            nullFilter = filters["${opPrefix}$NULL_KEY"] as Boolean?,
-            notNullFilter = filters["${opPrefix}$NOT_NULL_KEY"] as Boolean?,
+            nullFilter = filters["${opPrefix}$NULL_KEY"],
+            notNullFilter = filters["${opPrefix}$NOT_NULL_KEY"],
 
             andFilterList = filters["${opPrefix}$AND_KEY"]?.let { list ->
                 if (list is List<*>) {

@@ -133,11 +133,11 @@ class DatasetFilterConditionBuilder {
             nestedConditions.add(NotCondition(InCondition(column, *arr)))
         }
 
-        if (primitiveFilterInput.nullFilter == true) {
+        if (primitiveFilterInput.nullFilter == true || primitiveFilterInput.nullFilter == "true") {
             nestedConditions.add(UnaryCondition.isNull(column))
         }
 
-        if (primitiveFilterInput.notNullFilter == true) {
+        if (primitiveFilterInput.notNullFilter == true || primitiveFilterInput.notNullFilter == "true") {
             nestedConditions.add(UnaryCondition.isNotNull(column))
         }
 
