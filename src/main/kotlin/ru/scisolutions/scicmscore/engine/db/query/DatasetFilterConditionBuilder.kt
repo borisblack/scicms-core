@@ -15,6 +15,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
+import kotlin.random.Random
 
 @Component
 class DatasetFilterConditionBuilder {
@@ -51,7 +52,7 @@ class DatasetFilterConditionBuilder {
 
     private fun newPrimitiveCondition(primitiveFilterInput: PrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: DatasetSqlParameterSource): Condition {
         val nestedConditions = mutableListOf<Condition>()
-        val sqlParamName = "${table.alias}_${column.name}"
+        val sqlParamName = "${table.alias}_${column.name}_${Random.nextInt(0, 1000)}" // TODO: Change to truly unique name
 
         primitiveFilterInput.containsFilter?.let {
             nestedConditions.add(BinaryCondition.like(column, "%$it%"))

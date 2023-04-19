@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
 import ru.scisolutions.scicmscore.engine.service.RelationManager
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
@@ -27,7 +28,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneUnidirectionalR
 import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.OneToOneUnidirectionalRelation
-import ru.scisolutions.scicmscore.model.FieldType
+import kotlin.random.Random
 
 @Component
 class ItemFilterConditionBuilder(
@@ -136,7 +137,7 @@ class ItemFilterConditionBuilder(
 
     private fun newPrimitiveCondition(typedPrimitiveFilterInput: TypedPrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
         val nestedConditions = mutableListOf<Condition>()
-        val sqlParamName = "${table.alias}_${column.name}"
+        val sqlParamName = "${table.alias}_${column.name}_${Random.nextInt(0, 1000)}" // TODO: Change to truly unique name
 
         typedPrimitiveFilterInput.containsFilter?.let {
             nestedConditions.add(BinaryCondition.like(column, "%$it%"))

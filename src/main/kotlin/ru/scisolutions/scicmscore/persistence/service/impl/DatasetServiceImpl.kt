@@ -19,6 +19,7 @@ class DatasetServiceImpl(
     override fun getById(id: String): Dataset =
         datasetRepository.findById(id).orElseThrow { IllegalArgumentException("Dataset with ID [$id] not found") }
 
+    @Transactional(readOnly = true)
     override fun findByNameForRead(name: String): Dataset? =
         findByNameFor(name, Mask.READ)
 
