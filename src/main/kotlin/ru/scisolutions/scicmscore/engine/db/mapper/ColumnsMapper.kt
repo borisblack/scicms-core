@@ -5,7 +5,12 @@ import ru.scisolutions.scicmscore.model.Column
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import java.math.BigDecimal
-import java.sql.*
+import java.sql.Blob
+import java.sql.Clob
+import java.sql.Date
+import java.sql.Time
+import java.sql.Timestamp
+import java.sql.Types
 
 class ColumnsMapper {
     fun map(dataset: Dataset, metaData: SqlRowSetMetaData): Map<String, Column> {
@@ -13,9 +18,11 @@ class ColumnsMapper {
         val columns = mutableMapOf<String, Column>()
         for (i in 1..metaData.columnCount) {
             val colName = metaData.getColumnName(i).lowercase()
+            val prevColumn = prevColumns[colName]
             columns[colName] = Column(
                 type = getColumnType(metaData.getColumnType(i)),
-                alias = prevColumns[colName]?.alias
+                format = prevColumn?.format,
+                alias = prevColumn?.alias,
             )
         }
 
