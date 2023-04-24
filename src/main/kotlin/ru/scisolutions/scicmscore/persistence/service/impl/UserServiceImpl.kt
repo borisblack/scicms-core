@@ -15,4 +15,7 @@ class UserServiceImpl(
 ) : UserService {
     @Transactional(readOnly = true)
     override fun findByUsername(username: String): User? = userRepository.findByUsername(username)
+
+    override fun save(user: User): User =
+        userRepository.save(user)
 }

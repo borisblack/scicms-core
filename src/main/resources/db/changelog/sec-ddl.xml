@@ -444,4 +444,10 @@
 
         <addUniqueConstraint tableName="sec_allowed_permissions" constraintName="sec_allowed_permissions_source_target_uk" columnNames="source_id, target_id"/>
     </changeSet>
+
+    <changeSet id="2023-04-24-user_session_data" author="bchernysh">
+        <addColumn tableName="sec_users">
+            <column name="session_data" type="text"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

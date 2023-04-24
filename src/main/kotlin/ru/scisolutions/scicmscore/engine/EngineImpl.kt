@@ -66,6 +66,9 @@ class EngineImpl(
 ) : Engine {
     override fun me(): UserInfo? = userHandler.me()
 
+    override fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>? =
+        userHandler.updateSessionData(sessionData)
+
     override fun upload(file: MultipartFile): MediaInfo = mediaHandler.upload(file)
 
     override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = mediaHandler.uploadMultiple(files)

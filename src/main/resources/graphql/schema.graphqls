@@ -254,6 +254,7 @@ type UserInfo {
     id: ID!
     username: String!
     roles: [String!]!
+    sessionData: JSON
 }
 
 type Config {
@@ -281,6 +282,7 @@ type Query {
 }
 
 type Mutation {
+    updateSessionData(sessionData: JSON): JSON
     upload(file: Upload!): MediaInfo
     uploadMultiple(files: [Upload!]!): [MediaInfo!]
 }

@@ -100,7 +100,8 @@ class UsernamePasswordAuthenticationFilter(
             user = UserInfo(
                 id = user.id,
                 username = user.username,
-                roles = AuthorityUtils.authorityListToSet(authentication.authorities)
+                roles = AuthorityUtils.authorityListToSet(authentication.authorities),
+                sessionData = user.sessionData
             )
         )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)

@@ -19,8 +19,17 @@ class UserHandlerImpl(private val userCache: UserCache) : UserHandler {
             UserInfo(
                 id = user.id,
                 username = authentication.name,
-                roles = AuthorityUtils.authorityListToSet(authentication.authorities)
+                roles = AuthorityUtils.authorityListToSet(authentication.authorities),
+                sessionData = user.sessionData
             )
         }
+    }
+
+    override fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>? {
+        val user = userCache.getCurrent()
+        user.sessionData = sessionData
+        val savedUser = userCache.save(user)
+
+        return savedUser.sessionData
     }
 }

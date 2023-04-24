@@ -8,4 +8,6 @@ interface UserCache {
     fun getOrThrow(username: String): User
 
     fun getCurrent(): User
+
+    fun save(user: User): User
 }

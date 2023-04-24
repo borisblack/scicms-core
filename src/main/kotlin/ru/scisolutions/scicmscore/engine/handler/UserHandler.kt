@@ -4,4 +4,6 @@ import ru.scisolutions.scicmscore.model.UserInfo
 
 interface UserHandler {
     fun me(): UserInfo?
+
+    fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>?
 }

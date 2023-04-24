@@ -30,6 +30,8 @@ import ru.scisolutions.scicmscore.model.UserInfo
 interface Engine {
     fun me(): UserInfo?
 
+    fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>?
+
     fun upload(file: MultipartFile): MediaInfo
 
     fun uploadData(uploadInput: UploadInput): MediaInfo

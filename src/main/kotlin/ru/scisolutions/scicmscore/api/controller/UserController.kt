@@ -45,7 +45,8 @@ class UserController(
             user = UserInfo(
                 id = user.id,
                 username = userDetails.username,
-                roles = authorities
+                roles = authorities,
+                sessionData = user.sessionData
             )
         )
     }

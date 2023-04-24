@@ -40,4 +40,11 @@ class UserCacheImpl(
 
         return getOrThrow(authentication.name)
     }
+
+    override fun save(user: User): User {
+        val savedUser = userService.save(user)
+        cache.put(user.username, savedUser)
+
+        return savedUser
+    }
 }
