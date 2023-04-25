@@ -37,6 +37,7 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
@@ -66,7 +67,7 @@ class EngineImpl(
 ) : Engine {
     override fun me(): UserInfo? = userHandler.me()
 
-    override fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>? =
+    override fun updateSessionData(sessionData: Map<String, Any?>?): SessionDataResponse =
         userHandler.updateSessionData(sessionData)
 
     override fun upload(file: MultipartFile): MediaInfo = mediaHandler.upload(file)

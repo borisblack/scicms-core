@@ -4,6 +4,7 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.handler.UserHandler
+import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.persistence.service.UserCache
 
@@ -25,11 +26,11 @@ class UserHandlerImpl(private val userCache: UserCache) : UserHandler {
         }
     }
 
-    override fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>? {
+    override fun updateSessionData(sessionData: Map<String, Any?>?): SessionDataResponse {
         val user = userCache.getCurrent()
         user.sessionData = sessionData
         val savedUser = userCache.save(user)
 
-        return savedUser.sessionData
+        return SessionDataResponse(savedUser.sessionData)
     }
 }

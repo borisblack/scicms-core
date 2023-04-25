@@ -276,13 +276,17 @@ type MediaInfo {
     createdAt: DateTime!
 }
 
+type SessionDataResponse {
+    data: JSON
+}
+
 type Query {
     me: UserInfo
     config: Config
 }
 
 type Mutation {
-    updateSessionData(sessionData: JSON): JSON
+    updateSessionData(sessionData: JSON): SessionDataResponse
     upload(file: Upload!): MediaInfo
     uploadMultiple(files: [Upload!]!): [MediaInfo!]
 }

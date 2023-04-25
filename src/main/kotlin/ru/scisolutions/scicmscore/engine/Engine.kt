@@ -22,6 +22,7 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 
 /**
@@ -30,7 +31,7 @@ import ru.scisolutions.scicmscore.model.UserInfo
 interface Engine {
     fun me(): UserInfo?
 
-    fun updateSessionData(sessionData: Map<String, Any?>?): Map<String, Any?>?
+    fun updateSessionData(sessionData: Map<String, Any?>?): SessionDataResponse
 
     fun upload(file: MultipartFile): MediaInfo
 
