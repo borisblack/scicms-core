@@ -23,6 +23,7 @@ class ColumnsMapper {
                 type = getColumnType(metaData.getColumnType(i)),
                 format = prevColumn?.format,
                 alias = prevColumn?.alias,
+                colWidth = prevColumn?.colWidth
             )
         }
 
