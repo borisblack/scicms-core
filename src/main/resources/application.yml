@@ -17,6 +17,7 @@ scicms-core:
         minimum-idle: 1
     default-limit: 20
     max-limit: 1000
+    data-loader-chunk-size: 1000
     cache-expiration-minutes: 10
     item-template-cache-expiration-minutes: 1440
     item-cache-expiration-minutes: 1440
