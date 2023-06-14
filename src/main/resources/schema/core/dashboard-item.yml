@@ -25,6 +25,13 @@ spec:
       unique: true
       length: 50
       colWidth: 150
+    isPublic:
+      type: bool
+      columnName: is_public
+      displayName: Public
+      description: Publicity flag
+      required: true
+      defaultValue: true
     spec:
       type: json
       columnName: spec
