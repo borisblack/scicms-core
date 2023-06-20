@@ -1,8 +1,6 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
@@ -39,5 +37,8 @@ object DateTime {
 
     fun parseTime(source: String): LocalTime = LocalTime.parse(source, timeFormatter)
 
-    fun parseDateTime(source: String): LocalDateTime = LocalDateTime.parse(source, dateTimeFormatter)
+    fun parseDateTime(source: String): LocalDateTime =
+        OffsetDateTime.parse(source, dateTimeFormatter)
+            .atZoneSameInstant(ZoneId.systemDefault())
+            .toLocalDateTime()
 }
