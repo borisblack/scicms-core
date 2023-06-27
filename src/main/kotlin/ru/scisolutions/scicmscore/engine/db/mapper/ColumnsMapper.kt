@@ -30,7 +30,7 @@ class ColumnsMapper {
         return columns.toMap()
     }
 
-    private fun getColumnCLassName(sqlType: Int): String =
+    private fun getColumnClassName(sqlType: Int): String =
         when (sqlType) {
             Types.NUMERIC, Types.DECIMAL -> BigDecimal::class.java.name
             Types.BIT -> Boolean::class.java.name

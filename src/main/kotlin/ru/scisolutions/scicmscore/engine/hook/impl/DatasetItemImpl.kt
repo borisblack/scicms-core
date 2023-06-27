@@ -45,10 +45,8 @@ class DatasetItemImpl(private val datasetDao: DatasetDao) : CreateHook, UpdateHo
         if (spec is String)
             return objectMapper.readValue(spec, DatasetSpec::class.java)
 
-        if (spec is Map<*, *>) {
-            val specStr = objectMapper.writeValueAsString(spec)
-            return objectMapper.readValue(specStr, DatasetSpec::class.java)
-        }
+        if (spec is Map<*, *>)
+            return objectMapper.convertValue(spec, DatasetSpec::class.java)
 
         throw IllegalArgumentException("Unsupported spec type: ${spec::class.simpleName}")
     }
