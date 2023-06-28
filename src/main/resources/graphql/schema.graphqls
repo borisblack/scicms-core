@@ -258,7 +258,12 @@ type UserInfo {
 }
 
 type Config {
+    data: DataConfig!
     i18n: I18nConfig!
+}
+
+type DataConfig {
+    dataSources: [String!]!
 }
 
 type I18nConfig {
