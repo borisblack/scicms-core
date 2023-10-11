@@ -1,25 +1,19 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
-import com.healthmarketscience.sqlbuilder.BetweenCondition
-import com.healthmarketscience.sqlbuilder.BinaryCondition
-import com.healthmarketscience.sqlbuilder.ComboCondition
-import com.healthmarketscience.sqlbuilder.Condition
-import com.healthmarketscience.sqlbuilder.CustomSql
-import com.healthmarketscience.sqlbuilder.InCondition
-import com.healthmarketscience.sqlbuilder.NotCondition
-import com.healthmarketscience.sqlbuilder.SelectQuery
-import com.healthmarketscience.sqlbuilder.UnaryCondition
+import com.healthmarketscience.sqlbuilder.*
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
+import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import kotlin.random.Random
 
 @Component
 class DatasetFilterConditionBuilder {
     fun newFilterCondition(
+        dataset: Dataset,
         datasetFiltersInput: DatasetFiltersInput,
         schema: DbSchema,
         table: DbTable,
@@ -30,27 +24,37 @@ class DatasetFilterConditionBuilder {
 
         datasetFiltersInput.fieldFilters.forEach { (fieldName, fieldFilter) ->
             val column = DbColumn(table, fieldName, null, null)
-            nestedConditions.add(newPrimitiveCondition(fieldFilter, table, column, paramSource))
+            nestedConditions.add(newPrimitiveCondition(dataset, fieldName, fieldFilter, table, column, paramSource))
         }
 
         datasetFiltersInput.andFilterList?.let { list ->
-            val andConditions = list.map { newFilterCondition(it, schema, table, query, paramSource) }
+            val andConditions = list.map { newFilterCondition(dataset, it, schema, table, query, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
         }
 
         datasetFiltersInput.orFilterList?.let { list ->
-            val orConditions = list.map { newFilterCondition(it, schema, table, query, paramSource) }
+            val orConditions = list.map { newFilterCondition(dataset, it, schema, table, query, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
         }
 
         datasetFiltersInput.notFilter?.let {
-            nestedConditions.add(NotCondition(newFilterCondition(it, schema, table, query, paramSource)))
+            nestedConditions.add(NotCondition(newFilterCondition(dataset, it, schema, table, query, paramSource)))
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
     }
 
-    private fun newPrimitiveCondition(primitiveFilterInput: PrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: DatasetSqlParameterSource): Condition {
+    private fun newPrimitiveCondition(
+        dataset: Dataset,
+        fieldName: String,
+        primitiveFilterInput: PrimitiveFilterInput,
+        table: DbTable,
+        column: DbColumn,
+        paramSource: DatasetSqlParameterSource
+    ): Condition {
+        val fieldType = dataset.spec.columns[fieldName]?.type
+            ?: throw IllegalArgumentException("Field [$fieldName] not found.")
+
         val nestedConditions = mutableListOf<Condition>()
         val sqlParamName = "${table.alias}_${column.name}_${Random.nextInt(0, 1000)}" // TODO: Change to truly unique name
 
@@ -81,37 +85,37 @@ class DatasetFilterConditionBuilder {
         primitiveFilterInput.eqFilter?.let {
             val eqSqlParamName = "${sqlParamName}_eq"
             nestedConditions.add(BinaryCondition.equalTo(column, CustomSql(":$eqSqlParamName")))
-            paramSource.addValueWithParsing(eqSqlParamName, it)
+            paramSource.addValue(eqSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.neFilter?.let {
             val neSqlParamName = "${sqlParamName}_ne"
             nestedConditions.add(BinaryCondition.notEqualTo(column, CustomSql(":$neSqlParamName")))
-            paramSource.addValueWithParsing(neSqlParamName, it)
+            paramSource.addValue(neSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.gtFilter?.let {
             val gtSqlParamName = "${sqlParamName}_gt"
             nestedConditions.add(BinaryCondition.greaterThan(column, CustomSql(":$gtSqlParamName")))
-            paramSource.addValueWithParsing(gtSqlParamName, it)
+            paramSource.addValue(gtSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.gteFilter?.let {
             val gteSqlParamName = "${sqlParamName}_gte"
             nestedConditions.add(BinaryCondition.greaterThanOrEq(column, CustomSql(":$gteSqlParamName")))
-            paramSource.addValueWithParsing(gteSqlParamName, it)
+            paramSource.addValue(gteSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.ltFilter?.let {
             val ltSqlParamName = "${sqlParamName}_lt"
             nestedConditions.add(BinaryCondition.lessThan(column, CustomSql(":$ltSqlParamName")))
-            paramSource.addValueWithParsing(ltSqlParamName, it)
+            paramSource.addValue(ltSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.lteFilter?.let {
             val lteSqlParamName = "${sqlParamName}_lte"
             nestedConditions.add(BinaryCondition.lessThanOrEq(column, CustomSql(":$lteSqlParamName")))
-            paramSource.addValueWithParsing(lteSqlParamName, it)
+            paramSource.addValue(lteSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.betweenFilter?.let {
@@ -119,17 +123,17 @@ class DatasetFilterConditionBuilder {
             val rightSqlParamName = "${sqlParamName}_right"
             nestedConditions.add(BetweenCondition(column, CustomSql(":$leftSqlParamName"), CustomSql(":$rightSqlParamName")))
             paramSource
-                .addValueWithParsing(leftSqlParamName, it.left)
-                .addValueWithParsing(rightSqlParamName, it.right)
+                .addValue(leftSqlParamName, it.left, fieldType)
+                .addValue(rightSqlParamName, it.right, fieldType)
         }
 
         primitiveFilterInput.inFilter?.let { list ->
-            val arr = list.map { SQL.toSqlValueWithParsing(it) }.toTypedArray()
+            val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
             nestedConditions.add(InCondition(column, *arr))
         }
 
         primitiveFilterInput.notInFilter?.let { list ->
-            val arr = list.map { SQL.toSqlValueWithParsing(it) }.toTypedArray()
+            val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
             nestedConditions.add(NotCondition(InCondition(column, *arr)))
         }
 
@@ -142,17 +146,17 @@ class DatasetFilterConditionBuilder {
         }
 
         primitiveFilterInput.andFilterList?.let { list ->
-            val andConditions = list.map { newPrimitiveCondition(it, table, column, paramSource) }
+            val andConditions = list.map { newPrimitiveCondition(dataset, fieldName, it, table, column, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
         }
 
         primitiveFilterInput.orFilterList?.let { list ->
-            val orConditions = list.map { newPrimitiveCondition(it, table, column, paramSource) }
+            val orConditions = list.map { newPrimitiveCondition(dataset, fieldName, it, table, column, paramSource) }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
         }
 
         primitiveFilterInput.notFilter?.let {
-            nestedConditions.add(NotCondition(newPrimitiveCondition(it, table, column, paramSource)))
+            nestedConditions.add(NotCondition(newPrimitiveCondition(dataset, fieldName, it, table, column, paramSource)))
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())

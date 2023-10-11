@@ -1,12 +1,10 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
 import com.healthmarketscience.sqlbuilder.JdbcEscape
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.util.UUID
+import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.util.Json
+import java.time.*
+import java.util.*
 
 object SQL {
     fun toSqlValue(value: Any?) =
@@ -20,9 +18,36 @@ object SQL {
             else -> value
         }
 
+    fun toSqlValue(value: Any?, type: FieldType) =
+        when (type) {
+            FieldType.uuid,
+            FieldType.string,
+            FieldType.enum,
+            FieldType.sequence,
+            FieldType.email,
+            FieldType.password,
+            FieldType.media,
+            FieldType.relation,
+            FieldType.text,
+            FieldType.bool,
+            FieldType.int,
+            FieldType.long,
+            FieldType.float,
+            FieldType.double,
+            FieldType.decimal,
+            FieldType.date -> value
+            FieldType.time -> if (value is OffsetTime) value.toLocalTime() else value
+            FieldType.datetime,
+            FieldType.timestamp -> if (value is OffsetDateTime) value.toLocalDateTime() else value
+            FieldType.array,
+            FieldType.json -> if (value is String) value else Json.objectMapper.writeValueAsString(value)
+        }
+
+    @Deprecated("Incorrect parsing in case of numerical strings with non-numerical meaning")
     fun toSqlValueWithParsing(value: Any?) =
         if (value is String) parseStringValue(value) else toSqlValue(value)
 
+    @Deprecated("Incorrect parsing in case of numerical strings with non-numerical meaning")
     private fun parseStringValue(value: String): Any =
         if (Numeric.isInt(value)) {
             value.toInt()

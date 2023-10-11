@@ -1,13 +1,11 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.util.Json
 import java.sql.Types
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
-import java.time.OffsetTime
-import java.util.UUID
+import java.time.*
+import java.util.*
 
 class DatasetSqlParameterSource : MapSqlParameterSource {
     constructor() : super()
@@ -16,6 +14,35 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
 
     constructor(values: Map<String?, *>?) : super(values)
 
+    fun addValue(paramName: String, value: Any?, type: FieldType): DatasetSqlParameterSource {
+        when (type) {
+            FieldType.uuid,
+            FieldType.string,
+            FieldType.enum,
+            FieldType.sequence,
+            FieldType.email,
+            FieldType.password,
+            FieldType.media,
+            FieldType.relation,
+            FieldType.text -> this.addValue(paramName, value, Types.VARCHAR)
+            FieldType.bool -> this.addValue(paramName, if (value is String) value.toBoolean() else value, Types.SMALLINT)
+            FieldType.int -> this.addValue(paramName, if (value is String) value.toInt() else value, Types.INTEGER)
+            FieldType.long -> this.addValue(paramName, if (value is String) value.toLong() else value, Types.BIGINT)
+            FieldType.float -> addValue(paramName, if (value is String) value.toFloat() else value, Types.FLOAT)
+            FieldType.double -> addValue(paramName, if (value is String) value.toDouble() else value, Types.DOUBLE)
+            FieldType.decimal -> this.addValue(paramName, if (value is String) value.toBigDecimal() else value, Types.DECIMAL)
+            FieldType.date -> this.addValue(paramName, if (value is String) DateTime.parseDate(value) else value, Types.DATE)
+            FieldType.time -> this.addValue(paramName, if (value is String) DateTime.parseTime(value)else (if (value is OffsetTime) value.toLocalTime() else value), Types.TIME)
+            FieldType.datetime,
+            FieldType.timestamp -> this.addValue(paramName, if (value is String) DateTime.parseDateTime(value) else (if (value is OffsetDateTime) value.toLocalDateTime() else value), Types.TIMESTAMP)
+            FieldType.array,
+            FieldType.json -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
+        }
+
+        return this
+    }
+
+    @Deprecated("Incorrect parsing in case of numerical strings with non-numerical meaning")
     fun addValueWithParsing(paramName: String, value: Any?): DatasetSqlParameterSource {
         when (value) {
             is String -> this.addStringValue(paramName, value)
@@ -31,6 +58,7 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
         return this
     }
 
+    @Deprecated("Incorrect parsing in case of numerical strings with non-numerical meaning")
     private fun addStringValue(paramName: String, value: String): Any =
         if (Numeric.isInt(value)) {
             this.addValue(paramName, value.toInt(), Types.INTEGER)

@@ -31,7 +31,7 @@ class DatasetQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val table = schema.addTable(dataset.getQueryOrThrow())
-        val query = buildInitialLoadQuery(input, schema, table, paramSource)
+        val query = buildInitialLoadQuery(dataset, input, schema, table, paramSource)
 
         if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {
             val wrapTable = DbTable(schema, "(${query.validate()})")
@@ -77,7 +77,13 @@ class DatasetQueryBuilder(
         )
     }
 
-    private fun buildInitialLoadQuery(input: DatasetInput, schema: DbSchema, table: DbTable, paramSource: DatasetSqlParameterSource): SelectQuery {
+    private fun buildInitialLoadQuery(
+        dataset: Dataset,
+        input: DatasetInput,
+        schema: DbSchema,
+        table: DbTable,
+        paramSource: DatasetSqlParameterSource
+    ): SelectQuery {
         val query = SelectQuery()
 
         if (input.fields.isNullOrEmpty()) {
@@ -94,6 +100,7 @@ class DatasetQueryBuilder(
         if (input.filters != null) {
             query.addCondition(
                 datasetFilterConditionBuilder.newFilterCondition(
+                    dataset = dataset,
                     datasetFiltersInput = input.filters,
                     schema = schema,
                     table = table,
