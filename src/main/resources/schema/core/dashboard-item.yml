@@ -24,7 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
-      colWidth: 150
+      colWidth: 300
     isPublic:
       type: bool
       columnName: is_public
@@ -49,3 +49,11 @@ spec:
       description: Hash
       private: true
       length: 50
+    categories:
+      type: relation
+      relType: manyToMany
+      target: dashboardCategory
+      intermediate: dashboardCategoryMap
+      inversedBy: dashboards
+      displayName: Categories
+      description: Categories
