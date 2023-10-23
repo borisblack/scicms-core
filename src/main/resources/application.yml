@@ -35,7 +35,7 @@ scicms-core:
     use-file-checksum: false # TODO: true in production to prevent restoring changed (made via API) items from scheme files
     seed-on-init: true
     delete-if-absent: false
-    item-lock-lock-duration-seconds: 300
+    item-lock-duration-seconds: 300
     try-recreate-attributes: true
   security:
     jwt-token:
