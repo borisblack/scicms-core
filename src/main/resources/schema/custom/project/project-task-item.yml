@@ -1,0 +1,117 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: task
+  displayName: Task
+  pluralName: tasks
+  displayPluralName: Tasks
+  dataSource: main
+  tableName: project_tasks
+  titleAttribute: name
+  description: Tasks
+  icon: TrophyOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    code:
+      type: string
+      columnName: code
+      displayName: Code
+      description: Code
+      length: 50
+      required: true
+      unique: true
+      colWidth: 150
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      length: 50
+      required: true
+      unique: true
+      colWidth: 200
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+      colWidth: 200
+    level:
+      type: int
+      columnName: level
+      displayName: Level
+      description: Level
+      required: true
+      minRange: 0
+    progress:
+      type: int
+      columnName: progress
+      displayName: Progress
+      description: Progress
+      required: true
+      minRange: 0
+    start:
+      type: long
+      columnName: start
+      displayName: Start
+      description: Start
+    end:
+      type: long
+      columnName: end
+      displayName: End
+      description: End
+    duration:
+      type: long
+      columnName: duration
+      displayName: Duration
+      description: Duration
+      required: true
+      minRange: 0
+    startIsMilestone:
+      type: bool
+      columnName: start_is_milestone
+      displayName: Start Is Milestone
+      description: Start Is Milestone
+    endIsMilestone:
+      type: bool
+      columnName: end_is_milestone
+      displayName: End Is Milestone
+      description: End Is Milestone
+    depends:
+      type: text
+      columnName: depends
+      displayName: Depends
+      description: Depends
+      colWidth: 250
+    status:
+      type: enum
+      columnName: status
+      enumSet:
+        - STATUS_ACTIVE
+        - STATUS_DONE
+        - STATUS_FAILED
+        - STATUS_SUSPENDED
+        - STATUS_UNDEFINED
+      displayName: Status
+      description: Status
+    project:
+      type: relation
+      relType: manyToOne
+      target: project
+      inversedBy: tasks
+      columnName: project_id
+      displayName: Project
+      description: Project
+      required: true
+    assignments:
+      type: relation
+      relType: oneToMany
+      target: assignment
+      mappedBy: source
+      displayName: Assignments
+      description: Assignments

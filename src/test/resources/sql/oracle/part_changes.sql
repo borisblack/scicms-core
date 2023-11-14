@@ -1,5 +1,5 @@
 -- 712.0000 - Извещение об изменении 0
-INSERT INTO part_changes (id, config_id, sort_order, source_id, target_id,
+INSERT INTO design_part_changes (id, config_id, sort_order, source_id, target_id,
                       generation, major_rev, minor_rev, is_current, locale, lifecycle_id, state,
                       permission_id, created_at, created_by_id, updated_at, updated_by_id, locked_by_id)
 VALUES ('a88942f5-2fb7-4101-8d94-81de7fa8fd3c', 'a88942f5-2fb7-4101-8d94-81de7fa8fd3c', NULL,
@@ -8,7 +8,7 @@ VALUES ('a88942f5-2fb7-4101-8d94-81de7fa8fd3c', 'a88942f5-2fb7-4101-8d94-81de7fa
         SYSDATE, '0c924266-3c61-4362-81d7-9d69403fbe32', SYSDATE, '0c924266-3c61-4362-81d7-9d69403fbe32', NULL);
 
 -- 712.0000 - Извещение об изменении 1
-INSERT INTO part_changes (id, config_id, sort_order, source_id, target_id,
+INSERT INTO design_part_changes (id, config_id, sort_order, source_id, target_id,
                       generation, major_rev, minor_rev, is_current, locale, lifecycle_id, state,
                       permission_id, created_at, created_by_id, updated_at, updated_by_id, locked_by_id)
 VALUES ('375aabd1-c056-4e65-97eb-8ce87268e4bd', '375aabd1-c056-4e65-97eb-8ce87268e4bd', NULL,
@@ -17,7 +17,7 @@ VALUES ('375aabd1-c056-4e65-97eb-8ce87268e4bd', '375aabd1-c056-4e65-97eb-8ce8726
         SYSDATE, '0c924266-3c61-4362-81d7-9d69403fbe32', SYSDATE, '0c924266-3c61-4362-81d7-9d69403fbe32', NULL);
 
 -- 712.0001 - Извещение об изменении 0
-INSERT INTO part_changes (id, config_id, sort_order, source_id, target_id,
+INSERT INTO design_part_changes (id, config_id, sort_order, source_id, target_id,
                       generation, major_rev, minor_rev, is_current, locale, lifecycle_id, state,
                       permission_id, created_at, created_by_id, updated_at, updated_by_id, locked_by_id)
 VALUES ('a12f826e-1acc-406d-881f-65c0c24b0f5a', 'a12f826e-1acc-406d-881f-65c0c24b0f5a', NULL,
@@ -26,7 +26,7 @@ VALUES ('a12f826e-1acc-406d-881f-65c0c24b0f5a', 'a12f826e-1acc-406d-881f-65c0c24
         SYSDATE, '0c924266-3c61-4362-81d7-9d69403fbe32', SYSDATE, '0c924266-3c61-4362-81d7-9d69403fbe32', NULL);
 
 -- 712.0002 - Извещение об изменении 1
-INSERT INTO part_changes (id, config_id, sort_order, source_id, target_id,
+INSERT INTO design_part_changes (id, config_id, sort_order, source_id, target_id,
                       generation, major_rev, minor_rev, is_current, locale, lifecycle_id, state,
                       permission_id, created_at, created_by_id, updated_at, updated_by_id, locked_by_id)
 VALUES ('1004d647-cd34-4817-8dc0-4ad72f35b4b2', '1004d647-cd34-4817-8dc0-4ad72f35b4b2', NULL,

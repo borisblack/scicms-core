@@ -1,0 +1,56 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: itemTemplate
+  displayName: Item Template
+  pluralName: itemTemplates
+  displayPluralName: Item Templates
+  dataSource: main
+  tableName: core_item_templates
+  titleAttribute: name
+  description: Item Templates
+  icon: AppstoreAddOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 200
+    core:
+      type: bool
+      columnName: core
+      displayName: Core
+      description: Core
+    spec:
+      type: json
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      defaultValue: '{}'
+      colHidden: true
+      colWidth: 300
+      fieldHidden: true
+    checksum:
+      type: string
+      columnName: checksum
+      displayName: Checksum
+      description: Checksum
+      private: true
+      length: 50
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      private: true
+      length: 50

@@ -1,0 +1,79 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: lifecycle
+  displayName: Lifecycle
+  pluralName: lifecycles
+  displayPluralName: Lifecycles
+  dataSource: main
+  tableName: core_lifecycles
+  titleAttribute: name
+  description: Lifecycles
+  icon: NodeExpandOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 150
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+      colWidth: 200
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      colWidth: 200
+      length: 250
+    icon:
+      type: string
+      columnName: icon
+      displayName: Icon
+      description: Icon
+      length: 50
+      colWidth: 180
+    implementation:
+      type: string
+      columnName: implementation
+      displayName: Implementation
+      description: Implementation
+      length: 250
+      colWidth: 400
+    spec:
+      type: text
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      colHidden: true
+      colWidth: 300
+      fieldHidden: true
+    checksum:
+      type: string
+      columnName: checksum
+      displayName: Checksum
+      description: Checksum
+      length: 50
+      private: true
+      colWidth: 270
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      private: true
+      length: 50

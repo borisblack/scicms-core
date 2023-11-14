@@ -1,0 +1,78 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: dataset
+  displayName: Dataset
+  pluralName: datasets
+  displayPluralName: Datasets
+  dataSource: main
+  tableName: bi_datasets
+  titleAttribute: name
+  description: Datasets
+  icon: DatabaseOutlined
+  core: true
+  performDdl: false
+  implementation: ru.scisolutions.scicmscore.engine.hook.impl.DatasetItemImpl
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      pattern: '^[a-z]\w*$'
+      colWidth: 150
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+      colWidth: 200
+    dataSource:
+      type: string
+      columnName: data_source
+      displayName: Data Source
+      description: Data Source
+      required: true
+      length: 50
+      colWidth: 160
+    tableName:
+      type: string
+      columnName: table_name
+      displayName: Table Name
+      description: Table Name
+      length: 50
+      colWidth: 180
+    query:
+      type: text
+      columnName: query
+      displayName: Query
+      description: Query
+      colHidden: false
+      colWidth: 600
+      fieldWidth: 18
+    spec:
+      type: json
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      defaultValue: '{}'
+      colHidden: true
+      colWidth: 300
+      fieldHidden: true
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      readOnly: true
+      length: 50
+      colHidden: true
+      fieldHidden: true

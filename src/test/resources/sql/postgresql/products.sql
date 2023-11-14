@@ -1,4 +1,4 @@
-INSERT INTO products (id, config_id, name, display_name, description,
+INSERT INTO design_products (id, config_id, name, display_name, description,
                    generation, major_rev, minor_rev, locale, lifecycle_id, state,
                    permission_id, created_at, created_by_id, updated_at, updated_by_id, locked_by_id)
 VALUES ('7fd8c18a-071c-4300-9206-6e9bfa6b4279', '7fd8c18a-071c-4300-9206-6e9bfa6b4279',

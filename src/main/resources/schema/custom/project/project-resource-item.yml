@@ -1,0 +1,34 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: resource
+  displayName: Resource
+  pluralName: resources
+  displayPluralName: Resources
+  dataSource: main
+  tableName: project_resources
+  titleAttribute: name
+  description: Resources
+  icon: TeamOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      length: 50
+      required: true
+      unique: true
+      colWidth: 200
+    tasks:
+      type: relation
+      relType: oneToMany
+      target: task
+      mappedBy: target
+      displayName: Tasks
+      description: Tasks

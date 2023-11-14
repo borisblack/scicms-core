@@ -1,0 +1,196 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: item
+  displayName: Item
+  pluralName: items
+  displayPluralName: Items
+  dataSource: main
+  tableName: core_items
+  titleAttribute: displayName
+  description: Items
+  icon: AppstoreOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      pattern: '^[a-z]\w*$'
+      colWidth: 150
+    displayName:
+      type: string
+      columnName: display_name
+      displayName: Display Name
+      description: Display Name
+      length: 50
+      colWidth: 200
+    pluralName:
+      type: string
+      columnName: plural_name
+      displayName: Plural Name
+      description: Plural Name
+      required: true
+      length: 50
+      pattern: '^[a-z]\w*$'
+      colWidth: 150
+    displayPluralName:
+      type: string
+      columnName: display_plural_name
+      displayName: Display Plural Name
+      description: Display Plural Name
+      length: 50
+      colWidth: 220
+    dataSource:
+      type: string
+      columnName: data_source
+      displayName: Data Source
+      description: Data Source
+      required: true
+      length: 50
+      colWidth: 160
+    tableName:
+      type: string
+      columnName: table_name
+      displayName: Table Name
+      description: Table Name
+      length: 50
+      colWidth: 180
+    query:
+      type: text
+      columnName: query
+      displayName: Query
+      description: Query
+      colHidden: true
+      colWidth: 300
+      fieldWidth: 12
+    titleAttribute:
+      type: string
+      columnName: title_attribute
+      displayName: Title Attribute
+      description: Title Attribute Name
+      length: 50
+      colWidth: 160
+    includeTemplates:
+      type: array
+      columnName: include_templates
+      displayName: Included Templates
+      description: Included Templates
+      defaultValue: '["default"]'
+      colHidden: true
+      colWidth: 180
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+      colWidth: 200
+    icon:
+      type: string
+      columnName: icon
+      displayName: Icon
+      description: Icon
+      length: 50
+      colWidth: 180
+    readOnly:
+      type: bool
+      columnName: read_only
+      displayName: Read Only
+      description: Read Only flag
+    core:
+      type: bool
+      columnName: core
+      displayName: Core
+      description: Core flag
+    performDdl:
+      type: bool
+      columnName: perform_ddl
+      displayName: Perform DDL
+      description: Perform DDL operations
+      defaultValue: 1
+      colWidth: 150
+    notLockable:
+      type: bool
+      columnName: not_lockable
+      displayName: Not Lockable
+      description: Not Lockable
+      colWidth: 160
+    localized:
+      type: bool
+      columnName: localized
+      displayName: Localized
+      description: Localized flag
+    versioned:
+      type: bool
+      columnName: versioned
+      displayName: Versioned
+      description: Versioned flag
+      colWidth: 160
+    manualVersioning:
+      type: bool
+      columnName: manual_versioning
+      displayName: Manual Versioning
+      description: Manual Versioning flag
+      colWidth: 210
+    revisionPolicy:
+      type: relation
+      relType: manyToOne
+      target: revisionPolicy
+      columnName: revision_policy_id
+      displayName: Revision Policy
+      description: Revision Policy
+      colWidth: 180
+    implementation:
+      type: string
+      columnName: implementation
+      displayName: Implementation
+      description: Implementation
+      length: 250
+      colWidth: 400
+    spec:
+      type: json
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      defaultValue: '{}'
+      colHidden: true
+      colWidth: 300
+      fieldHidden: true
+    checksum:
+      type: string
+      columnName: checksum
+      displayName: Checksum
+      description: Checksum
+      private: true
+      length: 50
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      private: true
+      length: 50
+    allowedLifecycles:
+      type: relation
+      relType: oneToMany
+      target: allowedLifecycle
+      mappedBy: source
+      displayName: Allowed Lifecycles
+      description: Allowed Lifecycles
+    allowedPermissions:
+      type: relation
+      relType: oneToMany
+      target: allowedPermission
+      mappedBy: source
+      displayName: Allowed Permissions
+      description: Allowed Permissions

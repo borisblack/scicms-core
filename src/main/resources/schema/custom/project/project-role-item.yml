@@ -1,0 +1,27 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: projectRole
+  displayName: Role
+  pluralName: projectRoles
+  displayPluralName: Roles
+  dataSource: main
+  tableName: project_roles
+  titleAttribute: name
+  description: Roles
+  icon: KeyOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      length: 50
+      required: true
+      unique: true
+      colWidth: 200

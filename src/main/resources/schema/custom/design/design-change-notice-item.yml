@@ -1,0 +1,64 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+  - versioned
+  - localized
+metadata:
+  name: changeNotice
+  displayName: Change Notice
+  pluralName: changeNotices
+  displayPluralName: Change Notices
+  dataSource: main
+  tableName: design_change_notices
+  titleAttribute: label
+  description: Change Notices
+  icon: FileExclamationOutlined
+  core: false
+  performDdl: true
+  versioned: true
+  manualVersioning: false
+  localized: true
+  notLockable: false
+spec:
+  attributes:
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      length: 50
+    noticeType:
+      type: enum
+      columnName: notice_type
+      enumSet:
+        - ЕЕ
+        - АИ
+        - ДИ
+        - ДП
+        - ДПИ
+        - ИИ
+        - ПИ
+      displayName: Notice Type
+      description: Notice Type
+      required: true
+    cause:
+      type: string
+      columnName: cause
+      displayName: Cause
+      description: Cause
+      length: 250
+    releaseDate:
+      type: datetime
+      columnName: release_date
+      displayName: Release Date
+      description: Release Date
+      colWidth: 170
+    parts:
+      type: relation
+      relType: manyToMany
+      target: part
+      intermediate: partChange
+      mappedBy: changeNotices
+      displayName: Parts
+      description: Parts

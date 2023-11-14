@@ -1,0 +1,37 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+  - versioned
+  - localized
+  - intermediate
+metadata:
+  name: partChange
+  displayName: Part Change
+  pluralName: partChanges
+  displayPluralName: Part Changes
+  dataSource: main
+  tableName: design_part_changes
+  description: Part Changes
+  core: false
+  performDdl: true
+  versioned: true
+  manualVersioning: false
+  localized: true
+  notLockable: false
+spec:
+  attributes:
+    source:
+      type: relation
+      relType: manyToOne
+      target: part
+      columnName: source_id
+      displayName: Source Part
+      description: Source Part
+    target:
+      type: relation
+      relType: manyToOne
+      target: changeNotice
+      columnName: target_id
+      displayName: Target Change Notice
+      description: Target Change Notice

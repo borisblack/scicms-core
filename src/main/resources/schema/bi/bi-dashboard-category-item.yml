@@ -1,0 +1,58 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: dashboardCategory
+  displayName: Dashboard Category
+  pluralName: dashboardCategories
+  displayPluralName: Dashboard Categories
+  dataSource: main
+  tableName: bi_dashboard_categories
+  titleAttribute: name
+  description: Dashboard Categories
+  icon: FolderOpenOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 200
+    icon:
+      type: string
+      columnName: icon
+      displayName: Icon
+      description: Icon
+      length: 50
+      colWidth: 180
+    dashboards:
+      type: relation
+      relType: manyToMany
+      target: dashboard
+      intermediate: dashboardCategoryMap
+      mappedBy: categories
+      displayName: Dashboards
+      description: Dashboards
+    parentCategories:
+      type: relation
+      relType: manyToMany
+      target: dashboardCategory
+      intermediate: dashboardCategoryHierarchy
+      inversedBy: childCategories
+      displayName: Parent Categories
+      description: Parent Categories
+    childCategories:
+      type: relation
+      relType: manyToMany
+      target: dashboardCategory
+      intermediate: dashboardCategoryHierarchy
+      mappedBy: parentCategories
+      displayName: Child Categories
+      description: Child Categories

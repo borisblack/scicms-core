@@ -1,0 +1,74 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+  - intermediate
+metadata:
+  name: access
+  displayName: Access
+  pluralName: accesses
+  displayPluralName: Accesses
+  dataSource: main
+  tableName: sec_access
+  titleAttribute: label
+  description: Access
+  core: true
+  performDdl: false
+  versioned: false
+spec:
+  attributes:
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      length: 50
+      colWidth: 240
+    source:
+      type: relation
+      relType: manyToOne
+      target: permission
+      inversedBy: access
+      columnName: source_id
+      displayName: Source Permission
+      description: Source Permission
+      required: true
+      colWidth: 200
+    target:
+      type: relation
+      relType: manyToOne
+      target: identity
+      inversedBy: access
+      columnName: target_id
+      displayName: Target Identity
+      description: Target Identity
+      required: true
+      colWidth: 160
+    beginDate:
+      type: datetime
+      columnName: begin_date
+      displayName: Begin Date
+      description: Begin Date
+      required: true
+    endDate:
+      type: datetime
+      columnName: end_date
+      displayName: End Date
+      description: End Date
+    mask:
+      type: int
+      columnName: mask
+      displayName: Access Mask
+      description: Access Mask
+      required: true
+      defaultValue: 0
+      minRange: 0
+      maxRange: 31
+      fieldWidth: 12
+    granting:
+      type: bool
+      columnName: granting
+      displayName: Granting
+      description: Granting
+      required: true
+      defaultValue: true

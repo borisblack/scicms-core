@@ -1,0 +1,34 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: project
+  displayName: Project
+  pluralName: projects
+  displayPluralName: Projects
+  dataSource: main
+  tableName: project_projects
+  titleAttribute: name
+  description: Projects
+  icon: ContainerOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 200
+    tasks:
+      type: relation
+      relType: oneToMany
+      target: task
+      mappedBy: project
+      displayName: Tasks
+      description: Tasks

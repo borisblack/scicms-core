@@ -1,0 +1,34 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: permission
+  displayName: Permission
+  pluralName: permissions
+  displayPluralName: Permissions
+  dataSource: main
+  tableName: sec_permissions
+  titleAttribute: name
+  description: Permission
+  core: true
+  icon: SafetyCertificateOutlined
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 200
+    accesses:
+      type: relation
+      relType: oneToMany
+      target: access
+      mappedBy: source
+      displayName: Accesses
+      description: Accesses

@@ -1,0 +1,59 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: dashboard
+  displayName: Dashboard
+  pluralName: dashboards
+  displayPluralName: Dashboards
+  dataSource: main
+  tableName: bi_dashboards
+  titleAttribute: name
+  description: Dashboards
+  icon: FundOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 300
+    isPublic:
+      type: bool
+      columnName: is_public
+      displayName: Public
+      description: Publicity flag
+      required: true
+      defaultValue: true
+    spec:
+      type: json
+      columnName: spec
+      displayName: Specification
+      description: Specification
+      required: true
+      defaultValue: '{}'
+      colHidden: true
+      colWidth: 300
+      fieldHidden: true
+    hash:
+      type: string
+      columnName: hash
+      displayName: Hash
+      description: Hash
+      private: true
+      length: 50
+    categories:
+      type: relation
+      relType: manyToMany
+      target: dashboardCategory
+      intermediate: dashboardCategoryMap
+      inversedBy: dashboards
+      displayName: Categories
+      description: Categories
