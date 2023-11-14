@@ -6,7 +6,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 interface DatasetRepository : CrudRepository<Dataset, String> {
     @Query(
-        value = "SELECT * FROM core_datasets d WHERE d.name = :name AND (d.permission_id IS NULL OR d.permission_id IN :permissionIds)",
+        value = "SELECT * FROM bi_datasets d WHERE d.name = :name AND (d.permission_id IS NULL OR d.permission_id IN :permissionIds)",
         nativeQuery = true
     )
     fun findByNameWithACL(name: String, permissionIds: Set<String>): Dataset?

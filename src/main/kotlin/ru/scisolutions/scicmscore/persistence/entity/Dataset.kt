@@ -8,7 +8,7 @@ import javax.persistence.Entity
 import javax.persistence.Table
 
 @Entity
-@Table(name = "core_datasets")
+@Table(name = "bi_datasets")
 class Dataset(
     @Column(nullable = false)
     val name: String,

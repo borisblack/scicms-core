@@ -554,16 +554,17 @@
             <column name="lock_until" type="datetime"/>
         </createTable>
 
-        <!--core_datasets-->
-        <createTable tableName="core_datasets">
+        <!--BI-->
+        <!--bi_datasets-->
+        <createTable tableName="bi_datasets">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_datasets_pk"/>
+                <constraints primaryKey="true" primaryKeyName="bi_datasets_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true"  uniqueConstraintName="core_datasets_name_uk"/>
+                <constraints nullable="false" unique="true"  uniqueConstraintName="bi_datasets_name_uk"/>
             </column>
             <column name="data_source" type="varchar(50)">
                 <constraints nullable="false"/>
@@ -587,10 +588,10 @@
             </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_datasets_locale_fk" references="core_locales(name)"/>
+                <constraints foreignKeyName="bi_datasets_locale_fk" references="core_locales(name)"/>
             </column>
             <column name="lifecycle_id" type="varchar(36)">
-                <constraints foreignKeyName="core_datasets_lifecycle_fk" references="core_lifecycles(id)"/>
+                <constraints foreignKeyName="bi_datasets_lifecycle_fk" references="core_lifecycles(id)"/>
             </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -604,32 +605,32 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-<!--        <createIndex tableName="core_datasets" indexName="core_datasets_config_idx">-->
+<!--        <createIndex tableName="bi_datasets" indexName="bi_datasets_config_idx">-->
 <!--            <column name="config_id"/>-->
 <!--        </createIndex>-->
 
-        <createIndex tableName="core_datasets" indexName="core_datasets_permission_idx">
+        <createIndex tableName="bi_datasets" indexName="bi_datasets_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-<!--        <createIndex tableName="core_datasets" indexName="core_datasets_major_rev_idx">-->
+<!--        <createIndex tableName="bi_datasets" indexName="bi_datasets_major_rev_idx">-->
 <!--            <column name="major_rev"/>-->
 <!--        </createIndex>-->
 
-<!--        <createIndex tableName="core_datasets" indexName="core_datasets_is_current_idx">-->
+<!--        <createIndex tableName="bi_datasets" indexName="bi_datasets_is_current_idx">-->
 <!--            <column name="is_current"/>-->
 <!--        </createIndex>-->
 
-        <!--core_dashboards-->
-        <createTable tableName="core_dashboards">
+        <!--bi_dashboards-->
+        <createTable tableName="bi_dashboards">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_dashboards_pk"/>
+                <constraints primaryKey="true" primaryKeyName="bi_dashboards_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_dashboards_name_uk"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="bi_dashboards_name_uk"/>
             </column>
             <column name="is_public" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
@@ -650,10 +651,10 @@
             </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_dashboards_locale_fk" references="core_locales(name)"/>
+                <constraints foreignKeyName="bi_dashboards_locale_fk" references="core_locales(name)"/>
             </column>
             <column name="lifecycle_id" type="varchar(36)">
-                <constraints foreignKeyName="core_dashboards_lifecycle_fk" references="core_lifecycles(id)"/>
+                <constraints foreignKeyName="bi_dashboards_lifecycle_fk" references="core_lifecycles(id)"/>
             </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -667,34 +668,34 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-<!--        <createIndex tableName="core_dashboards" indexName="core_dashboards_config_idx">-->
+<!--        <createIndex tableName="bi_dashboards" indexName="bi_dashboards_config_idx">-->
 <!--            <column name="config_id"/>-->
 <!--        </createIndex>-->
 
-        <createIndex tableName="core_dashboards" indexName="core_dashboards_permission_idx">
+        <createIndex tableName="bi_dashboards" indexName="bi_dashboards_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-<!--        <createIndex tableName="core_dashboards" indexName="core_dashboards_major_rev_idx">-->
+<!--        <createIndex tableName="bi_dashboards" indexName="bi_dashboards_major_rev_idx">-->
 <!--            <column name="major_rev"/>-->
 <!--        </createIndex>-->
 
-<!--        <createIndex tableName="core_dashboards" indexName="core_dashboards_is_current_idx">-->
+<!--        <createIndex tableName="bi_dashboards" indexName="bi_dashboards_is_current_idx">-->
 <!--            <column name="is_current"/>-->
 <!--        </createIndex>-->
     </changeSet>
 
     <changeSet id="2023-10-17-dashboard-category" author="bchernysh">
-        <!--core_dashboard_categories-->
-        <createTable tableName="core_dashboard_categories">
+        <!--bi_dashboard_categories-->
+        <createTable tableName="bi_dashboard_categories">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_dashboard_categories_pk"/>
+                <constraints primaryKey="true" primaryKeyName="bi_dashboard_categories_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="name" type="varchar(50)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="core_dashboard_categories_name_uk"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="bi_dashboard_categories_name_uk"/>
             </column>
             <column name="icon" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
@@ -709,10 +710,10 @@
             </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_dashboard_categories_locale_fk" references="core_locales(name)"/>
+                <constraints foreignKeyName="bi_dashboard_categories_locale_fk" references="core_locales(name)"/>
             </column>
             <column name="lifecycle_id" type="varchar(36)">
-                <constraints foreignKeyName="core_dashboard_categories_lifecycle_fk" references="core_lifecycles(id)"/>
+                <constraints foreignKeyName="bi_dashboard_categories_lifecycle_fk" references="core_lifecycles(id)"/>
             </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -726,14 +727,14 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-        <createIndex tableName="core_dashboard_categories" indexName="core_dashboard_categories_permission_idx">
+        <createIndex tableName="bi_dashboard_categories" indexName="bi_dashboard_categories_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <!--core_dashboard_category_map-->
-        <createTable tableName="core_dashboard_category_map">
+        <!--bi_dashboard_category_map-->
+        <createTable tableName="bi_dashboard_category_map">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_dashboard_category_map_pk"/>
+                <constraints primaryKey="true" primaryKeyName="bi_dashboard_category_map_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
@@ -741,10 +742,10 @@
             <column name="sort_order" type="int"/>
             <column name="label" type="varchar(50)"/>
             <column name="source_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_dashboard_category_map_source_fk" references="core_dashboards(id)"/>
+                <constraints nullable="false" foreignKeyName="bi_dashboard_category_map_source_fk" references="bi_dashboards(id)"/>
             </column>
             <column name="target_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_dashboard_category_map_target_fk" references="core_dashboard_categories(id)"/>
+                <constraints nullable="false" foreignKeyName="bi_dashboard_category_map_target_fk" references="bi_dashboard_categories(id)"/>
             </column>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
@@ -758,10 +759,10 @@
             </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_dashboard_category_map_locale_fk" references="core_locales(name)"/>
+                <constraints foreignKeyName="bi_dashboard_category_map_locale_fk" references="core_locales(name)"/>
             </column>
             <column name="lifecycle_id" type="varchar(36)">
-                <constraints foreignKeyName="core_dashboard_category_map_lifecycle_fk" references="core_lifecycles(id)"/>
+                <constraints foreignKeyName="bi_dashboard_category_map_lifecycle_fk" references="core_lifecycles(id)"/>
             </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -775,16 +776,16 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-        <addUniqueConstraint tableName="core_dashboard_category_map" constraintName="core_dashboard_category_map_source_target_uk" columnNames="source_id, target_id"/>
+        <addUniqueConstraint tableName="bi_dashboard_category_map" constraintName="bi_dashboard_category_map_source_target_uk" columnNames="source_id, target_id"/>
 
-        <createIndex tableName="core_dashboard_category_map" indexName="core_dashboard_category_map_permission_idx">
+        <createIndex tableName="bi_dashboard_category_map" indexName="bi_dashboard_category_map_permission_idx">
             <column name="permission_id"/>
         </createIndex>
 
-        <!--core_dashboard_category_hierarchy-->
-        <createTable tableName="core_dashboard_category_hierarchy">
+        <!--bi_dashboard_category_hierarchy-->
+        <createTable tableName="bi_dashboard_category_hierarchy">
             <column name="id" type="varchar(36)">
-                <constraints primaryKey="true" primaryKeyName="core_dashboard_category_hierarchy_pk"/>
+                <constraints primaryKey="true" primaryKeyName="bi_dashboard_category_hierarchy_pk"/>
             </column>
             <column name="config_id" type="varchar(36)">
                 <constraints nullable="false"/>
@@ -792,10 +793,10 @@
             <column name="label" type="varchar(50)"/>
             <column name="sort_order" type="int"/>
             <column name="source_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_dashboard_category_hierarchy_source_fk" references="core_dashboard_categories(id)"/>
+                <constraints nullable="false" foreignKeyName="bi_dashboard_category_hierarchy_source_fk" references="bi_dashboard_categories(id)"/>
             </column>
             <column name="target_id" type="varchar(36)">
-                <constraints nullable="false" foreignKeyName="core_dashboard_category_hierarchy_target_fk" references="core_dashboard_categories(id)"/>
+                <constraints nullable="false" foreignKeyName="bi_dashboard_category_hierarchy_target_fk" references="bi_dashboard_categories(id)"/>
             </column>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
@@ -809,10 +810,10 @@
             </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_dashboard_category_hierarchy_locale_fk" references="core_locales(name)"/>
+                <constraints foreignKeyName="bi_dashboard_category_hierarchy_locale_fk" references="core_locales(name)"/>
             </column>
             <column name="lifecycle_id" type="varchar(36)">
-                <constraints foreignKeyName="core_dashboard_category_hierarchy_lifecycle_fk" references="core_lifecycles(id)"/>
+                <constraints foreignKeyName="bi_dashboard_category_hierarchy_lifecycle_fk" references="core_lifecycles(id)"/>
             </column>
             <column name="state" type="varchar(50)"/>
             <column name="created_at" type="datetime">
@@ -826,9 +827,9 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
-        <addUniqueConstraint tableName="core_dashboard_category_hierarchy" constraintName="core_dashboard_category_hierarchy_source_target_uk" columnNames="source_id, target_id"/>
+        <addUniqueConstraint tableName="bi_dashboard_category_hierarchy" constraintName="bi_dashboard_category_hierarchy_source_target_uk" columnNames="source_id, target_id"/>
 
-        <createIndex tableName="core_dashboard_category_hierarchy" indexName="core_dashboard_category_hierarchy_permission_idx">
+        <createIndex tableName="bi_dashboard_category_hierarchy" indexName="bi_dashboard_category_hierarchy_permission_idx">
             <column name="permission_id"/>
         </createIndex>
     </changeSet>
