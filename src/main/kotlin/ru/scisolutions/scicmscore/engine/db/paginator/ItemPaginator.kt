@@ -15,10 +15,10 @@ class ItemPaginator(
     private val itemRecDao: ItemRecDao
 ) : AbstractPaginator(dataProps) {
     fun paginate(item: Item, paginationInput: PaginationInput?, selectPaginationFields: Set<String>, query: SelectQuery, paramSource: AttributeSqlParameterSource): Pagination {
-        var total: Int? = null
-        if (TOTAL_FIELD_NAME in selectPaginationFields || PAGE_COUNT_FIELD_NAME in selectPaginationFields) {
-            total = itemRecDao.count(item, query.toString(), paramSource)
-        }
+        val total: Int? =
+            if (TOTAL_FIELD_NAME in selectPaginationFields || PAGE_COUNT_FIELD_NAME in selectPaginationFields)
+                itemRecDao.count(item, query.toString(), paramSource)
+            else null
 
         return paginate(paginationInput, query, total)
     }
