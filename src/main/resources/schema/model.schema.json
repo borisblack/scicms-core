@@ -162,11 +162,6 @@
         "implementation": {
           "description": "Implementation class (optional, null by default)",
           "type": "string"
-        },
-        "pageSize": {
-          "description": "Page size (optional, null by default). If value is -1 then page size is not limited",
-          "type": "integer",
-          "minimum": -1
         }
       },
       "additionalProperties": false,

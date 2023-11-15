@@ -14,7 +14,6 @@ metadata:
   icon: TrophyOutlined
   core: false
   performDdl: true
-  pageSize: -1
 spec:
   attributes:
     sortOrder:

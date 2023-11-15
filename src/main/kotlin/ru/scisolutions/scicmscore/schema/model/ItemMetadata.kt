@@ -21,8 +21,7 @@ data class ItemMetadata(
     val lifecycle: String? = null,
     val permission: String? = null,
     val implementation: String? = null,
-    val notLockable: Boolean = false,
-    val pageSize: Int? = null
+    val notLockable: Boolean = false
 ) : BaseMetadata(name, pluralName) {
     companion object {
         const val ID_ATTR_NAME = "id"

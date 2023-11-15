@@ -12,7 +12,7 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
             if ((paginationInput.page != null || paginationInput.pageSize != null) && (paginationInput.start != null || paginationInput.limit != null))
                 throw IllegalArgumentException("Pagination methods cannot be mixed. Use either page with pageSize or start with limit")
 
-            if (paginationInput.page != null && ((paginationInput.pageSize ?: UNLIMITED_PAGE_SIZE) != UNLIMITED_PAGE_SIZE)) {
+            if (paginationInput.page != null || paginationInput.pageSize != null) {
                 val page = paginationInput.page ?: 1
                 if (page < 1)
                     throw IllegalArgumentException("The page cannot be less than 1")
@@ -66,9 +66,5 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
             total = total,
             pageCount = null
         )
-    }
-
-    companion object {
-        private const val UNLIMITED_PAGE_SIZE = -1
     }
 }

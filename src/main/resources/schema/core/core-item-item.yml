@@ -156,12 +156,6 @@ spec:
       description: Implementation
       length: 250
       colWidth: 400
-    pageSize:
-      type: int
-      columnName: page_size
-      displayName: Page Size
-      description: Page Size
-      minRange: -1
     spec:
       type: json
       columnName: spec

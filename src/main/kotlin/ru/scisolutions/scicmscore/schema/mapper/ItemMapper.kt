@@ -43,7 +43,6 @@ class ItemMapper {
         target.permissionId = metadata.permission ?: Permission.DEFAULT_PERMISSION_ID
         target.implementation = metadata.implementation
         target.notLockable = metadata.notLockable
-        target.pageSize = metadata.pageSize
         target.spec = source.spec
 
         // Update the checksum only if it's a change from a file
