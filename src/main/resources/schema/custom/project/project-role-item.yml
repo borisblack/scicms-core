@@ -4,14 +4,14 @@ includeTemplates:
   - default
 metadata:
   name: projectRole
-  displayName: Role
+  displayName: Project Role
   pluralName: projectRoles
-  displayPluralName: Roles
+  displayPluralName: Project Roles
   dataSource: main
   tableName: project_roles
   titleAttribute: name
-  description: Roles
-  icon: KeyOutlined
+  description: Project Roles
+  icon: AuditOutlined
   core: false
   performDdl: true
 spec:

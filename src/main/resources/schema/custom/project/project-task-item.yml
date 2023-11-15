@@ -63,15 +63,17 @@ spec:
       required: true
       minRange: 0
     start:
-      type: long
+      type: date
       columnName: started
       displayName: Start
       description: Start
+      required: true
     end:
-      type: long
+      type: date
       columnName: end
       displayName: End
       description: End
+      required: true
     duration:
       type: long
       columnName: duration
@@ -84,11 +86,13 @@ spec:
       columnName: start_is_milestone
       displayName: Start Is Milestone
       description: Start Is Milestone
+      colWidth: 160
     endIsMilestone:
       type: bool
       columnName: end_is_milestone
       displayName: End Is Milestone
       description: End Is Milestone
+      colWidth: 160
     depends:
       type: text
       columnName: depends
@@ -106,6 +110,7 @@ spec:
         - STATUS_UNDEFINED
       displayName: Status
       description: Status
+      required: true
     project:
       type: relation
       relType: manyToOne
@@ -123,6 +128,7 @@ spec:
       columnName: parent_id
       displayName: Parent
       description: Parent
+      colWidth: 200
     children:
       type: relation
       relType: oneToMany

@@ -25,10 +25,10 @@ spec:
       required: true
       unique: true
       colWidth: 200
-    tasks:
+    assignments:
       type: relation
       relType: oneToMany
-      target: task
+      target: assignment
       mappedBy: target
-      displayName: Tasks
-      description: Tasks
+      displayName: Assignments
+      description: Assignments
