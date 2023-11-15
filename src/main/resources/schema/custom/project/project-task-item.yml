@@ -14,8 +14,15 @@ metadata:
   icon: TrophyOutlined
   core: false
   performDdl: true
+  pageSize: -1
 spec:
   attributes:
+    sortOrder:
+      type: int
+      columnName: sort_order
+      displayName: Sort Order
+      description: Sort Order
+      colWidth: 180
     code:
       type: string
       columnName: code
@@ -108,6 +115,21 @@ spec:
       displayName: Project
       description: Project
       required: true
+    parent:
+      type: relation
+      relType: manyToOne
+      target: task
+      inversedBy: children
+      columnName: parent_id
+      displayName: Parent
+      description: Parent
+    children:
+      type: relation
+      relType: oneToMany
+      target: task
+      mappedBy: parent
+      displayName: Children
+      description: Children
     assignments:
       type: relation
       relType: oneToMany

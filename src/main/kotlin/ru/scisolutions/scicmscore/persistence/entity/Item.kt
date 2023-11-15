@@ -77,6 +77,9 @@ class Item(
     @Column(name = "implementation")
     var implementation: String? = null,
 
+    @Column(name = "page_size")
+    var pageSize: Int? = null,
+
     @Convert(converter = ItemSpecConverter::class)
     var spec: ItemSpec = ItemSpec(),
 

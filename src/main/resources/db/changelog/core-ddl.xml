@@ -293,6 +293,7 @@
             <column name="not_lockable" type="tinyint"/>
             <column name="localized" type="tinyint"/>
             <column name="implementation" type="varchar(250)"/>
+            <column name="page_size" type="int"/>
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>
