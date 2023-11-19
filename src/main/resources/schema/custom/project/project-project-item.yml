@@ -25,6 +25,26 @@ spec:
       unique: true
       length: 50
       colWidth: 200
+    start:
+      type: datetime
+      columnName: start_at
+      displayName: Start
+      description: Start
+      required: true
+    end:
+      type: datetime
+      columnName: end_at
+      displayName: End
+      description: End
+      required: true
+    progress:
+      type: int
+      columnName: progress
+      displayName: Progress
+      description: Progress
+      required: true
+      minRange: 0
+      maxRange: 100
     tasks:
       type: relation
       relType: oneToMany

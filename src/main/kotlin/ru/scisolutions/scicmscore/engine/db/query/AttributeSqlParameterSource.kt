@@ -6,6 +6,7 @@ import ru.scisolutions.scicmscore.util.Json
 import java.sql.Types
 import java.time.OffsetDateTime
 import java.time.OffsetTime
+import java.time.ZoneOffset
 
 class AttributeSqlParameterSource : MapSqlParameterSource {
     constructor() : super()
@@ -31,9 +32,17 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             FieldType.double,
             FieldType.decimal -> this.addValue(paramName, value)
             FieldType.date -> this.addValue(paramName, value, Types.DATE)
-            FieldType.time -> this.addValue(paramName, if (value is OffsetTime) value.toLocalTime() else value, Types.TIME)
+            FieldType.time -> this.addValue(
+                paramName,
+                if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
+                Types.TIME
+            )
             FieldType.datetime,
-            FieldType.timestamp -> this.addValue(paramName, if (value is OffsetDateTime) value.toLocalDateTime() else value, Types.TIMESTAMP)
+            FieldType.timestamp -> this.addValue(
+                paramName,
+                if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
+                Types.TIMESTAMP
+            )
             FieldType.text -> this.addValue(paramName, value)
             FieldType.array,
             FieldType.json -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))

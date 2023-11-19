@@ -4,8 +4,13 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.util.Json
 import java.sql.Types
-import java.time.*
-import java.util.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.ZoneOffset
+import java.util.UUID
 
 class DatasetSqlParameterSource : MapSqlParameterSource {
     constructor() : super()
@@ -32,9 +37,17 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
             FieldType.double -> addValue(paramName, if (value is String) value.toDouble() else value, Types.DOUBLE)
             FieldType.decimal -> this.addValue(paramName, if (value is String) value.toBigDecimal() else value, Types.DECIMAL)
             FieldType.date -> this.addValue(paramName, if (value is String) DateTime.parseDate(value) else value, Types.DATE)
-            FieldType.time -> this.addValue(paramName, if (value is String) DateTime.parseTime(value)else (if (value is OffsetTime) value.toLocalTime() else value), Types.TIME)
+            FieldType.time -> this.addValue(
+                paramName,
+                if (value is String) DateTime.parseTime(value) else (if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value),
+                Types.TIME
+            )
             FieldType.datetime,
-            FieldType.timestamp -> this.addValue(paramName, if (value is String) DateTime.parseDateTime(value) else (if (value is OffsetDateTime) value.toLocalDateTime() else value), Types.TIMESTAMP)
+            FieldType.timestamp -> this.addValue(
+                paramName,
+                if (value is String) DateTime.parseDateTime(value) else (if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value),
+                Types.TIMESTAMP
+            )
             FieldType.array,
             FieldType.json -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
         }

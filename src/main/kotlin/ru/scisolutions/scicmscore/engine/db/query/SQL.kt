@@ -3,8 +3,13 @@ package ru.scisolutions.scicmscore.engine.db.query
 import com.healthmarketscience.sqlbuilder.JdbcEscape
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.util.Json
-import java.time.*
-import java.util.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.OffsetTime
+import java.time.ZoneOffset
+import java.util.UUID
 
 object SQL {
     fun toSqlValue(value: Any?) =
@@ -36,9 +41,9 @@ object SQL {
             FieldType.double,
             FieldType.decimal,
             FieldType.date -> value
-            FieldType.time -> if (value is OffsetTime) value.toLocalTime() else value
+            FieldType.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
             FieldType.datetime,
-            FieldType.timestamp -> if (value is OffsetDateTime) value.toLocalDateTime() else value
+            FieldType.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
             FieldType.array,
             FieldType.json -> if (value is String) value else Json.objectMapper.writeValueAsString(value)
         }

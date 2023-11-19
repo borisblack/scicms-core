@@ -1,0 +1,44 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+  - intermediate
+metadata:
+  name: dependency
+  displayName: Dependency
+  pluralName: dependencies
+  displayPluralName: Dependencies
+  dataSource: main
+  tableName: project_dependencies
+  description: Dependencies
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    source:
+      type: relation
+      relType: manyToOne
+      target: task
+      inversedBy: dependencies
+      columnName: source_id
+      displayName: Source Task
+      description: Source Task
+      required: true
+      colWidth: 160
+    target:
+      type: relation
+      relType: manyToOne
+      target: task
+#      inversedBy: dependents
+      columnName: target_id
+      displayName: Target Task
+      description: Target Task
+      required: true
+      colWidth: 160
+#    lag:
+#      type: long
+#      columnName: lag
+#      displayName: Lag
+#      description: Lag (in days)
+#      defaultValue: 0
+#      minRange: 0
