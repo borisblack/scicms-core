@@ -34,14 +34,14 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             FieldType.date -> this.addValue(paramName, value, Types.DATE)
             FieldType.time -> this.addValue(
                 paramName,
-                if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC).toLocalTime() else value,
-                Types.TIME
+                if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
+                Types.TIME_WITH_TIMEZONE
             )
             FieldType.datetime,
             FieldType.timestamp -> this.addValue(
                 paramName,
-                if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC).toLocalDateTime() else value,
-                Types.TIMESTAMP
+                if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
+                Types.TIMESTAMP_WITH_TIMEZONE
             )
             FieldType.text -> this.addValue(paramName, value)
             FieldType.array,

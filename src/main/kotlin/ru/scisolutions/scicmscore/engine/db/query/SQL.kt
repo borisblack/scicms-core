@@ -41,9 +41,9 @@ object SQL {
             FieldType.double,
             FieldType.decimal,
             FieldType.date -> value
-            FieldType.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC).toLocalTime() else value
+            FieldType.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
             FieldType.datetime,
-            FieldType.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC).toLocalDateTime() else value
+            FieldType.timestamp -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
             FieldType.array,
             FieldType.json -> if (value is String) value else Json.objectMapper.writeValueAsString(value)
         }
