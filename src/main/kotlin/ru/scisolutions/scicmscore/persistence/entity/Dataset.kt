@@ -15,6 +15,10 @@ class Dataset(
 
     var description: String? = null,
 
+    @Column(name = "datasource_id")
+    var datasourceId: String? = null,
+
+    // TODO: Remove after migration on persistent datasources
     @Column(name = "data_source", nullable = false)
     val dataSource: String,
 

@@ -11,7 +11,7 @@ metadata:
   tableName: bi_datasets
   titleAttribute: name
   description: Datasets
-  icon: DatabaseOutlined
+  icon: SketchOutlined
   core: true
   performDdl: false
   implementation: ru.scisolutions.scicmscore.engine.hook.impl.DatasetItemImpl
@@ -34,6 +34,14 @@ spec:
       description: Description
       length: 250
       colWidth: 200
+    datasource:
+      type: relation
+      relType: manyToOne
+      target: datasource
+      columnName: datasource_id
+      displayName: Datasource
+      description: Datasource
+    # TODO: Remove after migration on persistent datasources
     dataSource:
       type: string
       columnName: data_source
@@ -65,7 +73,6 @@ spec:
       required: true
       defaultValue: '{}'
       colHidden: true
-      colWidth: 300
       fieldHidden: true
     hash:
       type: string

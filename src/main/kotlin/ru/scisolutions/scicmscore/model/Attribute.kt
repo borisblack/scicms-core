@@ -15,6 +15,7 @@ class Attribute(
     val enumSet: Set<String>? = null,
     val seqName: String? = null,
     val confirm: Boolean? = null,
+    val encode: Boolean = true,
     val relType: RelType? = null,
     val target: String? = null,
     val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
@@ -107,6 +108,7 @@ class Attribute(
             enumSet == other.enumSet &&
             seqName == other.seqName &&
             confirm == other.confirm &&
+            encode == other.encode &&
             target == other.target &&
             relType == other.relType &&
             intermediate == other.intermediate &&
@@ -140,6 +142,7 @@ class Attribute(
             enumSet,
             seqName,
             confirm,
+            encode,
             target,
             relType?.name,
             intermediate,

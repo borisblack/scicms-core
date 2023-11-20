@@ -70,7 +70,7 @@ class AttributeValueHelper(
         return when (attribute.type) {
             FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email -> value
             FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
-            FieldType.password -> passwordEncoder.encode(value as String).toString()
+            FieldType.password -> if (attribute.encode) passwordEncoder.encode(value as String) else value
             FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
             FieldType.date, FieldType.time, FieldType.datetime, FieldType.timestamp -> value
             FieldType.bool -> value

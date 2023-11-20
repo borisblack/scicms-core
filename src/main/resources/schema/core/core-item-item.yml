@@ -49,6 +49,14 @@ spec:
       description: Display Plural Name
       length: 50
       colWidth: 220
+    datasource:
+      type: relation
+      relType: manyToOne
+      target: datasource
+      columnName: datasource_id
+      displayName: Datasource
+      description: Datasource
+    # TODO: Remove after migration on persistent datasources
     dataSource:
       type: string
       columnName: data_source

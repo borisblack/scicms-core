@@ -24,6 +24,10 @@ class Item(
     @Column(name = "display_plural_name", nullable = false)
     var displayPluralName: String = pluralName,
 
+    @Column(name = "datasource_id")
+    var datasourceId: String? = null,
+
+    // TODO: Remove after migration on persistent datasources
     @Column(name = "data_source", nullable = false)
     var dataSource: String,
 

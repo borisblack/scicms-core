@@ -1,0 +1,66 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: datasource
+  displayName: Datasource
+  pluralName: datasources
+  displayPluralName: Datasources
+  dataSource: main
+  tableName: core_datasources
+  titleAttribute: name
+  description: Datasources
+  icon: DatabaseOutlined
+  core: true
+  performDdl: false
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      required: true
+      unique: true
+      length: 50
+      colWidth: 200
+    connectionString:
+      type: string
+      columnName: connection_string
+      displayName: Connection String
+      description: Connection String
+      required: true
+      length: 50
+      colWidth: 300
+    username:
+      type: string
+      columnName: username
+      displayName: Username
+      description: Username
+      required: true
+      length: 50
+      colWidth: 200
+    password:
+      type: string
+      columnName: passwd
+      displayName: Password
+      description: Password
+      required: true
+      confirm: true
+      encode: false
+      length: 50
+      colHidden: true
+    maxPoolSize:
+      type: int
+      columnName: max_pool_size
+      displayName: Maximum Pool Size
+      description: Maximum Pool Size
+    params:
+      type: json
+      columnName: params
+      displayName: Parameters
+      description: Parameters
+      required: true
+      defaultValue: '{}'
+      colHidden: true

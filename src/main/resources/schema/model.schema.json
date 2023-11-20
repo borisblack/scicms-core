@@ -216,6 +216,10 @@
           "description": "Password confirmation (in UI) flag (optional, used only for password type)",
           "type": "boolean"
         },
+        "encode": {
+          "description": "Password encoding flag (optional, true by default, used only for password type)",
+          "type": "boolean"
+        },
         "relType": {
           "description": "Relation type (required for relation type)",
           "type": "string",
