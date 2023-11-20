@@ -56,6 +56,7 @@ spec:
       columnName: max_pool_size
       displayName: Maximum Pool Size
       description: Maximum Pool Size
+      colWidth: 250
     params:
       type: json
       columnName: params
