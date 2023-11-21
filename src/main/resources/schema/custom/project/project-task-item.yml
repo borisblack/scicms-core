@@ -58,6 +58,11 @@ spec:
       required: true
       minRange: 0
       maxRange: 100
+    isMilestone:
+      type: bool
+      columnName: is_milestone
+      displayName: Milestone
+      description: Milestone flag
     project:
       type: relation
       relType: manyToOne

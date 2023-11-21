@@ -11,7 +11,7 @@ metadata:
   tableName: core_datasources
   titleAttribute: name
   description: Datasources
-  icon: DatabaseOutlined
+  icon: ThunderboltOutlined
   core: true
   performDdl: false
 spec:
