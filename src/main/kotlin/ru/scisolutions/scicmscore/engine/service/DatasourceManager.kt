@@ -32,7 +32,7 @@ class DatasourceManager(
         }
         .build()
 
-    fun dataSource(name: String? = Schema.MAIN_DATA_SOURCE_NAME): DataSource =
+    fun dataSource(name: String?): DataSource =
         dataSourceCache.get(name ?: Schema.MAIN_DATA_SOURCE_NAME) {
             if (name == null || name == Schema.MAIN_DATA_SOURCE_NAME) {
                 mainDataSource
@@ -50,6 +50,6 @@ class DatasourceManager(
             }
         }
 
-    fun template(name: String? = Schema.MAIN_DATA_SOURCE_NAME): NamedParameterJdbcTemplate =
+    fun template(name: String?): NamedParameterJdbcTemplate =
         NamedParameterJdbcTemplate(dataSource(name ?: Schema.MAIN_DATA_SOURCE_NAME))
 }
