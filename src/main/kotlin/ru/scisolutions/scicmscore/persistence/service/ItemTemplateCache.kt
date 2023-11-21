@@ -13,7 +13,7 @@ class ItemTemplateCache(
     private val itemTemplateService: ItemTemplateService
 ) {
     private val cache: Cache<String, ItemTemplate> = CacheBuilder.newBuilder()
-        .expireAfterWrite(dataProps.itemTemplateCacheExpirationMinutes, TimeUnit.MINUTES)
+        .expireAfterWrite(dataProps.itemCacheExpirationMinutes, TimeUnit.MINUTES)
         .build()
 
     operator fun get(name: String): ItemTemplate? {

@@ -5,6 +5,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.LockHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
@@ -20,7 +21,8 @@ class LockHandler(
     private val itemCache: ItemCache,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
-    private val userCache: UserCache
+    private val userCache: UserCache,
+    private val attributeValueHelper: AttributeValueHelper,
 ) {
     fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemCache.getOrThrow(itemName)
@@ -43,7 +45,7 @@ class LockHandler(
 
         val response = FlaggedResponse(
             success = success,
-            data = ItemRec(selectData)
+            data = ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
         implInstance?.afterLock(itemName, response)
 
@@ -74,7 +76,7 @@ class LockHandler(
 
         val response = FlaggedResponse(
             success = success,
-            data = ItemRec(selectData)
+            data = ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
 
         implInstance?.afterUnlock(itemName, response)

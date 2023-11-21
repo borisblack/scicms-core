@@ -6,9 +6,8 @@ scicms-core:
     max-limit: 1000
     data-loader-chunk-size: 1000
     cache-expiration-minutes: 10
-    datasource-cache-expiration-minutes: 1440
-    item-template-cache-expiration-minutes: 1440
-    item-cache-expiration-minutes: 1440
+    datasource-cache-expiration-minutes: 720
+    item-cache-expiration-minutes: 720
     trim-strings: true
   i18n:
     default-locale: en-US

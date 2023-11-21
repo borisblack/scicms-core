@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.handler
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
+import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.FindOneHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
@@ -15,7 +16,8 @@ import ru.scisolutions.scicmscore.persistence.service.ItemCache
 class FindOneHandler(
     private val classService: ClassService,
     private val itemCache: ItemCache,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemCache.getOrThrow(itemName)
@@ -32,9 +34,11 @@ class FindOneHandler(
             else
                 aclItemRecDao.findByIdForRead(item, id, attrNames)
 
-        val response = Response(itemRec)
+        val response = Response(
+            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, itemRec)) }
+        )
 
-        implInstance?.afterFindOne(itemName,response)
+        implInstance?.afterFindOne(itemName, response)
 
         return response
     }
@@ -61,7 +65,9 @@ class FindOneHandler(
             else
                 aclItemRecDao.findByIdForRead(item, id, attrNames)
 
-        return RelationResponse(itemRec)
+        return RelationResponse(
+            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) }
+        )
     }
 
     companion object {

@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.lifecycle.Promotable
 import ru.scisolutions.scicmscore.engine.model.ItemRec
@@ -22,7 +23,8 @@ class PromoteHandler(
     private val lifecycleCache: LifecycleCache,
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response {
         val item = itemCache.getOrThrow(itemName)
@@ -70,7 +72,9 @@ class PromoteHandler(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        return Response(ItemRec(selectData))
+        return Response(
+            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
+        )
     }
 
     private fun getPromoteInstance(lifecycle: Lifecycle): Promotable {

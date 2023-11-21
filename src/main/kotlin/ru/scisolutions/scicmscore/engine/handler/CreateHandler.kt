@@ -77,7 +77,9 @@ class CreateHandler(
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-        val response = Response(ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)))
+        val response = Response(
+            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
+        )
 
         implInstance?.afterCreate(itemName, response)
 

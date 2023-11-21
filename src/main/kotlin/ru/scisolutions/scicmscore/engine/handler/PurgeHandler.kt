@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
@@ -20,6 +21,7 @@ class PurgeHandler(
     private val itemCache: ItemCache,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val deleteMediaHelper: DeleteMediaHelper,
+    private val attributeValueHelper: AttributeValueHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) {
@@ -58,7 +60,7 @@ class PurgeHandler(
         val result = itemRecsToPurge
             .map {
                 val selectData = it.filterKeys { key -> key in attrNames }
-                ItemRec(selectData.toMutableMap())
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             }
 
         val response = ResponseCollection(

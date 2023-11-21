@@ -5,6 +5,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
@@ -25,6 +26,7 @@ class DeleteHandler(
     private val itemCache: ItemCache,
     private val deleteRelationHelper: DeleteRelationHelper,
     private val deleteMediaHelper: DeleteMediaHelper,
+    private val attributeValueHelper: AttributeValueHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) {
@@ -70,7 +72,9 @@ class DeleteHandler(
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
-        val response = Response(ItemRec(selectData))
+        val response = Response(
+            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
+        )
 
         implInstance?.afterDelete(itemName, response)
 

@@ -5,6 +5,7 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.RemovalListener
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.springframework.core.env.Environment
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
@@ -14,6 +15,7 @@ import javax.sql.DataSource
 
 @Service
 class DatasourceManager(
+    private val environment: Environment,
     private val dataProps: DataProps,
     private val mainDataSource: DataSource,
     private val datasourceService: DatasourceService
@@ -36,9 +38,9 @@ class DatasourceManager(
             } else {
                 val ds = datasourceService.getByName(name)
                 val config = HikariConfig().apply {
-                    this.jdbcUrl = ds.connectionString
-                    this.username = ds.username
-                    this.password = ds.password
+                    this.jdbcUrl = environment.resolvePlaceholders(ds.connectionString)
+                    this.username = environment.resolvePlaceholders(ds.username)
+                    this.password = environment.resolvePlaceholders(ds.password)
                     this.maximumPoolSize = ds.maxPoolSize ?: dataProps.defaultPoolSize
                     this.minimumIdle = ds.minIdle ?: dataProps.defaultIdle
                 }
