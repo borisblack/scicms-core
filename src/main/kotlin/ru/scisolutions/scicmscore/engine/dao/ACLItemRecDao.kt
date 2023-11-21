@@ -1,34 +1,94 @@
 package ru.scisolutions.scicmscore.engine.dao
 
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.db.mapper.ItemRecMapper
+import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
+import ru.scisolutions.scicmscore.engine.db.query.ItemQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.persistence.service.PermissionCache
+import ru.scisolutions.scicmscore.util.Acl
 
-interface ACLItemRecDao {
-    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
+@Service
+class ACLItemRecDao(
+    private val permissionCache: PermissionCache,
+    private val dsManager: DatasourceManager
+) : BaseItemRecDao(dsManager) {
+    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.READ)
 
-    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
+    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.WRITE)
 
-    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
+    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.DELETE)
 
-    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec?
+    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.ADMINISTRATION)
 
-    fun existsByIdForRead(item: Item, id: String): Boolean
+    private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Acl.Mask): ItemRec? {
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
+        val paramSource = AttributeSqlParameterSource()
+        val query =  itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames, permissionIds)
+        return findOne(item, query.toString(), paramSource)
+    }
 
-    fun existsByIdForWrite(item: Item, id: String): Boolean
+    fun existsByIdForRead(item: Item, id: String): Boolean = existsByIdFor(item, id, Acl.Mask.READ)
 
-    fun existsByIdForDelete(item: Item, id: String): Boolean
+    fun existsByIdForWrite(item: Item, id: String): Boolean = existsByIdFor(item, id, Acl.Mask.WRITE)
 
-    fun existsByIdForAdministration(item: Item, id: String): Boolean
+    fun existsByIdForDelete(item: Item, id: String): Boolean = existsByIdFor(item, id, Acl.Mask.DELETE)
 
-    fun findAllByIdsForRead(item: Item, ids: Set<String>): List<ItemRec>
+    fun existsByIdForAdministration(item: Item, id: String): Boolean = existsByIdFor(item, id, Acl.Mask.ADMINISTRATION)
 
-    fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+    fun existsByIdFor(item: Item, id: String, accessMask: Acl.Mask): Boolean = countByIdsFor(item, setOf(id), accessMask) > 0
 
-    fun findAllByAttributeForWrite(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+    fun findAllByIdsForRead(item: Item, ids: Set<String>): List<ItemRec> = findAllByIdsFor(item, ids, Acl.Mask.READ)
 
-    fun findAllByAttributeForCreate(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+    private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): List<ItemRec> {
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
+        val paramSource = AttributeSqlParameterSource()
+        val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return dsManager.template(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
+    }
 
-    fun findAllByAttributeForDelete(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+    private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): Int {
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
+        val paramSource = AttributeSqlParameterSource()
+        val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
+        return count(item, query.toString(), paramSource)
+    }
 
-    fun findAllByAttributeForAdministration(item: Item, attrName: String, attrValue: Any): List<ItemRec>
+    fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.READ)
+
+    fun findAllByAttributeForWrite(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.WRITE)
+
+    fun findAllByAttributeForCreate(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.CREATE)
+
+    fun findAllByAttributeForDelete(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.DELETE)
+
+    fun findAllByAttributeForAdministration(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.ADMINISTRATION)
+
+    private fun findAllByAttributeFor(item: Item, attrName: String, attrValue: Any, accessMask: Acl.Mask): List<ItemRec> {
+        val permissionIds: Set<String> = permissionCache.idsByAccessMask(accessMask)
+        val paramSource = AttributeSqlParameterSource()
+        val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource, permissionIds)
+        val sql = query.toString()
+        logger.debug("Running SQL: {}", sql)
+        return dsManager.template(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(ACLItemRecDao::class.java)
+        private val itemQueryBuilder = ItemQueryBuilder()
+    }
 }

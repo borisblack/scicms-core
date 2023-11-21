@@ -1,7 +1,17 @@
 package ru.scisolutions.scicmscore.persistence.service
 
+import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.AllowedLifecycle
+import ru.scisolutions.scicmscore.persistence.repository.AllowedLifecycleRepository
 
-interface AllowedLifecycleService {
-    fun findAllByItemName(itemName: String): List<AllowedLifecycle>
+@Service
+@Repository
+@Transactional
+class AllowedLifecycleService(
+    private val allowedLifecycleRepository: AllowedLifecycleRepository
+) {
+    @Transactional(readOnly = true)
+    fun findAllByItemName(itemName: String): List<AllowedLifecycle> = allowedLifecycleRepository.findAllByItemName(itemName)
 }

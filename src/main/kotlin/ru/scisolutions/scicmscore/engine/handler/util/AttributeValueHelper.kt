@@ -11,6 +11,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import ru.scisolutions.scicmscore.util.Json
+import ru.scisolutions.scicmscore.util.Maps
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -24,6 +25,15 @@ class AttributeValueHelper(
     private val mediaService: MediaService,
     private val itemRecDao: ItemRecDao
 ) {
+    fun merge (item: Item, from: Map<String, Any?>, to: ItemRec): Map<String, Any?> {
+        val filteredFrom = from.filter { (k, v) ->
+            val attribute = item.spec.getAttributeOrThrow(k)
+            !(attribute.type == FieldType.password && v == ItemRec.PASSWORD_PLACEHOLDER)
+        }
+
+        return Maps.merge(filteredFrom, to)
+    }
+
     fun prepareValuesToSave(item: Item, values: Map<String, Any?>): Map<String, Any?> {
         val map = values
             .filterKeys {
@@ -70,7 +80,7 @@ class AttributeValueHelper(
         return when (attribute.type) {
             FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email -> value
             FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
-            FieldType.password -> if (attribute.encode) passwordEncoder.encode(value as String) else value
+            FieldType.password -> if (attribute.encode == true) passwordEncoder.encode(value as String) else value
             FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
             FieldType.date, FieldType.time, FieldType.datetime, FieldType.timestamp -> value
             FieldType.bool -> value

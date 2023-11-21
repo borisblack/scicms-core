@@ -15,7 +15,7 @@ class Attribute(
     val enumSet: Set<String>? = null,
     val seqName: String? = null,
     val confirm: Boolean? = null,
-    val encode: Boolean = true,
+    val encode: Boolean? = null,
     val relType: RelType? = null,
     val target: String? = null,
     val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes

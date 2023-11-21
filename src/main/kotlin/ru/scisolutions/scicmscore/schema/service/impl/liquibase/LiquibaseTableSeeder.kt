@@ -13,18 +13,18 @@ import liquibase.database.jvm.JdbcConnection
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.config.PersistenceConfig.DataSourceMap
 import ru.scisolutions.scicmscore.config.props.I18nProps
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.config.props.VersioningProps
+import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.model.Index
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
@@ -32,7 +32,7 @@ class LiquibaseTableSeeder(
     private val schemaProps: SchemaProps,
     versioningProps: VersioningProps,
     i18nProps: I18nProps,
-    private val dataSourceMap: DataSourceMap
+    private val dsManager: DatasourceManager
 ) : TableSeeder {
     private val liquibaseIndexes = LiquibaseIndexes(
         versioningProps.includeInUniqueIndex,
@@ -332,7 +332,7 @@ class LiquibaseTableSeeder(
     }
 
     private fun newLiquibase(dataSourceName: String, databaseChangeLog: DatabaseChangeLog): Liquibase {
-        val dataSource = dataSourceMap.getOrThrow(dataSourceName)
+        val dataSource = dsManager.dataSource(dataSourceName)
 
         return Liquibase(
             databaseChangeLog,

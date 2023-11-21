@@ -2,13 +2,14 @@ package ru.scisolutions.scicmscore.api.graphql.datafetcher.query
 
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsQuery
-import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.config.props.I18nProps
+import ru.scisolutions.scicmscore.persistence.service.DatasourceService
+import ru.scisolutions.scicmscore.schema.model.ItemMetadata
 
 @DgsComponent
 class ConfigDataFetcher(
-    private val dataProps: DataProps,
-    private val i18nProps: I18nProps
+    private val i18nProps: I18nProps,
+    private val datasourceService: DatasourceService
 ) {
     class Config(
         val data: DataConfig,
@@ -22,7 +23,10 @@ class ConfigDataFetcher(
     @DgsQuery
     fun config(): Config? = Config(
         data = DataConfig(
-            dataSources = dataProps.dataSources.keys
+            dataSources = setOf(ItemMetadata.MAIN_DATA_SOURCE) +
+                datasourceService.findAll()
+                    .map { it.name }
+                    .toSet()
         ),
         i18n = i18nProps
     )

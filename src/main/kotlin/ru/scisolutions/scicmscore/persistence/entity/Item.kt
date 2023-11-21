@@ -7,6 +7,8 @@ import ru.scisolutions.scicmscore.persistence.converter.LinkedHashSetConverter
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
@@ -24,8 +26,9 @@ class Item(
     @Column(name = "display_plural_name", nullable = false)
     var displayPluralName: String = pluralName,
 
-    @Column(name = "datasource_id")
-    var datasourceId: String? = null,
+    @ManyToOne
+    @JoinColumn(name = "datasource_id", insertable = false, updatable = false)
+    var datasource: Datasource? = null,
 
     // TODO: Remove after migration on persistent datasources
     @Column(name = "data_source", nullable = false)

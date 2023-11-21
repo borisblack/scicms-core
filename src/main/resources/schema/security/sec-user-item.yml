@@ -30,6 +30,7 @@ spec:
       displayName: Password
       description: Password
       confirm: true
+      encode: true
       length: 50
       colHidden: true
     enabled:

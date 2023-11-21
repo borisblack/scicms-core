@@ -2,8 +2,8 @@ package ru.scisolutions.scicmscore.engine.handler.util
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.dao.impl.ACLItemRecDaoImpl
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput.DeletingStrategy
 import ru.scisolutions.scicmscore.engine.service.AuditManager
@@ -26,7 +26,7 @@ class DeleteRelationHelper(
     private val auditManager: AuditManager,
     private val deleteMediaHelper: DeleteMediaHelper,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDaoImpl
+    private val aclItemRecDao: ACLItemRecDao
 ) {
     fun processRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
         processOneToOneRelations(item, itemRec, strategy)

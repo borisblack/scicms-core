@@ -1,8 +1,78 @@
 package ru.scisolutions.scicmscore.engine.handler
 
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
+import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
+import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
+import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
+import ru.scisolutions.scicmscore.engine.hook.PurgeHook
+import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
+import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.persistence.service.ItemCache
 
-interface PurgeHandler {
-    fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection
+@Service
+class PurgeHandler(
+    private val classService: ClassService,
+    private val itemCache: ItemCache,
+    private val deleteRelationHelper: DeleteRelationHelper,
+    private val deleteMediaHelper: DeleteMediaHelper,
+    private val itemRecDao: ItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
+) {
+    fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection {
+        val item = itemCache.getOrThrow(itemName)
+        if (!item.versioned)
+            throw IllegalArgumentException("Item [$itemName] is not versioned so it cannot be purged")
+
+        val itemRec = aclItemRecDao.findByIdForDelete(item, input.id)
+            ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
+
+        if (!item.notLockable)
+            itemRecDao.lockByIdOrThrow(item, input.id)
+
+        val itemRecsToPurge = itemRecDao.findAllByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String)
+        logger.info("${itemRecsToPurge.size} item(s) will be purged")
+
+        // Get and call hook
+        val implInstance = classService.getCastInstance(item.implementation, PurgeHook::class.java)
+        implInstance?.beforePurge(itemName, input, itemRec)
+
+        // Process relations and media
+        itemRecsToPurge.forEach {
+            deleteRelationHelper.processRelations(item, it, input.deletingStrategy)
+
+            // Can be used by another versions or localizations
+            if (!item.versioned && !item.localized) {
+                deleteMediaHelper.processMedia(item, itemRec)
+            }
+        }
+
+        itemRecDao.deleteByAttribute(item, CONFIG_ID_ATTR_NAME, itemRec.configId as String) // purge
+        logger.info("${itemRecsToPurge.size} item(s) purged.")
+
+        val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
+        val result = itemRecsToPurge
+            .map {
+                val selectData = it.filterKeys { key -> key in attrNames }
+                ItemRec(selectData.toMutableMap())
+            }
+
+        val response = ResponseCollection(
+            data = result
+        )
+
+        implInstance?.afterPurge(itemName, response)
+
+        return response
+    }
+
+    companion object {
+        private const val CONFIG_ID_ATTR_NAME = "configId"
+
+        private val logger = LoggerFactory.getLogger(PurgeHandler::class.java)
+    }
 }

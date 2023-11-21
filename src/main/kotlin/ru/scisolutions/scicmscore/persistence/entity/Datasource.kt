@@ -9,7 +9,7 @@ import javax.persistence.Table
 @Entity
 @Table(name = "core_datasources")
 class Datasource(
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     var name: String,
 
     @Column(name = "connection_string", nullable = false)
@@ -24,12 +24,11 @@ class Datasource(
     @Column(name = "max_pool_size")
     var maxPoolSize: Int?,
 
+    @Column(name = "min_idle")
+    var minIdle: Int?,
+
     @Convert(converter = MapConverter::class)
     var params: Map<String, Any?> = mapOf(),
 ) : AbstractEntity() {
-    override fun toString(): String = "ItemTemplate(name=$name)"
-
-    companion object {
-        const val DEFAULT_ITEM_TEMPLATE_NAME = "default"
-    }
+    override fun toString(): String = "Datasource(name=$name)"
 }

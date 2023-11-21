@@ -1,17 +1,35 @@
 package ru.scisolutions.scicmscore.persistence.service
 
+import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Media
+import ru.scisolutions.scicmscore.persistence.repository.MediaRepository
+import ru.scisolutions.scicmscore.util.Acl
 
-interface MediaService {
-    fun findById(id: String): Media?
+@Service
+@Repository
+@Transactional
+class MediaService(
+    private val permissionCache: PermissionCache,
+    private val mediaRepository: MediaRepository
+) {
+    @Transactional(readOnly = true)
+    fun findById(id: String): Media? = mediaRepository.findById(id).orElse(null)
 
-    fun findByIdForRead(id: String): Media?
+    @Transactional(readOnly = true)
+    fun findByIdForRead(id: String): Media? = findByIdFor(id, Acl.Mask.READ)
 
-    fun findByIdForDelete(id: String): Media?
+    @Transactional(readOnly = true)
+    fun findByIdForDelete(id: String): Media? = findByIdFor(id, Acl.Mask.DELETE)
 
-    fun getById(id: String): Media
+    private fun findByIdFor(id: String, accessMask: Acl.Mask): Media? =
+        mediaRepository.findByIdWithACL(id, permissionCache.idsByAccessMask(accessMask))
 
-    fun existsById(id: String): Boolean
+    @Transactional(readOnly = true)
+    fun getById(id: String): Media = mediaRepository.getById(id)
 
-    fun save(media: Media): Media
+    fun existsById(id: String): Boolean = mediaRepository.existsById(id)
+
+    fun save(media: Media): Media = mediaRepository.save(media)
 }

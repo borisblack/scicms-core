@@ -856,6 +856,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="max_pool_size" type="int"/>
+            <column name="min_idle" type="int"/>
             <column name="params" type="text" defaultValue="{}">
                 <constraints nullable="false"/>
             </column>

@@ -32,7 +32,7 @@ spec:
       description: Connection String
       required: true
       length: 50
-      colWidth: 300
+      colWidth: 320
     username:
       type: string
       columnName: username
@@ -42,7 +42,7 @@ spec:
       length: 50
       colWidth: 200
     password:
-      type: string
+      type: password
       columnName: passwd
       displayName: Password
       description: Password
@@ -56,7 +56,15 @@ spec:
       columnName: max_pool_size
       displayName: Maximum Pool Size
       description: Maximum Pool Size
+      minRange: 0
       colWidth: 250
+    minIdle:
+      type: int
+      columnName: min_idle
+      displayName: Minimum Idle Connections
+      description: Minimum Idle Connections
+      minRange: 0
+      colWidth: 320
     params:
       type: json
       columnName: params
@@ -65,3 +73,4 @@ spec:
       required: true
       defaultValue: '{}'
       colHidden: true
+      fieldWidth: 12
