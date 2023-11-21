@@ -1,17 +1,23 @@
 package ru.scisolutions.scicmscore.schema.mapper
 
+import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.persistence.entity.Permission
+import ru.scisolutions.scicmscore.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.model.ItemMetadata
+import ru.scisolutions.scicmscore.util.Schema
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
-class ItemMapper {
+@Component
+class ItemMapper(private val datasourceService: DatasourceService) {
     fun mapToEntity(source: Item): ItemEntity {
         val metadata = source.metadata
+        val datasource = datasourceService.getByName(metadata.dataSource.ifBlank { Schema.MAIN_DATA_SOURCE_NAME })
         val target = ItemEntity(
             name = metadata.name,
             pluralName = metadata.pluralName,
-            dataSource = metadata.dataSource
+            datasourceId = datasource.id,
+            datasource = datasource
         )
         copyToEntity(source, target)
 
@@ -20,12 +26,14 @@ class ItemMapper {
 
     fun copyToEntity(source: Item, target: ItemEntity) {
         val metadata = source.metadata
+        val datasource = datasourceService.getByName(metadata.dataSource.ifBlank { Schema.MAIN_DATA_SOURCE_NAME })
         
         target.name = metadata.name
         target.displayName = metadata.displayName.ifBlank { metadata.name }
         target.pluralName = metadata.pluralName
         target.displayPluralName = metadata.displayPluralName.ifBlank { metadata.pluralName }
-        target.dataSource = metadata.dataSource.ifBlank { ItemMetadata.MAIN_DATA_SOURCE }
+        target.datasourceId = datasource.id
+        target.datasource = datasource
         target.tableName = metadata.tableName
         target.query = metadata.query
         target.titleAttribute = metadata.titleAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }

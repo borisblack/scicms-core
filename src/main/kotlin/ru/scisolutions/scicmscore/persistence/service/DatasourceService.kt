@@ -10,9 +10,15 @@ import ru.scisolutions.scicmscore.persistence.repository.DatasourceRepository
 @Repository
 @Transactional
 class DatasourceService(private val datasourceRepository: DatasourceRepository) {
+    @Transactional(readOnly = true)
     fun findAll(): Iterable<Datasource> =
         datasourceRepository.findAll()
 
+    @Transactional(readOnly = true)
+    fun getById(id: String): Datasource =
+        datasourceRepository.getById(id)
+
+    @Transactional(readOnly = true)
     fun getByName(name: String): Datasource =
         datasourceRepository.getByName(name)
 }

@@ -6,12 +6,13 @@ import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.model.Attribute
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
+import ru.scisolutions.scicmscore.util.Schema
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
-import ru.scisolutions.scicmscore.model.FieldType
 
 private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) NonNullType(this) else this
 
@@ -67,7 +68,7 @@ class AttributeTypes(
 
             FieldType.media -> {
                 val media = itemCache.getMedia()
-                if (media.dataSource == item.dataSource)
+                if (Schema.areDataSourcesEqual(media.datasource?.name, item.datasource?.name))
                     TypeName("MediaFiltersInput")
                 else
                     TypeNames.ID_FILTER_INPUT
@@ -77,7 +78,7 @@ class AttributeTypes(
                 relationValidator.validateAttribute(item, attrName, attribute)
 
                 val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
-                if (targetItem.dataSource == item.dataSource) {
+                if (Schema.areDataSourcesEqual(targetItem.datasource?.name, item.datasource?.name)) {
                     val capitalizedTargetItemName = attribute.target.upperFirst()
                     TypeName("${capitalizedTargetItemName}FiltersInput")
                 } else {

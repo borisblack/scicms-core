@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.engine.model
 
 import java.time.OffsetDateTime
 
-class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : MutableMap<String, Any?> by map {
+open class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : MutableMap<String, Any?> by map {
     var id: String?
         get() = this[ID_ATTR_NAME] as String?
         set(value) { this[ID_ATTR_NAME] = value }

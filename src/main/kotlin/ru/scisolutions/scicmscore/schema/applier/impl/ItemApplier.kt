@@ -25,6 +25,7 @@ class ItemApplier(
     private val schemaProps: SchemaProps,
     private val itemTemplateCache: ItemTemplateCache,
     private val itemCache: ItemCache,
+    private val itemMapper: ItemMapper,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
     private val schemaLockService: SchemaLockService,
@@ -133,6 +134,5 @@ class ItemApplier(
 
     companion object {
         private val logger = LoggerFactory.getLogger(ItemApplier::class.java)
-        private val itemMapper = ItemMapper()
     }
 }

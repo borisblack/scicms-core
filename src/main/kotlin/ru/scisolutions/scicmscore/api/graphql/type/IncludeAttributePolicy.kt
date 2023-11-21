@@ -6,6 +6,7 @@ import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.util.Schema
 
 @Component
 class IncludeAttributePolicy(
@@ -34,17 +35,17 @@ class IncludeAttributePolicy(
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
 
-        if (attribute.type == FieldType.media && itemCache.getMedia().dataSource != item.dataSource)
+        if (attribute.type == FieldType.media && !Schema.areDataSourcesEqual(itemCache.getMedia().datasource?.name, item.datasource?.name))
             return false
 
         if (attribute.isCollection()) {
             val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
-            if (targetItem.dataSource != item.dataSource)
+            if (!Schema.areDataSourcesEqual(targetItem.datasource?.name, item.datasource?.name))
                 return false
 
             if (attribute.relType == RelType.manyToMany) {
                 val intermediateItem = itemCache.getOrThrow(requireNotNull(attribute.intermediate))
-                if (intermediateItem.dataSource != item.dataSource)
+                if (!Schema.areDataSourcesEqual(intermediateItem.datasource?.name, item.datasource?.name))
                     return false
             }
         }

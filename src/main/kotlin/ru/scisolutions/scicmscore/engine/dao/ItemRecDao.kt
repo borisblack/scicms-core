@@ -43,7 +43,7 @@ class ItemRecDao(
 
     fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> {
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
+        return dsManager.template(item.datasource?.name).query(sql, paramSource, ItemRecMapper(item))
     }
 
     fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
@@ -51,7 +51,7 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).query(sql, paramSource, ItemRecMapper(item))
+        return dsManager.template(item.datasource?.name).query(sql, paramSource, ItemRecMapper(item))
     }
 
     fun insert(item: Item, itemRec: ItemRec): Int {
@@ -59,7 +59,7 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).update(sql, paramSource)
+        return dsManager.template(item.datasource?.name).update(sql, paramSource)
     }
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
@@ -86,7 +86,7 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).update(sql, paramSource)
+        return dsManager.template(item.datasource?.name).update(sql, paramSource)
     }
 
     fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ItemRec.ID_ATTR_NAME, id)
@@ -96,7 +96,7 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).update(sql, paramSource)
+        return dsManager.template(item.datasource?.name).update(sql, paramSource)
     }
 
     fun deleteVersionedById(item: Item, id: String): Int {
@@ -208,7 +208,7 @@ class ItemRecDao(
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).update(sql, paramSource)
+        return dsManager.template(item.datasource?.name).update(sql, paramSource)
     }
 
     fun unlockByIdOrThrow(item: Item, id: String) {
@@ -240,7 +240,7 @@ class ItemRecDao(
         val sql = query.toString()
 
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.dataSource).update(sql, paramSource)
+        return dsManager.template(item.datasource?.name).update(sql, paramSource)
     }
 
     companion object {

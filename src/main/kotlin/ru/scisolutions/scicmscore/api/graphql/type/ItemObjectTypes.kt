@@ -19,7 +19,7 @@ class ItemObjectTypes(
     private val includeAttributePolicy: IncludeAttributePolicy
 ) {
     fun item(item: Item): ObjectTypeDefinition {
-        val dataSourceInfo = "Data source: ${item.dataSource}."
+        val dataSourceInfo = "Data source: ${item.datasource?.name}."
         var description = item.description?.trim()
         description =
             if (description == null) {

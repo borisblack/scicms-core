@@ -4,25 +4,32 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.DatasetDao
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
+import ru.scisolutions.scicmscore.engine.model.DatasetItemRec
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.model.DatasetSpec
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
+import ru.scisolutions.scicmscore.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.util.Json
 
 @Service
-class DatasetItemImpl(private val datasetDao: DatasetDao) : CreateHook, UpdateHook {
+class DatasetItemImpl(
+    private val datasetDao: DatasetDao,
+    private val datasourceService: DatasourceService
+) : CreateHook, UpdateHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec) {
-        actualizeSpec(data)
+        actualizeSpec(DatasetItemRec(data))
     }
 
-    private fun actualizeSpec(data: ItemRec) {
+    private fun actualizeSpec(data: DatasetItemRec) {
+        val datasource = data.datasource?.let { datasourceService.getById(it) }
         val dataset = Dataset(
             name = data[Dataset::name.name] as String,
             description = data[Dataset::description.name] as String?,
-            dataSource = data[Dataset::dataSource.name] as String,
+            datasourceId = datasource?.id,
+            datasource = datasource,
             tableName = data[Dataset::tableName.name] as String?,
             query = data[Dataset::query.name] as String?,
             spec = parseSpec(data[Dataset::spec.name]),
@@ -56,7 +63,7 @@ class DatasetItemImpl(private val datasetDao: DatasetDao) : CreateHook, UpdateHo
     }
 
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec) {
-        actualizeSpec(data)
+        actualizeSpec(DatasetItemRec(data))
     }
 
     override fun afterUpdate(itemName: String, response: Response) {

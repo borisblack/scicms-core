@@ -26,13 +26,12 @@ class Item(
     @Column(name = "display_plural_name", nullable = false)
     var displayPluralName: String = pluralName,
 
+    @Column(name = "datasource_id")
+    var datasourceId: String? = null,
+
     @ManyToOne
     @JoinColumn(name = "datasource_id", insertable = false, updatable = false)
     var datasource: Datasource? = null,
-
-    // TODO: Remove after migration on persistent datasources
-    @Column(name = "data_source", nullable = false)
-    var dataSource: String,
 
     @Column(name = "table_name")
     var tableName: String? = null,

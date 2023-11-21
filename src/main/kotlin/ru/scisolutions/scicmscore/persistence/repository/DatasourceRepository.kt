@@ -4,5 +4,7 @@ import org.springframework.data.repository.CrudRepository
 import ru.scisolutions.scicmscore.persistence.entity.Datasource
 
 interface DatasourceRepository : CrudRepository<Datasource, String> {
-    fun getByName(id: String): Datasource
+    fun getById(id: String): Datasource
+
+    fun getByName(name: String): Datasource
 }

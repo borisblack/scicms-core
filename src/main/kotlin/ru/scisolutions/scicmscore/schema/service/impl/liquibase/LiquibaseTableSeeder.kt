@@ -135,7 +135,7 @@ class LiquibaseTableSeeder(
     private fun isTableChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
         (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash && (
             item.metadata.tableName != existingItemEntity.tableName
-                || item.metadata.dataSource != existingItemEntity.dataSource
+                || item.metadata.dataSource != existingItemEntity.datasource?.name
                 || item.metadata.versioned != existingItemEntity.versioned
                 || item.metadata.localized != existingItemEntity.localized
                 || item.spec.hashCode() != existingItemEntity.spec.hashCode())
@@ -249,7 +249,7 @@ class LiquibaseTableSeeder(
         addDropTableChange(changeSet, requireNotNull(itemEntity.tableName), false) // drop table
 
         // Run changelog
-        val liquibase = newLiquibase(itemEntity.dataSource, databaseChangeLog)
+        val liquibase = newLiquibase(itemEntity.datasource?.name, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
     }
@@ -283,7 +283,7 @@ class LiquibaseTableSeeder(
         addDropColumnChange(changeSet, requireNotNull(existingItemEntity.tableName), attribute.columnName ?: attrName.lowercase())
 
         // Run changelog
-        val liquibase = newLiquibase(existingItemEntity.dataSource, databaseChangeLog)
+        val liquibase = newLiquibase(existingItemEntity.datasource?.name, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
     }
@@ -331,7 +331,7 @@ class LiquibaseTableSeeder(
             }
     }
 
-    private fun newLiquibase(dataSourceName: String, databaseChangeLog: DatabaseChangeLog): Liquibase {
+    private fun newLiquibase(dataSourceName: String?, databaseChangeLog: DatabaseChangeLog): Liquibase {
         val dataSource = dsManager.dataSource(dataSourceName)
 
         return Liquibase(

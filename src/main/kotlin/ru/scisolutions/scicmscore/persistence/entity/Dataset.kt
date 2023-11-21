@@ -5,6 +5,8 @@ import ru.scisolutions.scicmscore.persistence.converter.DatasetSpecConverter
 import javax.persistence.Column
 import javax.persistence.Convert
 import javax.persistence.Entity
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
@@ -18,9 +20,9 @@ class Dataset(
     @Column(name = "datasource_id")
     var datasourceId: String? = null,
 
-    // TODO: Remove after migration on persistent datasources
-    @Column(name = "data_source", nullable = false)
-    val dataSource: String,
+    @ManyToOne
+    @JoinColumn(name = "datasource_id", insertable = false, updatable = false)
+    var datasource: Datasource? = null,
 
     @Column(name = "table_name")
     val tableName: String? = null,
