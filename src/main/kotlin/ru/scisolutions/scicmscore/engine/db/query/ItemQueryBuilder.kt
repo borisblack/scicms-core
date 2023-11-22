@@ -51,7 +51,7 @@ class ItemQueryBuilder {
     private fun createTable(item: Item): DbTable {
         val spec = DbSpec()
         val schema = spec.addDefaultSchema()
-        return DbTable(schema, item.getQueryOrThrow())
+        return DbTable(schema, item.qs)
     }
 
     fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {

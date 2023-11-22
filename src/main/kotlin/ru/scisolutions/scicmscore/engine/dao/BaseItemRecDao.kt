@@ -13,7 +13,7 @@ open class BaseItemRecDao(private val dsManager: DatasourceManager) {
         logger.debug("Running SQL: {}", sql)
         val itemRec: ItemRec? =
             try {
-                dsManager.template(item.datasource?.name).queryForObject(sql, paramSource, ItemRecMapper(item))
+                dsManager.template(item.ds).queryForObject(sql, paramSource, ItemRecMapper(item))
             } catch (e: EmptyResultDataAccessException) {
                 null
             }
@@ -24,7 +24,7 @@ open class BaseItemRecDao(private val dsManager: DatasourceManager) {
     fun count(item: Item, sql: String, paramSource: AttributeSqlParameterSource): Int {
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
         logger.debug("Running SQL: {}", countSQL)
-        return dsManager.template(item.datasource?.name).queryForObject(countSQL, paramSource, Int::class.java) as Int
+        return dsManager.template(item.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
     }
 
     companion object {

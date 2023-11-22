@@ -10,7 +10,6 @@ import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
-import ru.scisolutions.scicmscore.util.Schema
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
 
@@ -68,7 +67,7 @@ class AttributeTypes(
 
             FieldType.media -> {
                 val media = itemCache.getMedia()
-                if (Schema.areDataSourcesEqual(media.datasource?.name, item.datasource?.name))
+                if (media.ds == item.ds)
                     TypeName("MediaFiltersInput")
                 else
                     TypeNames.ID_FILTER_INPUT
@@ -78,7 +77,7 @@ class AttributeTypes(
                 relationValidator.validateAttribute(item, attrName, attribute)
 
                 val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
-                if (Schema.areDataSourcesEqual(targetItem.datasource?.name, item.datasource?.name)) {
+                if (targetItem.ds == item.ds) {
                     val capitalizedTargetItemName = attribute.target.upperFirst()
                     TypeName("${capitalizedTargetItemName}FiltersInput")
                 } else {

@@ -7,7 +7,6 @@ import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.model.Item
-import ru.scisolutions.scicmscore.util.Schema
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Component
@@ -50,7 +49,7 @@ class RelationValidator(
         }
 
         if (attribute.relType == RelType.manyToMany){
-            if (!Schema.areDataSourcesEqual(item.metadata.dataSource, targetItem.datasource?.name))
+            if (item.metadata.dataSource != targetItem.ds)
                 throw IllegalStateException("Item [${item.metadata.name}] and it's manyToMany attribute target item have different data sources")
 
             val intermediateItem = itemCache.get(requireNotNull(attribute.intermediate))
@@ -59,7 +58,7 @@ class RelationValidator(
                 return
             }
 
-            if (!Schema.areDataSourcesEqual(item.metadata.dataSource, intermediateItem.datasource?.name))
+            if (item.metadata.dataSource != intermediateItem.ds)
                 throw IllegalStateException("Item [${item.metadata.name}] and it's manyToMany attribute intermediate item have different data sources")
         }
     }
@@ -72,11 +71,11 @@ class RelationValidator(
     private fun validateDataSource(itemEntity: ItemEntity, attribute: Attribute) {
         val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
         if (attribute.relType == RelType.manyToMany){
-            if (!Schema.areDataSourcesEqual(itemEntity.datasource?.name, targetItem.datasource?.name))
+            if (itemEntity.ds != targetItem.ds)
                 throw IllegalStateException("Item [${itemEntity.name}] and it's manyToMany attribute target item have different data sources")
 
             val intermediateItem = itemCache.getOrThrow(requireNotNull(attribute.intermediate))
-            if (!Schema.areDataSourcesEqual(itemEntity.datasource?.name, intermediateItem.datasource?.name))
+            if (itemEntity.ds != intermediateItem.ds)
                 throw IllegalStateException("Item [${itemEntity.name}] and it's manyToMany attribute intermediate item have different data sources")
         }
     }

@@ -11,7 +11,6 @@ import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
-import ru.scisolutions.scicmscore.util.Schema
 
 @Component
 class ItemFiltersInputMapper(
@@ -34,14 +33,14 @@ class ItemFiltersInputMapper(
                     val attribute = item.spec.getAttributeOrThrow(attrName)
                     if (attribute.type == FieldType.media) {
                         val media = itemCache.getMedia()
-                        if (Schema.areDataSourcesEqual(media.datasource?.name, item.datasource?.name))
+                        if (media.ds == item.ds)
                             map(MEDIA_ITEM_NAME, filterValue, opPrefix)
                         else
                             TypedPrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == FieldType.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
                         val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
-                        if (Schema.areDataSourcesEqual(targetItem.datasource?.name, item.datasource?.name)) {
+                        if (targetItem.ds == item.ds) {
                             map(attribute.target, filterValue, opPrefix) // recursive
                         } else {
                             if (attribute.isCollection())

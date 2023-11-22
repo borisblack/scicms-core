@@ -9,8 +9,8 @@ import org.springframework.core.env.Environment
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
+import ru.scisolutions.scicmscore.persistence.entity.Datasource
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
-import ru.scisolutions.scicmscore.util.Schema
 import java.util.concurrent.TimeUnit
 import javax.sql.DataSource
 
@@ -26,15 +26,15 @@ class DatasourceManager(
         .removalListener<String, DataSource> {
             RemovalListener<String, DataSource> {
                 val datasource = it.value
-                if (it.key != Schema.MAIN_DATA_SOURCE_NAME && datasource is HikariDataSource)
+                if (it.key != Datasource.MAIN_DATASOURCE_NAME && datasource is HikariDataSource)
                     datasource.close()
             }
         }
         .build()
 
-    fun dataSource(name: String?): DataSource =
-        dataSourceCache.get(name ?: Schema.MAIN_DATA_SOURCE_NAME) {
-            if (name == null || name == Schema.MAIN_DATA_SOURCE_NAME) {
+    fun dataSource(name: String): DataSource =
+        dataSourceCache.get(name) {
+            if (name == Datasource.MAIN_DATASOURCE_NAME) {
                 mainDataSource
             } else {
                 val ds = datasourceService.getByName(name)
@@ -50,6 +50,6 @@ class DatasourceManager(
             }
         }
 
-    fun template(name: String?): NamedParameterJdbcTemplate =
-        NamedParameterJdbcTemplate(dataSource(name ?: Schema.MAIN_DATA_SOURCE_NAME))
+    fun template(name: String): NamedParameterJdbcTemplate =
+        NamedParameterJdbcTemplate(dataSource(name))
 }

@@ -1,13 +1,11 @@
 package ru.scisolutions.scicmscore.schema.model
 
-import ru.scisolutions.scicmscore.util.Schema
-
 data class ItemMetadata(
     override val name: String,
     val displayName: String = name,
     override val pluralName: String,
     val displayPluralName: String = pluralName,
-    val dataSource: String = Schema.MAIN_DATA_SOURCE_NAME,
+    val dataSource: String = MAIN_DATASOURCE_NAME,
     val tableName: String? = null,
     val query: String? = null,
     val titleAttribute: String = ID_ATTR_NAME,
@@ -27,5 +25,6 @@ data class ItemMetadata(
 ) : BaseMetadata(name, pluralName) {
     companion object {
         const val ID_ATTR_NAME = "id"
+        const val MAIN_DATASOURCE_NAME = "main"
     }
 }

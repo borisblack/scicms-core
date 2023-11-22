@@ -53,7 +53,7 @@ class ACLItemRecDao(
         val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.datasource?.name).query(sql, paramSource, ItemRecMapper(item))
+        return dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
     }
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): Int {
@@ -84,7 +84,7 @@ class ACLItemRecDao(
         val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource, permissionIds)
         val sql = query.toString()
         logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.datasource?.name).query(sql, paramSource, ItemRecMapper(item))
+        return dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
     }
 
     companion object {

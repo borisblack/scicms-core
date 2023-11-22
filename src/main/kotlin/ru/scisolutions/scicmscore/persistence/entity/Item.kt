@@ -4,12 +4,7 @@ import org.hibernate.annotations.Type
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
 import ru.scisolutions.scicmscore.persistence.converter.LinkedHashSetConverter
-import javax.persistence.Column
-import javax.persistence.Convert
-import javax.persistence.Entity
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "core_items")
@@ -99,10 +94,16 @@ class Item(
 ) : AbstractEntity() {
     override fun toString(): String = "Item(name=$name)"
 
-    fun getQueryOrThrow(): String {
-        val q = if (query == null) null else "($query)"
-        return tableName ?: q ?: throw IllegalStateException("Table name anq query are empty")
-    }
+    val ds: String
+        get() = datasource?.name ?: Datasource.MAIN_DATASOURCE_NAME
+
+    val qs: String
+        get() {
+            val t = if (tableName.isNullOrBlank()) null else tableName
+            val q = if (query.isNullOrBlank()) null else "($query)"
+
+            return t ?: q ?: throw IllegalStateException("Table name anq query are empty")
+        }
 
     companion object {
         const val DASHBOARD_ITEM_NAME = "dashboard"

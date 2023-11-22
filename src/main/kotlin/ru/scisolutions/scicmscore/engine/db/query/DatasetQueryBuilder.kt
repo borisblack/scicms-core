@@ -30,7 +30,7 @@ class DatasetQueryBuilder(
     fun buildLoadQuery(dataset: Dataset, input: DatasetInput, paramSource: DatasetSqlParameterSource): DatasetQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val table = schema.addTable(dataset.getQueryOrThrow())
+        val table = schema.addTable(dataset.qs)
         val query = buildInitialLoadQuery(dataset, input, schema, table, paramSource)
 
         if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {

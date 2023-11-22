@@ -3,8 +3,8 @@ package ru.scisolutions.scicmscore.api.graphql.datafetcher.query
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsQuery
 import ru.scisolutions.scicmscore.config.props.I18nProps
+import ru.scisolutions.scicmscore.persistence.entity.Datasource
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
-import ru.scisolutions.scicmscore.util.Schema
 
 @DgsComponent
 class ConfigDataFetcher(
@@ -23,7 +23,7 @@ class ConfigDataFetcher(
     @DgsQuery
     fun config(): Config? = Config(
         data = DataConfig(
-            dataSources = setOf(Schema.MAIN_DATA_SOURCE_NAME) +
+            dataSources = setOf(Datasource.MAIN_DATASOURCE_NAME) +
                 datasourceService.findAll()
                     .map { it.name }
                     .toSet()

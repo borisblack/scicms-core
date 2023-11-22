@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.model.DatasetSpec
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
-import java.util.Objects
+import java.util.*
 
 @Service
 class DatasetDao(
@@ -21,19 +21,19 @@ class DatasetDao(
 ) {
     fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> {
         logger.debug("Running load SQL: {}", sql)
-        return dsManager.template(dataset.datasource?.name).query(sql, paramSource, DatasetRowMapper())
+        return dsManager.template(dataset.ds).query(sql, paramSource, DatasetRowMapper())
     }
 
     fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): Int {
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
         logger.debug("Running count SQL: {}", countSQL)
-        return dsManager.template(dataset.datasource?.name).queryForObject(countSQL, paramSource, Int::class.java) as Int
+        return dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
     }
 
     fun actualizeSpec(dataset: Dataset): Boolean {
         val hash = Objects.hash(
-            dataset.datasource?.name,
-            dataset.getQueryOrThrow()
+            dataset.ds,
+            dataset.qs
         ).toString()
 
         if (dataset.hash == hash) {
@@ -53,14 +53,14 @@ class DatasetDao(
     private fun loadMetaData(dataset: Dataset): SqlRowSetMetaData {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
-        val table = schema.addTable(dataset.getQueryOrThrow())
+        val table = schema.addTable(dataset.qs)
         val query = SelectQuery()
             .addAllColumns()
             .addFromTable(table)
             .setFetchNext(1)
             .validate()
 
-        val jdbcTemplate = dsManager.template(dataset.datasource?.name)
+        val jdbcTemplate = dsManager.template(dataset.ds)
         val sql = query.toString()
         logger.debug("Running loadMetaData SQL: {}", sql)
         return jdbcTemplate.queryForRowSet(sql, MapSqlParameterSource()).metaData

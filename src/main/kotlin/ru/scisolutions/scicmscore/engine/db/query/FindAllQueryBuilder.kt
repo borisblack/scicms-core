@@ -1,11 +1,6 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition
-import com.healthmarketscience.sqlbuilder.ComboCondition
-import com.healthmarketscience.sqlbuilder.Condition
-import com.healthmarketscience.sqlbuilder.InCondition
-import com.healthmarketscience.sqlbuilder.SelectQuery
-import com.healthmarketscience.sqlbuilder.UnaryCondition
+import com.healthmarketscience.sqlbuilder.*
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
@@ -45,7 +40,7 @@ class FindAllQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
-        val table = schema.findTable(item.getQueryOrThrow()) ?: throw IllegalArgumentException("Query for currentItem is not found in schema")
+        val table = schema.findTable(item.qs) ?: throw IllegalArgumentException("Query for currentItem is not found in schema")
 
         // Version
         val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
@@ -76,7 +71,7 @@ class FindAllQueryBuilder(
     }
 
     private fun buildFindAllInitialQuery(item: Item, filters: ItemFiltersInput?, selectAttrNames: Set<String>, schema: DbSchema, paramSource: AttributeSqlParameterSource): SelectQuery {
-        val table = schema.addTable(item.getQueryOrThrow())
+        val table = schema.addTable(item.qs)
 
         val columns = selectAttrNames
             .map {
