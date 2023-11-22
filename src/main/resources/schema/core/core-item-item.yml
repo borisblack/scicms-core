@@ -56,15 +56,6 @@ spec:
       columnName: datasource_id
       displayName: Datasource
       description: Datasource
-    # TODO: Remove after migration on persistent datasources
-    dataSource:
-      type: string
-      columnName: data_source
-      displayName: Data Source
-      description: Data Source
-      required: true
-      length: 50
-      colWidth: 160
     tableName:
       type: string
       columnName: table_name
