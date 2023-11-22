@@ -31,4 +31,8 @@ class Datasource(
     var params: Map<String, Any?> = mapOf(),
 ) : AbstractEntity() {
     override fun toString(): String = "Datasource(name=$name)"
+
+    companion object {
+        const val MAIN_DATASOURCE_NAME = "main"
+    }
 }

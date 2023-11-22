@@ -41,6 +41,7 @@ spec:
       columnName: datasource_id
       displayName: Datasource
       description: Datasource
+      colWidth: 160
     # TODO: Remove after migration on persistent datasources
     dataSource:
       type: string

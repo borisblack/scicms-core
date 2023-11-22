@@ -19,6 +19,10 @@ class DatasourceService(private val datasourceRepository: DatasourceRepository) 
         datasourceRepository.getById(id)
 
     @Transactional(readOnly = true)
+    fun findByName(name: String?): Datasource? =
+        if (name.isNullOrBlank() || name == Datasource.MAIN_DATASOURCE_NAME) null else datasourceRepository.findByName(name)
+
+    @Transactional(readOnly = true)
     fun getByName(name: String): Datasource =
         datasourceRepository.getByName(name)
 }

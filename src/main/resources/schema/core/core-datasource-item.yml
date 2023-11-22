@@ -31,8 +31,8 @@ spec:
       displayName: Connection String
       description: Connection String
       required: true
-      length: 50
-      colWidth: 320
+      length: 100
+      colWidth: 360
     username:
       type: string
       columnName: username

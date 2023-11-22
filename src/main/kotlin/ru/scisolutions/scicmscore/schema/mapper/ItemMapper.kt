@@ -5,18 +5,17 @@ import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.model.ItemMetadata
-import ru.scisolutions.scicmscore.util.Schema
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Component
 class ItemMapper(private val datasourceService: DatasourceService) {
     fun mapToEntity(source: Item): ItemEntity {
         val metadata = source.metadata
-        val datasource = datasourceService.getByName(metadata.dataSource.ifBlank { Schema.MAIN_DATA_SOURCE_NAME })
+        val datasource = datasourceService.findByName(metadata.dataSource)
         val target = ItemEntity(
             name = metadata.name,
             pluralName = metadata.pluralName,
-            datasourceId = datasource.id,
+            datasourceId = datasource?.id,
             datasource = datasource
         )
         copyToEntity(source, target)
@@ -26,13 +25,13 @@ class ItemMapper(private val datasourceService: DatasourceService) {
 
     fun copyToEntity(source: Item, target: ItemEntity) {
         val metadata = source.metadata
-        val datasource = datasourceService.getByName(metadata.dataSource.ifBlank { Schema.MAIN_DATA_SOURCE_NAME })
+        val datasource = datasourceService.findByName(metadata.dataSource)
         
         target.name = metadata.name
         target.displayName = metadata.displayName.ifBlank { metadata.name }
         target.pluralName = metadata.pluralName
         target.displayPluralName = metadata.displayPluralName.ifBlank { metadata.pluralName }
-        target.datasourceId = datasource.id
+        target.datasourceId = datasource?.id
         target.datasource = datasource
         target.tableName = metadata.tableName
         target.query = metadata.query

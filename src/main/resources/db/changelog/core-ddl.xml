@@ -195,7 +195,7 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_datasources_name_uk"/>
             </column>
-            <column name="connection_string" type="varchar(50)">
+            <column name="connection_string" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="username" type="varchar(50)">
