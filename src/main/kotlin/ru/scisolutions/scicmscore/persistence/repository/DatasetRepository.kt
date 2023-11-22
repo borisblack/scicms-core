@@ -10,4 +10,6 @@ interface DatasetRepository : CrudRepository<Dataset, String> {
         nativeQuery = true
     )
     fun findByNameWithACL(name: String, permissionIds: Set<String>): Dataset?
+
+    fun existsByDatasourceId(id: String): Boolean
 }

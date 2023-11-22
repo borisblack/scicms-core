@@ -14,6 +14,7 @@ metadata:
   icon: ThunderboltOutlined
   core: true
   performDdl: false
+  implementation: ru.scisolutions.scicmscore.engine.hook.impl.DatasourceItemImpl
 spec:
   attributes:
     name:

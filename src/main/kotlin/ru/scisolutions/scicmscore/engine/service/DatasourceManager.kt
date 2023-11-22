@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.persistence.entity.Datasource
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
+import java.sql.DriverManager
 import java.util.concurrent.TimeUnit
 import javax.sql.DataSource
 
@@ -34,22 +35,30 @@ class DatasourceManager(
 
     fun dataSource(name: String): DataSource =
         dataSourceCache.get(name) {
-            if (name == Datasource.MAIN_DATASOURCE_NAME) {
-                mainDataSource
-            } else {
-                val ds = datasourceService.getByName(name)
-                val config = HikariConfig().apply {
-                    this.jdbcUrl = environment.resolvePlaceholders(ds.connectionString)
-                    this.username = environment.resolvePlaceholders(ds.username)
-                    this.password = environment.resolvePlaceholders(ds.password)
-                    this.maximumPoolSize = ds.maxPoolSize ?: dataProps.defaultPoolSize
-                    this.minimumIdle = ds.minIdle ?: dataProps.defaultIdle
-                }
-
-                HikariDataSource(config)
-            }
+            if (name == Datasource.MAIN_DATASOURCE_NAME) mainDataSource else createDataSource(name)
         }
+
+    private fun createDataSource(name: String): DataSource {
+        val ds = datasourceService.getByName(name)
+        val config = HikariConfig().apply {
+            this.jdbcUrl = environment.resolvePlaceholders(ds.connectionString)
+            this.username = environment.resolvePlaceholders(ds.username)
+            this.password = environment.resolvePlaceholders(ds.password)
+            this.maximumPoolSize = ds.maxPoolSize ?: dataProps.defaultPoolSize
+            this.minimumIdle = ds.minIdle ?: dataProps.defaultIdle
+        }
+
+        return HikariDataSource(config)
+    }
 
     fun template(name: String): NamedParameterJdbcTemplate =
         NamedParameterJdbcTemplate(dataSource(name))
+
+    fun checkConnection(url: String, user: String, password: String) {
+        (DriverManager.getConnection(
+            environment.resolvePlaceholders(url),
+            environment.resolvePlaceholders(user),
+            environment.resolvePlaceholders(password)
+        )).use {}
+    }
 }

@@ -23,4 +23,8 @@ class DatasetService(
 
     private fun findByNameFor(name: String, accessMask: Acl.Mask): Dataset? =
         datasetRepository.findByNameWithACL(name, permissionCache.idsByAccessMask(accessMask))
+
+    @Transactional(readOnly = true)
+    fun existsByDatasourceId(id: String): Boolean =
+        datasetRepository.existsByDatasourceId(id)
 }

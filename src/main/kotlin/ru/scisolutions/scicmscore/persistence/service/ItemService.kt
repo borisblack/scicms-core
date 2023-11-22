@@ -36,6 +36,10 @@ class ItemService(
     private fun findByNameWithACL(name: String, accessMask: Acl.Mask): Item? =
         itemRepository.findByNameWithACL(name, permissionCache.idsByAccessMask(accessMask))
 
+    @Transactional(readOnly = true)
+    fun existsByDatasourceId(id: String): Boolean =
+        itemRepository.existsByDatasourceId(id)
+
     fun save(item: Item): Item {
         val savedItem = itemRepository.save(item)
         em.flush()

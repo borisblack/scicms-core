@@ -29,7 +29,7 @@ class ItemRecDao(
     }
 
     fun findByIdOrThrow(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec =
-        findById(item, id, selectAttrNames) ?: throw IllegalArgumentException("Item [${item.name}] with ID [$id] not found")
+        findById(item, id, selectAttrNames) ?: throw IllegalArgumentException("Item [${item.name}] with ID [$id] not found.")
 
     fun existsById(item: Item, id: String): Boolean = countByIds(item, setOf(id)) > 0
 

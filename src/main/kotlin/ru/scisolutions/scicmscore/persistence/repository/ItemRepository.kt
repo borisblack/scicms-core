@@ -19,5 +19,7 @@ interface ItemRepository : CrudRepository<Item, String> {
     )
     fun findByNameWithACL(name: String, permissionIds: Set<String>): Item?
 
+    fun existsByDatasourceId(id: String): Boolean
+
     fun deleteByName(name: String)
 }
