@@ -15,9 +15,9 @@ metadata:
   description: Part Changes
   core: false
   performDdl: true
-  versioned: true
-  manualVersioning: false
-  localized: true
+#  versioned: true
+#  manualVersioning: false
+#  localized: true
   notLockable: false
 spec:
   attributes:

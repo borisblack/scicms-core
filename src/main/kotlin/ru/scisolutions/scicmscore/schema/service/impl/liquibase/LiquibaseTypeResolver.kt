@@ -31,8 +31,8 @@ class LiquibaseTypeResolver {
             FieldType.double -> DoubleType().toString()
             FieldType.decimal -> {
                 DecimalType().apply {
-                    addParameter(attribute.precision)
-                    addParameter(attribute.scale)
+                    attribute.precision?.let { addParameter(it) }
+                    attribute.scale?.let { addParameter(it) }
                 }.toString()
             }
             FieldType.date -> DateType().toString()

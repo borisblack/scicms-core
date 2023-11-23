@@ -16,14 +16,23 @@ metadata:
   icon: TagOutlined
   core: false
   performDdl: true
-  versioned: true
-  manualVersioning: false
-#  revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b
-  localized: true
+#  versioned: true
+#  manualVersioning: false
+#  # revisionPolicy: 48fea283-2872-4ca3-8fbd-980b7654907b
+#  localized: true
   notLockable: false
   implementation: ru.scisolutions.customimpl.item.PartItemImpl
 spec:
   attributes:
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      length: 50
+      required: true
+      unique: true
+      colWidth: 150
     name:
       type: string
       columnName: name
@@ -31,14 +40,6 @@ spec:
       description: Name
       length: 50
       required: true
-      unique: true
-      colWidth: 150
-    displayName:
-      type: string
-      columnName: display_name
-      displayName: Display Name
-      description: Display Name
-      length: 50
       colWidth: 200
     description:
       type: string
@@ -56,16 +57,24 @@ spec:
       displayName: Product
       description: Product
       required: true
+#    partType:
+#      type: enum
+#      columnName: part_type
+#      enumSet:
+#        - Сборка
+#        - Компонент
+#        - Материал
+#        - Программа
+#      displayName: Part Type
+#      description: Part Type
     partType:
-      type: enum
-      columnName: part_type
-      enumSet:
-        - Сборка
-        - Компонент
-        - Материал
-        - Программа
+      type: relation
+      relType: manyToOne
+      target: partType
+      columnName: part_type_id
       displayName: Part Type
       description: Part Type
+      required: true
     ownershipType:
       type: enum
       columnName: ownership_type
@@ -75,73 +84,25 @@ spec:
         - Покупное
       displayName: Ownership Type
       description: Ownership Type
-    units:
-      type: enum
-      columnName: units
-      enumSet:
-        - Шт
-        - Кг
-      displayName: Units
-      description: Units
-    cost:
-      type: decimal
-      columnName: cost
-      displayName: Cost (RUB)
-      description: Cost (RUB)
-      precision: 14
-      scale: 4
-      minRange: 0
-    weight:
-      type: decimal
-      columnName: weight
-      displayName: Weight (kg)
-      description: Weight (kg)
-      precision: 14
-      scale: 4
-      minRange: 0
     releaseDate:
       type: datetime
       columnName: release_date
       displayName: Release Date
       description: Release Date
-      colWidth: 170
+      colWidth: 180
     effectiveDate:
       type: datetime
       columnName: effective_date
       displayName: Effective Date
       description: Effective Date
-      colWidth: 170
-    supersededDate:
-      type: datetime
-      columnName: superseded_date
-      displayName: Superseded Date
-      description: Superseded Date
-    # TODO: Remove after testing
-    d:
-      type: date
-      columnName: d
-      displayName: D
-      description: D
-    # TODO: Remove after testing
-    t:
-      type: time
-      columnName: t
-      displayName: T
-      description: T
+      colWidth: 180
     ownedBy:
       type: relation
       relType: manyToOne
-      target: user
+      target: department
       columnName: owned_by_id
       displayName: Owned By
       description: Owned By
-    managedBy:
-      type: relation
-      relType: manyToOne
-      target: user
-      columnName: managed_by_id
-      displayName: Managed By
-      description: Managed By
     startSheet:
       type: relation
       relType: manyToOne

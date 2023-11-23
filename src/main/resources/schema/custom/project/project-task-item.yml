@@ -27,7 +27,7 @@ spec:
       columnName: name
       displayName: Name
       description: Name
-      length: 50
+      length: 100
       required: true
       unique: true
       colWidth: 200

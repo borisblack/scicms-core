@@ -1,0 +1,47 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: partType
+  displayName: Part Type
+  pluralName: partTypes
+  displayPluralName: Part Types
+  dataSource: main
+  tableName: design_part_types
+  titleAttribute: name
+  description: Part Types
+  icon: FileProtectOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    documentTypeId:
+      type: long
+      columnName: part_type_id
+      displayName: Part Type ID
+      description: Part Type ID
+      required: true
+      unique: true
+    code:
+      type: string
+      columnName: code
+      displayName: Code
+      description: Code
+      length: 50
+      required: true
+      unique: true
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      length: 50
+      required: true
+      colWidth: 200
+    standardLaborIntensity:
+      type: decimal
+      columnName: standard_labor_intensity
+      displayName: Standard Labor Intensity
+      description: Standard Labor Intensity
+      colWidth: 200

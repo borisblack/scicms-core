@@ -1,0 +1,41 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: department
+  displayName: Department
+  pluralName: departments
+  displayPluralName: Departments
+  dataSource: main
+  tableName: design_departments
+  titleAttribute: name
+  description: Departments
+  icon: ShopOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    deptId:
+      type: long
+      columnName: dept_id
+      displayName: Department ID
+      description: Department ID
+      required: true
+      unique: true
+    code:
+      type: string
+      columnName: code
+      displayName: Code
+      description: Code
+      length: 50
+      required: true
+      unique: true
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      length: 50
+      required: true
+      colWidth: 200
