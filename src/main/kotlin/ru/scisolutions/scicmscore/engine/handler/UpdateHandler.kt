@@ -54,7 +54,7 @@ class UpdateHandler(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id)
 
-        val nonCollectionData = input.data.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
         val itemRec = ItemRec(preparedData.toMutableMap()).apply {
@@ -80,7 +80,7 @@ class UpdateHandler(
         addRelationHelper.processRelations(
             item,
             itemRec.id as String,
-            preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == FieldType.relation } as Map<String, Any>
+            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         if (!item.notLockable)

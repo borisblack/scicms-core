@@ -272,7 +272,7 @@
           "type": "boolean"
         },
         "private": {
-          "description": "Privacy flag",
+          "description": "Privacy flag (optional, false by default)",
           "type": "boolean"
         },
         "readOnly": {

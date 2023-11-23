@@ -46,7 +46,7 @@ class CreateHandler(
         if (!itemService.canCreate(item.name))
             throw AccessDeniedException("You are not allowed to create item [$itemName]")
 
-        val nonCollectionData = input.data.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val preparedData = attributeValueHelper.prepareValuesToSave(item, nonCollectionData)
         val itemRec = ItemRec(preparedData.toMutableMap()).apply {
             id = UUID.randomUUID().toString()
@@ -72,7 +72,7 @@ class CreateHandler(
         addRelationHelper.processRelations(
             item,
             itemRec.id as String,
-            preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == FieldType.relation } as Map<String, Any>
+            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)

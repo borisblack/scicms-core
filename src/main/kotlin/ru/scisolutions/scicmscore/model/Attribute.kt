@@ -40,7 +40,10 @@ class Attribute(
     val fieldWidth: Int? = null // field width in UI form
 ) {
     @JsonIgnore
-    fun isCollection() = (type == FieldType.relation && (relType == RelType.oneToMany || relType == RelType.manyToMany))
+    fun isRelation() = type == FieldType.relation
+
+    @JsonIgnore
+    fun isCollection() = isRelation() && (relType == RelType.oneToMany || relType == RelType.manyToMany)
 
     fun validate() {
         when (type) {
@@ -93,6 +96,9 @@ class Attribute(
             FieldType.media -> defaultValue
             FieldType.relation -> if (isCollection()) Json.objectMapper.readValue(defaultValue, List::class.java).toSet() else defaultValue
         }
+
+    fun getColumnName(fallbackColumnName: String): String =
+        columnName ?: fallbackColumnName.lowercase()
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

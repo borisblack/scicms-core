@@ -11,7 +11,6 @@ class SchemaProps {
     var seedOnInit: Boolean = true
     var deleteIfAbsent: Boolean = false
     var lockDurationSeconds: Long = DEFAULT_ITEM_LOCK_DURATION_SECONDS
-    var tryRecreateAttributes: Boolean = true
 
     companion object {
         private const val DEFAULT_ITEM_LOCK_DURATION_SECONDS: Long = 300

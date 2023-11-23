@@ -27,7 +27,7 @@ class AttributeValueHelper(
 ) {
     fun merge (item: Item, from: Map<String, Any?>, to: ItemRec): Map<String, Any?> {
         val filteredFrom = from.filter { (k, v) ->
-            val attribute = item.spec.getAttributeOrThrow(k)
+            val attribute = item.spec.getAttribute(k)
             !(attribute.type == FieldType.password && v == ItemRec.PASSWORD_PLACEHOLDER)
         }
 
@@ -37,7 +37,7 @@ class AttributeValueHelper(
     fun prepareValuesToSave(item: Item, values: Map<String, Any?>): Map<String, Any?> {
         val map = values
             .filterKeys {
-                val attribute = item.spec.getAttributeOrThrow(it)
+                val attribute = item.spec.getAttribute(it)
                 !attribute.private && attribute.type != FieldType.sequence && it !in excludeAttrNames
             }
             .toMutableMap()
@@ -64,7 +64,7 @@ class AttributeValueHelper(
     }
 
     fun prepareValueToSave(item: Item, attrName: String, value: Any?): Any? {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
         if (value == null) {
             if (attribute.defaultValue !== null)
                 return attribute.parseDefaultValue()
@@ -256,7 +256,7 @@ class AttributeValueHelper(
             .toMutableMap()
 
     fun prepareValueToReturn(item: Item, attrName: String, value: Any?): Any? {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
 
         return when (attribute.type) {
             FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.sequence -> value

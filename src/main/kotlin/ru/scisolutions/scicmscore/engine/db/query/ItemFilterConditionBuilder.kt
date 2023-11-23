@@ -39,7 +39,7 @@ class ItemFilterConditionBuilder(
         val nestedConditions = mutableListOf<Condition>()
 
         itemFiltersInput.attributeFilters.forEach { (attrName, attrFilter) ->
-            val attribute = item.spec.getAttributeOrThrow(attrName)
+            val attribute = item.spec.getAttribute(attrName)
             val target =
                 when (attribute.type) {
                     FieldType.media -> MEDIA_ITEM_NAME

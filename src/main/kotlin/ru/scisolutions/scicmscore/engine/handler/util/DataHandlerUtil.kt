@@ -7,7 +7,7 @@ object DataHandlerUtil {
     fun prepareSelectedAttrNames(item: Item, selectAttrNames: Set<String>): Set<String> =
         selectAttrNames.asSequence()
             .filter {
-                val attribute = item.spec.getAttributeOrThrow(it)
+                val attribute = item.spec.getAttribute(it)
                 !attribute.isCollection()
             }
             .plus(ItemRec.ID_ATTR_NAME)

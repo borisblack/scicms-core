@@ -30,7 +30,7 @@ class ItemFiltersInputMapper(
             itemFiltersMapOfMaps
                 .filterKeys { it !in excludedKeys }
                 .mapValues { (attrName, filterValue) ->
-                    val attribute = item.spec.getAttributeOrThrow(attrName)
+                    val attribute = item.spec.getAttribute(attrName)
                     if (attribute.type == FieldType.media) {
                         val media = itemCache.getMedia()
                         if (media.ds == item.ds)

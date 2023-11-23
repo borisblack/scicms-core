@@ -74,7 +74,7 @@ spec:
       columnName: part_type_id
       displayName: Part Type
       description: Part Type
-      required: true
+#      required: true
     ownershipType:
       type: enum
       columnName: ownership_type
@@ -84,6 +84,14 @@ spec:
         - Покупное
       displayName: Ownership Type
       description: Ownership Type
+#    units:
+#      type: enum
+#      enumSet:
+#        - Кг
+#        - Шт
+#      columnName: units
+#      displayName: Units
+#      description: Units
     releaseDate:
       type: datetime
       columnName: release_date

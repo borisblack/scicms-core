@@ -39,7 +39,7 @@ class DeleteRelationHelper(
 
         val oneToOneRelAttributes = itemRec
             .filterKeys {
-                val attribute = item.spec.getAttributeOrThrow(it)
+                val attribute = item.spec.getAttribute(it)
                 attribute.type == FieldType.relation && attribute.relType == RelType.oneToOne
             }
             .filterValues { it != null } as Map<String, String>
@@ -56,7 +56,7 @@ class DeleteRelationHelper(
         if (strategy == DeletingStrategy.NO_ACTION)
             return
 
-        val attribute = item.spec.getAttributeOrThrow(relAttrName)
+        val attribute = item.spec.getAttribute(relAttrName)
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
             is OneToOneBidirectionalRelation -> {
                 when (strategy) {

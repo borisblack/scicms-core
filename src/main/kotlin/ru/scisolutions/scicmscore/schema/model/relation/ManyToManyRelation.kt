@@ -8,11 +8,11 @@ interface ManyToManyRelation : Relation {
 
     fun getIntermediateTableName(): String = requireNotNull(intermediateItem.tableName)
 
-    fun getIntermediateSourceAttribute(): Attribute = intermediateItem.spec.getAttributeOrThrow(INTERMEDIATE_SOURCE_ATTR_NAME)
+    fun getIntermediateSourceAttribute(): Attribute = intermediateItem.spec.getAttribute(INTERMEDIATE_SOURCE_ATTR_NAME)
 
     fun getIntermediateSourceColumnName(): String = getIntermediateSourceAttribute().columnName ?: INTERMEDIATE_SOURCE_ATTR_NAME.lowercase()
 
-    fun getIntermediateTargetAttribute(): Attribute = intermediateItem.spec.getAttributeOrThrow(INTERMEDIATE_TARGET_ATTR_NAME)
+    fun getIntermediateTargetAttribute(): Attribute = intermediateItem.spec.getAttribute(INTERMEDIATE_TARGET_ATTR_NAME)
 
     fun getIntermediateTargetColumnName(): String = getIntermediateTargetAttribute().columnName ?: INTERMEDIATE_TARGET_ATTR_NAME.lowercase()
 

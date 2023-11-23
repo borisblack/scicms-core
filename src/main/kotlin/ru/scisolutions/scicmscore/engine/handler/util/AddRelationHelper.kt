@@ -31,7 +31,7 @@ class AddRelationHelper(
     }
 
     private fun processRelation(item: Item, itemRecId: String, relAttrName: String, relAttrValue: Any) {
-        val attribute = item.spec.getAttributeOrThrow(relAttrName)
+        val attribute = item.spec.getAttribute(relAttrName)
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
             is OneToOneBidirectionalRelation -> {
                 if (relation.isOwning) {

@@ -65,7 +65,7 @@ class ItemApplier(
 
             if (item.checksum == null && (itemEntity.core || itemService.findByNameForWrite(name) == null)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("You has no WRITE permission for [$name] item")
+                throw AccessDeniedException("You has no WRITE permission for [$name] item.")
             }
 
             tableSeeder.update(item, itemEntity) // update table
@@ -76,7 +76,7 @@ class ItemApplier(
 
             // schemaLockService.unlockOrThrow()
         } else {
-            logger.info("Item [{}] is unchanged. Nothing to update", itemEntity.name)
+            logger.info("Item [{}] is unchanged. Nothing to update.", itemEntity.name)
         }
 
         return itemEntity.id
@@ -107,7 +107,7 @@ class ItemApplier(
     private fun validateModel(model: Item) {
         logger.info("Validating model [{}]", model.metadata.name)
         if(model.metadata.name.first().isUpperCase())
-            throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character")
+            throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character.")
 
         // Check if item implementation exists
         if (model.metadata.implementation != null) {
@@ -128,9 +128,36 @@ class ItemApplier(
 
     }
 
-    private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
-        (!schemaProps.useFileChecksum || item.checksum == null || item.checksum != existingItemEntity.checksum) &&
-            item.hashCode().toString() != existingItemEntity.hash
+    private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean {
+        logger.debug("Checking changes for item [{}]", existingItemEntity.name)
+
+        val isFileExist = item.checksum != null
+        val ignoreFileChecksum = !schemaProps.useFileChecksum
+        val isFileChanged = item.checksum != existingItemEntity.checksum
+        if (isFileExist) {
+            if (ignoreFileChecksum) {
+                logger.debug("Ignoring file checksum")
+            } else if (isFileChanged) {
+                logger.warn(
+                    "Checksum for item [{}] is different in database ({}) and file ({}).",
+                    existingItemEntity.name, existingItemEntity.checksum, item.checksum
+                )
+            }
+        }
+
+        if (isFileExist && !ignoreFileChecksum && !isFileChanged)
+            return false
+
+        val isHashChanged = item.hashCode().toString() != existingItemEntity.hash
+        if (isHashChanged) {
+            logger.warn(
+                "Hash for item [{}] in database is {}, but now is {}.",
+                existingItemEntity.name, existingItemEntity.hash, item.hashCode()
+            )
+        }
+
+        return isHashChanged
+    }
 
     companion object {
         private val logger = LoggerFactory.getLogger(ItemApplier::class.java)

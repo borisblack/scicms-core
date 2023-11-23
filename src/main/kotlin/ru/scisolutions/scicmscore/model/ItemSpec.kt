@@ -13,6 +13,16 @@ data class ItemSpec(
             .map { (attrName, attribute) -> (attribute.columnName ?: attrName.lowercase()) to attrName }
             .toMap()
 
-    fun getAttributeOrThrow(attrName: String): Attribute =
+    @JsonIgnore
+    val attrNames: Set<String> =
+        attributes.keys
+
+    fun findAttribute(attrName: String): Attribute? =
+        attributes[attrName]
+
+    fun getAttribute(attrName: String): Attribute =
         attributes[attrName] ?: throw IllegalArgumentException("Attribute [$attrName] not found")
+
+    fun getColumnName(attrName: String): String =
+        getAttribute(attrName).columnName ?: attrName.lowercase()
 }

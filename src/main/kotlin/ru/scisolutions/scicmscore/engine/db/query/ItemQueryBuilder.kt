@@ -29,7 +29,7 @@ class ItemQueryBuilder {
         } else {
             val columns = selectAttrNames
                 .map {
-                    val attribute = item.spec.getAttributeOrThrow(it)
+                    val attribute = item.spec.getAttribute(it)
                     DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
                 }
                 .toTypedArray()
@@ -55,7 +55,7 @@ class ItemQueryBuilder {
     }
 
     fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
         val attrCol = DbColumn(table, colName, null, null)
@@ -111,7 +111,7 @@ class ItemQueryBuilder {
         val table = createTable(item)
         val query = InsertQuery(table)
         itemRec.forEach { (attrName, value) ->
-            val attribute = item.spec.getAttributeOrThrow(attrName)
+            val attribute = item.spec.getAttribute(attrName)
             val colName = attribute.columnName ?: attrName.lowercase()
             val column = DbColumn(table, colName, null, null)
             val sqlParamName = "${table.alias}_$colName"
@@ -142,7 +142,7 @@ class ItemQueryBuilder {
     ): UpdateQuery {
         val table = createTable(item)
         val conditions = whereAttributes.map { (attrName, value) ->
-            val attribute = item.spec.getAttributeOrThrow(attrName)
+            val attribute = item.spec.getAttribute(attrName)
             val colName = attribute.columnName ?: attrName.lowercase()
             val attrCol = DbColumn(table, colName, null, null)
             if (value == null) {
@@ -159,7 +159,7 @@ class ItemQueryBuilder {
             .addCondition(ComboCondition(Op.AND, *conditions.toTypedArray()))
 
         updateAttributes.forEach { (recAttrName, recValue) ->
-            val recAttribute = item.spec.getAttributeOrThrow(recAttrName)
+            val recAttribute = item.spec.getAttribute(recAttrName)
             val recColName = recAttribute.columnName ?: recAttrName.lowercase()
             val column = DbColumn(table, recColName, null, null)
             val sqlParamName = "${table.alias}_${recColName}_new"
@@ -176,7 +176,7 @@ class ItemQueryBuilder {
     }
 
     fun buildDeleteByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): DeleteQuery {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
         val attrCol = DbColumn(table, colName, null, null)
@@ -194,7 +194,7 @@ class ItemQueryBuilder {
     }
 
     fun buildLockByAttributeQuery(item: Item, attrName: String, attrValue: Any, userId: String, paramSource: AttributeSqlParameterSource): UpdateQuery {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
         val attrCol = DbColumn(table, colName, null, null)
@@ -211,7 +211,7 @@ class ItemQueryBuilder {
     }
 
     fun buildUnlockByAttributeQuery(item: Item, attrName: String, attrValue: Any, userId: String, paramSource: AttributeSqlParameterSource): UpdateQuery {
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
         val attrCol = DbColumn(table, colName, null, null)

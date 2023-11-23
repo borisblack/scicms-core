@@ -25,7 +25,7 @@ class ItemOrderingsParser(private val itemCache: ItemCache) {
             throw IllegalArgumentException("Invalid sort expression: $inputSort")
 
         val attrName = matcher.group(1)
-        val attribute = item.spec.getAttributeOrThrow(attrName)
+        val attribute = item.spec.getAttribute(attrName)
         val col = DbColumn(table, attribute.columnName ?: attrName.lowercase(), null, null)
         val nestedAttrName = matcher.group(2)
         val order = matcher.group(3) ?: "asc"
@@ -49,7 +49,7 @@ class ItemOrderingsParser(private val itemCache: ItemCache) {
 
     private fun addOrdering(target: Item, targetAttrName: String, schema: DbSchema, query: SelectQuery, table: DbTable, col: DbColumn, orderDir: Dir) {
         val targetTable = schema.addTable(requireNotNull(target.tableName))
-        val targetOrderingAttribute = target.spec.getAttributeOrThrow(targetAttrName)
+        val targetOrderingAttribute = target.spec.getAttribute(targetAttrName)
         val targetOrderingCol = DbColumn(targetTable, targetOrderingAttribute.columnName ?: targetAttrName.lowercase(), null, null)
         val targetIdCol = DbColumn(targetTable, ItemRec.ID_COL_NAME, null, null)
         query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))

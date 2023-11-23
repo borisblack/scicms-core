@@ -12,9 +12,9 @@ interface BidirectionalRelation : Relation {
 
     fun getOwningTableName(): String = requireNotNull(owningItem.tableName)
 
-    fun getOwningAttribute(): Attribute = owningItem.spec.getAttributeOrThrow(owningAttrName)
+    fun getOwningAttribute(): Attribute = owningItem.spec.getAttribute(owningAttrName)
 
     fun getInversedTableName(): String = requireNotNull(inversedItem.tableName)
 
-    fun getInversedAttribute(): Attribute = inversedItem.spec.getAttributeOrThrow(inversedAttrName)
+    fun getInversedAttribute(): Attribute = inversedItem.spec.getAttribute(inversedAttrName)
 }

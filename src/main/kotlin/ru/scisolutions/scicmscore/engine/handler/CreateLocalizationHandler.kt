@@ -56,7 +56,7 @@ class CreateLocalizationHandler(
         if (!item.notLockable)
             itemRecDao.lockByIdOrThrow(item, input.id) // lock
 
-        val nonCollectionData = input.data.filterKeys { !item.spec.getAttributeOrThrow(it).isCollection() }
+        val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
         val itemRec = ItemRec(preparedData.toMutableMap()).apply {
@@ -97,7 +97,7 @@ class CreateLocalizationHandler(
         addRelationHelper.processRelations(
             item,
             itemRec.id as String,
-            preparedData.filterKeys { item.spec.getAttributeOrThrow(it).type == FieldType.relation } as Map<String, Any>
+            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         // Copy relations from previous localization

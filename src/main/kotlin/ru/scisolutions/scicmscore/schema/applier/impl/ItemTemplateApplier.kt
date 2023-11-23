@@ -78,9 +78,36 @@ class ItemTemplateApplier(
             .forEach { (_, attribute) -> attribute.validate() }
     }
 
-    private fun isChanged(itemTemplate: ItemTemplate, existingItemTemplateEntity: ItemTemplateEntity): Boolean =
-        (!schemaProps.useFileChecksum || itemTemplate.checksum == null || itemTemplate.checksum != existingItemTemplateEntity.checksum) &&
-            itemTemplate.hashCode().toString() != existingItemTemplateEntity.hash
+    private fun isChanged(itemTemplate: ItemTemplate, existingItemTemplateEntity: ItemTemplateEntity): Boolean {
+        logger.debug("Checking changes for item template [{}]", existingItemTemplateEntity.name)
+
+        val isFileExist = itemTemplate.checksum != null
+        val ignoreFileChecksum = !schemaProps.useFileChecksum
+        val isFileChanged = itemTemplate.checksum != existingItemTemplateEntity.checksum
+        if (isFileExist) {
+            if (ignoreFileChecksum) {
+                logger.debug("Ignoring file checksum")
+            } else if (isFileChanged) {
+                logger.warn(
+                    "Checksum for item template [{}] is different in database ({}) and file ({}).",
+                    existingItemTemplateEntity.name, existingItemTemplateEntity.checksum, itemTemplate.checksum
+                )
+            }
+        }
+
+        if (isFileExist && !ignoreFileChecksum && !isFileChanged)
+            return false
+
+        val isHashChanged = itemTemplate.hashCode().toString() != existingItemTemplateEntity.hash
+        if (isHashChanged) {
+            logger.warn(
+                "Hash for item template [{}] in database is {}, but now is {}.",
+                existingItemTemplateEntity.name, existingItemTemplateEntity.hash, itemTemplate.hashCode()
+            )
+        }
+
+        return isHashChanged
+    }
 
     companion object {
         private val logger = LoggerFactory.getLogger(ItemTemplateApplier::class.java)
