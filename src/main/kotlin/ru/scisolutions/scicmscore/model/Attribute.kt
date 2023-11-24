@@ -123,7 +123,7 @@ class Attribute(
             displayName == other.displayName &&
             description == other.description &&
             pattern == other.pattern &&
-            defaultValue != other.defaultValue &&
+            defaultValue == other.defaultValue &&
             required == other.required &&
             readOnly == other.readOnly &&
             keyed == other.keyed &&

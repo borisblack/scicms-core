@@ -263,16 +263,21 @@ class LiquibaseTableSeeder(
 
     private fun addColumn(item: Item, attrName: String) {
         val metadata = item.metadata
+        val tableName = metadata.tableName
         val databaseChangeLog = DatabaseChangeLog()
         val columnName = item.spec.getColumnName(attrName)
-        val changeSet = addChangeSet(databaseChangeLog, "add-${metadata.tableName}.$columnName-column")
+
+        logger.debug("Column {}.{} will be added", tableName, columnName)
+        val changeSet = addChangeSet(databaseChangeLog, "add-${tableName}.$columnName-column")
 
         addAddColumnChange(changeSet, item, attrName)
 
         // Run changelog
+        logger.debug("Running changelog with changeset [{}]", changeSet.id)
         val liquibase = newLiquibase(metadata.dataSource, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
+        logger.debug("Changelog with changeset [{}] finished successfully.", changeSet.id)
     }
 
     private fun addAddColumnChange(changeSet: ChangeSet, item: Item, attrName: String) {
@@ -296,14 +301,16 @@ class LiquibaseTableSeeder(
         val attribute = existingItemEntity.spec.getAttribute(attrName)
         val columnName = attribute.columnName ?: attrName.lowercase()
         val changeSet = addChangeSet(databaseChangeLog, "drop-${tableName}.$columnName-column")
-        changeSet.addChange(
-            liquibaseColumns.dropColumnChange(tableName, columnName)
-        )
+
+        logger.debug("Column {}.{} will be dropped", tableName, columnName)
+        changeSet.addChange(liquibaseColumns.dropColumnChange(tableName, columnName))
 
         // Run changelog
+        logger.debug("Running changelog with changeset [{}]", changeSet.id)
         val liquibase = newLiquibase(existingItemEntity.ds, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
+        logger.debug("Changelog with changeset [{}] finished successfully.", changeSet.id)
     }
 
     private fun modifyColumn(item: Item, existingItemEntity: ItemEntity, attrName: String) {
@@ -318,8 +325,8 @@ class LiquibaseTableSeeder(
 
         // Rename column
         if (newColumnName != existingColumnName) {
-            val renameColumnChange = liquibaseColumns.renameColumnChange(tableName, existingColumnName, newColumnName)
-            changeSet.addChange(renameColumnChange)
+            logger.debug("Column {}.{} will be renamed to {}.{}", tableName, existingColumnName, tableName, newColumnName)
+            changeSet.addChange(liquibaseColumns.renameColumnChange(tableName, existingColumnName, newColumnName))
         }
 
         // Change data type
@@ -327,44 +334,53 @@ class LiquibaseTableSeeder(
             newAttribute.length != existingAttribute.length ||
             newAttribute.precision != existingAttribute.precision ||
             newAttribute.scale != existingAttribute.scale) {
+            logger.debug("Data type of column {}.{} will be modified", tableName, newColumnName)
             changeSet.addChange(liquibaseColumns.modifyDataTypeChange(item, attrName))
         }
 
         // Drop not null
         if (existingAttribute.required && !newAttribute.required) {
+            logger.debug("Not null constraint for column {}.{} will be dropped", tableName, newColumnName)
             changeSet.addChange(liquibaseColumns.dropNotNullConstraintChange(tableName, newColumnName))
         }
 
         // Change default value
         if (newAttribute.defaultValue != existingAttribute.defaultValue) {
             existingAttribute.defaultValue?.let {
+                logger.debug("Default value for column {}.{} will be dropped", tableName, newColumnName)
                 changeSet.addChange(liquibaseColumns.dropDefaultValueChange(tableName, newColumnName))
             }
 
             newAttribute.defaultValue?.let {
+                logger.debug("Default value [{}] for column {}.{} will be added", it, tableName, newColumnName)
                 changeSet.addChange(liquibaseColumns.addDefaultValueChange(tableName, newColumnName, it))
             }
         }
 
         // Add not null
         if (newAttribute.required && !existingAttribute.required) {
+            logger.debug("Not null constraint for column {}.{} will be added", tableName, newColumnName)
             changeSet.addChange(liquibaseColumns.addNotNullConstraintChange(tableName, newColumnName))
         }
 
         // Drop primary key
         if (existingAttribute.keyed && !newAttribute.keyed) {
+            logger.debug("Primary key constraint for column {}.{} will be dropped", tableName, newColumnName)
             changeSet.addChange(liquibaseColumns.dropPrimaryKeyChange(tableName, newColumnName))
         }
 
         // Add primary key
         if (newAttribute.keyed && !existingAttribute.keyed) {
+            logger.debug("Primary key constraint for column {}.{} will be added", tableName, newColumnName)
             changeSet.addChange(liquibaseColumns.addPrimaryKeyChange(tableName, newColumnName))
         }
 
         // Run changelog
+        logger.debug("Running changelog with changeset [{}]", changeSet.id)
         val liquibase = newLiquibase(metadata.dataSource, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
+        logger.debug("Changelog with changeset [{}] finished successfully.", changeSet.id)
     }
 
     private fun newLiquibase(dataSourceName: String, databaseChangeLog: DatabaseChangeLog): Liquibase {
