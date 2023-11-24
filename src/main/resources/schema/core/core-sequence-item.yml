@@ -50,7 +50,7 @@ spec:
       displayName: Initial Value
       description: Initial Value
       defaultValue: 0
-      colWidth: 170
+      colWidth: 180
     currentValue:
       type: int
       columnName: current_value

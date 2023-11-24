@@ -44,4 +44,4 @@ spec:
       columnName: standard_labor_intensity
       displayName: Standard Labor Intensity
       description: Standard Labor Intensity
-      colWidth: 200
+      colWidth: 240

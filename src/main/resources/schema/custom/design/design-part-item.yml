@@ -111,6 +111,7 @@ spec:
       columnName: owned_by_id
       displayName: Owned By
       description: Owned By
+      colWidth: 180
     startSheet:
       type: relation
       relType: manyToOne

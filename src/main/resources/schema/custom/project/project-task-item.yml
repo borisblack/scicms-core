@@ -38,6 +38,32 @@ spec:
       description: Description
       length: 250
       colWidth: 200
+    project:
+      type: relation
+      relType: manyToOne
+      target: project
+      inversedBy: tasks
+      columnName: project_id
+      displayName: Project
+      description: Project
+      required: true
+    parent:
+      type: relation
+      relType: manyToOne
+      target: task
+      inversedBy: children
+      columnName: parent_id
+      displayName: Parent
+      description: Parent
+      colWidth: 200
+    level:
+      type: int
+      columnName: lvl
+      displayName: Level
+      description: Level
+#      required: true
+      defaultValue: 0
+      minRange: 0
     start:
       type: datetime
       columnName: start_at
@@ -63,24 +89,6 @@ spec:
       columnName: is_milestone
       displayName: Milestone
       description: Milestone flag
-    project:
-      type: relation
-      relType: manyToOne
-      target: project
-      inversedBy: tasks
-      columnName: project_id
-      displayName: Project
-      description: Project
-      required: true
-    parent:
-      type: relation
-      relType: manyToOne
-      target: task
-      inversedBy: children
-      columnName: parent_id
-      displayName: Parent
-      description: Parent
-      colWidth: 200
     children:
       type: relation
       relType: oneToMany

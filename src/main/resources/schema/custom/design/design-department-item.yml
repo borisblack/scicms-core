@@ -23,6 +23,7 @@ spec:
       description: Department ID
       required: true
       unique: true
+      colWidth: 160
     code:
       type: string
       columnName: code
