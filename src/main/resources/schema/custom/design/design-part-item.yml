@@ -24,6 +24,14 @@ metadata:
   implementation: ru.scisolutions.customimpl.item.PartItemImpl
 spec:
   attributes:
+    labelGroup:
+      type: relation
+      relType: manyToOne
+      target: partLabelGroup
+      columnName: label_group_id
+      displayName: Label Group
+      description: Label Group
+      required: true
     label:
       type: string
       columnName: label

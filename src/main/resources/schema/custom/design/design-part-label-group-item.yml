@@ -1,0 +1,42 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: partLabelGroup
+  displayName: Part Label Group
+  pluralName: partLabelGroups
+  displayPluralName: Part Label Groups
+  dataSource: main
+  tableName: design_part_label_groups
+  titleAttribute: name
+  description: Part Label Groups
+  icon: BookOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Name
+      length: 50
+      required: true
+      colWidth: 200
+    initialValue:
+      type: int
+      columnName: start_value
+      displayName: Start Value
+      description: Start Value
+      required: true
+      minRange: 0
+      colWidth: 180
+    endValue:
+      type: int
+      columnName: end_value
+      displayName: End Value
+      description: End Value
+      required: true
+      minRange: 0
+      colWidth: 180
