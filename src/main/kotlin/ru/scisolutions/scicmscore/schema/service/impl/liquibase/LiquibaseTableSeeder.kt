@@ -36,7 +36,7 @@ class LiquibaseTableSeeder(
     override fun create(item: Item) {
         val metadata = item.metadata
         if (!metadata.performDdl) {
-            logger.info("DDL performing flag is disabled for item [{}]. Creating skipped", metadata.name)
+            logger.info("DDL performing flag is disabled for item [{}]. Creating skipped.", metadata.name)
             return
         }
 
@@ -47,12 +47,12 @@ class LiquibaseTableSeeder(
     override fun update(item: Item, existingItemEntity: ItemEntity) {
         val metadata = item.metadata
         if (!metadata.performDdl) {
-            logger.info("DDL performing flag is disabled for item [{}]. Updating skipped", metadata.name)
+            logger.info("DDL performing flag is disabled for item [{}]. Updating skipped.", metadata.name)
             return
         }
 
         if (metadata.readOnly) {
-            logger.info("Item [{}] is read only. Updating skipped", metadata.name)
+            logger.info("Item [{}] is read only. Updating skipped.", metadata.name)
             return
         }
 
@@ -60,13 +60,13 @@ class LiquibaseTableSeeder(
             logger.info("Updating table [{}]", metadata.tableName)
             updateTable(item, existingItemEntity)
         } else {
-            logger.info("Table [{}] is unchanged. Nothing to update", item.metadata.tableName)
+            logger.info("Table [{}] is unchanged. Nothing to update.", item.metadata.tableName)
         }
     }
 
     override fun delete(existingItemEntity: ItemEntity) {
         if (!existingItemEntity.performDdl) {
-            logger.info("DDL performing flag is disabled for item [{}]. Deleting skipped", existingItemEntity.name)
+            logger.info("DDL performing flag is disabled for item [{}]. Deleting skipped.", existingItemEntity.name)
             return
         }
 
