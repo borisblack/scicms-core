@@ -21,7 +21,10 @@ data class ItemSpec(
         attributes[attrName]
 
     fun getAttribute(attrName: String): Attribute =
-        attributes[attrName] ?: throw IllegalArgumentException("Attribute [$attrName] not found")
+        attributes[attrName] ?: throw IllegalArgumentException("Attribute [$attrName] not found.")
+
+    fun getIndex(indexName: String): Index =
+        indexes[indexName] ?: throw IllegalArgumentException("Index [$indexName] not found.")
 
     fun getColumnName(attrName: String): String =
         getAttribute(attrName).columnName ?: attrName.lowercase()

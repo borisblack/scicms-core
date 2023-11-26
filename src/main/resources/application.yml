@@ -11,7 +11,6 @@ scicms-core:
     trim-strings: true
   i18n:
     default-locale: en-US
-    include-in-unique-index: true
   media:
     provider: local
     provider-options:
@@ -29,8 +28,6 @@ scicms-core:
       secret: scisolutionsSecretKey
       expiration-interval-millis: 86_400_000
     registration-disabled: false
-  versioning:
-    include-in-unique-index: true
 
 dgs:
   graphql:

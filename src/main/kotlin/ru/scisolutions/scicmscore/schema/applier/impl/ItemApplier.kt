@@ -60,12 +60,17 @@ class ItemApplier(
             itemCache[name] = itemEntity
 
             // schemaLockService.unlockOrThrow()
-        } else if (isChanged(item, itemEntity)) {
+        } else if (isChanged(itemEntity, item)) {
             // schemaLockService.lockOrThrow()
 
             if (item.checksum == null && (itemEntity.core || itemService.findByNameForWrite(name) == null)) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You has no WRITE permission for [$name] item.")
+            }
+
+            if (item.metadata.dataSource != itemEntity.ds) {
+                schemaLockService.unlockOrThrow()
+                throw IllegalArgumentException("Item [${name}] datasource cannot be changed")
             }
 
             tableSeeder.update(item, itemEntity) // update table
@@ -106,12 +111,13 @@ class ItemApplier(
 
     private fun validateModel(model: Item) {
         logger.info("Validating model [{}]", model.metadata.name)
-        if(model.metadata.name.first().isUpperCase())
-            throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character.")
+        val metadata = model.metadata
+        if(metadata.name.first().isUpperCase())
+            throw IllegalArgumentException("Model name [${metadata.name}] must start with a lowercase character.")
 
         // Check if item implementation exists
-        if (model.metadata.implementation != null) {
-            Class.forName(model.metadata.implementation)
+        if (metadata.implementation != null) {
+            Class.forName(metadata.implementation)
         }
 
         model.spec.attributes
@@ -128,7 +134,7 @@ class ItemApplier(
 
     }
 
-    private fun isChanged(item: Item, existingItemEntity: ItemEntity): Boolean {
+    private fun isChanged(existingItemEntity: ItemEntity, item: Item): Boolean {
         logger.debug("Checking changes for item [{}]", existingItemEntity.name)
 
         val isFileExist = item.checksum != null

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "scicms-core.i18n")
 class I18nProps {
     var defaultLocale: String = DEFAULT_LOCALE
-    var includeInUniqueIndex: Boolean = true
 
     companion object {
         private const val DEFAULT_LOCALE = "en-US"
