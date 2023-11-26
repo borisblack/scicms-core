@@ -19,7 +19,7 @@ class SchemaLockService(
     private val hostName = InetAddress.getLocalHost().hostName
 
     fun lock(): Boolean {
-        val lockResult = schemaLockRepository.lock(hostName, LocalDateTime.now().plusSeconds(schemaProps.lockDurationSeconds))
+        val lockResult = schemaLockRepository.lock(hostName, LocalDateTime.now().plusSeconds(schemaProps.schemaLockDurationSeconds))
 
         return if (lockResult == 1) {
             logger.debug("Successfully acquired SchemaLock lock")

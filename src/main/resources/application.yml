@@ -18,10 +18,11 @@ scicms-core:
       create-directories: true
   schema:
     path: build/resources/main/schema
-    use-file-checksum: false # TODO: true in production to prevent restoring changed (made via API) items from scheme files
+    use-file-checksum: false
     seed-on-init: true
     delete-if-absent: false
-    item-lock-duration-seconds: 300
+    rebuild-unique-attribute-indexes: true
+    schema-lock-duration-seconds: 300
   security:
     jwt-token:
       id: scisolutionsJWT

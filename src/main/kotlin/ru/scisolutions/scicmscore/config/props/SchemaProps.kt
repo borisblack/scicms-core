@@ -7,12 +7,21 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "scicms-core.schema")
 class SchemaProps {
     var path: String? = null
+
+    /**
+     * Flag to prevent restoring changed items (made via API) from scheme files (should be true in production)
+     */
     var useFileChecksum: Boolean = true
     var seedOnInit: Boolean = true
     var deleteIfAbsent: Boolean = false
-    var lockDurationSeconds: Long = DEFAULT_ITEM_LOCK_DURATION_SECONDS
+
+    /**
+     * Rebuild unique attribute indexes on item's version/localized flag(s) change
+     */
+    var rebuildUniqueAttributeIndexes: Boolean = true
+    var schemaLockDurationSeconds: Long = DEFAULT_SCHEMA_LOCK_DURATION_SECONDS
 
     companion object {
-        private const val DEFAULT_ITEM_LOCK_DURATION_SECONDS: Long = 300
+        private const val DEFAULT_SCHEMA_LOCK_DURATION_SECONDS: Long = 300
     }
 }

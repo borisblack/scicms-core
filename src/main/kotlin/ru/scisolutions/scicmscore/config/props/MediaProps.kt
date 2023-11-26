@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "scicms-core.media")
 class MediaProps {
     var provider: String = DEFAULT_PROVIDER
-    var includeInUniqueIndex: Boolean = true
 
     @NestedConfigurationProperty
     var providerOptions: ProviderOptions = ProviderOptions()

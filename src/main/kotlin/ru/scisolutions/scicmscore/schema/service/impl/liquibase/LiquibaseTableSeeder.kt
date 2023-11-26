@@ -12,6 +12,7 @@ import liquibase.database.jvm.JdbcConnection
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Index
@@ -22,7 +23,10 @@ import java.time.format.DateTimeFormatter
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Service
-class LiquibaseTableSeeder(private val dsManager: DatasourceManager) : TableSeeder {
+class LiquibaseTableSeeder(
+    private val schemaProps: SchemaProps,
+    private val dsManager: DatasourceManager
+) : TableSeeder {
     private val liquibaseIndexes = LiquibaseIndexes()
 
     override fun create(item: Item) {
@@ -415,7 +419,9 @@ class LiquibaseTableSeeder(private val dsManager: DatasourceManager) : TableSeed
             changeList.add(liquibaseIndexes.createNonUniqueAttributeIndexChange(item, attrName))
         }
 
-        if ((metadata.versioned != existingItemEntity.versioned || metadata.localized != existingItemEntity.localized) && newAttribute.unique && existingAttribute.unique) {
+        if (schemaProps.rebuildUniqueAttributeIndexes &&
+            (metadata.versioned != existingItemEntity.versioned || metadata.localized != existingItemEntity.localized)
+            && newAttribute.unique && existingAttribute.unique) {
             logger.debug(
                 "Versioned/localized flags for item [{}] has changed. Unique index(es) for column {}.{} will be RECREATED",
                 metadata.name, tableName, newColumnName
