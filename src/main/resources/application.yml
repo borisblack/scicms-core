@@ -22,7 +22,7 @@ scicms-core:
     seed-on-init: true
     delete-if-absent: false
     rebuild-unique-attribute-indexes: true
-    schema-lock-duration-seconds: 300
+    lock-duration-seconds: 300
   security:
     jwt-token:
       id: scisolutionsJWT

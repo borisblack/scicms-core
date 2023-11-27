@@ -19,9 +19,9 @@ class SchemaProps {
      * Rebuild unique attribute indexes on item's version/localized flag(s) change
      */
     var rebuildUniqueAttributeIndexes: Boolean = true
-    var schemaLockDurationSeconds: Long = DEFAULT_SCHEMA_LOCK_DURATION_SECONDS
+    var lockDurationSeconds: Long = DEFAULT_LOCK_DURATION_SECONDS
 
     companion object {
-        private const val DEFAULT_SCHEMA_LOCK_DURATION_SECONDS: Long = 300
+        private const val DEFAULT_LOCK_DURATION_SECONDS: Long = 300
     }
 }
