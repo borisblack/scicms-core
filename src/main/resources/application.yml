@@ -33,6 +33,9 @@ scicms-core:
 dgs:
   graphql:
     schema-locations: classpath*:graphql/**/*.graphql*
+    dataloader:
+      ticker-mode-enabled: true
+
 
 server:
   error:

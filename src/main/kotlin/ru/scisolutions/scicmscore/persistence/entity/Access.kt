@@ -1,10 +1,10 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import java.time.OffsetDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
 
 @Entity
 @Table(name = "sec_access")
@@ -24,7 +24,7 @@ class Access(
     val mask: Int = 0,
 
     @Column(nullable = false, columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     val granting: Boolean = true,
 
     @Column(name = "begin_date", nullable = false)

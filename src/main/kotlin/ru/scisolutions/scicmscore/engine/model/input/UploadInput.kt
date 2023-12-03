@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-import javax.servlet.http.Part
+import jakarta.servlet.http.Part
 
 class UploadInput(
     val file: Part,

@@ -1,9 +1,9 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "core_allowed_lifecycles")
@@ -18,6 +18,6 @@ class AllowedLifecycle(
     var targetId: String,
 
     @Column(name = "is_default", nullable = false, columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var isDefault: Boolean = false
 ) : AbstractEntity()

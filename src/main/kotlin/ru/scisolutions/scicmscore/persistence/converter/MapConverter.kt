@@ -1,9 +1,9 @@
 package ru.scisolutions.scicmscore.persistence.converter
 
 import com.fasterxml.jackson.core.type.TypeReference
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 import ru.scisolutions.scicmscore.util.Json
-import javax.persistence.AttributeConverter
-import javax.persistence.Converter
 
 @Converter
 class MapConverter : AttributeConverter<Map<String, Any?>?, String> {

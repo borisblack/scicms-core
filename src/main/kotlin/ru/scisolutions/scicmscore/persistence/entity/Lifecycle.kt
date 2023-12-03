@@ -6,10 +6,10 @@ import ru.scisolutions.scicmscore.model.bpmn.BpmnDefinitions
 import ru.scisolutions.scicmscore.model.bpmn.BpmnSequenceFlow
 import ru.scisolutions.scicmscore.model.bpmn.BpmnTask
 import ru.scisolutions.scicmscore.util.Jaxb
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Table
-import javax.persistence.Transient
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.Transient
 
 @Entity
 @Table(name = "core_lifecycles")

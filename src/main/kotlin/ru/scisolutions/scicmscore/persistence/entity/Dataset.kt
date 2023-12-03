@@ -2,7 +2,7 @@ package ru.scisolutions.scicmscore.persistence.entity
 
 import ru.scisolutions.scicmscore.model.DatasetSpec
 import ru.scisolutions.scicmscore.persistence.converter.DatasetSpecConverter
-import javax.persistence.*
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "bi_datasets")

@@ -1,5 +1,7 @@
 package ru.scisolutions.scicmscore.api.controller
 
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.Part
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -14,8 +16,6 @@ import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.net.URLEncoder
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.Part
 
 @RestController
 @RequestMapping("/api/media")

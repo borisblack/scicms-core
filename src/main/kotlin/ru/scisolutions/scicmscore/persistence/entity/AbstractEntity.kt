@@ -1,12 +1,12 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.EntityListeners
+import jakarta.persistence.Id
+import jakarta.persistence.MappedSuperclass
 import java.time.OffsetDateTime
 import java.util.UUID
-import javax.persistence.Column
-import javax.persistence.EntityListeners
-import javax.persistence.Id
-import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 @EntityListeners(AuditEntityListener::class)
@@ -27,7 +27,7 @@ abstract class AbstractEntity {
     var minorRev: String? = null
 
     @Column(name = "is_current", nullable = false, columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var isCurrent: Boolean = true
 
     @Column(name = "lifecycle_id")

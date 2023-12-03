@@ -1,9 +1,9 @@
 package ru.scisolutions.scicmscore.persistence.converter
 
+import jakarta.persistence.AttributeConverter
+import jakarta.persistence.Converter
 import ru.scisolutions.scicmscore.model.DatasetSpec
 import ru.scisolutions.scicmscore.util.Json
-import javax.persistence.AttributeConverter
-import javax.persistence.Converter
 
 @Converter
 class DatasetSpecConverter : AttributeConverter<DatasetSpec, String> {

@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import java.util.Date
 
-class JwtTokenService(private val securityProps: SecurityProps) {
+class JwtTokenService(securityProps: SecurityProps) {
     private val jwtTokenProps = securityProps.jwtToken
 
     fun generateJwtToken(subject: String, authorities: Set<String>): String =

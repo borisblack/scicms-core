@@ -35,7 +35,10 @@ class FindOneRelatedDataFetcher(private val dataLoaderBuilder: DataLoaderBuilder
         if (selectAttrNames.size == 1 && ItemRec.ID_ATTR_NAME in selectAttrNames)
             return CompletableFuture.supplyAsync { RelationResponse(ItemRec().apply { this.id = id }) }
 
-        return dataLoader.load(id).handle { itemRec, err ->
+        val res = dataLoader.load(id)
+        dataLoader.dispatch()
+
+        return res.handle { itemRec, err ->
             if (err != null)
                 throw err
 
@@ -45,7 +48,10 @@ class FindOneRelatedDataFetcher(private val dataLoaderBuilder: DataLoaderBuilder
 
     private fun registerDataLoaderIfAbsent(dfe: DataFetchingEnvironment, itemName: String) {
         if (dfe.getDataLoader<String, ItemRec>(itemName) == null)
-            dfe.dataLoaderRegistry.register(itemName, DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(itemName)))
+            dfe.dataLoaderRegistry.register(
+                itemName,
+                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(itemName))
+            )
     }
 
     companion object {

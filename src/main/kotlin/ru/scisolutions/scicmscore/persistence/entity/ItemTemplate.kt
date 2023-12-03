@@ -1,12 +1,11 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
-import javax.persistence.Column
-import javax.persistence.Convert
-import javax.persistence.Entity
-import javax.persistence.Table
 
 @Entity
 @Table(name = "core_item_templates")
@@ -18,7 +17,7 @@ class ItemTemplate(
     var pluralName: String,
 
     @Column(columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var core: Boolean = false,
 
     @Convert(converter = ItemSpecConverter::class)

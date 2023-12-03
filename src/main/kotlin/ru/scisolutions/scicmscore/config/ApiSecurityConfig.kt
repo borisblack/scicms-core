@@ -1,16 +1,19 @@
 package ru.scisolutions.scicmscore.config
 
+import jakarta.annotation.PostConstruct
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import ru.scisolutions.scicmscore.config.props.SecurityProps
@@ -20,52 +23,61 @@ import ru.scisolutions.scicmscore.security.filter.JwtTokenAuthenticationFilter
 import ru.scisolutions.scicmscore.security.filter.UsernamePasswordAuthenticationFilter
 import ru.scisolutions.scicmscore.security.provider.JwtTokenAuthenticationProvider
 import ru.scisolutions.scicmscore.security.provider.UsernamePasswordAuthenticationProvider
-import javax.annotation.PostConstruct
-import javax.servlet.Filter
-import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @EnableWebSecurity
 class ApiSecurityConfig(
     private val securityProps: SecurityProps,
     private val usernamePasswordAuthenticationProvider: UsernamePasswordAuthenticationProvider
-) : WebSecurityConfigurerAdapter() {
+) {
     @PostConstruct
     fun setGlobalSecurityContext() {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL)
     }
 
-    override fun configure(http: HttpSecurity) {
+    @Bean
+    fun configureSecurity(http: HttpSecurity, authManager: AuthenticationManager): SecurityFilterChain {
         http
-            .authorizeRequests()
-            .antMatchers(
-                "/api/auth/local/register",
-                "/graphiql/**",
-                // "/schema.json", "/graphql", "/api/**"
-            ).permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-            .and()
-            .csrf().disable()
-            .cors()
-            .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .logout()
-            .addLogoutHandler(logoutHandler())
-            .logoutSuccessHandler(HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+            .authorizeHttpRequests {
+                it.requestMatchers(
+                    "/api/auth/local/register",
+                    "/graphiql/**",
+                    // "/schema.json", "/graphql", "/api/**"
+                )
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            }
+            .authenticationManager(authManager)
+            .exceptionHandling { it.authenticationEntryPoint(authenticationEntryPoint()) }
+            .csrf { it.disable() }
+            .cors {}
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .logout {
+                it.addLogoutHandler(logoutHandler())
+                    .logoutSuccessHandler(HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+            }
 
         http
-            .addFilterBefore(jwtTokenAuthenticationFilter(), BasicAuthenticationFilter::class.java)
-            .addFilterBefore(usernamePasswordAuthenticationFilter(), BasicAuthenticationFilter::class.java)
+            .addFilterBefore(JwtTokenAuthenticationFilter(authManager), BasicAuthenticationFilter::class.java)
+            .addFilterBefore(UsernamePasswordAuthenticationFilter(authManager, jwtTokenService(), securityProps), BasicAuthenticationFilter::class.java)
+
+        return http.build()
     }
 
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth
+    @Bean
+    fun authenticationManager(http: HttpSecurity): AuthenticationManager {
+        val authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder::class.java)
+        authenticationManagerBuilder
             .authenticationProvider(jwtTokenAuthenticationProvider())
             .authenticationProvider(usernamePasswordAuthenticationProvider)
+
+        return authenticationManagerBuilder.build()
     }
+
+    // @Bean
+    // fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager =
+    //     authenticationConfiguration.getAuthenticationManager()
 
     @Bean
     fun authenticationEntryPoint() = AuthenticationEntryPoint { _, response, _ ->
@@ -76,14 +88,7 @@ class ApiSecurityConfig(
     fun logoutHandler() = CustomLogoutHandler()
 
     @Bean
-    fun usernamePasswordAuthenticationFilter(): Filter =
-        UsernamePasswordAuthenticationFilter(authenticationManager(), jwtTokenService(), securityProps)
-
-    @Bean
     fun jwtTokenService(): JwtTokenService = JwtTokenService(securityProps)
-
-    @Bean
-    fun jwtTokenAuthenticationFilter(): Filter = JwtTokenAuthenticationFilter(authenticationManager())
 
     @Bean
     fun jwtTokenAuthenticationProvider(): AuthenticationProvider = JwtTokenAuthenticationProvider(jwtTokenService())

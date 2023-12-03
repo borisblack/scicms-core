@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.repository.ItemRepository
 import ru.scisolutions.scicmscore.util.Acl
-import javax.persistence.EntityManager
+import jakarta.persistence.EntityManager
 
 @Service
 @Repository

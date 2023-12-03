@@ -1,10 +1,14 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.converter.ItemSpecConverter
-import ru.scisolutions.scicmscore.persistence.converter.LinkedHashSetConverter
-import javax.persistence.*
+import ru.scisolutions.scicmscore.persistence.converter.LinkedHashSetStringConverter
 
 @Entity
 @Table(name = "core_items")
@@ -37,42 +41,43 @@ class Item(
     @Column(name = "title_attribute", nullable = false)
     var titleAttribute: String = ID_ATTR_NAME,
 
-    @Convert(converter = LinkedHashSetConverter::class)
-    var includeTemplates: Set<String> = LinkedHashSet(listOf(ItemTemplate.DEFAULT_ITEM_TEMPLATE_NAME)),
+    @Column(name = "include_templates")
+    @Convert(converter = LinkedHashSetStringConverter::class)
+    var includeTemplates: LinkedHashSet<String> = LinkedHashSet(listOf(ItemTemplate.DEFAULT_ITEM_TEMPLATE_NAME)),
 
     var description: String? = null,
 
     @Column(name = "read_only", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var readOnly: Boolean = false,
 
     var icon: String? = null,
 
     @Column(name = "core", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var core: Boolean = false,
 
     @Column(name = "perform_ddl", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var performDdl: Boolean = true,
 
     @Column(name = "versioned", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var versioned: Boolean = false,
 
     @Column(name = "manual_versioning", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var manualVersioning: Boolean = false,
 
     @Column(name = "revision_policy_id")
     var revisionPolicyId: String? = null,
 
     @Column(name = "not_lockable", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var notLockable: Boolean = false,
 
     @Column(name = "localized", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var localized: Boolean = false,
 
     @Column(name = "implementation")
@@ -126,7 +131,5 @@ class Item(
         const val USER_ITEM_NAME = "user"
 
         private const val ID_ATTR_NAME = "id"
-
-        private val whitespaceRegex = "\\s+".toRegex()
     }
 }

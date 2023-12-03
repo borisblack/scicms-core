@@ -1,11 +1,10 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import org.hibernate.annotations.Type
+import jakarta.persistence.Column
+import jakarta.persistence.Convert
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import ru.scisolutions.scicmscore.persistence.converter.MapConverter
-import javax.persistence.Column
-import javax.persistence.Convert
-import javax.persistence.Entity
-import javax.persistence.Table
 
 @Entity
 @Table(name = "sec_users")
@@ -17,7 +16,7 @@ class User(
    // val password: String,
 
     @Column(nullable = false, columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var enabled: Boolean,
 
     @Convert(converter = MapConverter::class)
