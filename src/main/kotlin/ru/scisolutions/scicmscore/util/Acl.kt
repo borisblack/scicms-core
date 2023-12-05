@@ -20,6 +20,16 @@ object Acl {
             "AND (acc.end_date IS NULL OR acc.end_date > {fn NOW()}) " +
         "ORDER BY acc.sort_order ASC, acc.granting DESC"
 
+    const val ACCESS_JPQL_SNIPPET =
+        "select acc " +
+        "from Access acc " +
+            "inner join Identity sid " +
+                "on acc.targetId = sid.id and ((sid.principal = true and sid.name = :username) or (sid.principal = false and sid.name in :roles)) " +
+        "where acc.mask in :mask " +
+            "and acc.beginDate <= current_date " +
+            "and (acc.endDate is null or acc.endDate > current_date) " +
+        "order by acc.sortOrder asc, acc.granting desc"
+
     private const val PERMISSION_IDS_SELECT_SNIPPET =
         "SELECT DISTINCT acc.source_id " +
             "FROM sec_access acc " +

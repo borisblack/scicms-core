@@ -6,18 +6,18 @@ import ru.scisolutions.scicmscore.engine.handler.util.AclHelper
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
-import ru.scisolutions.scicmscore.persistence.service.AllowedLifecycleCache
-import ru.scisolutions.scicmscore.persistence.service.LifecycleCache
+import ru.scisolutions.scicmscore.persistence.service.AllowedLifecycleService
+import ru.scisolutions.scicmscore.persistence.service.LifecycleService
 
 @Service
 class LifecycleManager(
-    private val allowedLifecycleCache: AllowedLifecycleCache,
-    private val lifecycleCache: LifecycleCache,
+    private val allowedLifecycleService: AllowedLifecycleService,
+    private val lifecycleService: LifecycleService,
     private val aclHelper: AclHelper
 ) {
     fun assignLifecycleAttributes(item: Item, itemRec: ItemRec) {
         var lifecycleId = itemRec.lifecycle
-        val allowedLifecycles = allowedLifecycleCache[item.name]
+        val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
         if (lifecycleId == null) {
             lifecycleId = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID
             itemRec.lifecycle = lifecycleId
@@ -27,7 +27,7 @@ class LifecycleManager(
                 throw IllegalArgumentException("Lifecycle [$lifecycleId] is not allowed for item [${item.name}]")
         }
 
-        val lifecycle = lifecycleCache.getOrThrow(lifecycleId)
+        val lifecycle = lifecycleService.getById(lifecycleId)
         val state = itemRec.state
         if (state != null && state !in lifecycle.parseSpec().states) {
             throw IllegalArgumentException("Lifecycle [${lifecycle.name}] doesn't contain state [$state]")
@@ -36,7 +36,7 @@ class LifecycleManager(
 
     fun assignLifecycleAttributes(item: Item, prevItemRec: ItemRec, itemRec: ItemRec) {
         var lifecycleId = itemRec.lifecycle
-        val allowedLifecycles = allowedLifecycleCache[item.name]
+        val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
         val defaultLifecycleId = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID
         if (lifecycleId == null) {
             lifecycleId = prevItemRec.lifecycle ?: defaultLifecycleId
@@ -54,7 +54,7 @@ class LifecycleManager(
             }
         }
 
-        val lifecycle = lifecycleCache.getOrThrow(lifecycleId)
+        val lifecycle = lifecycleService.getById(lifecycleId)
         val state = itemRec.state
         if (state != null && state !in lifecycle.parseSpec().states) {
             throw IllegalArgumentException("Lifecycle [${lifecycle.name}] doesn't contain state [$state]")

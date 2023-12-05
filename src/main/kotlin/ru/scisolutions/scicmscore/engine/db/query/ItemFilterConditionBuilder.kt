@@ -19,7 +19,7 @@ import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
 import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -32,7 +32,7 @@ import kotlin.random.Random
 
 @Component
 class ItemFilterConditionBuilder(
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val relationManager: RelationManager
 ) {
     fun newFilterCondition(item: Item, itemFiltersInput: ItemFiltersInput, schema: DbSchema, table: DbTable, query: SelectQuery, paramSource: AttributeSqlParameterSource): Condition {
@@ -49,7 +49,7 @@ class ItemFilterConditionBuilder(
             if (attrFilter is ItemFiltersInput) {
                 requireNotNull(target) { "The [$attrName] attribute does not have a target field." }
 
-                val targetItem = itemCache.getOrThrow(target)
+                val targetItem = itemService.getByName(target)
                 val targetTable = DbTable(schema, requireNotNull(targetItem.tableName))
                 val idCol = DbColumn(table, ID_COL_NAME, null, null)
                 val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)

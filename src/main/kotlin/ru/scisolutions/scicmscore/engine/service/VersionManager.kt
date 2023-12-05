@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
-import ru.scisolutions.scicmscore.persistence.service.RevisionPolicyCache
+import ru.scisolutions.scicmscore.persistence.service.RevisionPolicyService
 
 @Service
-class VersionManager(private val revisionPolicyCache: RevisionPolicyCache) {
+class VersionManager(private val revisionPolicyService: RevisionPolicyService) {
     fun assignVersionAttributes(item: Item, itemRec: ItemRec, majorRev: String?) {
         if (item.versioned && item.manualVersioning) {
             if (majorRev == null)
@@ -16,7 +16,7 @@ class VersionManager(private val revisionPolicyCache: RevisionPolicyCache) {
             itemRec.majorRev = majorRev
         } else {
             val revisionPolicyId = item.revisionPolicyId ?: RevisionPolicy.DEFAULT_REVISION_POLICY_ID
-            val revisionPolicy = revisionPolicyCache.getOrThrow(revisionPolicyId)
+            val revisionPolicy = revisionPolicyService.getById(revisionPolicyId)
             itemRec.majorRev = revisionPolicy.firstRevision()
         }
 
@@ -38,7 +38,7 @@ class VersionManager(private val revisionPolicyCache: RevisionPolicyCache) {
         } else {
             val prevMajorRev = prevItemRec.majorRev ?: throw IllegalArgumentException("Previous majorRev is null")
             val revisionPolicyId = item.revisionPolicyId ?: RevisionPolicy.DEFAULT_REVISION_POLICY_ID
-            val revisionPolicy = revisionPolicyCache.getOrThrow(revisionPolicyId)
+            val revisionPolicy = revisionPolicyService.getById(revisionPolicyId)
             itemRec.majorRev = revisionPolicy.nextRevision(prevMajorRev)
         }
 

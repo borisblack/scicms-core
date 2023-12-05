@@ -9,16 +9,16 @@ import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 
 @Component
 class ItemFiltersInputMapper(
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val relationValidator: RelationValidator
 ) {
     fun map(itemName: String, itemFiltersMap: Map<String, Any>, opPrefix: String = ""): ItemFiltersInput {
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         return map(item, itemFiltersMap, opPrefix)
     }
 
@@ -32,14 +32,14 @@ class ItemFiltersInputMapper(
                 .mapValues { (attrName, filterValue) ->
                     val attribute = item.spec.getAttribute(attrName)
                     if (attribute.type == FieldType.media) {
-                        val media = itemCache.getMedia()
+                        val media = itemService.getMedia()
                         if (media.ds == item.ds)
                             map(MEDIA_ITEM_NAME, filterValue, opPrefix)
                         else
                             TypedPrimitiveFilterInput.fromMap(attribute.type, filterValue)
                     } else if (attribute.type == FieldType.relation) {
                         relationValidator.validateAttribute(item, attrName, attribute)
-                        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+                        val targetItem = itemService.getByName(requireNotNull(attribute.target))
                         if (targetItem.ds == item.ds) {
                             map(attribute.target, filterValue, opPrefix) // recursive
                         } else {

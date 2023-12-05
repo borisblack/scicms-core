@@ -1,13 +1,25 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import jakarta.persistence.Cacheable
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.NamedNativeQuery
 import jakarta.persistence.Table
+import ru.scisolutions.scicmscore.util.Acl
 import java.time.OffsetDateTime
 
 @Entity
 @Table(name = "sec_access")
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+)
+/*@NamedNativeQuery(
+    name = "Access.findAllByMask",
+    query = Acl.ACCESS_SELECT_SNIPPET,
+    resultClass = Access::class,
+)*/
 class Access(
     val label: String?,
 

@@ -11,12 +11,12 @@ import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.UserCache
+import ru.scisolutions.scicmscore.persistence.service.UserService
 import java.util.UUID
 
 @Service
 class ItemRecDao(
-    private val userCache: UserCache,
+    private val userService: UserService,
     private val versionManager: VersionManager,
     private val sequenceManager: SequenceManager,
     private val auditManager: AuditManager,
@@ -202,7 +202,7 @@ class ItemRecDao(
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
-        val user = userCache.getCurrent()
+        val user = userService.getCurrent()
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
@@ -234,7 +234,7 @@ class ItemRecDao(
         if (item.notLockable)
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
 
-        val user = userCache.getCurrent()
+        val user = userService.getCurrent()
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()

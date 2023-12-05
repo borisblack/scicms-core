@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.util.Acl
 @Repository
 @Transactional
 class DatasetService(
-    private val permissionCache: PermissionCache,
+    private val permissionService: PermissionService,
     private val datasetRepository: DatasetRepository
 ) {
     fun getById(id: String): Dataset =
@@ -22,7 +22,7 @@ class DatasetService(
         findByNameFor(name, Acl.Mask.READ)
 
     private fun findByNameFor(name: String, accessMask: Acl.Mask): Dataset? =
-        datasetRepository.findByNameWithACL(name, permissionCache.idsByAccessMask(accessMask))
+        datasetRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
     fun existsByDatasourceId(id: String): Boolean =

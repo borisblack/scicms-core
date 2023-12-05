@@ -19,14 +19,12 @@ import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
 
 @Service
 class CreateLocalizationHandler(
     private val classService: ClassService,
-    private val itemCache: ItemCache,
     private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val sequenceManager: SequenceManager,
@@ -39,7 +37,7 @@ class CreateLocalizationHandler(
     private val itemRecDao: ItemRecDao,
 ) {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         if (!item.localized)
             throw IllegalArgumentException("Item [$itemName] is not localized")
 

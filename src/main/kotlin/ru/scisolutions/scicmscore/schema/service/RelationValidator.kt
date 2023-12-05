@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 
 @Component
 class RelationValidator(
-    private val itemCache: ItemCache
+    private val itemService: ItemService
 ) {
     fun validateAttribute(item: Item, attrName: String, attribute: Attribute) {
         validateAttribute(attrName, attribute)
@@ -42,7 +42,7 @@ class RelationValidator(
     }
 
     private fun validateDataSource(item: Item, attribute: Attribute) {
-        val targetItem = itemCache.get(requireNotNull(attribute.target))
+        val targetItem = itemService.findByName(requireNotNull(attribute.target))
         if (targetItem == null) {
             logger.warn("Target item [${attribute.target}] not found. It may not have been created yet")
             return
@@ -52,7 +52,7 @@ class RelationValidator(
             if (item.metadata.dataSource != targetItem.ds)
                 throw IllegalStateException("Item [${item.metadata.name}] and it's manyToMany attribute target item have different data sources")
 
-            val intermediateItem = itemCache.get(requireNotNull(attribute.intermediate))
+            val intermediateItem = itemService.findByName(requireNotNull(attribute.intermediate))
             if (intermediateItem == null) {
                 logger.warn("Intermediate item [${attribute.intermediate}] not found. It may not have been created yet")
                 return
@@ -69,12 +69,12 @@ class RelationValidator(
     }
 
     private fun validateDataSource(itemEntity: ItemEntity, attribute: Attribute) {
-        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+        val targetItem = itemService.getByName(requireNotNull(attribute.target))
         if (attribute.relType == RelType.manyToMany){
             if (itemEntity.ds != targetItem.ds)
                 throw IllegalStateException("Item [${itemEntity.name}] and it's manyToMany attribute target item have different data sources")
 
-            val intermediateItem = itemCache.getOrThrow(requireNotNull(attribute.intermediate))
+            val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
             if (itemEntity.ds != intermediateItem.ds)
                 throw IllegalStateException("Item [${itemEntity.name}] and it's manyToMany attribute intermediate item have different data sources")
         }

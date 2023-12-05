@@ -23,7 +23,7 @@ class DatasourceManager(
     private val datasourceService: DatasourceService
 ) {
     private val dataSourceCache: Cache<String, DataSource> = CacheBuilder.newBuilder()
-        .expireAfterAccess(dataProps.datasourceCacheExpirationMinutes, TimeUnit.MINUTES)
+        .expireAfterAccess(dataProps.cacheExpirationMinutes, TimeUnit.MINUTES)
         .removalListener<String, DataSource> {
             RemovalListener<String, DataSource> {
                 val datasource = it.value

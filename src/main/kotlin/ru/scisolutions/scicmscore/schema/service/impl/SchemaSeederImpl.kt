@@ -7,9 +7,9 @@ import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelsApplier
-import ru.scisolutions.scicmscore.schema.model.Schema
 import ru.scisolutions.scicmscore.schema.model.Item
 import ru.scisolutions.scicmscore.schema.model.ItemTemplate
+import ru.scisolutions.scicmscore.schema.model.Schema
 import ru.scisolutions.scicmscore.schema.service.SchemaReader
 import ru.scisolutions.scicmscore.schema.service.SchemaSeeder
 import ru.scisolutions.scicmscore.schema.service.TableSeeder

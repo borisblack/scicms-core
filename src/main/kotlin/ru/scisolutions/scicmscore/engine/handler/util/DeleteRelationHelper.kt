@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -21,7 +21,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.OneToOneBidirectionalRel
 
 @Component
 class DeleteRelationHelper(
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
     private val deleteMediaHelper: DeleteMediaHelper,
@@ -76,7 +76,7 @@ class DeleteRelationHelper(
                         }
                     }
                     DeletingStrategy.CASCADE -> {
-                        val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+                        val targetItem = itemService.getByName(requireNotNull(attribute.target))
                         val targetItemRec = aclItemRecDao.findByIdForDelete(targetItem, targetId)
                         if (targetItemRec == null) {
                             logger.warn("Delete operation disabled for item [${targetItem.name}] with ID [$targetId]")
@@ -161,7 +161,7 @@ class DeleteRelationHelper(
                     DeletingStrategy.CASCADE -> {
                         // Recursive calls
                         logger.debug("Processing relations recursively")
-                        val targetItem = itemCache.getOrThrow(requireNotNull(relAttribute.target))
+                        val targetItem = itemService.getByName(requireNotNull(relAttribute.target))
                         val targetItemRecList = aclItemRecDao.findAllByAttributeForDelete(targetItem, relation.owningAttrName, itemRecId)
                         targetItemRecList.forEach { processRelations(targetItem, it, strategy) }
 

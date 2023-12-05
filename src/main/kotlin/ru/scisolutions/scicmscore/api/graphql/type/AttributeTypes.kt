@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.api.graphql.TypeNames
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.util.upperFirst
 import graphql.language.Type as GraphQLType
@@ -17,7 +17,7 @@ private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) 
 
 @Component
 class AttributeTypes(
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val relationValidator: RelationValidator
 ) {
     fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
@@ -66,7 +66,7 @@ class AttributeTypes(
             FieldType.array, FieldType.json -> TypeNames.STRING_FILTER_INPUT
 
             FieldType.media -> {
-                val media = itemCache.getMedia()
+                val media = itemService.getMedia()
                 if (media.ds == item.ds)
                     TypeName("MediaFiltersInput")
                 else
@@ -76,7 +76,7 @@ class AttributeTypes(
             FieldType.relation -> {
                 relationValidator.validateAttribute(item, attrName, attribute)
 
-                val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+                val targetItem = itemService.getByName(requireNotNull(attribute.target))
                 if (targetItem.ds == item.ds) {
                     val capitalizedTargetItemName = attribute.target.upperFirst()
                     TypeName("${capitalizedTargetItemName}FiltersInput")

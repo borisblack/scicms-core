@@ -10,17 +10,17 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
 class FindOneHandler(
     private val classService: ClassService,
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao,
     private val attributeValueHelper: AttributeValueHelper
 ) {
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
 
@@ -57,7 +57,7 @@ class FindOneHandler(
             return RelationResponse()
         }
 
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val itemRec =
             if (isOnlyId(attrNames))

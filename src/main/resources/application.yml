@@ -5,9 +5,7 @@ scicms-core:
     default-limit: 20
     max-limit: 1000
     data-loader-chunk-size: 1000
-    cache-expiration-minutes: 10
-    datasource-cache-expiration-minutes: 720
-    item-cache-expiration-minutes: 720
+    cache-expiration-minutes: 720
     trim-strings: true
   i18n:
     default-locale: en-US
@@ -33,24 +31,50 @@ scicms-core:
 dgs:
   graphql:
     schema-locations: classpath*:graphql/**/*.graphql*
-    dataloader:
-      ticker-mode-enabled: true
+    dataloader.ticker-mode-enabled: true
 
 
 server:
-  error:
-    include-stacktrace: on_param
+  error.include-stacktrace: on_param
   port: 8079
 
 spring:
+  cache:
+    type: redis
   datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@//localhost:1521/xepdb1
+    username: scicms
+    password: scicms
     hikari:
-      driver-class-name: oracle.jdbc.OracleDriver
-      jdbc-url: jdbc:oracle:thin:@//localhost:1521/xepdb1
-      username: scicms
-      password: scicms
       maximum-pool-size: 5
       minimum-idle: 1
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          use_minimal_puts: true
+          use_structured_entries: true
+          region.factory_class: org.redisson.hibernate.RedissonRegionFactory
+          redisson:
+            fallback: true
+            config: redisson.yml
+            default-query-results-region.expiration.time_to_live: 600_000
+            ru.scisolutions.scicmscore.persistence.entity:
+              Access.expiration.time_to_live: 600_000
+              AllowedLifecycle.expiration.time_to_live: 600_000
+              AllowedPermission.expiration.time_to_live: 600_000
+              Datasource.expiration.time_to_live: 600_000
+              Item.expiration.time_to_live: 1_800_000
+              ItemTemplate.expiration.time_to_live: 1_800_000
+              Lifecycle.expiration.time_to_live: 600_000
+              Permission.expiration.time_to_live: 600_000
+              RevisionPolicy.expiration.time_to_live: 600_000
+              User.expiration.time_to_live: 600_000
+#        generate_statistics: true
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
   mail:
@@ -60,11 +84,8 @@ spring:
     password: ''
 
 logging:
-  file:
-    name: logs/scicms-core.log
-  logback:
-    rollingpolicy:
-      max-history: 7
+  file.name: logs/scicms-core.log
+  logback.rollingpolicy.max-history: 7
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace

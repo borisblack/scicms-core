@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.util.Acl
 @Repository
 @Transactional
 class MediaService(
-    private val permissionCache: PermissionCache,
+    private val permissionService: PermissionService,
     private val mediaRepository: MediaRepository
 ) {
     @Transactional(readOnly = true)
@@ -24,7 +24,7 @@ class MediaService(
     fun findByIdForDelete(id: String): Media? = findByIdFor(id, Acl.Mask.DELETE)
 
     private fun findByIdFor(id: String, accessMask: Acl.Mask): Media? =
-        mediaRepository.findByIdWithACL(id, permissionCache.idsByAccessMask(accessMask))
+        mediaRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
     fun getById(id: String): Media = mediaRepository.getById(id)

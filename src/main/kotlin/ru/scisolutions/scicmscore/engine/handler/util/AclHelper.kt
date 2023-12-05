@@ -3,12 +3,12 @@ package ru.scisolutions.scicmscore.engine.handler.util
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.PermissionCache
+import ru.scisolutions.scicmscore.persistence.service.PermissionService
 import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Component
 class AclHelper(
-    private val permissionCache: PermissionCache
+    private val permissionService: PermissionService
 ) {
     fun canRead(itemRec: ItemRec) =
         hasAccess(itemRec, Mask.READ)
@@ -50,6 +50,6 @@ class AclHelper(
         if (permissionId == null)
             return true
 
-        return permissionId in permissionCache.idsByAccessMask(accessMask)
+        return permissionId in permissionService.idsByAccessMask(accessMask)
     }
 }

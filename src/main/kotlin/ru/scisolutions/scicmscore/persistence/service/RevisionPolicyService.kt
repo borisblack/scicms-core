@@ -14,4 +14,13 @@ class RevisionPolicyService(
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): RevisionPolicy? = revisionPolicyRepository.findById(id).orElse(null)
+
+    @Transactional(readOnly = true)
+    fun getById(id: String): RevisionPolicy = revisionPolicyRepository.findById(id).orElseThrow {
+        IllegalArgumentException("Revision policy [$id] not found.")
+    }
+
+    @Transactional(readOnly = true)
+    fun getDefault(): RevisionPolicy = findById(RevisionPolicy.DEFAULT_REVISION_POLICY_ID)
+        ?: throw IllegalArgumentException("Default revision policy not found.")
 }

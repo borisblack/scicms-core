@@ -1,13 +1,18 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
-import ru.scisolutions.scicmscore.persistence.converter.RevisionsConverter
+import jakarta.persistence.Cacheable
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
+import ru.scisolutions.scicmscore.persistence.converter.RevisionsConverter
 
 @Entity
 @Table(name = "core_revision_policies")
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+)
 class RevisionPolicy(
     @Column(nullable = false)
     var name: String,

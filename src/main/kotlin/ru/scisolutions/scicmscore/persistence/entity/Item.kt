@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import jakarta.persistence.Cacheable
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
@@ -12,8 +13,14 @@ import ru.scisolutions.scicmscore.persistence.converter.LinkedHashSetStringConve
 
 @Entity
 @Table(name = "core_items")
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+)
+@org.hibernate.annotations.NaturalIdCache
 class Item(
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+    @org.hibernate.annotations.NaturalId
     var name: String,
 
     @Column(name = "display_name", nullable = false)
@@ -111,22 +118,21 @@ class Item(
         }
 
     companion object {
+        const val ACCESS_ITEM_NAME = "access"
+        const val ALLOWED_PERMISSION_ITEM_NAME = "allowedPermission"
         const val DASHBOARD_ITEM_NAME = "dashboard"
         const val DATASET_ITEM_NAME = "dataset"
         const val EXAMPLE_ITEM_NAME = "example"
-        const val ITEM_TEMPLATE_ITEM_NAME = "itemTemplate"
-        const val ITEM_ITEM_NAME = "item"
-        const val LIFECYCLE_ITEM_NAME = "lifecycle"
-        const val MEDIA_ITEM_NAME = "media"
-        const val REVISION_POLICY_ITEM_NAME = "revisionPolicy"
-
-        const val ACCESS_ITEM_NAME = "access"
-        const val ALLOWED_PERMISSION_ITEM_NAME = "allowedPermission"
         const val GROUP_ITEM_NAME = "group"
         const val GROUP_MEMBER_ITEM_NAME = "groupMember"
         const val GROUP_ROLE_ITEM_NAME = "groupRole"
         const val IDENTITY_ITEM_NAME = "identity"
+        const val ITEM_TEMPLATE_ITEM_NAME = "itemTemplate"
+        const val ITEM_ITEM_NAME = "item"
+        const val LIFECYCLE_ITEM_NAME = "lifecycle"
+        const val MEDIA_ITEM_NAME = "media"
         const val PERMISSION_ITEM_NAME = "permission"
+        const val REVISION_POLICY_ITEM_NAME = "revisionPolicy"
         const val ROLE_ITEM_NAME = "role"
         const val USER_ITEM_NAME = "user"
 

@@ -5,8 +5,6 @@ import org.springframework.data.repository.CrudRepository
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 interface ItemRepository : CrudRepository<Item, String> {
-    fun findByName(name: String): Item?
-
     @Query(
         value = "SELECT * FROM core_items i WHERE i.id = :id AND (i.permission_id IS NULL OR i.permission_id IN :permissionIds)",
         nativeQuery = true

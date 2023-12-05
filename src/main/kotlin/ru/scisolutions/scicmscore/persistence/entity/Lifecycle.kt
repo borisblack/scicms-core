@@ -1,18 +1,23 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import jakarta.persistence.Cacheable
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.persistence.Transient
 import ru.scisolutions.scicmscore.model.LifecycleSpec
 import ru.scisolutions.scicmscore.model.State
 import ru.scisolutions.scicmscore.model.bpmn.BpmnDefinitions
 import ru.scisolutions.scicmscore.model.bpmn.BpmnSequenceFlow
 import ru.scisolutions.scicmscore.model.bpmn.BpmnTask
 import ru.scisolutions.scicmscore.util.Jaxb
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.Transient
 
 @Entity
 @Table(name = "core_lifecycles")
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+)
 class Lifecycle(
     @Column(nullable = false)
     var name: String,

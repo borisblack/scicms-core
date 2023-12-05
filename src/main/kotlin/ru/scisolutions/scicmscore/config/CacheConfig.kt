@@ -1,0 +1,44 @@
+package ru.scisolutions.scicmscore.config
+
+import org.redisson.Redisson
+import org.redisson.api.RedissonClient
+import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
+import org.springframework.cache.annotation.EnableCaching
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.cache.RedisCacheConfiguration
+import org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerBuilder
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair
+import java.time.Duration
+
+@Configuration
+@EnableCaching
+class CacheConfig() {
+    @Bean
+    fun cacheConfiguration(): RedisCacheConfiguration =
+        RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofMinutes(60))
+            .disableCachingNullValues()
+            .serializeValuesWith(SerializationPair.fromSerializer<Any>(GenericJackson2JsonRedisSerializer()))
+
+    @Bean
+    fun redisCacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer =
+        RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
+            builder
+                .withCacheConfiguration(
+                    "nativeQueryCache",
+                    RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10))
+                )
+                .withCacheConfiguration(
+                    "itemRecCache",
+                    RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(5))
+                )
+        }
+
+    @Bean
+    fun redissonClient(): RedissonClient =
+        Redisson.create()
+}

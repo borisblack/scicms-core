@@ -6,11 +6,11 @@ import ru.scisolutions.scicmscore.engine.handler.util.AclHelper
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.persistence.service.AllowedPermissionCache
+import ru.scisolutions.scicmscore.persistence.service.AllowedPermissionService
 
 @Service
 class PermissionManager(
-    private val allowedPermissionCache: AllowedPermissionCache,
+    private val allowedPermissionService: AllowedPermissionService,
     private val aclHelper: AclHelper
 ) {
     fun assignPermissionAttribute(item: Item, itemRec: ItemRec) {
@@ -22,7 +22,7 @@ class PermissionManager(
     }
 
     fun checkPermissionId(item: Item, permissionId: String?): String {
-        val allowedPermissions = allowedPermissionCache[item.name]
+        val allowedPermissions = allowedPermissionService.findAllByItemName(item.name)
 
         return if (permissionId == null) {
             allowedPermissions.find { it.isDefault }?.targetId ?: getDefaultPermission(item.name)
@@ -40,7 +40,7 @@ class PermissionManager(
     }
 
     fun checkPermissionId(item: Item, prevPermissionId: String?, permissionId: String?): String {
-        val allowedPermissions = allowedPermissionCache[item.name]
+        val allowedPermissions = allowedPermissionService.findAllByItemName(item.name)
         val defaultPermission = getDefaultPermission(item.name)
         val effectiveDefaultPermission = allowedPermissions.find { it.isDefault }?.targetId ?: defaultPermission
 

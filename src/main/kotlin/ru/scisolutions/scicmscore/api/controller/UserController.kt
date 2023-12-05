@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.model.RegistrationRequest
 import ru.scisolutions.scicmscore.model.TokenResponse
 import ru.scisolutions.scicmscore.model.UserInfo
-import ru.scisolutions.scicmscore.persistence.service.UserCache
+import ru.scisolutions.scicmscore.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
 
@@ -20,7 +20,7 @@ import ru.scisolutions.scicmscore.security.service.UserGroupManager
 class UserController(
     private val securityProps: SecurityProps,
     private val userGroupManager: UserGroupManager,
-    private val userCache: UserCache,
+    private val userService: UserService,
     private val jwtTokenService: JwtTokenService,
     private val javaMailSender: JavaMailSender
 ) {
@@ -37,7 +37,7 @@ class UserController(
 
         val userDetails = userGroupManager.loadUserByUsername(registrationRequest.username)
         val authorities = AuthorityUtils.authorityListToSet(userDetails.authorities)
-        val user = userCache.getOrThrow(registrationRequest.username)
+        val user = userService.getByUsername(registrationRequest.username)
 
         return TokenResponse(
             jwt = jwtTokenService.generateJwtToken(userDetails.username, authorities),

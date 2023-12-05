@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.persistence.service.ItemTemplateCache
+import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemTemplateMapper
@@ -18,8 +18,7 @@ import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate as ItemTemplat
 @Service
 class ItemTemplateApplier(
     private val schemaProps: SchemaProps,
-    private val itemTemplateCache: ItemTemplateCache,
-    // private val itemTemplateService: ItemTemplateService,
+    private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
     private val schemaLockService: SchemaLockService,
 ) : ModelApplier {
@@ -32,7 +31,7 @@ class ItemTemplateApplier(
         validateModel(model)
 
         val name = model.metadata.name
-        var itemTemplateEntity = itemTemplateCache[name]
+        var itemTemplateEntity = itemTemplateService.findByName(name)
         if (itemTemplateEntity == null) {
             // schemaLockService.lockOrThrow()
 
@@ -45,7 +44,7 @@ class ItemTemplateApplier(
             logger.info("Creating the item template [{}]", name)
             itemTemplateEntity = itemTemplateMapper.map(model)
 
-            itemTemplateCache[name] = itemTemplateEntity
+            itemTemplateService.save(itemTemplateEntity)
 
             // schemaLockService.unlockOrThrow()
         } else if (isChanged(model, itemTemplateEntity)) {
@@ -58,7 +57,7 @@ class ItemTemplateApplier(
 
             logger.info("Updating the item template [{}]", itemTemplateEntity.name)
             itemTemplateMapper.copy(model, itemTemplateEntity)
-            itemTemplateCache[name] = itemTemplateEntity
+            itemTemplateService.save(itemTemplateEntity)
 
             // schemaLockService.unlockOrThrow()
         } else {

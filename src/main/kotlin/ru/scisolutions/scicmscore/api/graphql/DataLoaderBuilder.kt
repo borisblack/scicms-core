@@ -8,13 +8,13 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
 @Component
 class DataLoaderBuilder(
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao,
     @Qualifier("applicationTaskExecutor") private val executor: Executor,
     // @Qualifier("dgsScheduledExecutorService") private val executor: Executor,
@@ -23,7 +23,7 @@ class DataLoaderBuilder(
     fun build(itemName: String): MappedBatchLoader<String, ItemRec> =
         MappedBatchLoader { ids ->
             logger.debug("Starting loading data for item [{}] by IDs {}", itemName, ids)
-            val item = itemCache.getOrThrow(itemName)
+            val item = itemService.getByName(itemName)
 
             val res = CompletableFuture.supplyAsync({
                 findAllByIds(item, ids).associateBy { it.id }

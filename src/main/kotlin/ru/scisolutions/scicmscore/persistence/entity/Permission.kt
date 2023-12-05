@@ -1,11 +1,16 @@
 package ru.scisolutions.scicmscore.persistence.entity
 
+import jakarta.persistence.Cacheable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 
 @Entity
 @Table(name = "sec_permissions")
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+)
 class Permission(
     @Column(nullable = false)
     var name: String,

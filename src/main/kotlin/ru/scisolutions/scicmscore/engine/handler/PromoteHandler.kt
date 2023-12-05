@@ -13,21 +13,21 @@ import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
-import ru.scisolutions.scicmscore.persistence.service.LifecycleCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.persistence.service.LifecycleService
 
 @Service
 class PromoteHandler(
     private val classService: ClassService,
-    private val itemCache: ItemCache,
-    private val lifecycleCache: LifecycleCache,
+    private val itemService: ItemService,
+    private val lifecycleService: LifecycleService,
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
     private val attributeValueHelper: AttributeValueHelper
 ) {
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response {
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
 
         val itemRec = aclItemRecDao.findByIdForWrite(item, input.id)
             ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
@@ -38,8 +38,7 @@ class PromoteHandler(
         val lifecycleId = itemRec.lifecycle
             ?: throw IllegalStateException("Item [$itemName] with ID [${input.id}] has no lifecycle.")
 
-        val lifecycle = lifecycleCache.getOrThrow(lifecycleId)
-
+        val lifecycle = lifecycleService.getById(lifecycleId)
         if (itemRec.state == input.state)
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is already in the [${itemRec.state}] state.")
 

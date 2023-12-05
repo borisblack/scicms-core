@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import ru.scisolutions.scicmscore.util.Json
 import ru.scisolutions.scicmscore.util.Maps
@@ -21,7 +21,7 @@ import java.time.ZoneOffset
 @Component
 class AttributeValueHelper(
     private val dataProps: DataProps,
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val mediaService: MediaService,
     private val itemRecDao: ItemRecDao
 ) {
@@ -188,7 +188,7 @@ class AttributeValueHelper(
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
             }
             FieldType.relation -> {
-                val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+                val targetItem = itemService.getByName(requireNotNull(attribute.target))
                 if (attribute.isCollection()) {
                     if (value !is List<*>)
                         throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))

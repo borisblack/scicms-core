@@ -1,6 +1,11 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
-import com.healthmarketscience.sqlbuilder.*
+import com.healthmarketscience.sqlbuilder.BinaryCondition
+import com.healthmarketscience.sqlbuilder.ComboCondition
+import com.healthmarketscience.sqlbuilder.Condition
+import com.healthmarketscience.sqlbuilder.InCondition
+import com.healthmarketscience.sqlbuilder.SelectQuery
+import com.healthmarketscience.sqlbuilder.UnaryCondition
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
@@ -14,7 +19,7 @@ import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
 import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.PermissionCache
+import ru.scisolutions.scicmscore.persistence.service.PermissionService
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
@@ -22,7 +27,7 @@ import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirec
 
 @Component
 class FindAllQueryBuilder(
-    private val permissionCache: PermissionCache,
+    private val permissionService: PermissionService,
     private val itemFilterConditionBuilder: ItemFilterConditionBuilder,
     private val versionConditionBuilder: VersionConditionBuilder,
     private val stateConditionBuilder: StateConditionBuilder,
@@ -96,7 +101,7 @@ class FindAllQueryBuilder(
     }
 
     private fun getPermissionCondition(table: DbTable): Condition {
-        val permissionIds = permissionCache.idsForRead()
+        val permissionIds = permissionService.idsForRead()
         val permissionIdCol = DbColumn(table, ItemRec.PERMISSION_COL_NAME, null, null)
         return if (permissionIds.isEmpty()) {
             UnaryCondition.isNull(permissionIdCol)

@@ -7,9 +7,8 @@ import ru.scisolutions.scicmscore.config.props.SchemaProps
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.model.ItemSpec
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
 import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.persistence.service.ItemTemplateCache
+import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemMapper
@@ -23,8 +22,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 @Service
 class ItemApplier(
     private val schemaProps: SchemaProps,
-    private val itemTemplateCache: ItemTemplateCache,
-    private val itemCache: ItemCache,
+    private val itemTemplateService: ItemTemplateService,
     private val itemMapper: ItemMapper,
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
@@ -42,7 +40,7 @@ class ItemApplier(
         validateModel(item)
 
         val name = item.metadata.name
-        var itemEntity = itemCache[name]
+        var itemEntity = itemService.findByName(name)
         if (itemEntity == null) {
             // schemaLockService.lockOrThrow()
 
@@ -57,7 +55,7 @@ class ItemApplier(
             logger.info("Creating the item [{}]", name)
             itemEntity = itemMapper.mapToEntity(item)
 
-            itemCache[name] = itemEntity
+            itemService.save(itemEntity)
 
             // schemaLockService.unlockOrThrow()
         } else if (isChanged(itemEntity, item)) {
@@ -70,14 +68,14 @@ class ItemApplier(
 
             if (item.metadata.dataSource != itemEntity.ds) {
                 schemaLockService.unlockOrThrow()
-                throw IllegalArgumentException("Item [${name}] datasource cannot be changed")
+                throw IllegalArgumentException("Item [${name}] datasource cannot be changed.")
             }
 
             tableSeeder.update(item, itemEntity) // update table
 
             logger.info("Updating the item [{}]", itemEntity.name)
             itemMapper.copyToEntity(item, itemEntity)
-            itemCache[name] = itemEntity
+            itemService.save(itemEntity)
 
             // schemaLockService.unlockOrThrow()
         } else {
@@ -90,7 +88,7 @@ class ItemApplier(
     private fun includeTemplates(item: Item): Item {
         var mergedItem: Item = item
         for (templateName in item.includeTemplates) {
-            val itemTemplate = itemTemplateCache.getOrThrow(templateName)
+            val itemTemplate = itemTemplateService.getByName(templateName)
             mergedItem = includeTemplate(mergedItem, itemTemplate)
         }
         return mergedItem

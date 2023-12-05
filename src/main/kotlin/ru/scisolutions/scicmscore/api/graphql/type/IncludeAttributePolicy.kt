@@ -5,11 +5,11 @@ import ru.scisolutions.scicmscore.model.Attribute
 import ru.scisolutions.scicmscore.model.Attribute.RelType
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Component
 class IncludeAttributePolicy(
-    private val itemCache: ItemCache
+    private val itemService: ItemService
 ) {
     fun includeInObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
         if (attribute.private)
@@ -34,16 +34,16 @@ class IncludeAttributePolicy(
         if (!item.localized && attrName == LOCALE_ATTR_NAME)
             return false
 
-        if (attribute.type == FieldType.media && itemCache.getMedia().ds != item.ds)
+        if (attribute.type == FieldType.media && itemService.getMedia().ds != item.ds)
             return false
 
         if (attribute.isCollection()) {
-            val targetItem = itemCache.getOrThrow(requireNotNull(attribute.target))
+            val targetItem = itemService.getByName(requireNotNull(attribute.target))
             if (targetItem.ds != item.ds)
                 return false
 
             if (attribute.relType == RelType.manyToMany) {
-                val intermediateItem = itemCache.getOrThrow(requireNotNull(attribute.intermediate))
+                val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
                 if (intermediateItem.ds != item.ds)
                     return false
             }

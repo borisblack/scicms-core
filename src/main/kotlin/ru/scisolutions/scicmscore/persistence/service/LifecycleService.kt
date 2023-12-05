@@ -14,4 +14,14 @@ class LifecycleService(
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): Lifecycle? = lifecycleRepository.findById(id).orElse(null)
+
+    @Transactional(readOnly = true)
+    fun getById(id: String): Lifecycle = lifecycleRepository.findById(id).orElseThrow {
+        IllegalArgumentException("Lifecycle [$id] not found.")
+    }
+
+    @Transactional(readOnly = true)
+    fun getDefault(id: String): Lifecycle = lifecycleRepository.findById(Lifecycle.DEFAULT_LIFECYCLE_ID).orElseThrow {
+        IllegalArgumentException("Default lifecycle not found.")
+    }
 }

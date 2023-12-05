@@ -5,14 +5,14 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.persistence.service.UserCache
+import ru.scisolutions.scicmscore.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
 import ru.scisolutions.scicmscore.security.User
 
 @Component
 class UsernamePasswordAuthenticationProvider(
     customUserDetailsManager: CustomUserDetailsManager,
-    private val userCache: UserCache
+    private val userService: UserService
 ) : DaoAuthenticationProvider() {
     init {
         userDetailsService = customUserDetailsManager
@@ -23,7 +23,7 @@ class UsernamePasswordAuthenticationProvider(
         val authenticated = super.authenticate(authentication)
         val principal = authenticated.principal as org.springframework.security.core.userdetails.User
         val username = principal.username
-        val userEntity = userCache.getOrThrow(username)
+        val userEntity = userService.getByUsername(username)
         val user = User(username, principal.password, principal.authorities, userEntity)
         return UsernamePasswordAuthenticationToken(user, authenticated.credentials, user.authorities)
     }

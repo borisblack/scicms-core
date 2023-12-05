@@ -9,13 +9,13 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
-import java.util.regex.Pattern
 import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.persistence.service.ItemService
+import java.util.regex.Pattern
 
 @Component
-class ItemOrderingsParser(private val itemCache: ItemCache) {
+class ItemOrderingsParser(private val itemService: ItemService) {
     fun parseOrderings(item: Item, inputSortList: List<String>, schema: DbSchema, table: DbTable, query: SelectQuery) =
         inputSortList.forEach { parseOrdering(item, it, schema, query, table) }
 
@@ -38,10 +38,10 @@ class ItemOrderingsParser(private val itemCache: ItemCache) {
                     if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
                         throw IllegalArgumentException("Invalid sort attribute")
 
-                    val target = itemCache.getOrThrow(requireNotNull(attribute.target))
+                    val target = itemService.getByName(requireNotNull(attribute.target))
                     addOrdering(target, nestedAttrName, schema, query, table, col, orderDir)
                 }
-                FieldType.media -> addOrdering(itemCache.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
+                FieldType.media -> addOrdering(itemService.getMedia(), nestedAttrName, schema, query, table, col, orderDir)
                 else -> query.addOrdering(col, orderDir)
             }
         }

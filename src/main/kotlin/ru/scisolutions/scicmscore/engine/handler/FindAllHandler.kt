@@ -13,12 +13,12 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollectionMeta
 import ru.scisolutions.scicmscore.engine.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
 class FindAllHandler(
     private val classService: ClassService,
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val findAllQueryBuilder: FindAllQueryBuilder,
     private val itemRecDao: ItemRecDao
 ) {
@@ -28,7 +28,7 @@ class FindAllHandler(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): ResponseCollection {
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val paramSource = AttributeSqlParameterSource()
@@ -67,8 +67,8 @@ class FindAllHandler(
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>
     ): RelationResponseCollection {
-        val item = itemCache.getOrThrow(itemName)
-        val parentItem = itemCache.getOrThrow(parentItemName)
+        val item = itemService.getByName(itemName)
+        val parentItem = itemService.getByName(parentItemName)
         val parentId = parentItemRec.id ?: throw IllegalArgumentException("Parent ID not found")
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val paramSource = AttributeSqlParameterSource()

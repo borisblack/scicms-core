@@ -18,12 +18,12 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemCache
+import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
 class UpdateHandler(
     private val classService: ClassService,
-    private val itemCache: ItemCache,
+    private val itemService: ItemService,
     private val attributeValueHelper: AttributeValueHelper,
     private val versionManager: VersionManager,
     private val localizationManager: LocalizationManager,
@@ -38,7 +38,7 @@ class UpdateHandler(
         if (itemName in disabledItemNames)
             throw IllegalArgumentException("Item [$itemName] cannot be updated.")
 
-        val item = itemCache.getOrThrow(itemName)
+        val item = itemService.getByName(itemName)
         if (item.versioned)
             throw IllegalArgumentException("Item [$itemName] is versioned and cannot be updated")
 
