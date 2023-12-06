@@ -66,8 +66,9 @@ class LiquibaseTableSeeder(
             return
         }
 
-        logger.info("Deleting the table [{}]", existingItemEntity.tableName)
-        dropTable(existingItemEntity)
+        val tableName = requireNotNull(existingItemEntity.tableName)
+        logger.info("Deleting the table [{}]", tableName)
+        dropTable(existingItemEntity.ds, tableName)
     }
 
     private fun createTable(item: Item) {
@@ -287,14 +288,14 @@ class LiquibaseTableSeeder(
             this.newTableName = newTableName
         }
 
-    private fun dropTable(itemEntity: ItemEntity) {
+    override fun dropTable(dataSource: String, tableName: String) {
         val databaseChangeLog = DatabaseChangeLog()
-        val changeSet = addChangeSet(databaseChangeLog, "drop-${itemEntity.tableName}-table")
+        val changeSet = addChangeSet(databaseChangeLog, "drop-$tableName-table")
 
-        addDropTableChange(changeSet, requireNotNull(itemEntity.tableName), false) // drop table
+        addDropTableChange(changeSet, tableName, false) // drop table
 
         // Run changelog
-        val liquibase = newLiquibase(itemEntity.ds, databaseChangeLog)
+        val liquibase = newLiquibase(dataSource, databaseChangeLog)
         liquibase.update("")
         liquibase.close()
     }

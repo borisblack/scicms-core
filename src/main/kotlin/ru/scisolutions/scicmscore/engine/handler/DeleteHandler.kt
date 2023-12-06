@@ -18,6 +18,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
@@ -28,7 +29,8 @@ class DeleteHandler(
     private val deleteMediaHelper: DeleteMediaHelper,
     private val attributeValueHelper: AttributeValueHelper,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
+    private val cacheService: CacheService
 ) {
     fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
         if (itemName == Item.REVISION_POLICY_ITEM_NAME && input.id == RevisionPolicy.DEFAULT_REVISION_POLICY_ID)
@@ -77,6 +79,9 @@ class DeleteHandler(
         )
 
         implInstance?.afterDelete(itemName, response)
+
+        if (item.core)
+            cacheService.clearAllSchemaCaches(item.name)
 
         return response
     }

@@ -14,6 +14,7 @@ metadata:
   icon: AppstoreOutlined
   core: true
   performDdl: false
+  implementation: ru.scisolutions.scicmscore.engine.hook.impl.ItemItemImpl
 spec:
   attributes:
     name:

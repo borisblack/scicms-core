@@ -19,6 +19,7 @@ import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
 
@@ -35,6 +36,7 @@ class CreateLocalizationHandler(
     private val addRelationHelper: AddRelationHelper,
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
+    private val cacheService: CacheService
 ) {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -112,6 +114,9 @@ class CreateLocalizationHandler(
         )
 
         implInstance?.afterCreateLocalization(itemName, response)
+
+        if (item.core)
+            cacheService.clearAllSchemaCaches(item.name)
 
         return response
     }

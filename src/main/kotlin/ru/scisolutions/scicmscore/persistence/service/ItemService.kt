@@ -41,6 +41,7 @@ class ItemService(
     @Transactional(readOnly = true)
     fun findByNameForWrite(name: String): Item? = findByNameWithACL(name, Acl.Mask.WRITE)
 
+    @Transactional(readOnly = true)
     fun findByIdForDelete(id: String): Item? = findByIdWithACL(id, Acl.Mask.DELETE)
 
     @Transactional(readOnly = true)

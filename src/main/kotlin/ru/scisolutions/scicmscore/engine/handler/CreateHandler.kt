@@ -19,6 +19,7 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
 
@@ -35,6 +36,7 @@ class CreateHandler(
     private val auditManager: AuditManager,
     private val addRelationHelper: AddRelationHelper,
     private val itemRecDao: ItemRecDao,
+    private val cacheService: CacheService
 ) {
     fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response {
         if (itemName in disabledItemNames)
@@ -80,6 +82,9 @@ class CreateHandler(
         )
 
         implInstance?.afterCreate(itemName, response)
+
+        if (item.core)
+            cacheService.clearAllSchemaCaches(item.name)
 
         return response
     }

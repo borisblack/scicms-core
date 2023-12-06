@@ -27,17 +27,21 @@ class PermissionService(
     @Transactional(readOnly = true)
     fun findById(id: String): Permission? = permissionRepository.findById(id).orElse(null)
 
+    @Transactional(readOnly = true)
     fun getDefault(): Permission = findById(Permission.DEFAULT_PERMISSION_ID)
         ?: throw IllegalArgumentException("Default permission not found")
 
     // @Cacheable("nativeQueryCache")
+    @Transactional(readOnly = true)
     fun idsForRead(): Set<String> =
         idsByAccessMask(Acl.Mask.READ)
 
     // @Cacheable("nativeQueryCache")
+    @Transactional(readOnly = true)
     fun idsByAccessMask(accessMask: Acl.Mask): Set<String> =
         idsByMask(accessMask.mask)
 
+    @Transactional(readOnly = true)
     fun idsByMask(mask: Set<Int>): Set<String> {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw AccessDeniedException("User is not authenticated")

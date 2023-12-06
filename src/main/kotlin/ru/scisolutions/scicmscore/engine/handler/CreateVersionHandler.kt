@@ -20,6 +20,7 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
 
@@ -37,6 +38,7 @@ class CreateVersionHandler(
     private val addRelationHelper: AddRelationHelper,
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
+    private val cacheService: CacheService
 ) {
     fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -111,6 +113,9 @@ class CreateVersionHandler(
         )
 
         implInstance?.afterCreateVersion(itemName, response)
+
+        if (item.core)
+            cacheService.clearAllSchemaCaches(item.name)
 
         return response
     }

@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.engine.handler.CreateHandler
@@ -39,7 +38,6 @@ import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.model.UserInfo
-import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
 
@@ -140,23 +138,8 @@ class EngineImpl(
     override fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response =
         updateHandler.update(itemName, input, selectAttrNames)
 
-    override fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
-        val itemToDelete =
-            if (itemName == Item.ITEM_ITEM_NAME)
-                itemService.findByIdForDelete(input.id)
-                    ?: throw AccessDeniedException("You are not allowed to delete item with id [${input.id}].")
-            else null
-
-        if (itemName == MEDIA_ITEM_NAME)
-            mediaHandler.deleteById(input.id)
-
-        val res = deleteHandler.delete(itemName, input, selectAttrNames)
-
-        if (itemToDelete != null)
-            tableSeeder.delete(itemToDelete)
-
-        return res
-    }
+    override fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response =
+        deleteHandler.delete(itemName, input, selectAttrNames)
 
     override fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection =
         purgeHandler.purge(itemName, input, selectAttrNames)

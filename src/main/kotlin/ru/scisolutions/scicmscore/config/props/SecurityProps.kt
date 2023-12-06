@@ -11,6 +11,7 @@ class SecurityProps {
     var jwtToken: JwtToken = JwtToken()
 
     var registrationDisabled: Boolean = false
+    var clearAccessOnUserDelete: Boolean = false
 
     class JwtToken {
         var id: String = DEFAULT_ID

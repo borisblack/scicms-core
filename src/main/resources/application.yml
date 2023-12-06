@@ -5,7 +5,7 @@ scicms-core:
     default-limit: 20
     max-limit: 1000
     data-loader-chunk-size: 1000
-    cache-expiration-minutes: 720
+    datasource-cache-expiration-minutes: 720
     trim-strings: true
   i18n:
     default-locale: en-US
@@ -27,6 +27,7 @@ scicms-core:
       secret: scisolutionsSecretKey
       expiration-interval-millis: 86_400_000
     registration-disabled: false
+    clear-access-on-user-delete: false
 
 dgs:
   graphql:

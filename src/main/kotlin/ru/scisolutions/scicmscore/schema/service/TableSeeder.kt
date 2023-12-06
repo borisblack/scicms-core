@@ -9,4 +9,6 @@ interface TableSeeder {
     fun update(item: Item, existingItemEntity: ItemEntity)
 
     fun delete(existingItemEntity: ItemEntity)
+
+    fun dropTable(dataSource: String, tableName: String)
 }

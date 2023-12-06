@@ -13,6 +13,7 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service
@@ -23,7 +24,8 @@ class PurgeHandler(
     private val deleteMediaHelper: DeleteMediaHelper,
     private val attributeValueHelper: AttributeValueHelper,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
+    private val cacheService: CacheService
 ) {
     fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection {
         val item = itemService.getByName(itemName)
@@ -68,6 +70,9 @@ class PurgeHandler(
         )
 
         implInstance?.afterPurge(itemName, response)
+
+        if (item.core)
+            cacheService.clearAllSchemaCaches(item.name)
 
         return response
     }
