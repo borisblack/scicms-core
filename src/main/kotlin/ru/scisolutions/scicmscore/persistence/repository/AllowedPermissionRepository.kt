@@ -7,19 +7,15 @@ import org.springframework.data.repository.CrudRepository
 import ru.scisolutions.scicmscore.persistence.entity.AllowedPermission
 
 interface AllowedPermissionRepository : CrudRepository<AllowedPermission, String> {
-    @Query(
-        value = "SELECT a.* FROM sec_allowed_permissions a WHERE a.source_id = :itemId ORDER BY a.sort_order",
-        nativeQuery = true
-    )
+    @Query("select ap from AllowedPermission ap where ap.sourceId = :itemId order by ap.sortOrder")
+    @QueryHints(QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_CACHEABLE, value = "true"))
     fun findAllByItemId(itemId: String): List<AllowedPermission>
 
     @Query(
-        value =
-            "SELECT a.* FROM sec_allowed_permissions a " +
-                "LEFT JOIN core_items i ON a.source_id = i.id " +
-            "WHERE i.name = :itemName " +
-            "ORDER BY a.sort_order",
-        nativeQuery = true
+        "select ap from AllowedPermission ap " +
+            "left join Item i on ap.sourceId = i.id " +
+        "where i.name = :itemName " +
+        "order by ap.sortOrder"
     )
     @QueryHints(QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_CACHEABLE, value = "true"))
     fun findAllByItemName(itemName: String): List<AllowedPermission>

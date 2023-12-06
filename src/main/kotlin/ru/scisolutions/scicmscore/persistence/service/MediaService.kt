@@ -27,7 +27,9 @@ class MediaService(
         mediaRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
-    fun getById(id: String): Media = mediaRepository.getById(id)
+    fun getById(id: String): Media = mediaRepository.findById(id).orElseThrow {
+        IllegalArgumentException("Media [$id] not found")
+    }
 
     fun existsById(id: String): Boolean = mediaRepository.existsById(id)
 

@@ -15,7 +15,7 @@ class DatasetService(
     private val datasetRepository: DatasetRepository
 ) {
     fun getById(id: String): Dataset =
-        datasetRepository.findById(id).orElseThrow { IllegalArgumentException("Dataset with ID [$id] not found") }
+        datasetRepository.findById(id).orElseThrow { IllegalArgumentException("Dataset [$id] not found") }
 
     @Transactional(readOnly = true)
     fun findByNameForRead(name: String): Dataset? =

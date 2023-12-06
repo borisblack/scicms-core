@@ -7,19 +7,15 @@ import org.springframework.data.repository.CrudRepository
 import ru.scisolutions.scicmscore.persistence.entity.AllowedLifecycle
 
 interface AllowedLifecycleRepository : CrudRepository<AllowedLifecycle, String> {
-    @Query(
-        value = "SELECT a.* FROM core_allowed_lifecycles a WHERE a.source_id = :itemId ORDER BY a.sort_order",
-        nativeQuery = true
-    )
+    @Query("select al from AllowedLifecycle al where al.sourceId = :itemId order by al.sortOrder")
+    @QueryHints(QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_CACHEABLE, value = "true"))
     fun findAllByItemId(itemId: String): List<AllowedLifecycle>
 
     @Query(
-        value =
-            "SELECT a.* FROM core_allowed_lifecycles a " +
-                "LEFT JOIN core_items i ON a.source_id = i.id " +
-            "WHERE i.name = :itemName " +
-            "ORDER BY a.sort_order",
-        nativeQuery = true
+        "select al from AllowedLifecycle al " +
+            "left join Item i on al.sourceId = i.id " +
+        "where i.name = :itemName " +
+        "order by al.sortOrder"
     )
     @QueryHints(QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_CACHEABLE, value = "true"))
     fun findAllByItemName(itemName: String): List<AllowedLifecycle>
