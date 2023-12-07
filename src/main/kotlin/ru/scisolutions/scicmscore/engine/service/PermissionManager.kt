@@ -88,6 +88,12 @@ class PermissionManager(
             Item.ROLE_ITEM_NAME,
             Item.USER_ITEM_NAME
         )
-        private val biItemNames = setOf(Item.DASHBOARD_ITEM_NAME, Item.DATASET_ITEM_NAME)
+        private val biItemNames = setOf(
+            Item.DASHBOARD_ITEM_NAME,
+            Item.DASHBOARD_CATEGORY_ITEM_NAME,
+            Item.DASHBOARD_CATEGORY_HIERARCHY_ITEM_NAME,
+            Item.DASHBOARD_CATEGORY_MAP_ITEM_NAME,
+            Item.DATASET_ITEM_NAME
+        )
     }
 }
