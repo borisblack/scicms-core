@@ -80,8 +80,7 @@ class DeleteHandler(
 
         implInstance?.afterDelete(itemName, response)
 
-        if (item.core)
-            cacheService.clearAllSchemaCaches(item.name)
+        cacheService.optimizeSchemaCaches(item)
 
         return response
     }

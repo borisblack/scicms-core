@@ -1,12 +1,21 @@
 package ru.scisolutions.scicmscore.persistence.service
 
+import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
+import org.hibernate.Session
+import org.hibernate.stat.Statistics
+import org.redisson.api.RedissonClient
+import org.slf4j.LoggerFactory
+import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.persistence.entity.Item
 
 @Service
 class CacheService(
-    private val emf: EntityManagerFactory
+    private val emf: EntityManagerFactory,
+    private val entityManager: EntityManager,
+    private val cacheManager: CacheManager,
+    private val redissonClient: RedissonClient
 ) {
     fun clearSchemaCaches(vararg classes: Class<*>) {
         val cache = emf.cache
@@ -22,14 +31,44 @@ class CacheService(
         cache.evictAll()
     }
 
-    fun clearAllSchemaCaches(changedItemName: String) {
-        if (changedItemName in excludedItemNames)
+    fun optimizeSchemaCaches(changedItem: Item) {
+        if (!changedItem.core || changedItem.name in excludedItemNames)
             return
 
         clearAllSchemaCaches()
     }
 
+    fun printStatistics() {
+        printStatisticsFromEntityManager()
+        printCachesFromCacheManager()
+        printCachesFromRedisson()
+    }
+
+    private fun printStatisticsFromEntityManager() {
+        val session: Session = entityManager.delegate as Session
+        val statistics: Statistics = session.sessionFactory.statistics
+        statistics.logSummary()
+    }
+
+    private fun printCachesFromCacheManager() {
+        val cacheNames = cacheManager.cacheNames
+        logger.info("Caches from cacheManager:")
+        for (cacheName in cacheNames) {
+            logger.info(" - $cacheName")
+        }
+    }
+
+    private fun printCachesFromRedisson() {
+        val keys = redissonClient.keys.keys
+        logger.info("Caches from Redis:")
+        keys.filter { !it.startsWith("redisson__") }
+            .forEach {
+                logger.info(" - $it")
+            }
+    }
+
     companion object {
+        private val logger = LoggerFactory.getLogger(CacheService::class.java)
         private val excludedItemNames = setOf(Item.MEDIA_ITEM_NAME)
     }
 }

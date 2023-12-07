@@ -21,7 +21,7 @@ import ru.scisolutions.scicmscore.util.Acl
 class PermissionService(
     private val accessRepository: AccessRepository,
     private val permissionRepository: PermissionRepository,
-    private val statisticsLogger: StatisticsLogger,
+    private val cacheService: CacheService,
     private val entityManager: EntityManager
 ) {
     @Transactional(readOnly = true)
@@ -71,7 +71,7 @@ class PermissionService(
         // val testAccessQueryStats = stats.getQueryStatistics(testAccessQueryString)
         // val accessStats = stats.getQueryStatistics(Acl.ACCESS_JPQL_SNIPPET)
         //
-        // statisticsLogger.printStatistics()
+        // cacheService.printStatistics()
 
         return permissionAccessMap.filterValues { it[0].granting }.keys.toSet()
     }

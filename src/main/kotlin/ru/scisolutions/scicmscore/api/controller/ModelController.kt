@@ -29,7 +29,7 @@ class ModelController(
         val appliedModelId = modelsApplier.apply(model)
         schemaLockService.unlockOrThrow()
 
-        reloadIndicator.setNeedReloadOnce(true)
+        reloadIndicator.setNeedReload(true)
 
         return appliedModelId
     }
@@ -51,6 +51,6 @@ class ModelController(
             deletingStrategy = DeletingStrategy.CASCADE
         )
         engine.delete(modelName, deleteInput, emptySet())
-        reloadIndicator.setNeedReloadOnce(true)
+        reloadIndicator.setNeedReload(true)
     }
 }
