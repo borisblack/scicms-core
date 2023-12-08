@@ -39,14 +39,14 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
             FieldType.date -> this.addValue(paramName, if (value is String) DateTime.parseDate(value) else value, Types.DATE)
             FieldType.time -> this.addValue(
                 paramName,
-                if (value is String) DateTime.parseTime(value)
+                if (value is String) DateTime.parseTime(value).withOffsetSameLocal(ZoneOffset.UTC)
                 else (if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value),
                 Types.TIME_WITH_TIMEZONE
             )
             FieldType.datetime,
             FieldType.timestamp -> this.addValue(
                 paramName,
-                if (value is String) DateTime.parseDateTime(value)
+                if (value is String) DateTime.parseDateTime(value).withOffsetSameLocal(ZoneOffset.UTC)
                 else (if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value),
                 Types.TIMESTAMP_WITH_TIMEZONE
             )
