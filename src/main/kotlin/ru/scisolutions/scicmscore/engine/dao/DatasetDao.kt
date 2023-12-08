@@ -21,12 +21,20 @@ class DatasetDao(
 ) {
     fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> {
         logger.debug("Running load SQL: {}", sql)
+        logger.debug(
+            "Binding parameters: {}",
+            paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+        )
         return dsManager.template(dataset.ds).query(sql, paramSource, DatasetRowMapper())
     }
 
     fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): Int {
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
         logger.debug("Running count SQL: {}", countSQL)
+        logger.debug(
+            "Binding parameters: {}",
+            paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+        )
         return dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
     }
 
