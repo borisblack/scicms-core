@@ -6,6 +6,11 @@ scicms-core:
     max-limit: 1000
     data-loader-chunk-size: 1000
     datasource-cache-expiration-minutes: 720
+    item-query-result-entry-ttl-minutes: 5
+    item-query-result-max-entries: 50
+    dataset-query-result-entry-ttl-minutes: 5
+    dataset-query-result-max-entries: 50
+    max-cached-records-size: 500
     trim-strings: true
   i18n:
     default-locale: en-US
@@ -34,14 +39,13 @@ dgs:
     schema-locations: classpath*:graphql/**/*.graphql*
     dataloader.ticker-mode-enabled: true
 
-
 server:
   error.include-stacktrace: on_param
   port: 8079
 
 spring:
-  cache:
-    type: redis
+#  cache:
+#    type: redis
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
     url: jdbc:oracle:thin:@//localhost:1521/xepdb1
@@ -92,4 +96,4 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 #    org.springframework.jdbc.core.JdbcTemplate: debug
 #    org.springframework.jdbc.core.StatementCreatorUtils: trace
-    ru.scisolutions.scicmscore: debug
+    ru.scisolutions.scicmscore: trace

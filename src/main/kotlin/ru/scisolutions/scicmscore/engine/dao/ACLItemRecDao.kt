@@ -7,6 +7,7 @@ import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.db.query.ItemQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
+import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.PermissionService
 import ru.scisolutions.scicmscore.util.Acl
@@ -14,8 +15,9 @@ import ru.scisolutions.scicmscore.util.Acl
 @Service
 class ACLItemRecDao(
     private val permissionService: PermissionService,
-    private val dsManager: DatasourceManager
-) : BaseItemRecDao(dsManager) {
+    private val dsManager: DatasourceManager,
+    private val itemCacheManager: ItemCacheManager
+) : BaseItemRecDao(dsManager, itemCacheManager) {
     fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Acl.Mask.READ)
 
@@ -52,8 +54,13 @@ class ACLItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
         val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+
+        return itemCacheManager.get(item, sql, paramSource) {
+            logger.trace("Running SQL: {}", sql)
+            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+
+            dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+        }
     }
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): Int {
@@ -83,8 +90,13 @@ class ACLItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource, permissionIds)
         val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+
+        return itemCacheManager.get(item, sql, paramSource) {
+            logger.trace("Running SQL: {}", sql)
+            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+
+            dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+        }
     }
 
     companion object {

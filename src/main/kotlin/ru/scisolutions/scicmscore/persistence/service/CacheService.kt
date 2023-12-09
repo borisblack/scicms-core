@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Item
 class CacheService(
     private val emf: EntityManagerFactory,
     private val entityManager: EntityManager,
-    private val cacheManager: CacheManager,
+    private val cacheManager: CacheManager?,
     private val redissonClient: RedissonClient
 ) {
     fun clearSchemaCaches(vararg classes: Class<*>) {
@@ -51,10 +51,11 @@ class CacheService(
     }
 
     private fun printCachesFromCacheManager() {
-        val cacheNames = cacheManager.cacheNames
-        logger.info("Caches from cacheManager:")
-        for (cacheName in cacheNames) {
-            logger.info(" - $cacheName")
+        cacheManager?.cacheNames?.let {
+            logger.info("Caches from cacheManager:")
+            for (cacheName in it) {
+                logger.info(" - $cacheName")
+            }
         }
     }
 

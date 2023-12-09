@@ -8,6 +8,7 @@ import ru.scisolutions.scicmscore.engine.db.query.ItemQueryBuilder
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
+import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.persistence.entity.Item
@@ -20,8 +21,9 @@ class ItemRecDao(
     private val versionManager: VersionManager,
     private val sequenceManager: SequenceManager,
     private val auditManager: AuditManager,
-    private val dsManager: DatasourceManager
-) : BaseItemRecDao(dsManager) {
+    private val dsManager: DatasourceManager,
+    private val itemCacheManager: ItemCacheManager
+) : BaseItemRecDao(dsManager, itemCacheManager) {
     fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
         val paramSource = AttributeSqlParameterSource()
         val query =  itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
@@ -41,25 +43,36 @@ class ItemRecDao(
         return count(item, query.toString(), paramSource)
     }
 
-    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> {
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
-    }
+    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> =
+        itemCacheManager.get(item, sql, paramSource) {
+            logger.trace("Running SQL: {}", sql)
+            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+
+            dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+        }
 
     fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+
+        return itemCacheManager.get(item, sql, paramSource) {
+            logger.trace("Running SQL: {}", sql)
+            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+        }
     }
 
     fun insert(item: Item, itemRec: ItemRec): Int {
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
         val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).update(sql, paramSource)
+        logger.trace("Running SQL: {}", sql)
+        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        val res = dsManager.template(item.ds).update(sql, paramSource)
+        itemCacheManager.clear(item)
+
+        return res
     }
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
@@ -85,8 +98,12 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
         val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).update(sql, paramSource)
+        logger.trace("Running SQL: {}", sql)
+        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        val res = dsManager.template(item.ds).update(sql, paramSource)
+        itemCacheManager.clear(item)
+
+        return res
     }
 
     fun deleteById(item: Item, id: String): Int = deleteByAttribute(item, ItemRec.ID_ATTR_NAME, id)
@@ -95,8 +112,12 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).update(sql, paramSource)
+        logger.trace("Running SQL: {}", sql)
+        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        val res = dsManager.template(item.ds).update(sql, paramSource)
+        itemCacheManager.clear(item)
+
+        return res
     }
 
     fun deleteVersionedById(item: Item, id: String): Int {
@@ -207,8 +228,12 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
 
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).update(sql, paramSource)
+        logger.trace("Running SQL: {}", sql)
+        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        val res = dsManager.template(item.ds).update(sql, paramSource)
+        itemCacheManager.clear(item)
+
+        return res
     }
 
     fun unlockByIdOrThrow(item: Item, id: String) {
@@ -239,8 +264,12 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
 
-        logger.debug("Running SQL: {}", sql)
-        return dsManager.template(item.ds).update(sql, paramSource)
+        logger.trace("Running SQL: {}", sql)
+        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        val res = dsManager.template(item.ds).update(sql, paramSource)
+        itemCacheManager.clear(item)
+
+        return res
     }
 
     companion object {

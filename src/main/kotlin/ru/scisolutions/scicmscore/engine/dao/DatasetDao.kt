@@ -10,32 +10,38 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.db.mapper.ColumnsMapper
 import ru.scisolutions.scicmscore.engine.db.mapper.DatasetRowMapper
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
+import ru.scisolutions.scicmscore.engine.service.DatasetCacheManager
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.model.DatasetSpec
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
-import java.util.*
+import java.util.Objects
 
 @Service
 class DatasetDao(
-    private val dsManager: DatasourceManager
+    private val dsManager: DatasourceManager,
+    private val datasetCacheManager: DatasetCacheManager
 ) {
-    fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> {
-        logger.debug("Running load SQL: {}", sql)
-        logger.debug(
-            "Binding parameters: {}",
-            paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-        )
-        return dsManager.template(dataset.ds).query(sql, paramSource, DatasetRowMapper())
-    }
+    fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> =
+        datasetCacheManager.get(dataset, sql, paramSource) {
+            logger.debug("Running load SQL: {}", sql)
+            logger.debug(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+
+            dsManager.template(dataset.ds).query(sql, paramSource, DatasetRowMapper())
+        }
 
     fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): Int {
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
-        logger.debug("Running count SQL: {}", countSQL)
-        logger.debug(
-            "Binding parameters: {}",
-            paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-        )
-        return dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
+
+        return datasetCacheManager.get(dataset, sql, paramSource) {
+            logger.debug("Running count SQL: {}", countSQL)
+            logger.debug(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+
+            dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
+        }
     }
 
     fun actualizeSpec(dataset: Dataset): Boolean {
