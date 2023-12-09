@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.persistence.entity.Item
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @Service
 class ItemCacheManager(
@@ -26,7 +26,7 @@ class ItemCacheManager(
         val res = loader()
 
         if (res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
-            itemCache[fullSql] = res
+            itemCache.fastPut(fullSql, res, dataProps.itemQueryResultEntryTtlMinutes, TimeUnit.MINUTES)
         }
 
         return res
@@ -34,8 +34,9 @@ class ItemCacheManager(
 
     private fun getItemCache(itemName: String): RMapCache<String, Any?> {
         val itemCache: RMapCache<String, Any?> = redissonClient.getMapCache("$ITEM_QUERY_RESULTS_REGION:$itemName")
-        itemCache.expire(Duration.ofMinutes(dataProps.itemQueryResultEntryTtlMinutes))
-        itemCache.setMaxSize(dataProps.itemQueryResultMaxEntries)
+        if (itemCache.isEmpty()) {
+            itemCache.setMaxSize(dataProps.itemQueryResultMaxEntries)
+        }
 
         return itemCache
     }

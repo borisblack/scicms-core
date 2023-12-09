@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 @Service
 class DatasetCacheManager(
@@ -26,16 +26,17 @@ class DatasetCacheManager(
         val res = loader()
 
         if (res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
-            datasetCache[fullSql] = res
+            datasetCache.fastPut(fullSql, res, dataProps.itemQueryResultEntryTtlMinutes, TimeUnit.MINUTES)
         }
 
         return res
     }
 
     private fun getDatasetCache(datasetName: String): RMapCache<String, Any?> {
-        val datasetCache: RMapCache<String, Any?> = redissonClient.getMapCache("${DATASET_QUERY_RESULTS_REGION}:$datasetName")
-        datasetCache.expire(Duration.ofMinutes(dataProps.datasetQueryResultEntryTtlMinutes))
-        datasetCache.setMaxSize(dataProps.datasetQueryResultMaxEntries)
+        val datasetCache: RMapCache<String, Any?> = redissonClient.getMapCache("$DATASET_QUERY_RESULTS_REGION:$datasetName")
+        if (datasetCache.isEmpty()) {
+            datasetCache.setMaxSize(dataProps.datasetQueryResultMaxEntries)
+        }
 
         return datasetCache
     }
