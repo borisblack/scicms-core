@@ -8,6 +8,7 @@ data class ItemMetadata(
     val dataSource: String = MAIN_DATASOURCE_NAME,
     val tableName: String? = null,
     val query: String? = null,
+    val cacheTtl: Int? = null,
     val titleAttribute: String = ID_ATTR_NAME,
     val description: String? = null,
     val readOnly: Boolean = false,

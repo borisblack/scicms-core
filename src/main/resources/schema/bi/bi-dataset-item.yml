@@ -49,6 +49,12 @@ spec:
       description: Table Name
       length: 50
       colWidth: 180
+    cacheTtl:
+      type: int
+      columnName: cache_ttl
+      displayName: Cache TTL (min)
+      description: Cache TTL (min)
+      minRange: -1
     query:
       type: text
       columnName: query

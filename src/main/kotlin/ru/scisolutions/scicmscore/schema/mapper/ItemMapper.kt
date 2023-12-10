@@ -35,6 +35,7 @@ class ItemMapper(private val datasourceService: DatasourceService) {
         target.datasource = datasource
         target.tableName = metadata.tableName
         target.query = metadata.query
+        target.cacheTtl = metadata.cacheTtl
         target.titleAttribute = metadata.titleAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }
         target.includeTemplates = source.includeTemplates
         target.description = metadata.description

@@ -328,6 +328,7 @@
             </column>
             <column name="table_name" type="varchar(50)"/>
             <column name="query" type="text"/>
+            <column name="cache_ttl" type="int"/>
             <column name="title_attribute" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
@@ -625,6 +626,7 @@
             </column>
             <column name="table_name" type="varchar(50)"/>
             <column name="query" type="text"/>
+            <column name="cache_ttl" type="int"/>
             <column name="description" type="varchar(250)"/>
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>

@@ -14,19 +14,31 @@ class ItemCacheManager(
     private val dataProps: DataProps,
     private val redissonClient: RedissonClient
 ) {
+    init {
+        // Clear caches on start
+        val keys = redissonClient.keys.getKeysByPattern("$ITEM_QUERY_RESULTS_REGION:*")
+        for (key in keys) {
+            val cache: RMapCache<String, Any?> = redissonClient.getMapCache(key)
+            cache.clear()
+        }
+    }
+
     fun <T> get(item: Item, sql: String, paramSource: AttributeSqlParameterSource, loader: () -> T): T {
-        val fullSql = sqlWithParams(sql, paramSource)
+        val cacheTtl: Int = item.cacheTtl ?: dataProps.itemQueryResultEntryTtlMinutes
         val itemCache = getItemCache(item.name)
-        if (fullSql in itemCache) {
-            logger.trace("Returning cached result for SQL: {}", fullSql)
-            return itemCache[fullSql] as T
+        val fullSql = sqlWithParams(sql, paramSource)
+        if (cacheTtl > 0) {
+            if (fullSql in itemCache) {
+                logger.trace("Returning cached result for SQL: {}", fullSql)
+                return itemCache[fullSql] as T
+            }
+            logger.trace("Loading missed result for SQL: {}", fullSql)
         }
 
-        logger.trace("Loading missed result for SQL: {}", fullSql)
         val res = loader()
 
-        if (res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
-            itemCache.fastPut(fullSql, res, dataProps.itemQueryResultEntryTtlMinutes, TimeUnit.MINUTES)
+        if (cacheTtl > 0 && res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
+            itemCache.fastPut(fullSql, res, cacheTtl.toLong(), TimeUnit.MINUTES)
         }
 
         return res

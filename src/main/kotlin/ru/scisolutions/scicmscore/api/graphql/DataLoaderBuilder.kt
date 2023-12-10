@@ -22,14 +22,14 @@ class DataLoaderBuilder(
 ) {
     fun build(itemName: String): MappedBatchLoader<String, ItemRec> =
         MappedBatchLoader { ids ->
-            logger.debug("Starting loading data for item [{}] by IDs {}", itemName, ids)
+            logger.trace("Starting loading data for item [{}] by IDs {}", itemName, ids)
             val item = itemService.getByName(itemName)
 
             val res = CompletableFuture.supplyAsync({
                 findAllByIds(item, ids).associateBy { it.id }
             }, executor)
 
-            logger.debug("Loading data for item [{}] by IDs {} completed.", itemName, ids)
+            logger.trace("Loading data for item [{}] by IDs {} completed.", itemName, ids)
 
             res
         }

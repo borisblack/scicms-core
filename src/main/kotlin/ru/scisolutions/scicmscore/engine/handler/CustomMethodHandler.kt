@@ -35,7 +35,7 @@ class CustomMethodHandler(
             .filter { Modifier.isPublic(it.modifiers) }
             .filter {
                 if (it.name in reservedMethodNames) {
-                    logger.debug("Method name [{}#{}] is reserved. Skipping this method", clazz.simpleName, it.name)
+                    logger.trace("Method name [{}#{}] is reserved. Skipping this method", clazz.simpleName, it.name)
                     false
                 } else true
             }

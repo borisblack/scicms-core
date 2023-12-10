@@ -24,11 +24,26 @@ class ItemRecMapper(private val item: Item) : RowMapper<ItemRec> {
                 FieldType.string, FieldType.enum, FieldType.sequence, FieldType.email, FieldType.media, FieldType.relation -> rs.getString(i)
                 FieldType.text -> parseText(rs.getObject(i))
                 FieldType.password -> rs.getString(i)
-                FieldType.int -> rs.getInt(i)
-                FieldType.long -> rs.getLong(i)
-                FieldType.float -> rs.getFloat(i)
-                FieldType.double -> rs.getDouble(i)
-                FieldType.decimal -> rs.getBigDecimal(i)
+                FieldType.int -> {
+                    val res = rs.getInt(i)
+                    if (rs.wasNull()) null else res
+                }
+                FieldType.long -> {
+                    val res = rs.getLong(i)
+                    if (rs.wasNull()) null else res
+                }
+                FieldType.float -> {
+                    val res = rs.getFloat(i)
+                    if (rs.wasNull()) null else res
+                }
+                FieldType.double -> {
+                    val res = rs.getDouble(i)
+                    if (rs.wasNull()) null else res
+                }
+                FieldType.decimal -> {
+                    val res = rs.getBigDecimal(i)
+                    if (rs.wasNull()) null else res
+                }
                 FieldType.date -> rs.getDate(i)?.toLocalDate()
                 FieldType.time -> rs.getTime(i)?.toLocalTime()?.atOffset(ZoneOffset.UTC)
                 FieldType.datetime, FieldType.timestamp ->  rs.getTimestamp(i)?.toLocalDateTime()?.atOffset(ZoneOffset.UTC)

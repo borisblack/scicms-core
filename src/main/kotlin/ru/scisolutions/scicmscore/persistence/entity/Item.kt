@@ -45,6 +45,9 @@ class Item(
     @Column(name = "query")
     var query: String? = null,
 
+    @Column(name = "cache_ttl")
+    var cacheTtl: Int? = null,
+
     @Column(name = "title_attribute", nullable = false)
     var titleAttribute: String = ID_ATTR_NAME,
 

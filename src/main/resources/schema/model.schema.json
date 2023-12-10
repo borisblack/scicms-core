@@ -107,6 +107,11 @@
           "type": "string",
           "minLength": 1
         },
+        "cacheTtl": {
+          "description": "Cache TTL in minutes (optional). If value is -1, the cache will be disabled",
+          "type": "integer",
+          "minimum": -1
+        },
         "readOnly": {
           "description": "Read Only flag (optional, false by default)",
           "type": "boolean"

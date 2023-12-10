@@ -72,6 +72,12 @@ spec:
       colHidden: true
       colWidth: 300
       fieldWidth: 12
+    cacheTtl:
+      type: int
+      columnName: cache_ttl
+      displayName: Cache TTL (min)
+      description: Cache TTL (min)
+      minRange: -1
     titleAttribute:
       type: string
       columnName: title_attribute

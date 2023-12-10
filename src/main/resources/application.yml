@@ -6,7 +6,7 @@ scicms-core:
     max-limit: 1000
     data-loader-chunk-size: 1000
     datasource-cache-expiration-minutes: 720
-    item-query-result-entry-ttl-minutes: 5
+    item-query-result-entry-ttl-minutes: 10
     item-query-result-max-entries: 50
     dataset-query-result-entry-ttl-minutes: 5
     dataset-query-result-max-entries: 50

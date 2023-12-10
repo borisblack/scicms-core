@@ -6,6 +6,10 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "bi_datasets")
+@Cacheable
+@org.hibernate.annotations.Cache(
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+)
 class Dataset(
     @Column(nullable = false)
     val name: String,
@@ -24,6 +28,9 @@ class Dataset(
 
     @Column(name = "query")
     val query: String? = null,
+
+    @Column(name = "cache_ttl")
+    var cacheTtl: Int? = null,
 
     @Convert(converter = DatasetSpecConverter::class)
     var spec: DatasetSpec = DatasetSpec(),
