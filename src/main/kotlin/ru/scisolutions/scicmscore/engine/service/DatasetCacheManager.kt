@@ -26,8 +26,8 @@ class DatasetCacheManager(
     fun <T> get(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource, loader: () -> T): T {
         val cacheTtl: Int = dataset.cacheTtl ?: dataProps.datasetQueryResultEntryTtlMinutes
         val datasetCache = getDatasetCache(dataset.name)
-        val fullSql = sqlWithParams(sql, paramSource)
-        if (cacheTtl > 0) {
+        val fullSql = if (cacheTtl > 0) sqlWithParams(sql, paramSource) else null
+        if (fullSql != null) {
             if (fullSql in datasetCache) {
                 logger.trace("Returning cached result for SQL: {}", fullSql)
                 return datasetCache[fullSql] as T
@@ -37,7 +37,7 @@ class DatasetCacheManager(
 
         val res = loader()
 
-        if (cacheTtl > 0 && res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
+        if (fullSql != null && res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
             datasetCache.fastPut(fullSql, res, cacheTtl.toLong(), TimeUnit.MINUTES)
         }
 

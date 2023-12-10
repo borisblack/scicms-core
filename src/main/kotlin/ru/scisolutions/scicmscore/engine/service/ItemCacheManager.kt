@@ -26,8 +26,8 @@ class ItemCacheManager(
     fun <T> get(item: Item, sql: String, paramSource: AttributeSqlParameterSource, loader: () -> T): T {
         val cacheTtl: Int = item.cacheTtl ?: dataProps.itemQueryResultEntryTtlMinutes
         val itemCache = getItemCache(item.name)
-        val fullSql = sqlWithParams(sql, paramSource)
-        if (cacheTtl > 0) {
+        val fullSql = if (cacheTtl > 0) sqlWithParams(sql, paramSource) else null
+        if (fullSql != null) {
             if (fullSql in itemCache) {
                 logger.trace("Returning cached result for SQL: {}", fullSql)
                 return itemCache[fullSql] as T
@@ -37,7 +37,7 @@ class ItemCacheManager(
 
         val res = loader()
 
-        if (cacheTtl > 0 && res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
+        if (fullSql != null && res != null && (res !is Collection<*> || res.size <= dataProps.maxCachedRecordsSize)) {
             itemCache.fastPut(fullSql, res, cacheTtl.toLong(), TimeUnit.MINUTES)
         }
 
