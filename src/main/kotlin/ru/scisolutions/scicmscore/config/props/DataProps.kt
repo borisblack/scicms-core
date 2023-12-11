@@ -30,6 +30,6 @@ class DataProps {
         private const val DEFAULT_ITEM_QUERY_RESULT_MAX_ENTRIES: Int = 50
         private const val DEFAULT_DATASET_QUERY_RESULT_ENTRY_TTL_MINUTES: Int = 5
         private const val DEFAULT_DATASET_QUERY_RESULT_MAX_ENTRIES: Int = 5
-        private const val DEFAULT_MAX_CACHED_RECORDS_SIZE: Int = 500
+        private const val DEFAULT_MAX_CACHED_RECORDS_SIZE: Int = 200
     }
 }
