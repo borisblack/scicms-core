@@ -10,7 +10,7 @@ scicms-core:
     item-query-result-max-entries: 50
     dataset-query-result-entry-ttl-minutes: 5
     dataset-query-result-max-entries: 50
-    max-cached-records-size: 500
+    max-cached-records-size: 200
     trim-strings: true
   i18n:
     default-locale: en-US
