@@ -73,7 +73,7 @@ class LiquibaseTableSeeder(
 
     private fun createTable(item: Item) {
         val metadata = item.metadata
-        val databaseChangeLog = DatabaseChangeLog()
+        val databaseChangeLog = DatabaseChangeLog("")
         val changeSet = addChangeSet(databaseChangeLog, "create-${metadata.tableName}-table")
 
         addCreateTableChange(changeSet, item) // create table
@@ -139,7 +139,7 @@ class LiquibaseTableSeeder(
             logger.warn("Table {} will only be RENAMED to {}", existingTableName, newTableName)
             renameTable(existingItemEntity, item)
         } else {
-            val databaseChangeLog = DatabaseChangeLog()
+            val databaseChangeLog = DatabaseChangeLog("")
             val changeSet = addChangeSet(databaseChangeLog, "update-$newTableName-table")
 
             if (isTableRenamed(item, existingItemEntity)) {
@@ -266,7 +266,7 @@ class LiquibaseTableSeeder(
 
     private fun renameTable(existingItemEntity: ItemEntity, item: Item) {
         val metadata = item.metadata
-        val databaseChangeLog = DatabaseChangeLog()
+        val databaseChangeLog = DatabaseChangeLog("")
         val changeSet = addChangeSet(databaseChangeLog, "rename-${metadata.tableName}-table")
 
         // Rename table
@@ -289,7 +289,7 @@ class LiquibaseTableSeeder(
         }
 
     override fun dropTable(dataSource: String, tableName: String) {
-        val databaseChangeLog = DatabaseChangeLog()
+        val databaseChangeLog = DatabaseChangeLog("")
         val changeSet = addChangeSet(databaseChangeLog, "drop-$tableName-table")
 
         addDropTableChange(changeSet, tableName, false) // drop table
