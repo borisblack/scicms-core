@@ -25,6 +25,7 @@ spec:
       displayName: Label
       description: Label
       length: 50
+      colWidth: 200
     source:
       type: relation
       relType: manyToOne
@@ -34,7 +35,7 @@ spec:
       displayName: Source Part
       description: Source Part
       required: true
-      colWidth: 160
+      colWidth: 300
     target:
       type: relation
       relType: manyToOne
@@ -43,7 +44,7 @@ spec:
       displayName: Target Part
       description: Target Part
       required: true
-      colWidth: 160
+      colWidth: 300
     quantity:
       type: float
       columnName: quantity

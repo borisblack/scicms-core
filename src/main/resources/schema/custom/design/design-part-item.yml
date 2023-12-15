@@ -41,7 +41,7 @@ spec:
       length: 50
       required: true
       unique: true
-      colWidth: 150
+      colWidth: 200
     name:
       type: string
       columnName: name
@@ -49,14 +49,14 @@ spec:
       description: Name
       length: 300
       required: true
-      colWidth: 200
+      colWidth: 300
     description:
       type: string
       columnName: description
       displayName: Description
       description: Description
       length: 250
-      colWidth: 200
+      colWidth: 300
     product:
       type: relation
       relType: manyToOne
