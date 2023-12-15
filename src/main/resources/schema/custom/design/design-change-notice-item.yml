@@ -53,7 +53,7 @@ spec:
       columnName: release_date
       displayName: Release Date
       description: Release Date
-      colWidth: 170
+      colWidth: 200
     parts:
       type: relation
       relType: manyToMany
