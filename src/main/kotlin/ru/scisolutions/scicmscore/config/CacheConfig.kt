@@ -2,6 +2,8 @@ package ru.scisolutions.scicmscore.config
 
 import org.redisson.Redisson
 import org.redisson.api.RedissonClient
+import org.redisson.config.Config
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
@@ -14,7 +16,13 @@ import java.time.Duration
 
 @Configuration
 @EnableCaching
-class CacheConfig() {
+class CacheConfig(
+    @Value("\${spring.data.redis.host}")
+    private val redisHost: String,
+
+    @Value("\${spring.data.redis.port}")
+    private val redisPort: String
+) {
     @Bean
     fun cacheConfiguration(): RedisCacheConfiguration =
         RedisCacheConfiguration.defaultCacheConfig()
@@ -39,6 +47,10 @@ class CacheConfig() {
         }
 
     @Bean
-    fun redissonClient(): RedissonClient =
-        Redisson.create()
+    fun redissonClient(): RedissonClient {
+        val config = Config()
+        config.useSingleServer().setAddress("redis://$redisHost:$redisPort")
+
+        return Redisson.create(config)
+    }
 }
