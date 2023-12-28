@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
+import ru.scisolutions.scicmscore.engine.model.input.DatasourceTablesInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
@@ -17,6 +18,7 @@ import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
+import ru.scisolutions.scicmscore.engine.model.response.DatasourceTablesResponse
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
@@ -92,4 +94,6 @@ interface Engine {
     fun callCustomMethod(itemName: String, methodName: String, customMethodInput: CustomMethodInput): CustomMethodResponse
 
     fun loadDataset(datasetName: String, input: DatasetInput): DatasetResponse
+
+    fun loadDatasourceTables(datasourceName: String, input: DatasourceTablesInput): DatasourceTablesResponse
 }

@@ -1,7 +1,10 @@
 package ru.scisolutions.scicmscore.engine.hook.impl
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.dao.DatasetDao
+import ru.scisolutions.scicmscore.engine.dao.DatasourceDao
+import ru.scisolutions.scicmscore.engine.db.mapper.ColumnsMapper
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
 import ru.scisolutions.scicmscore.engine.model.DatasetItemRec
@@ -13,10 +16,11 @@ import ru.scisolutions.scicmscore.model.DatasetSpec
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.util.Json
+import java.util.Objects
 
 @Service
 class DatasetItemImpl(
-    private val datasetDao: DatasetDao,
+    private val datasourceDao: DatasourceDao,
     private val datasourceService: DatasourceService
 ) : CreateHook, UpdateHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec) {
@@ -36,7 +40,7 @@ class DatasetItemImpl(
             hash = data[Dataset::hash.name] as String?
         )
 
-        if (datasetDao.actualizeSpec(dataset)) {
+        if (actualizeSpec(dataset)) {
             data[Dataset::spec.name] = dataset.spec
             data[Dataset::hash.name] = dataset.hash
         }
@@ -58,6 +62,26 @@ class DatasetItemImpl(
         throw IllegalArgumentException("Unsupported spec type: ${spec::class.simpleName}")
     }
 
+    private fun actualizeSpec(dataset: Dataset): Boolean {
+        val hash = Objects.hash(
+            dataset.ds,
+            dataset.qs
+        ).toString()
+
+        if (dataset.hash == hash) {
+            logger.debug("Dataset has not changed. Skip actualizing")
+            return false
+        }
+
+        logger.debug("Dataset has changed. Reloading meta")
+        dataset.spec = DatasetSpec(
+            columns = columnsMapper.map(dataset, datasourceDao.loadMetaData(dataset.ds, dataset.qs))
+        )
+        dataset.hash = hash
+
+        return true
+    }
+
     override fun afterCreate(itemName: String, response: Response) {
         // Do nothing
     }
@@ -71,6 +95,8 @@ class DatasetItemImpl(
     }
 
     companion object {
+        private val logger = LoggerFactory.getLogger(DatasetItemImpl::class.java)
         private val objectMapper = Json.objectMapper
+        private val columnsMapper = ColumnsMapper()
     }
 }

@@ -2,7 +2,10 @@ package ru.scisolutions.scicmscore.api.controller
 
 import com.qs.core.QS
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper
 import ru.scisolutions.scicmscore.engine.mapper.DatasetInputMapper.Companion.AGGREGATE_ARG_NAME
@@ -24,7 +27,7 @@ class DatasetController(
         req: HttpServletRequest,
         @PathVariable("datasetName") datasetName: String
     ): DatasetResponse {
-        val qsObject = QS.parse(req.queryString)
+        val qsObject = QS.parse(req.queryString ?: "")
         val input = datasetInputMapper.map(qsObject.filterKeys { it in  datasetInputKeys}, "$")
 
         return engine.loadDataset(datasetName, input)

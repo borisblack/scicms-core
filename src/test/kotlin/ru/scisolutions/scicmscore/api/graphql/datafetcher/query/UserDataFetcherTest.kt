@@ -34,7 +34,8 @@ class UserDataFetcherTest {
             UserInfo(
                 id = UUID.randomUUID().toString(),
                 username = TEST_USER,
-                roles = setOf(ROLE_TEST)
+                roles = setOf(ROLE_TEST),
+                sessionData = emptyMap()
             )
         }
     }

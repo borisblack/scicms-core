@@ -8,6 +8,7 @@ import ru.scisolutions.scicmscore.engine.handler.CreateLocalizationHandler
 import ru.scisolutions.scicmscore.engine.handler.CreateVersionHandler
 import ru.scisolutions.scicmscore.engine.handler.CustomMethodHandler
 import ru.scisolutions.scicmscore.engine.handler.DatasetHandler
+import ru.scisolutions.scicmscore.engine.handler.DatasourceHandler
 import ru.scisolutions.scicmscore.engine.handler.DeleteHandler
 import ru.scisolutions.scicmscore.engine.handler.FindAllHandler
 import ru.scisolutions.scicmscore.engine.handler.FindOneHandler
@@ -24,6 +25,7 @@ import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
+import ru.scisolutions.scicmscore.engine.model.input.DatasourceTablesInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
@@ -31,6 +33,7 @@ import ru.scisolutions.scicmscore.engine.model.input.PromoteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
+import ru.scisolutions.scicmscore.engine.model.response.DatasourceTablesResponse
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
@@ -38,8 +41,6 @@ import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.model.UserInfo
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.schema.service.TableSeeder
 
 /**
  * General facade for all operations with data
@@ -60,8 +61,7 @@ class EngineImpl(
     private val promoteHandler: PromoteHandler,
     private val customMethodHandler: CustomMethodHandler,
     private val datasetHandler: DatasetHandler,
-    private val itemService: ItemService,
-    private val tableSeeder: TableSeeder
+    private val datasourceHandler: DatasourceHandler
 ) : Engine {
     override fun me(): UserInfo? = userHandler.me()
 
@@ -161,7 +161,6 @@ class EngineImpl(
     override fun loadDataset(datasetName: String, input: DatasetInput): DatasetResponse =
         datasetHandler.load(datasetName, input)
 
-    companion object {
-        private const val MEDIA_ITEM_NAME = "media"
-    }
+    override fun loadDatasourceTables(datasourceName: String, input: DatasourceTablesInput): DatasourceTablesResponse =
+        datasourceHandler.loadTables(datasourceName, input)
 }

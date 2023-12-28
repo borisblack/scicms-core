@@ -16,7 +16,9 @@ class DatasetHandler(
     private val datasetDao: DatasetDao
 ) {
     fun load(datasetName: String, input: DatasetInput): DatasetResponse {
-        val dataset = requireNotNull(datasetService.findByNameForRead(datasetName)) { "Dataset [$datasetName] not found" }
+        val dataset = datasetService.findByNameForRead(datasetName)
+            ?: return DatasetResponse(data = emptyList())
+
         val paramSource = DatasetSqlParameterSource()
         val loadQuery = datasetQueryBuilder.buildLoadQuery(dataset, input, paramSource)
         val data: List<Map<String, Any?>> = datasetDao.load(dataset, loadQuery.sql, paramSource)

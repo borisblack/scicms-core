@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 import ru.scisolutions.scicmscore.persistence.repository.DatasetRepository
-import ru.scisolutions.scicmscore.util.Acl
+import ru.scisolutions.scicmscore.util.Acl.Mask
 
 @Service
 @Repository
@@ -19,9 +19,9 @@ class DatasetService(
 
     @Transactional(readOnly = true)
     fun findByNameForRead(name: String): Dataset? =
-        findByNameFor(name, Acl.Mask.READ)
+        findByNameFor(name, Mask.READ)
 
-    private fun findByNameFor(name: String, accessMask: Acl.Mask): Dataset? =
+    private fun findByNameFor(name: String, accessMask: Mask): Dataset? =
         datasetRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)

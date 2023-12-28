@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 
 @JsonInclude(Include.NON_NULL)
-class Pagination(
+open class Pagination(
     val page: Int? = null,
     val pageSize: Int? = null,
     val start: Int? = null,
