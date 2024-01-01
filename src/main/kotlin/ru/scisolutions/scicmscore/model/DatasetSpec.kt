@@ -6,4 +6,7 @@ data class DatasetSpec(
 ) {
     fun getColumn(columnName: String): Column =
         columns[columnName] ?: throw IllegalArgumentException("Column [$columnName] not found.")
+
+    fun getSource(columnName: String): String =
+        getColumn(columnName).source ?: columnName
 }
