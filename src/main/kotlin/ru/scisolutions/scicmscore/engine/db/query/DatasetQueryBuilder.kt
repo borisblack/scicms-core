@@ -35,9 +35,11 @@ class DatasetQueryBuilder(
         val table = schema.addTable(dataset.qs)
         val query = buildInitialLoadQuery(dataset, input, schema, table, paramSource)
 
+        // TODO: Deprecated feature, will be removed
         if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {
             val wrapTable = DbTable(schema, "($query)")
-            val aggregateCol = DbColumn(wrapTable, input.aggregateField, null, null)
+            val datasetAggregateColumn = dataset.spec.getColumn(input.aggregateField)
+            val aggregateCol = DbColumn(wrapTable, datasetAggregateColumn.source ?: input.aggregateField, null, null)
             val aggregateQuery = SelectQuery()
                 .addCustomColumns(
                     CustomSql("${buildAggregateFunctionCall(aggregateCol, input.aggregate)} AS ${input.aggregateField}")
@@ -46,7 +48,8 @@ class DatasetQueryBuilder(
 
             if (!input.groupFields.isNullOrEmpty()) {
                 for (groupField in input.groupFields) {
-                    val groupCol = DbColumn(wrapTable, groupField, null, null)
+                    val datasetGroupColumn = dataset.spec.getColumn(groupField)
+                    val groupCol = DbColumn(wrapTable, datasetGroupColumn.source ?: groupField, null, null)
                     aggregateQuery
                         .addColumns(groupCol)
                         .addGroupings(groupCol)
@@ -134,12 +137,12 @@ class DatasetQueryBuilder(
                 if (input.fields.isNullOrEmpty()) {
                     dataset.spec.columns
                         .filterValues { it.aggregate == null && it.isVisible }
-                        .map { (colName, _) -> DbColumn(table, colName, null, null) }
+                        .map { (colName, col) -> DbColumn(table, col.source ?: colName, null, null) }
                         .toTypedArray()
                 } else {
                     input.fields
                         .filter { it.aggregate == null }
-                        .map { DbColumn(table, it.name, null, null) }
+                        .map { DbColumn(table, it.source ?: it.name, null, null) }
                         .toTypedArray()
                 }
             query.addGroupings(*groupingColumns)
