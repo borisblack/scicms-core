@@ -103,9 +103,7 @@ class DatasetFilterConditionBuilder {
         paramSource: DatasetSqlParameterSource,
         fieldNumbers: MutableMap<String, Int>
     ): Condition {
-        val fieldType = dataset.spec.columns[fieldName]?.type
-            ?: throw IllegalArgumentException("Field [$fieldName] not found.")
-
+        val fieldType = dataset.spec.getColumn(fieldName).type
         val nestedConditions = mutableListOf<Condition>()
         val absFieldName = "${table.alias}_${column.name}"
         val fieldNumber = fieldNumbers.getOrDefault(absFieldName, 0)

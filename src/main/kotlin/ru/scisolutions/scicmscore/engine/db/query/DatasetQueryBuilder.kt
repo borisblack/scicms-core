@@ -113,15 +113,15 @@ class DatasetQueryBuilder(
                 dataset.spec.columns
                     .filterValues { it.isVisible }
                     .map { (colName, col) ->
-                        val column = DbColumn(table, colName, null, null)
-                        buildCustomColumn(column, col.aggregate, col.asAlias)
+                        val column = DbColumn(table, col.source ?: colName, null, null)
+                        buildCustomColumn(column, colName, col.aggregate)
                     }
                     .toTypedArray()
             } else {
                 input.fields
                     .map {
-                        val column = DbColumn(table, it.name, null, null)
-                        buildCustomColumn(column, it.aggregate, it.asAlias)
+                        val column = DbColumn(table, it.source ?: it.name, null, null)
+                        buildCustomColumn(column, it.name, it.aggregate)
                     }
                     .toTypedArray()
             }
@@ -162,11 +162,11 @@ class DatasetQueryBuilder(
         return query.validate()
     }
 
-    private fun buildCustomColumn(column: DbColumn, aggregate: AggregateType?, asAlias: String?): CustomSql {
+    private fun buildCustomColumn(column: DbColumn, alias: String, aggregate: AggregateType?): CustomSql {
         if (aggregate == null)
-            return CustomSql(if (asAlias.isNullOrBlank()) "${column.table.alias}.${column.name}" else "${column.table.alias}.${column.name} AS $asAlias")
+            return CustomSql(if (alias == column.name) "${column.table.alias}.${column.name}" else "${column.table.alias}.${column.name} AS $alias")
 
-        return CustomSql("${buildAggregateFunctionCall(column, aggregate)} AS ${if (asAlias.isNullOrBlank()) column.name else asAlias}")
+        return CustomSql("${buildAggregateFunctionCall(column, aggregate)} AS ${if (alias == column.name) column.name else alias}")
     }
 
     private fun buildAggregateFunctionCall(aggregateCol: DbColumn, aggregateType: AggregateType): FunctionCall =

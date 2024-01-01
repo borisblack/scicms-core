@@ -4,6 +4,6 @@ import ru.scisolutions.scicmscore.engine.model.AggregateType
 
 class DatasetFieldInput(
     val name: String,
-    val asAlias: String?,
+    val source: String?,
     val aggregate: AggregateType?
 )
