@@ -1,6 +1,6 @@
 # SciCMS Core
 
-Headless CMS with GraphQL API, versioning, multi-language, lifecycle management and multi-datasource support.
+Headless CMS and BI system with GraphQL API, versioning, multi-language, lifecycle management and multi-datasource support.
 
 ## Reference Documentation
 
