@@ -46,7 +46,12 @@ class ItemRecDao(
     fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> =
         itemCacheManager.get(item, sql, paramSource) {
             logger.trace("Running SQL: {}", sql)
-            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
@@ -58,7 +63,12 @@ class ItemRecDao(
 
         return itemCacheManager.get(item, sql, paramSource) {
             logger.trace("Running SQL: {}", sql)
-            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
     }
@@ -68,7 +78,12 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
         val sql = query.toString()
         logger.trace("Running SQL: {}", sql)
-        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        if (paramSource.parameterNames.isNotEmpty()) {
+            logger.trace(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+            )
+        }
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -99,7 +114,12 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
         val sql = query.toString()
         logger.trace("Running SQL: {}", sql)
-        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        if (paramSource.parameterNames.isNotEmpty()) {
+            logger.trace(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+            )
+        }
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -113,7 +133,12 @@ class ItemRecDao(
         val query = itemQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
         logger.trace("Running SQL: {}", sql)
-        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        if (paramSource.parameterNames.isNotEmpty()) {
+            logger.trace(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+            )
+        }
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -229,7 +254,12 @@ class ItemRecDao(
         val sql = query.toString()
 
         logger.trace("Running SQL: {}", sql)
-        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        if (paramSource.parameterNames.isNotEmpty()) {
+            logger.trace(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+            )
+        }
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -265,7 +295,12 @@ class ItemRecDao(
         val sql = query.toString()
 
         logger.trace("Running SQL: {}", sql)
-        logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+        if (paramSource.parameterNames.isNotEmpty()) {
+            logger.trace(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+            )
+        }
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 

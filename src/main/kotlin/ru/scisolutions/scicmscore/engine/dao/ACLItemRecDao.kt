@@ -57,7 +57,12 @@ class ACLItemRecDao(
 
         return itemCacheManager.get(item, sql, paramSource) {
             logger.trace("Running SQL: {}", sql)
-            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
@@ -93,7 +98,12 @@ class ACLItemRecDao(
 
         return itemCacheManager.get(item, sql, paramSource) {
             logger.trace("Running SQL: {}", sql)
-            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }

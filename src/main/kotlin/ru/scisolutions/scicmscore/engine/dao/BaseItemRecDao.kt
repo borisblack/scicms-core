@@ -16,7 +16,12 @@ open class BaseItemRecDao(
     fun findOne(item: Item, sql: String, paramSource: AttributeSqlParameterSource): ItemRec? =
         itemCacheManager.get(item, sql, paramSource) {
             logger.trace("Running SQL: {}", sql)
-            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             try {
                 dsManager.template(item.ds).queryForObject(sql, paramSource, ItemRecMapper(item))
@@ -30,7 +35,12 @@ open class BaseItemRecDao(
 
         return itemCacheManager.get(item, countSQL, paramSource) {
             logger.trace("Running SQL: {}", countSQL)
-            logger.trace("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             dsManager.template(item.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
         }

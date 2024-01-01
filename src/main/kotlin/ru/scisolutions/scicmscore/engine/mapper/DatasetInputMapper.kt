@@ -1,13 +1,14 @@
 package ru.scisolutions.scicmscore.engine.mapper
 
 import ru.scisolutions.scicmscore.engine.model.AggregateType
+import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
 
 class DatasetInputMapper() {
     fun map(arguments: Map<String, Any?>, opPrefix: String = ""): DatasetInput {
         val datasetFiltersMap = arguments[FILTERS_ARG_NAME] as Map<String, Any>?
-        val fields = arguments[FIELDS_ARG_NAME] as List<String>?
+        val fields = arguments[FIELDS_ARG_NAME] as List<Map<String, Any>>?
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int>?
         val sort = arguments[SORT_ARG_NAME] as List<String>?
         val aggregate = arguments[AGGREGATE_ARG_NAME] as String?
@@ -16,14 +17,22 @@ class DatasetInputMapper() {
 
         return DatasetInput(
             filters = datasetFiltersMap?.let { datasetFiltersInputMapper.map(it, opPrefix) },
-            fields = fields,
+            fields = fields?.map { mapDatasetFieldInput(it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
             sort = sort,
-            aggregate = if (aggregate == null) null else AggregateType.valueOf(aggregate),
+            aggregate = aggregate?.let { AggregateType.valueOf(it) },
             aggregateField = aggregateField,
             groupFields = groupFields
         )
     }
+
+    private fun mapDatasetFieldInput(field: Map<String, Any>): DatasetFieldInput =
+        DatasetFieldInput(
+            name = field[FIELD_NAME_ARG_NAME] as String,
+            asAlias = field[FIELD_AS_ALIAS_ARG_NAME] as String?,
+            aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) }
+        )
+
     companion object {
         const val FILTERS_ARG_NAME = "filters"
         const val FIELDS_ARG_NAME = "fields"
@@ -32,6 +41,8 @@ class DatasetInputMapper() {
         const val AGGREGATE_ARG_NAME = "aggregate"
         const val AGGREGATE_FIELD_ARG_NAME = "aggregateField"
         const val GROUP_FIELDS_ARG_NAME = "groupFields"
+        const val FIELD_NAME_ARG_NAME = "name"
+        const val FIELD_AS_ALIAS_ARG_NAME = "asAlias"
 
         private val datasetFiltersInputMapper = DatasetFiltersInputMapper()
     }

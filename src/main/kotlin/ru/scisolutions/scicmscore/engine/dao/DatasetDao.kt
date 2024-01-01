@@ -15,8 +15,13 @@ class DatasetDao(
 ) {
     fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): List<Map<String, Any?>> =
         datasetCacheManager.get(dataset, sql, paramSource) {
-            logger.debug("Running load SQL: {}", sql)
-            logger.debug("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            logger.trace("Running load SQL: {}", sql)
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             dsManager.template(dataset.ds).query(sql, paramSource, DatasetRowMapper())
         }
@@ -25,8 +30,13 @@ class DatasetDao(
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
 
         return datasetCacheManager.get(dataset, sql, paramSource) {
-            logger.debug("Running count SQL: {}", countSQL)
-            logger.debug("Binding parameters: {}", paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" })
+            logger.trace("Running count SQL: {}", countSQL)
+            if (paramSource.parameterNames.isNotEmpty()) {
+                logger.trace(
+                    "Binding parameters: {}",
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+                )
+            }
 
             dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
         }

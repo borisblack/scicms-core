@@ -28,13 +28,15 @@ class DatasetQueryBuilder(
     )
 
     fun buildLoadQuery(dataset: Dataset, input: DatasetInput, paramSource: DatasetSqlParameterSource): DatasetQuery {
+        validateDatasetInput(dataset, input)
+
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val table = schema.addTable(dataset.qs)
         val query = buildInitialLoadQuery(dataset, input, schema, table, paramSource)
 
         if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {
-            val wrapTable = DbTable(schema, "(${query.validate()})")
+            val wrapTable = DbTable(schema, "($query)")
             val aggregateCol = DbColumn(wrapTable, input.aggregateField, null, null)
             val aggregateQuery = SelectQuery()
                 .addCustomColumns(
@@ -77,6 +79,25 @@ class DatasetQueryBuilder(
         )
     }
 
+    private fun validateDatasetInput(dataset: Dataset, input: DatasetInput) {
+        if (input.aggregate == null || input.aggregateField.isNullOrBlank())
+            return
+
+        if (hasAggregation(dataset, input))
+            throw IllegalArgumentException("Duplicate aggregation clause.")
+    }
+
+    private fun hasAggregation(dataset: Dataset, input: DatasetInput): Boolean =
+        if (input.fields.isNullOrEmpty())
+            hasAggregation(dataset)
+        else input.fields.any { it.aggregate != null }
+
+    private fun hasAggregation(dataset: Dataset): Boolean =
+        dataset.spec.columns.values.any { it.aggregate != null && it.isVisible }
+
+    private fun hasAggregation(input: DatasetInput): Boolean =
+        input.fields?.any { it.aggregate != null } == true
+
     private fun buildInitialLoadQuery(
         dataset: Dataset,
         input: DatasetInput,
@@ -86,14 +107,42 @@ class DatasetQueryBuilder(
     ): SelectQuery {
         val query = SelectQuery()
 
-        if (input.fields.isNullOrEmpty()) {
-            query.addAllColumns()
-                .addFromTable(table)
-        } else {
-            val columns = input.fields
-                .map { DbColumn(table, it, null, null) }
-                .toTypedArray()
-            query.addColumns(*columns)
+        // Columns
+        val customColumns: Array<CustomSql> =
+            if (input.fields.isNullOrEmpty()) {
+                dataset.spec.columns
+                    .filterValues { it.isVisible }
+                    .map { (colName, col) ->
+                        val column = DbColumn(table, colName, null, null)
+                        buildCustomColumn(column, col.aggregate, col.asAlias)
+                    }
+                    .toTypedArray()
+            } else {
+                input.fields
+                    .map {
+                        val column = DbColumn(table, it.name, null, null)
+                        buildCustomColumn(column, it.aggregate, it.asAlias)
+                    }
+                    .toTypedArray()
+            }
+        query.addCustomColumns(*customColumns)
+            .addFromTable(table)
+
+        // Groupings
+        if (hasAggregation(dataset, input)) {
+            val groupingColumns: Array<DbColumn> =
+                if (input.fields.isNullOrEmpty()) {
+                    dataset.spec.columns
+                        .filterValues { it.aggregate == null && it.isVisible }
+                        .map { (colName, _) -> DbColumn(table, colName, null, null) }
+                        .toTypedArray()
+                } else {
+                    input.fields
+                        .filter { it.aggregate == null }
+                        .map { DbColumn(table, it.name, null, null) }
+                        .toTypedArray()
+                }
+            query.addGroupings(*groupingColumns)
         }
 
         // Filters
@@ -113,9 +162,17 @@ class DatasetQueryBuilder(
         return query.validate()
     }
 
+    private fun buildCustomColumn(column: DbColumn, aggregate: AggregateType?, asAlias: String?): CustomSql {
+        if (aggregate == null)
+            return CustomSql(if (asAlias.isNullOrBlank()) "${column.table.alias}.${column.name}" else "${column.table.alias}.${column.name} AS $asAlias")
+
+        return CustomSql("${buildAggregateFunctionCall(column, aggregate)} AS ${if (asAlias.isNullOrBlank()) column.name else asAlias}")
+    }
+
     private fun buildAggregateFunctionCall(aggregateCol: DbColumn, aggregateType: AggregateType): FunctionCall =
         when (aggregateType) {
             AggregateType.count -> FunctionCall.count().addColumnParams(aggregateCol)
+            AggregateType.countd -> FunctionCall.count().addCustomParams(CustomSql("DISTINCT ${aggregateCol.table.alias}.${aggregateCol.name}"))
             AggregateType.sum -> FunctionCall.sum().addColumnParams(aggregateCol)
             AggregateType.avg -> FunctionCall.avg().addColumnParams(aggregateCol)
             AggregateType.min -> FunctionCall.min().addColumnParams(aggregateCol)
