@@ -31,7 +31,8 @@ class DatasetFilterConditionBuilder {
         val nestedConditions = mutableListOf<Condition>()
 
         datasetFiltersInput.fieldFilters.forEach { (fieldName, fieldFilter) ->
-            val column = DbColumn(table, fieldName, null, null)
+            val datasetColumn = dataset.spec.getColumn(fieldName)
+            val column = DbColumn(table, datasetColumn.source ?: fieldName, null, null)
             nestedConditions.add(
                 newPrimitiveCondition(
                     dataset = dataset,
