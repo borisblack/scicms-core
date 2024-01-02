@@ -27,7 +27,7 @@ class ColumnsMapper {
 
     fun map(dataset: Dataset, metaData: SqlRowSetMetaData): Map<String, Column> {
         val prevColumns = dataset.spec.columns
-        val columns = mutableMapOf<String, Column>()
+        val columns = prevColumns.toMutableMap()
         for (i in 1..metaData.columnCount) {
             val colName = metaData.getColumnName(i).lowercase()
             val prevColumn = prevColumns[colName]

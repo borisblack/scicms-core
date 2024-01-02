@@ -76,7 +76,8 @@ class DatasetItemImpl(
         logger.debug("Dataset has changed. Reloading meta")
         dataset.spec = DatasetSpec(
             columns = columnsMapper.map(dataset, datasourceDao.loadMetaData(dataset.ds, dataset.qs)),
-            sources = dataset.spec.sources
+            sources = dataset.spec.sources,
+            useDesigner = dataset.spec.useDesigner
         )
         dataset.hash = hash
 
