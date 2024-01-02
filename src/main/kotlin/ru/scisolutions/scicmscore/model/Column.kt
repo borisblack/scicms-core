@@ -9,7 +9,7 @@ import java.util.Objects
 data class Column(
     val type: FieldType,
     val source: String? = null,
-    val isVisible: Boolean = true,
+    val visible: Boolean = true,
     val aggregate: AggregateType? = null,
     val alias: String? = null,
     val format: String? = null,
@@ -25,7 +25,7 @@ data class Column(
         other as Column
         return type != other.type &&
             source == other.source &&
-            isVisible == other.isVisible &&
+            visible == other.visible &&
             aggregate == other.aggregate &&
             alias == other.alias &&
             format == other.format &&
@@ -36,7 +36,7 @@ data class Column(
         Objects.hash(
             type,
             source,
-            isVisible,
+            visible,
             aggregate?.name,
             alias,
             colWidth

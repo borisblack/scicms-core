@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
+import ru.scisolutions.scicmscore.util.Acl
 
 @Service
 @Transactional
@@ -47,7 +48,7 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
         groupNames.forEach {
             // Create group if it does not exist
             if (!allGroups.contains(it)) {
-                val role = if (it == GROUP_ADMINISTRATORS) ROLE_ADMIN else ROLE_ANONYMOUS
+                val role = if (it == Acl.GROUP_ADMINISTRATORS) Acl.ROLE_ADMIN else Acl.ROLE_ANONYMOUS
                 val grantedAuthorities: List<GrantedAuthority> = AuthorityUtils.createAuthorityList(role)
                 customUserDetailsManager.createGroup(it, grantedAuthorities)
             }
@@ -117,10 +118,6 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
     }
 
     companion object {
-        private const val GROUP_ADMINISTRATORS = "Administrators"
-        private const val ROLE_ADMIN = "ROLE_ADMIN"
-        private const val ROLE_ANONYMOUS = "ROLE_ANONYMOUS"
-
         private val passwordEncoder = BCryptPasswordEncoder()
     }
 }

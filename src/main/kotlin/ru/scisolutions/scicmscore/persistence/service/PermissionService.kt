@@ -46,8 +46,11 @@ class PermissionService(
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw AccessDeniedException("User is not authenticated")
 
-        val accessList = accessRepository.findAllByMask(mask, authentication.name, AuthorityUtils.authorityListToSet(authentication.authorities))
-            .sortedWith(Access.AccessComparator())
+        val accessList = accessRepository.findAllByMask(
+            mask,
+            authentication.name,
+            AuthorityUtils.authorityListToSet(authentication.authorities)
+        ).sortedWith(Access.AccessComparator())
 
         val permissionAccessMap = accessList.groupBy { it.sourceId }
 

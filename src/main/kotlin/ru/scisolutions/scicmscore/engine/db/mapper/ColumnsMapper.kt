@@ -33,8 +33,11 @@ class ColumnsMapper {
             val prevColumn = prevColumns[colName]
             columns[colName] = Column(
                 type = getColumnType(metaData.getColumnType(i)),
-                format = prevColumn?.format,
+                source = null,
+                visible = prevColumn?.visible ?: true,
+                aggregate = null,
                 alias = prevColumn?.alias,
+                format = prevColumn?.format,
                 colWidth = prevColumn?.colWidth
             )
         }

@@ -10,6 +10,11 @@ object Acl {
     private const val USERNAME_PARAM_NAME = "username"
     private const val ROLES_PARAM_NAME = "roles"
 
+    const val ROLE_ADMIN = "ROLE_ADMIN"
+    const val ROLE_ANALYST = "ROLE_ANALYST"
+    const val ROLE_ANONYMOUS = "ROLE_ANONYMOUS"
+    const val GROUP_ADMINISTRATORS = "Administrators"
+
     const val ACCESS_SELECT_SNIPPET =
         "SELECT acc.* " +
         "FROM sec_access acc " +
@@ -70,5 +75,14 @@ object Acl {
             .replace(":$MASK_PARAM_NAME", "(${accessMask.mask.joinToString()})")
             .replace(":$USERNAME_PARAM_NAME", "$QUOTE${username}$QUOTE")
             .replace(":$ROLES_PARAM_NAME", "(${roles.joinToString { "$QUOTE${it}$QUOTE" }})")
+    }
+
+    fun getRoles(): Set<String> {
+        val authentication = SecurityContextHolder.getContext().authentication
+            ?: throw AccessDeniedException("User is not authenticated")
+
+        val authorities = authentication.authorities
+
+        return AuthorityUtils.authorityListToSet(authorities)
     }
 }

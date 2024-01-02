@@ -96,7 +96,7 @@ class DatasetQueryBuilder(
         else input.fields.any { it.aggregate != null }
 
     private fun hasAggregation(dataset: Dataset): Boolean =
-        dataset.spec.columns.values.any { it.aggregate != null && it.isVisible }
+        dataset.spec.columns.values.any { it.aggregate != null && it.visible }
 
     private fun hasAggregation(input: DatasetInput): Boolean =
         input.fields?.any { it.aggregate != null } == true
@@ -114,7 +114,7 @@ class DatasetQueryBuilder(
         val customColumns: Array<CustomSql> =
             if (input.fields.isNullOrEmpty()) {
                 dataset.spec.columns
-                    .filterValues { it.isVisible }
+                    .filterValues { it.visible }
                     .map { (colName, col) ->
                         val column = DbColumn(table, col.source ?: colName, null, null)
                         buildCustomColumn(column, colName, col.aggregate)
@@ -136,7 +136,7 @@ class DatasetQueryBuilder(
             val groupingColumns: Array<DbColumn> =
                 if (input.fields.isNullOrEmpty()) {
                     dataset.spec.columns
-                        .filterValues { it.aggregate == null && it.isVisible }
+                        .filterValues { it.aggregate == null && it.visible }
                         .map { (colName, col) -> DbColumn(table, col.source ?: colName, null, null) }
                         .toTypedArray()
                 } else {
