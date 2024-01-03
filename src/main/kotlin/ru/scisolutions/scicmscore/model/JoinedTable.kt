@@ -5,6 +5,7 @@ import java.util.Objects
 data class JoinedTable(
     val name: String,
     val columns: Map<String, Column>,
+    val alias: String? = null,
     val joinType: JoinType? = null,
     val joins: List<Join>
 ) {
@@ -23,6 +24,7 @@ data class JoinedTable(
 
         return name == other.name &&
             columns == other.columns &&
+            alias == other.alias &&
             joinType == other.joinType &&
             joins == other.joins
     }
@@ -31,6 +33,7 @@ data class JoinedTable(
         Objects.hash(
             name,
             columns,
+            alias,
             joinType?.name,
             joins
         )
