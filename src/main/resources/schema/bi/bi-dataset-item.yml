@@ -48,6 +48,7 @@ spec:
       displayName: Table Name
       description: Table Name
       length: 50
+      fieldHidden: true
       colWidth: 180
     cacheTtl:
       type: int
@@ -60,7 +61,8 @@ spec:
       columnName: query
       displayName: Query
       description: Query
-      colHidden: false
+      colHidden: true
+      fieldHidden: true
       colWidth: 600
       fieldWidth: 18
     spec:

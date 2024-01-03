@@ -45,6 +45,6 @@ class Dataset(
             val t = if (tableName.isNullOrBlank()) null else tableName
             val q = if (query.isNullOrBlank()) null else "($query)"
 
-            return t ?: q ?: throw IllegalStateException("Table name anq query are empty")
+            return t ?: q ?: throw IllegalStateException("Table name anq query are empty.")
         }
 }

@@ -27,7 +27,11 @@ class ColumnsMapper {
 
     fun map(dataset: Dataset, metaData: SqlRowSetMetaData): Map<String, Column> {
         val prevColumns = dataset.spec.columns
-        val columns = prevColumns.toMutableMap()
+        val columns =
+            if (PRESERVE_CUSTOM_COLUMNS)
+                prevColumns.filterValues { it.source != null }.toMutableMap()
+            else mutableMapOf()
+
         for (i in 1..metaData.columnCount) {
             val colName = metaData.getColumnName(i).lowercase()
             val prevColumn = prevColumns[colName]
@@ -80,4 +84,8 @@ class ColumnsMapper {
             Types.CLOB -> Clob::class.java.name
             else -> String::class.java.name
         }
+
+    companion object {
+        private const val PRESERVE_CUSTOM_COLUMNS: Boolean = true // maybe move into properties
+    }
 }
