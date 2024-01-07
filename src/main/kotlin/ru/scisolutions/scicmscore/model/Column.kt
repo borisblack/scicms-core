@@ -8,8 +8,10 @@ import java.util.Objects
 @JsonInclude(Include.NON_NULL)
 data class Column(
     val type: FieldType,
+    val custom: Boolean = false,
     val source: String? = null,
-    val visible: Boolean = true,
+    val formula: String? = null,
+    val hidden: Boolean = false,
     val aggregate: AggregateType? = null,
     val alias: String? = null,
     val format: String? = null,
@@ -24,8 +26,10 @@ data class Column(
 
         other as Column
         return type != other.type &&
+            custom == other.custom &&
             source == other.source &&
-            visible == other.visible &&
+            formula == other.formula &&
+            hidden == other.hidden &&
             aggregate == other.aggregate &&
             alias == other.alias &&
             format == other.format &&
@@ -35,8 +39,10 @@ data class Column(
     override fun hashCode(): Int =
         Objects.hash(
             type,
+            custom,
             source,
-            visible,
+            formula,
+            hidden,
             aggregate?.name,
             alias,
             colWidth

@@ -36,12 +36,12 @@ class DatasetItemImpl(
             datasource = datasource,
             tableName = data[Dataset::tableName.name] as String?,
             query = data[Dataset::query.name] as String?,
-            spec = parseSpec(data[Dataset::spec.name]),
+            spec = parseSpec(data[Dataset::spec.name]).validate(),
             hash = data[Dataset::hash.name] as String?
         )
 
         if (actualizeSpec(dataset)) {
-            data[Dataset::spec.name] = dataset.spec
+            data[Dataset::spec.name] = dataset.spec.validate()
             data[Dataset::hash.name] = dataset.hash
         }
     }

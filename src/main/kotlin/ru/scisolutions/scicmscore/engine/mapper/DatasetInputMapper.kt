@@ -29,7 +29,9 @@ class DatasetInputMapper() {
     private fun mapDatasetFieldInput(field: Map<String, Any>): DatasetFieldInput =
         DatasetFieldInput(
             name = field[FIELD_NAME_ARG_NAME] as String,
+            custom = (field[FIELD_CUSTOM_ARG_NAME] as String).toBoolean(),
             source = field[FIELD_SOURCE_ARG_NAME] as String?,
+            formula = field[FIELD_FORMULA_ARG_NAME] as String?,
             aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) }
         )
 
@@ -41,8 +43,11 @@ class DatasetInputMapper() {
         const val AGGREGATE_ARG_NAME = "aggregate"
         const val AGGREGATE_FIELD_ARG_NAME = "aggregateField"
         const val GROUP_FIELDS_ARG_NAME = "groupFields"
+
         const val FIELD_NAME_ARG_NAME = "name"
+        const val FIELD_CUSTOM_ARG_NAME = "custom"
         const val FIELD_SOURCE_ARG_NAME = "source"
+        const val FIELD_FORMULA_ARG_NAME = "formula"
 
         private val datasetFiltersInputMapper = DatasetFiltersInputMapper()
     }

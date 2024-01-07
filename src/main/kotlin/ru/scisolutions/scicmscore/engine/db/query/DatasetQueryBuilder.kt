@@ -3,7 +3,6 @@ package ru.scisolutions.scicmscore.engine.db.query
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.healthmarketscience.sqlbuilder.CustomSql
-import com.healthmarketscience.sqlbuilder.FunctionCall
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
@@ -11,7 +10,8 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.db.paginator.DatasetPaginator
-import ru.scisolutions.scicmscore.engine.model.AggregateType
+import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
+import ru.scisolutions.scicmscore.engine.model.input.DatasetFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
@@ -33,22 +33,22 @@ class DatasetQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val table = schema.addTable(dataset.qs)
-        val query = buildInitialLoadQuery(dataset, input, schema, table, paramSource)
+        val query = buildInitialLoadQuery(dataset, input, table, paramSource)
 
         // TODO: Deprecated feature, will be removed
         if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {
             val wrapTable = DbTable(schema, "($query)")
-            val datasetAggregateColumn = dataset.spec.getColumn(input.aggregateField)
+            val datasetAggregateColumn = dataset.spec.getField(input.aggregateField)
             val aggregateCol = DbColumn(wrapTable, datasetAggregateColumn.source ?: input.aggregateField, null, null)
             val aggregateQuery = SelectQuery()
                 .addCustomColumns(
-                    CustomSql("${buildAggregateFunctionCall(aggregateCol, input.aggregate)} AS ${input.aggregateField}")
+                    CustomSql("${datasetSqlExprEvaluator.buildAggregateFunctionCall(aggregateCol, input.aggregate)} AS ${input.aggregateField}")
                 )
                 .addFromTable(wrapTable)
 
             if (!input.groupFields.isNullOrEmpty()) {
                 for (groupField in input.groupFields) {
-                    val datasetGroupColumn = dataset.spec.getColumn(groupField)
+                    val datasetGroupColumn = dataset.spec.getField(groupField)
                     val groupCol = DbColumn(wrapTable, datasetGroupColumn.source ?: groupField, null, null)
                     aggregateQuery
                         .addColumns(groupCol)
@@ -70,8 +70,12 @@ class DatasetQueryBuilder(
         }
 
         // Sort
-        if (!input.sort.isNullOrEmpty())
-            datasetOrderingsParser.parseOrderings(input.sort, table, query)
+        if (!input.sort.isNullOrEmpty()) {
+            datasetOrderingsParser.parseOrderings(
+                input.sort,
+                null, // no table for custom fields
+                query)
+        }
 
         val pagination: Pagination? =
             if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, query, paramSource)
@@ -83,6 +87,11 @@ class DatasetQueryBuilder(
     }
 
     private fun validateDatasetInput(dataset: Dataset, input: DatasetInput) {
+        dataset.spec.validate()
+
+        if (input.fields != null && !validateFields(input.fields))
+            throw IllegalArgumentException("Illegal fields input.")
+
         if (input.aggregate == null || input.aggregateField.isNullOrBlank())
             return
 
@@ -90,99 +99,121 @@ class DatasetQueryBuilder(
             throw IllegalArgumentException("Duplicate aggregation clause.")
     }
 
-    private fun hasAggregation(dataset: Dataset, input: DatasetInput): Boolean =
-        if (input.fields.isNullOrEmpty())
-            hasAggregation(dataset)
-        else input.fields.any { it.aggregate != null }
+    private fun validateFields(fields: List<DatasetFieldInput>) =
+        fields.all { (it.source == null && it.formula == null && it.aggregate == null) || it.custom }
 
-    private fun hasAggregation(dataset: Dataset): Boolean =
-        dataset.spec.columns.values.any { it.aggregate != null && it.visible }
+    private fun hasAggregation(dataset: Dataset, input: DatasetInput): Boolean =
+        if (input.fields.isNullOrEmpty()) hasAggregation(dataset) else hasAggregation(input)
 
     private fun hasAggregation(input: DatasetInput): Boolean =
-        input.fields?.any { it.aggregate != null } == true
+        input.fields?.any { datasetSqlExprEvaluator.isAggregate(it) } == true
+
+    fun hasAggregation(dataset: Dataset): Boolean =
+        dataset.spec.columns.any { (fieldName, field) ->
+            !field.hidden && datasetSqlExprEvaluator.isAggregate(dataset, fieldName)
+        }
+
+    fun whereFiltersInput(dataset: Dataset, filters: DatasetFiltersInput): DatasetFiltersInput =
+        DatasetFiltersInput(
+            fieldFilters = filters.fieldFilters.filterKeys { !datasetSqlExprEvaluator.isAggregate(dataset, it) },
+            andFiltersList = filters.andFilterList?.map { whereFiltersInput(dataset, it) },
+            orFiltersList = filters.orFilterList?.map { whereFiltersInput(dataset, it) },
+            notFilters = filters.notFilter?.let { whereFiltersInput(dataset, it) }
+        )
+
+    fun havingFiltersInput(dataset: Dataset, filters: DatasetFiltersInput): DatasetFiltersInput =
+        DatasetFiltersInput(
+            fieldFilters = filters.fieldFilters.filterKeys { datasetSqlExprEvaluator.isAggregate(dataset, it) },
+            andFiltersList = filters.andFilterList?.map { havingFiltersInput(dataset, it) },
+            orFiltersList = filters.orFilterList?.map { havingFiltersInput(dataset, it) },
+            notFilters = filters.notFilter?.let { havingFiltersInput(dataset, it) }
+        )
 
     private fun buildInitialLoadQuery(
         dataset: Dataset,
         input: DatasetInput,
-        schema: DbSchema,
         table: DbTable,
         paramSource: DatasetSqlParameterSource
     ): SelectQuery {
         val query = SelectQuery()
 
-        // Columns
+        // Select columns
         val customColumns: Array<CustomSql> =
             if (input.fields.isNullOrEmpty()) {
                 dataset.spec.columns
-                    .filterValues { it.visible }
+                    .filterValues { !it.hidden }
                     .map { (colName, col) ->
-                        val column = DbColumn(table, col.source ?: colName, null, null)
-                        buildCustomColumn(column, colName, col.aggregate)
+                        val fieldInput = DatasetFieldInput(
+                            name = colName,
+                            custom = col.custom,
+                            source = col.source,
+                            formula = col.formula,
+                            aggregate = col.aggregate
+                        )
+                        datasetSqlExprEvaluator.evaluate(dataset, table, fieldInput)
                     }
                     .toTypedArray()
             } else {
                 input.fields
                     .map {
-                        val column = DbColumn(table, it.source ?: it.name, null, null)
-                        buildCustomColumn(column, it.name, it.aggregate)
+                        datasetSqlExprEvaluator.evaluate(dataset, table, it)
                     }
                     .toTypedArray()
             }
         query.addCustomColumns(*customColumns)
             .addFromTable(table)
 
+        // Filters
+        if (input.filters != null) {
+            val whereFilters = whereFiltersInput(dataset, input.filters)
+            if (whereFilters.isNotEmpty()) {
+                query.addCondition(
+                    datasetFilterConditionBuilder.newFilterCondition(
+                        dataset = dataset,
+                        datasetFiltersInput = whereFilters,
+                        table = table,
+                        query = query,
+                        paramSource = paramSource
+                    )
+                )
+            }
+
+            val havingFilters = havingFiltersInput(dataset, input.filters)
+            if (havingFilters.isNotEmpty()) {
+                query.addHaving(
+                    datasetFilterConditionBuilder.newFilterCondition(
+                        dataset = dataset,
+                        datasetFiltersInput = havingFilters,
+                        table = table,
+                        query = query,
+                        paramSource = paramSource
+                    )
+                )
+            }
+        }
+
         // Groupings
         if (hasAggregation(dataset, input)) {
             val groupingColumns: Array<DbColumn> =
                 if (input.fields.isNullOrEmpty()) {
                     dataset.spec.columns
-                        .filterValues { it.aggregate == null && it.visible }
+                        .filter { (fieldName, field) -> !field.hidden && !datasetSqlExprEvaluator.isAggregate(dataset, fieldName) }
                         .map { (colName, col) -> DbColumn(table, col.source ?: colName, null, null) }
                         .toTypedArray()
                 } else {
                     input.fields
-                        .filter { it.aggregate == null }
+                        .filter { !datasetSqlExprEvaluator.isAggregate(it) }
                         .map { DbColumn(table, it.source ?: it.name, null, null) }
                         .toTypedArray()
                 }
             query.addGroupings(*groupingColumns)
         }
 
-        // Filters
-        if (input.filters != null) {
-            query.addCondition(
-                datasetFilterConditionBuilder.newFilterCondition(
-                    dataset = dataset,
-                    datasetFiltersInput = input.filters,
-                    schema = schema,
-                    table = table,
-                    query = query,
-                    paramSource = paramSource
-                )
-            )
-        }
-
         return query.validate()
     }
 
-    private fun buildCustomColumn(column: DbColumn, alias: String, aggregate: AggregateType?): CustomSql {
-        if (aggregate == null)
-            return CustomSql(if (alias == column.name) "${column.table.alias}.${column.name}" else "${column.table.alias}.${column.name} AS $alias")
-
-        return CustomSql("${buildAggregateFunctionCall(column, aggregate)} AS ${if (alias == column.name) column.name else alias}")
-    }
-
-    private fun buildAggregateFunctionCall(aggregateCol: DbColumn, aggregateType: AggregateType): FunctionCall =
-        when (aggregateType) {
-            AggregateType.count -> FunctionCall.count().addColumnParams(aggregateCol)
-            AggregateType.countd -> FunctionCall.count().addCustomParams(CustomSql("DISTINCT ${aggregateCol.table.alias}.${aggregateCol.name}"))
-            AggregateType.sum -> FunctionCall.sum().addColumnParams(aggregateCol)
-            AggregateType.avg -> FunctionCall.avg().addColumnParams(aggregateCol)
-            AggregateType.min -> FunctionCall.min().addColumnParams(aggregateCol)
-            AggregateType.max -> FunctionCall.max().addColumnParams(aggregateCol)
-        }
-
     companion object {
+        private val datasetSqlExprEvaluator = DatasetSqlExprEvaluator()
         private val datasetOrderingsParser = DatasetOrderingsParser()
     }
 }

@@ -29,7 +29,7 @@ class ColumnsMapper {
         val prevColumns = dataset.spec.columns
         val columns =
             if (PRESERVE_CUSTOM_COLUMNS)
-                prevColumns.filterValues { it.source != null }.toMutableMap()
+                prevColumns.filterValues { it.custom }.toMutableMap()
             else mutableMapOf()
 
         for (i in 1..metaData.columnCount) {
@@ -37,8 +37,10 @@ class ColumnsMapper {
             val prevColumn = prevColumns[colName]
             columns[colName] = Column(
                 type = getColumnType(metaData.getColumnType(i)),
+                custom = false,
                 source = null,
-                visible = prevColumn?.visible ?: true,
+                formula = null,
+                hidden = prevColumn?.hidden ?: false,
                 aggregate = null,
                 alias = prevColumn?.alias,
                 format = prevColumn?.format,

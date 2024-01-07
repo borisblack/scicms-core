@@ -9,8 +9,6 @@ import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.NotCondition
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.UnaryCondition
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFiltersInput
@@ -22,7 +20,6 @@ class DatasetFilterConditionBuilder {
     fun newFilterCondition(
         dataset: Dataset,
         datasetFiltersInput: DatasetFiltersInput,
-        schema: DbSchema,
         table: DbTable,
         query: SelectQuery,
         paramSource: DatasetSqlParameterSource,
@@ -31,15 +28,13 @@ class DatasetFilterConditionBuilder {
         val nestedConditions = mutableListOf<Condition>()
 
         datasetFiltersInput.fieldFilters.forEach { (fieldName, fieldFilter) ->
-            val datasetColumn = dataset.spec.getColumn(fieldName)
-            val column = DbColumn(table, datasetColumn.source ?: fieldName, null, null)
+            val customSql = datasetSqlExprEvaluator.evaluate(dataset, table, fieldName, true)
             nestedConditions.add(
                 newPrimitiveCondition(
                     dataset = dataset,
                     fieldName = fieldName,
                     primitiveFilterInput = fieldFilter,
-                    table = table,
-                    column = column,
+                    customSql = customSql,
                     paramSource = paramSource,
                     fieldNumbers = fieldNumbers
                 )
@@ -51,7 +46,6 @@ class DatasetFilterConditionBuilder {
                 newFilterCondition(
                     dataset = dataset,
                     datasetFiltersInput = it,
-                    schema = schema,
                     table = table,
                     query = query,
                     paramSource = paramSource,
@@ -66,7 +60,6 @@ class DatasetFilterConditionBuilder {
                 newFilterCondition(
                     dataset = dataset,
                     datasetFiltersInput = it,
-                    schema = schema,
                     table = table,
                     query = query,
                     paramSource = paramSource,
@@ -82,7 +75,6 @@ class DatasetFilterConditionBuilder {
                     newFilterCondition(
                         dataset = dataset,
                         datasetFiltersInput = it,
-                        schema = schema,
                         table = table,
                         query = query,
                         paramSource = paramSource,
@@ -99,82 +91,81 @@ class DatasetFilterConditionBuilder {
         dataset: Dataset,
         fieldName: String,
         primitiveFilterInput: PrimitiveFilterInput,
-        table: DbTable,
-        column: DbColumn,
+        customSql: CustomSql,
         paramSource: DatasetSqlParameterSource,
         fieldNumbers: MutableMap<String, Int>
     ): Condition {
-        val fieldType = dataset.spec.getColumn(fieldName).type
+        val fieldType = dataset.spec.getField(fieldName).type
         val nestedConditions = mutableListOf<Condition>()
-        val absFieldName = "${table.alias}_${column.name}"
+        val absFieldName = customSql.toString().replace(nonWordRegex, "").lowercase()
         val fieldNumber = fieldNumbers.getOrDefault(absFieldName, 0)
         val sqlParamName = "${absFieldName}_$fieldNumber"
         fieldNumbers[absFieldName] = fieldNumber + 1
 
         primitiveFilterInput.containsFilter?.let {
-            nestedConditions.add(BinaryCondition.like(column, "%$it%"))
+            nestedConditions.add(BinaryCondition.like(customSql, "%$it%"))
         }
 
         primitiveFilterInput.containsiFilter?.let {
-            nestedConditions.add(BinaryCondition.like(CustomSql("LOWER(${table.alias}.${column.name})"), "%${it.lowercase()}%"))
+            nestedConditions.add(BinaryCondition.like(CustomSql("LOWER($customSql)"), "%${it.lowercase()}%"))
         }
 
         primitiveFilterInput.notContainsFilter?.let {
-            nestedConditions.add(BinaryCondition.notLike(column, "%$it%"))
+            nestedConditions.add(BinaryCondition.notLike(customSql, "%$it%"))
         }
 
         primitiveFilterInput.notContainsiFilter?.let {
-            nestedConditions.add(BinaryCondition.notLike(CustomSql("LOWER(${table.alias}.${column.name})"), "%${it.lowercase()}%"))
+            nestedConditions.add(BinaryCondition.notLike(CustomSql("LOWER($customSql)"), "%${it.lowercase()}%"))
         }
 
         primitiveFilterInput.startsWithFilter?.let {
-            nestedConditions.add(BinaryCondition.like(column, "$it%"))
+            nestedConditions.add(BinaryCondition.like(customSql, "$it%"))
         }
 
         primitiveFilterInput.endsWithFilter?.let {
-            nestedConditions.add(BinaryCondition.like(column, "%$it"))
+            nestedConditions.add(BinaryCondition.like(customSql, "%$it"))
         }
 
         primitiveFilterInput.eqFilter?.let {
             val eqSqlParamName = "${sqlParamName}_eq"
-            nestedConditions.add(BinaryCondition.equalTo(column, CustomSql(":$eqSqlParamName")))
+            nestedConditions.add(BinaryCondition.equalTo(customSql, CustomSql(":$eqSqlParamName")))
             paramSource.addValue(eqSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.neFilter?.let {
             val neSqlParamName = "${sqlParamName}_ne"
-            nestedConditions.add(BinaryCondition.notEqualTo(column, CustomSql(":$neSqlParamName")))
+            nestedConditions.add(BinaryCondition.notEqualTo(customSql, CustomSql(":$neSqlParamName")))
             paramSource.addValue(neSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.gtFilter?.let {
             val gtSqlParamName = "${sqlParamName}_gt"
-            nestedConditions.add(BinaryCondition.greaterThan(column, CustomSql(":$gtSqlParamName")))
+            nestedConditions.add(BinaryCondition.greaterThan(customSql, CustomSql(":$gtSqlParamName")))
             paramSource.addValue(gtSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.gteFilter?.let {
             val gteSqlParamName = "${sqlParamName}_gte"
-            nestedConditions.add(BinaryCondition.greaterThanOrEq(column, CustomSql(":$gteSqlParamName")))
+            nestedConditions.add(BinaryCondition.greaterThanOrEq(customSql, CustomSql(":$gteSqlParamName")))
             paramSource.addValue(gteSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.ltFilter?.let {
             val ltSqlParamName = "${sqlParamName}_lt"
-            nestedConditions.add(BinaryCondition.lessThan(column, CustomSql(":$ltSqlParamName")))
+            nestedConditions.add(BinaryCondition.lessThan(customSql, CustomSql(":$ltSqlParamName")))
             paramSource.addValue(ltSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.lteFilter?.let {
             val lteSqlParamName = "${sqlParamName}_lte"
-            nestedConditions.add(BinaryCondition.lessThanOrEq(column, CustomSql(":$lteSqlParamName")))
+            nestedConditions.add(BinaryCondition.lessThanOrEq(customSql, CustomSql(":$lteSqlParamName")))
             paramSource.addValue(lteSqlParamName, it, fieldType)
         }
 
         primitiveFilterInput.betweenFilter?.let {
             val leftSqlParamName = "${sqlParamName}_left"
             val rightSqlParamName = "${sqlParamName}_right"
-            nestedConditions.add(BetweenCondition(column, CustomSql(":$leftSqlParamName"), CustomSql(":$rightSqlParamName")))
+            nestedConditions.add(BetweenCondition(customSql, CustomSql(":$leftSqlParamName"), CustomSql(":$rightSqlParamName")))
             paramSource
                 .addValue(leftSqlParamName, it.left, fieldType)
                 .addValue(rightSqlParamName, it.right, fieldType)
@@ -182,20 +173,20 @@ class DatasetFilterConditionBuilder {
 
         primitiveFilterInput.inFilter?.let { list ->
             val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
-            nestedConditions.add(InCondition(column, *arr))
+            nestedConditions.add(InCondition(customSql, *arr))
         }
 
         primitiveFilterInput.notInFilter?.let { list ->
             val arr = list.map { SQL.toSqlValue(it) }.toTypedArray()
-            nestedConditions.add(NotCondition(InCondition(column, *arr)))
+            nestedConditions.add(NotCondition(InCondition(customSql, *arr)))
         }
 
         if (primitiveFilterInput.nullFilter == true) {
-            nestedConditions.add(UnaryCondition.isNull(column))
+            nestedConditions.add(UnaryCondition.isNull(customSql))
         }
 
         if (primitiveFilterInput.notNullFilter == true) {
-            nestedConditions.add(UnaryCondition.isNotNull(column))
+            nestedConditions.add(UnaryCondition.isNotNull(customSql))
         }
 
         primitiveFilterInput.andFilterList?.let { list ->
@@ -204,8 +195,7 @@ class DatasetFilterConditionBuilder {
                     dataset = dataset,
                     fieldName = fieldName,
                     primitiveFilterInput = it,
-                    table = table,
-                    column = column,
+                    customSql = customSql,
                     paramSource = paramSource,
                     fieldNumbers = fieldNumbers
                 )
@@ -219,8 +209,7 @@ class DatasetFilterConditionBuilder {
                     dataset = dataset,
                     fieldName = fieldName,
                     primitiveFilterInput = it,
-                    table = table,
-                    column = column,
+                    customSql = customSql,
                     paramSource = paramSource,
                     fieldNumbers = fieldNumbers
                 )
@@ -235,8 +224,7 @@ class DatasetFilterConditionBuilder {
                         dataset = dataset,
                         fieldName = fieldName,
                         primitiveFilterInput = it,
-                        table = table,
-                        column = column,
+                        customSql = customSql,
                         paramSource = paramSource,
                         fieldNumbers = fieldNumbers
                     )
@@ -245,5 +233,10 @@ class DatasetFilterConditionBuilder {
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
+    }
+
+    companion object {
+        private val datasetSqlExprEvaluator = DatasetSqlExprEvaluator()
+        private val nonWordRegex = "\\W".toRegex()
     }
 }

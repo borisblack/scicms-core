@@ -6,6 +6,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.dao.DatasetDao
 import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
+import ru.scisolutions.scicmscore.engine.model.response.CacheStatistic
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
@@ -20,7 +21,10 @@ class DatasetPaginator(
         query: SelectQuery,
         paramSource: DatasetSqlParameterSource
     ): Pagination {
-        val total: Int = datasetDao.count(dataset, query.toString(), paramSource)
-        return paginate(paginationInput, query, total)
+        val total: CacheStatistic<Int> = datasetDao.count(dataset, query.toString(), paramSource)
+        return paginate(paginationInput, query, total.result).apply {
+            this.timeMs = total.timeMs
+            this.cacheHit = total.cacheHit
+        }
     }
 }
