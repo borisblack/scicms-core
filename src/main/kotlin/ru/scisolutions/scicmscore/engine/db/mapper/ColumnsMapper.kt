@@ -38,10 +38,10 @@ class ColumnsMapper {
             columns[colName] = Column(
                 type = getColumnType(metaData.getColumnType(i)),
                 custom = false,
-                source = null,
-                formula = null,
                 hidden = prevColumn?.hidden ?: false,
+                source = null,
                 aggregate = null,
+                formula = null,
                 alias = prevColumn?.alias,
                 format = prevColumn?.format,
                 colWidth = prevColumn?.colWidth

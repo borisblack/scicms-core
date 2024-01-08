@@ -9,10 +9,10 @@ import java.util.Objects
 data class Column(
     val type: FieldType,
     val custom: Boolean = false,
-    val source: String? = null,
-    val formula: String? = null,
     val hidden: Boolean = false,
+    val source: String? = null,
     val aggregate: AggregateType? = null,
+    val formula: String? = null,
     val alias: String? = null,
     val format: String? = null,
     val colWidth: Int? = null

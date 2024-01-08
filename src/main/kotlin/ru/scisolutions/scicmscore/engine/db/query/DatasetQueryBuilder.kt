@@ -142,15 +142,8 @@ class DatasetQueryBuilder(
             if (input.fields.isNullOrEmpty()) {
                 dataset.spec.columns
                     .filterValues { !it.hidden }
-                    .map { (colName, col) ->
-                        val fieldInput = DatasetFieldInput(
-                            name = colName,
-                            custom = col.custom,
-                            source = col.source,
-                            formula = col.formula,
-                            aggregate = col.aggregate
-                        )
-                        datasetSqlExprEvaluator.evaluate(dataset, table, fieldInput)
+                    .map { (fieldName, _) ->
+                        datasetSqlExprEvaluator.evaluate(dataset, table, fieldName)
                     }
                     .toTypedArray()
             } else {

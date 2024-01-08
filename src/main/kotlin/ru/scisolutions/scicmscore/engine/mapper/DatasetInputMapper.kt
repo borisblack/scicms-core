@@ -31,8 +31,8 @@ class DatasetInputMapper() {
             name = field[FIELD_NAME_ARG_NAME] as String,
             custom = (field[FIELD_CUSTOM_ARG_NAME] as String).toBoolean(),
             source = field[FIELD_SOURCE_ARG_NAME] as String?,
-            formula = field[FIELD_FORMULA_ARG_NAME] as String?,
-            aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) }
+            aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) },
+            formula = field[FIELD_FORMULA_ARG_NAME] as String?
         )
 
     companion object {
