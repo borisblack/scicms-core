@@ -16,14 +16,14 @@ metadata:
   performDdl: true
 spec:
   attributes:
-    productIndex:
-      type: string
-      columnName: product_index
-      displayName: Product Index
-      description: Product Index
-      length: 50
+    product:
+      type: relation
+      relType: manyToOne
+      target: product
+      columnName: product_id
+      displayName: Product
+      description: Product
       required: true
-      colWidth: 160
     name:
       type: string
       columnName: name
