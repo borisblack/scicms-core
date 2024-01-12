@@ -32,7 +32,7 @@ spec:
       description: Name
       length: 250
       required: true
-      colWidth: 200
+      colWidth: 300
     initialValue:
       type: int
       columnName: start_value
