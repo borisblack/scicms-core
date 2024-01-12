@@ -55,7 +55,7 @@ spec:
       columnName: description
       displayName: Description
       description: Description
-      length: 250
+      length: 300
       colWidth: 300
     product:
       type: relation

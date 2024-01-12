@@ -11,7 +11,7 @@ metadata:
   displayPluralName: Products
   dataSource: main
   tableName: design_products
-  titleAttribute: name
+  titleAttribute: label
   description: Products
   icon: ContainerOutlined
   core: false
@@ -22,6 +22,15 @@ metadata:
   notLockable: false
 spec:
   attributes:
+    label:
+      type: string
+      columnName: label
+      displayName: Label
+      description: Label
+      required: true
+      unique: true
+      length: 50
+      colWidth: 150
     name:
       type: string
       columnName: name
@@ -30,14 +39,14 @@ spec:
       required: true
       unique: true
       length: 50
-      colWidth: 150
+      colWidth: 300
     description:
       type: string
       columnName: description
       displayName: Description
       description: Description
       length: 250
-      colWidth: 200
+      colWidth: 300
     parts:
       type: relation
       relType: oneToMany
@@ -45,3 +54,10 @@ spec:
       mappedBy: product
       displayName: Parts
       description: Parts
+    partLabelGroups:
+      type: relation
+      relType: oneToMany
+      target: partLabelGroup
+      mappedBy: product
+      displayName: Label Groups
+      description: Label Groups

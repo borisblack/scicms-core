@@ -20,6 +20,7 @@ spec:
       type: relation
       relType: manyToOne
       target: product
+      inversedBy: partLabelGroups
       columnName: product_id
       displayName: Product
       description: Product
@@ -40,6 +41,7 @@ spec:
       required: true
       minRange: 0
       colWidth: 180
+      fieldWidth: 3
     endValue:
       type: int
       columnName: end_value
@@ -48,3 +50,4 @@ spec:
       required: true
       minRange: 0
       colWidth: 180
+      fieldWidth: 3
