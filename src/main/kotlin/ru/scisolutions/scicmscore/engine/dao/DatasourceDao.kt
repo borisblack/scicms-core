@@ -49,6 +49,7 @@ class DatasourceDao(
                 null,
                 arrayOf("TABLE")
             )
+            logger.debug("Fetched metaData tables.")
 
             val response = tablesMapper.map(tablesResultSet, input) { tableName ->
                 columnsMapper.map(loadMetaData(datasource, tableName))
