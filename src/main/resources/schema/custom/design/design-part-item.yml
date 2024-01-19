@@ -42,6 +42,12 @@ spec:
       required: true
       unique: true
       colWidth: 200
+    isReserved:
+      type: bool
+      columnName: is_reserved
+      displayName: Reserved
+      description: Reserved flag
+      colWidth: 160
     name:
       type: string
       columnName: name

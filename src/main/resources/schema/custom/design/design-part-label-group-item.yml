@@ -51,3 +51,15 @@ spec:
       minRange: 0
       colWidth: 180
       fieldWidth: 3
+    militaryAcceptance:
+      type: bool
+      columnName: is_military_acceptance
+      displayName: Military acceptance
+      description: Military acceptance flag
+    parts:
+      type: relation
+      relType: oneToMany
+      target: part
+      mappedBy: labelGroup
+      displayName: Parts
+      description: Parts

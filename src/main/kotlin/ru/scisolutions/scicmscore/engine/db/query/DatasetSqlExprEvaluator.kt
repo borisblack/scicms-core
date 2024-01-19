@@ -6,6 +6,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
+import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
 
 class DatasetSqlExprEvaluator {
@@ -20,6 +21,7 @@ class DatasetSqlExprEvaluator {
 
         return DatasetFieldInput(
             name = fieldName,
+            type = field.type,
             custom = field.custom,
             source = field.source,
             aggregate = field.aggregate,
@@ -70,6 +72,12 @@ class DatasetSqlExprEvaluator {
 
     fun isAggregate(input: DatasetFieldInput): Boolean =
         input.custom && ((input.source != null && input.aggregate != null) || (input.formula != null && input.formula.contains(aggregateRegex)))
+
+    fun calculateAggregationResultType(type: FieldType, aggregationType: AggregateType): FieldType =
+        when (aggregationType) {
+            AggregateType.count, AggregateType.countd -> FieldType.int
+            AggregateType.sum, AggregateType.avg, AggregateType.min, AggregateType.max -> type
+        }
 
     companion object {
         private val fieldRegex = "\\[\\w+]".toRegex()

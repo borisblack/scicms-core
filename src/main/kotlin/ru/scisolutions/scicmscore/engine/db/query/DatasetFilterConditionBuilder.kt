@@ -11,6 +11,7 @@ import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.UnaryCondition
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.PrimitiveFilterInput
 import ru.scisolutions.scicmscore.persistence.entity.Dataset
@@ -19,6 +20,7 @@ import ru.scisolutions.scicmscore.persistence.entity.Dataset
 class DatasetFilterConditionBuilder {
     fun newFilterCondition(
         dataset: Dataset,
+        fields: Map<String, DatasetFieldInput>,
         datasetFiltersInput: DatasetFiltersInput,
         table: DbTable,
         query: SelectQuery,
@@ -28,10 +30,14 @@ class DatasetFilterConditionBuilder {
         val nestedConditions = mutableListOf<Condition>()
 
         datasetFiltersInput.fieldFilters.forEach { (fieldName, fieldFilter) ->
-            val customSql = datasetSqlExprEvaluator.evaluate(dataset, table, fieldName, true)
+            val field = fields[fieldName]
+            val customSql =
+                if (field == null) datasetSqlExprEvaluator.evaluate(dataset, table, fieldName, true)
+                else datasetSqlExprEvaluator.evaluate(dataset, table, field, true)
             nestedConditions.add(
                 newPrimitiveCondition(
                     dataset = dataset,
+                    fields = fields,
                     fieldName = fieldName,
                     primitiveFilterInput = fieldFilter,
                     customSql = customSql,
@@ -45,6 +51,7 @@ class DatasetFilterConditionBuilder {
             val andConditions = list.map {
                 newFilterCondition(
                     dataset = dataset,
+                    fields = fields,
                     datasetFiltersInput = it,
                     table = table,
                     query = query,
@@ -59,6 +66,7 @@ class DatasetFilterConditionBuilder {
             val orConditions = list.map {
                 newFilterCondition(
                     dataset = dataset,
+                    fields = fields,
                     datasetFiltersInput = it,
                     table = table,
                     query = query,
@@ -74,6 +82,7 @@ class DatasetFilterConditionBuilder {
                 NotCondition(
                     newFilterCondition(
                         dataset = dataset,
+                        fields = fields,
                         datasetFiltersInput = it,
                         table = table,
                         query = query,
@@ -89,13 +98,15 @@ class DatasetFilterConditionBuilder {
 
     private fun newPrimitiveCondition(
         dataset: Dataset,
+        fields: Map<String, DatasetFieldInput>,
         fieldName: String,
         primitiveFilterInput: PrimitiveFilterInput,
         customSql: CustomSql,
         paramSource: DatasetSqlParameterSource,
         fieldNumbers: MutableMap<String, Int>
     ): Condition {
-        val fieldType = dataset.spec.getField(fieldName).type
+        val field = fields[fieldName]
+        val fieldType = field?.type ?: dataset.spec.getField(fieldName).type
         val nestedConditions = mutableListOf<Condition>()
         val absFieldName = customSql.toString().replace(nonWordRegex, "").lowercase()
         val fieldNumber = fieldNumbers.getOrDefault(absFieldName, 0)
@@ -193,6 +204,7 @@ class DatasetFilterConditionBuilder {
             val andConditions = list.map {
                 newPrimitiveCondition(
                     dataset = dataset,
+                    fields = fields,
                     fieldName = fieldName,
                     primitiveFilterInput = it,
                     customSql = customSql,
@@ -207,6 +219,7 @@ class DatasetFilterConditionBuilder {
             val orConditions = list.map {
                 newPrimitiveCondition(
                     dataset = dataset,
+                    fields = fields,
                     fieldName = fieldName,
                     primitiveFilterInput = it,
                     customSql = customSql,
@@ -222,6 +235,7 @@ class DatasetFilterConditionBuilder {
                 NotCondition(
                     newPrimitiveCondition(
                         dataset = dataset,
+                        fields = fields,
                         fieldName = fieldName,
                         primitiveFilterInput = it,
                         customSql = customSql,

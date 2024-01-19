@@ -113,20 +113,26 @@ class DatasetQueryBuilder(
             !field.hidden && datasetSqlExprEvaluator.isAggregate(dataset, fieldName)
         }
 
-    fun whereFiltersInput(dataset: Dataset, filters: DatasetFiltersInput): DatasetFiltersInput =
+    fun whereFiltersInput(dataset: Dataset, fields: Map<String, DatasetFieldInput>, filters: DatasetFiltersInput): DatasetFiltersInput =
         DatasetFiltersInput(
-            fieldFilters = filters.fieldFilters.filterKeys { !datasetSqlExprEvaluator.isAggregate(dataset, it) },
-            andFiltersList = filters.andFilterList?.map { whereFiltersInput(dataset, it) },
-            orFiltersList = filters.orFilterList?.map { whereFiltersInput(dataset, it) },
-            notFilters = filters.notFilter?.let { whereFiltersInput(dataset, it) }
+            fieldFilters = filters.fieldFilters.filterKeys {
+                val fieldInput = fields[it]
+                if (fieldInput == null) !datasetSqlExprEvaluator.isAggregate(dataset, it) else !datasetSqlExprEvaluator.isAggregate(fieldInput)
+            },
+            andFiltersList = filters.andFilterList?.map { whereFiltersInput(dataset, fields, it) },
+            orFiltersList = filters.orFilterList?.map { whereFiltersInput(dataset, fields, it) },
+            notFilters = filters.notFilter?.let { whereFiltersInput(dataset, fields, it) }
         )
 
-    fun havingFiltersInput(dataset: Dataset, filters: DatasetFiltersInput): DatasetFiltersInput =
+    fun havingFiltersInput(dataset: Dataset, fields: Map<String, DatasetFieldInput>, filters: DatasetFiltersInput): DatasetFiltersInput =
         DatasetFiltersInput(
-            fieldFilters = filters.fieldFilters.filterKeys { datasetSqlExprEvaluator.isAggregate(dataset, it) },
-            andFiltersList = filters.andFilterList?.map { havingFiltersInput(dataset, it) },
-            orFiltersList = filters.orFilterList?.map { havingFiltersInput(dataset, it) },
-            notFilters = filters.notFilter?.let { havingFiltersInput(dataset, it) }
+            fieldFilters = filters.fieldFilters.filterKeys {
+                val fieldInput = fields[it]
+                if (fieldInput == null) datasetSqlExprEvaluator.isAggregate(dataset, it) else datasetSqlExprEvaluator.isAggregate(fieldInput)
+            },
+            andFiltersList = filters.andFilterList?.map { havingFiltersInput(dataset, fields, it) },
+            orFiltersList = filters.orFilterList?.map { havingFiltersInput(dataset, fields, it) },
+            notFilters = filters.notFilter?.let { havingFiltersInput(dataset, fields, it) }
         )
 
     private fun buildInitialLoadQuery(
@@ -157,12 +163,14 @@ class DatasetQueryBuilder(
             .addFromTable(table)
 
         // Filters
+        val fields = input.fields?.associateBy { it.name } ?: emptyMap()
         if (input.filters != null) {
-            val whereFilters = whereFiltersInput(dataset, input.filters)
+            val whereFilters = whereFiltersInput(dataset, fields, input.filters)
             if (whereFilters.isNotEmpty()) {
                 query.addCondition(
                     datasetFilterConditionBuilder.newFilterCondition(
                         dataset = dataset,
+                        fields,
                         datasetFiltersInput = whereFilters,
                         table = table,
                         query = query,
@@ -171,11 +179,12 @@ class DatasetQueryBuilder(
                 )
             }
 
-            val havingFilters = havingFiltersInput(dataset, input.filters)
+            val havingFilters = havingFiltersInput(dataset, fields, input.filters)
             if (havingFilters.isNotEmpty()) {
                 query.addHaving(
                     datasetFilterConditionBuilder.newFilterCondition(
                         dataset = dataset,
+                        fields,
                         datasetFiltersInput = havingFilters,
                         table = table,
                         query = query,
