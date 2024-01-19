@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.mapper.DatasourceInputMapper
 import ru.scisolutions.scicmscore.engine.mapper.DatasourceInputMapper.Companion.PAGINATION_ARG_NAME
 import ru.scisolutions.scicmscore.engine.mapper.DatasourceInputMapper.Companion.Q_ARG_NAME
+import ru.scisolutions.scicmscore.engine.mapper.DatasourceInputMapper.Companion.SCHEMA_ARG_NAME
 import ru.scisolutions.scicmscore.engine.model.response.DatasourceTablesResponse
 
 @RestController
@@ -30,6 +31,7 @@ class DatasourceController(
 
     companion object {
         private val datasourceInputKeys = setOf(
+            SCHEMA_ARG_NAME,
             Q_ARG_NAME,
             PAGINATION_ARG_NAME
         )

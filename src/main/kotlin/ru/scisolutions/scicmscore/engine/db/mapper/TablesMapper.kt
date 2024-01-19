@@ -21,7 +21,7 @@ class TablesMapper(dataProps: DataProps) {
         val tableNamesPagination = extractTableNames(tablesResultSet, input)
         val tables = tableNamesPagination.list.map {
             Table(
-                name = it,
+                name = if (input.schema.isNullOrBlank()) it else "${input.schema.lowercase()}.$it",
                 columns = getColumns(it)
             )
         }
