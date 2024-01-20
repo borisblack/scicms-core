@@ -45,7 +45,7 @@ class DatasourceDao(
             logger.debug("Fetching metaData tables")
             val tablesResultSet = metaData.getTables(
                 it.catalog,
-                if (input.schema.isNullOrBlank()) it.schema else input.schema.uppercase(),
+                if (input.schema.isNullOrBlank()) it.schema else input.schema,
                 null,
                 arrayOf("TABLE")
             )
