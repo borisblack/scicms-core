@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.schema.service.impl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.ItemTemplateService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
@@ -17,6 +18,7 @@ import ru.scisolutions.scicmscore.schema.service.TableSeeder
 @Service
 class SchemaSeederImpl(
     private val schemaProps: SchemaProps,
+    private val cacheService: CacheService,
     private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
     private val schemaLockService: SchemaLockService,
@@ -33,6 +35,9 @@ class SchemaSeederImpl(
 
     final override fun seedSchema(schema: Schema) {
         schemaLockService.lockOrThrow()
+
+        if (schemaProps.clearCacheOnSeed)
+            cacheService.clearAllSchemaCaches()
 
         // Process item templates
         val itemTemplates = schema.getItemTemplates()

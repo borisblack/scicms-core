@@ -13,6 +13,7 @@ class SchemaProps {
      */
     var useFileChecksum: Boolean = true
     var seedOnInit: Boolean = true
+    var clearCacheOnSeed: Boolean = false
     var deleteIfAbsent: Boolean = false
 
     /**

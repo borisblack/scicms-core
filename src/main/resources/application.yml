@@ -23,6 +23,7 @@ scicms-core:
     path: build/resources/main/schema
     use-file-checksum: false
     seed-on-init: true
+    clear-cache-on-seed: false
     delete-if-absent: false
     rebuild-unique-attribute-indexes: true
     lock-duration-seconds: 300
