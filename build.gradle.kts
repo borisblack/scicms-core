@@ -5,13 +5,13 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
     id("org.graalvm.buildtools.native") version "0.9.28"
     kotlin("jvm") version "1.9.20"
-    kotlin("plugin.spring") version "1.9.20"
-    kotlin("plugin.jpa") version "1.9.20"
-    // kotlin("kapt") version "1.9.20"
+    kotlin("plugin.spring") version "1.9.22"
+    kotlin("plugin.jpa") version "1.9.22"
+    // kotlin("kapt") version "1.9.22"
 }
 
 group = "ru.scisolutions"
-version = "0.2.10-SNAPSHOT"
+version = "0.2.11-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -54,7 +54,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation("com.google.guava:guava:33.0.0-jre")
     implementation("org.redisson:redisson-hibernate-6:3.24.3")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")

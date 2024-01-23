@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SecurityGroupTest {
     @Autowired
     private lateinit var userGroupManager: UserGroupManager

@@ -16,8 +16,7 @@ import java.util.concurrent.Executor
 class DataLoaderBuilder(
     private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao,
-    @Qualifier("applicationTaskExecutor") private val executor: Executor,
-    // @Qualifier("dgsScheduledExecutorService") private val executor: Executor,
+    @Qualifier("taskExecutor") private val executor: Executor,
     private val dataProps: DataProps
 ) {
     fun build(itemName: String): MappedBatchLoader<String, ItemRec> =
