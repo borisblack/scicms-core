@@ -1,0 +1,48 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: labelClaim
+  displayName: Label Claim
+  pluralName: labelClaims
+  displayPluralName: Label Claims
+  dataSource: main
+  tableName: design_label_claims
+  titleAttribute: claim_number
+  description: Label Claims
+  icon: ExceptionOutlined
+  core: false
+  performDdl: true
+spec:
+  attributes:
+    claimNumber:
+      type: string
+      columnName: claim_number
+      displayName: Number
+      description: Number
+      required: true
+      unique: true
+      length: 50
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      required: true
+      colWidth: 200
+      fieldWidth: 18
+      length: 250
+    attachment:
+      type: media
+      columnName: attachment
+      displayName: Attachment
+      description: Attachment
+    parts:
+      type: relation
+      relType: manyToMany
+      target: part
+      intermediate: partLabelClaimMap
+      mappedBy: claims
+      displayName: Parts
+      description: Parts

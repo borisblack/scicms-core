@@ -15,10 +15,15 @@ scicms-core:
   i18n:
     default-locale: en-US
   media:
-    provider: local
+    provider: s3
     provider-options:
-      base-path: D:/storage
-      create-directories: true
+      local:
+        base-path: D:/storage
+        create-directories: true
+      s3:
+        endpoint: http://127.0.0.1:9000
+        access-key: minioadmin
+        secret-key: minioadmin
   schema:
     path: build/resources/main/schema
     use-file-checksum: false

@@ -1,6 +1,10 @@
 package ru.scisolutions.scicmscore.engine.handler.impl
 
 import com.google.common.hash.Hashing
+import io.minio.GetObjectArgs
+import io.minio.MinioClient
+import io.minio.PutObjectArgs
+import io.minio.RemoveObjectArgs
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.security.access.annotation.Secured
@@ -17,23 +21,22 @@ import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.MediaService
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.*
 import com.google.common.io.Files as GFiles
 
-//@Service
-class LocalMediaHandler(
+@Service
+class S3MediaHandler(
     private val mediaProps: MediaProps,
     private val mediaService: MediaService,
     private val itemService: ItemService,
     private val permissionManager: PermissionManager
 ) : MediaHandler {
     init {
-        if (mediaProps.provider != MediaProps.PROVIDER_LOCAL)
-            logger.warn("Local provider is not configured")
+        if (mediaProps.provider != MediaProps.PROVIDER_S3)
+            logger.warn("S3 provider is not configured")
 
-        if (mediaProps.providerOptions.local.basePath.isNullOrBlank())
-            logger.warn("Local provider storage path is not configured")
+        if (mediaProps.providerOptions.s3.endpoint.isNullOrBlank())
+            logger.warn("S3 provider endpoint is not configured")
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
@@ -43,10 +46,15 @@ class LocalMediaHandler(
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
         val fullPath = buildFullPath(filePath)
         val fileToSave = File(fullPath)
-        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.local.createDirectories)
-            fileToSave.parentFile.mkdirs()
 
-        file.transferTo(fileToSave) // try to save
+        // Try to save
+        createMinioClient().putObject(
+            PutObjectArgs
+                .builder()
+                .bucket(mediaProps.providerOptions.s3.defaultBucket)
+                .`object`(filePath)
+                .stream(file.inputStream, file.size, DEFAULT_PART_SIZE)
+                .build());
 
         val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
         val media = Media(
@@ -62,12 +70,17 @@ class LocalMediaHandler(
         )
     }
 
-    private fun buildFullPath(filePath: String): String {
-        if (mediaProps.providerOptions.local.basePath.isNullOrBlank())
-            throw IllegalStateException("Local provider storage base path is not configured")
+    private fun createMinioClient() =
+        MinioClient.builder()
+            .endpoint(mediaProps.providerOptions.s3.endpoint)
+            .credentials(
+                mediaProps.providerOptions.s3.accessKey,
+                mediaProps.providerOptions.s3.secretKey
+            )
+            .build()
 
-        return "${mediaProps.providerOptions.local.basePath}/${filePath}"
-    }
+    private fun buildFullPath(filePath: String): String =
+        "/tmp/${filePath}"
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
     override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = files.map { upload(it) }
@@ -78,14 +91,19 @@ class LocalMediaHandler(
         val filename = file.submittedFileName ?: throw IllegalArgumentException("Filename is null")
         val mimetype = file.contentType ?: throw IllegalArgumentException("Content type is null")
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
-        val fullPath = buildFullPath(filePath)
-        val fileToSave = File(fullPath)
-        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.local.createDirectories)
-            fileToSave.parentFile.mkdirs()
 
-        file.write(fullPath) // try to save
+        // Try to save
+        createMinioClient().putObject(
+            PutObjectArgs
+                .builder()
+                .bucket(mediaProps.providerOptions.s3.defaultBucket)
+                .`object`(filePath)
+                .stream(file.inputStream, file.size, DEFAULT_PART_SIZE)
+                .build());
 
-        val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
+        val tmpFile = Files.createTempFile(null, null)
+        Files.write(tmpFile, file.inputStream.readAllBytes())
+        val md5 = GFiles.asByteSource(tmpFile.toFile()).hash(Hashing.md5())
         val media = Media(
             filename = filename,
             label = uploadInput.label,
@@ -111,8 +129,14 @@ class LocalMediaHandler(
         val media = mediaService.findByIdForRead(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
-        val fullPath = buildFullPath(media.path)
-        val data = Files.readAllBytes(Paths.get(fullPath))
+        val data = createMinioClient().getObject(
+            GetObjectArgs
+                .builder()
+                .bucket(mediaProps.providerOptions.s3.defaultBucket)
+                .`object`(media.path)
+                .build()
+        )
+            .readAllBytes()
 
         return ByteArrayResource(data)
     }
@@ -121,12 +145,19 @@ class LocalMediaHandler(
         val media = mediaService.findByIdForDelete(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
-        val fullPath = buildFullPath(media.path)
-        Files.delete(Paths.get(fullPath))
+        createMinioClient().removeObject(
+            RemoveObjectArgs
+                .builder()
+                .bucket(mediaProps.providerOptions.s3.defaultBucket)
+                .`object`(media.path)
+                .build()
+        )
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(LocalMediaHandler::class.java)
+        private const val DEFAULT_PART_SIZE: Long = 10485760 // 10 * 1024 * 1024
+
+        private val logger = LoggerFactory.getLogger(S3MediaHandler::class.java)
         private val mediaMapper = MediaMapper()
     }
 }
