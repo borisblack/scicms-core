@@ -24,6 +24,7 @@ scicms-core:
         endpoint: http://127.0.0.1:9000
         access-key: minioadmin
         secret-key: minioadmin
+        default-bucket: scicms
   schema:
     path: build/resources/main/schema
     use-file-checksum: false
