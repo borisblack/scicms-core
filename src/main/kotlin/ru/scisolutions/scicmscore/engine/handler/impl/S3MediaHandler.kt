@@ -1,14 +1,15 @@
 package ru.scisolutions.scicmscore.engine.handler.impl
 
-import com.google.common.hash.Hashing
 import io.minio.GetObjectArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
+import org.springframework.util.DigestUtils
 import org.springframework.web.multipart.MultipartFile
 import ru.scisolutions.scicmscore.config.props.MediaProps
 import ru.scisolutions.scicmscore.engine.handler.MediaHandler
@@ -19,12 +20,15 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.persistence.entity.Media
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.MediaService
-import java.io.File
-import java.nio.file.Files
-import java.util.*
-import com.google.common.io.Files as GFiles
+import java.util.UUID
 
 @Service
+@ConditionalOnProperty(
+    prefix = "scicms-core.media",
+    name = ["provider"],
+    havingValue = "s3",
+    matchIfMissing = false
+)
 class S3MediaHandler(
     private val mediaProps: MediaProps,
     private val mediaService: MediaService,
@@ -43,26 +47,24 @@ class S3MediaHandler(
     override fun upload(file: MultipartFile): MediaInfo {
         val filename = file.originalFilename ?: throw IllegalArgumentException("Filename is null")
         val mimetype = file.contentType ?: throw IllegalArgumentException("Content type is null")
-        val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
-        val fullPath = buildFullPath(filePath)
-        val fileToSave = File(fullPath)
+        val filenameToStore = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
 
         // Try to save
-        createMinioClient().putObject(
+        minioClient().putObject(
             PutObjectArgs
                 .builder()
                 .bucket(mediaProps.providerOptions.s3.defaultBucket)
-                .`object`(filePath)
+                .`object`(filenameToStore)
+                .contentType(mimetype)
                 .stream(file.inputStream, file.size, DEFAULT_PART_SIZE)
                 .build());
 
-        val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
         val media = Media(
             filename = filename,
             fileSize = file.size,
             mimetype = mimetype,
-            path = filePath,
-            checksum = md5.toString()
+            path = filenameToStore,
+            checksum = DigestUtils.md5DigestAsHex(file.inputStream)
         )
 
         return mediaMapper.map(
@@ -70,7 +72,7 @@ class S3MediaHandler(
         )
     }
 
-    private fun createMinioClient() =
+    private fun minioClient() =
         MinioClient.builder()
             .endpoint(mediaProps.providerOptions.s3.endpoint)
             .credentials(
@@ -78,9 +80,6 @@ class S3MediaHandler(
                 mediaProps.providerOptions.s3.secretKey
             )
             .build()
-
-    private fun buildFullPath(filePath: String): String =
-        "/tmp/${filePath}"
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
     override fun uploadMultiple(files: List<MultipartFile>): List<MediaInfo> = files.map { upload(it) }
@@ -90,28 +89,26 @@ class S3MediaHandler(
         val file = uploadInput.file
         val filename = file.submittedFileName ?: throw IllegalArgumentException("Filename is null")
         val mimetype = file.contentType ?: throw IllegalArgumentException("Content type is null")
-        val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
+        val filenameToStore = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
 
         // Try to save
-        createMinioClient().putObject(
+        minioClient().putObject(
             PutObjectArgs
                 .builder()
                 .bucket(mediaProps.providerOptions.s3.defaultBucket)
-                .`object`(filePath)
+                .`object`(filenameToStore)
+                .contentType(mimetype)
                 .stream(file.inputStream, file.size, DEFAULT_PART_SIZE)
                 .build());
 
-        val tmpFile = Files.createTempFile(null, null)
-        Files.write(tmpFile, file.inputStream.readAllBytes())
-        val md5 = GFiles.asByteSource(tmpFile.toFile()).hash(Hashing.md5())
         val media = Media(
             filename = filename,
             label = uploadInput.label,
             description = uploadInput.description,
             fileSize = file.size,
             mimetype = mimetype,
-            path = filePath,
-            checksum = md5.toString()
+            path = filenameToStore,
+            checksum = DigestUtils.md5DigestAsHex(file.inputStream)
         ).apply {
             permissionId = permissionManager.checkPermissionId(itemService.getMedia(), uploadInput.permissionId)
         }
@@ -129,7 +126,7 @@ class S3MediaHandler(
         val media = mediaService.findByIdForRead(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
-        val data = createMinioClient().getObject(
+        val data = minioClient().getObject(
             GetObjectArgs
                 .builder()
                 .bucket(mediaProps.providerOptions.s3.defaultBucket)
@@ -145,7 +142,9 @@ class S3MediaHandler(
         val media = mediaService.findByIdForDelete(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
-        createMinioClient().removeObject(
+        mediaService.delete(media)
+
+        minioClient().removeObject(
             RemoveObjectArgs
                 .builder()
                 .bucket(mediaProps.providerOptions.s3.defaultBucket)

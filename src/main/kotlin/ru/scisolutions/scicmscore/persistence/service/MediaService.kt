@@ -34,4 +34,6 @@ class MediaService(
     fun existsById(id: String): Boolean = mediaRepository.existsById(id)
 
     fun save(media: Media): Media = mediaRepository.save(media)
+
+    fun delete(media: Media) = mediaRepository.delete(media)
 }

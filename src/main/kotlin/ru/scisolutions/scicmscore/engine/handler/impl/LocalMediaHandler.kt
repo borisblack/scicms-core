@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.handler.impl
 
 import com.google.common.hash.Hashing
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.security.access.annotation.Secured
 import org.springframework.stereotype.Service
@@ -21,7 +22,13 @@ import java.nio.file.Paths
 import java.util.*
 import com.google.common.io.Files as GFiles
 
-//@Service
+@Service
+@ConditionalOnProperty(
+    prefix = "scicms-core.media",
+    name = ["provider"],
+    havingValue = "local",
+    matchIfMissing = false
+)
 class LocalMediaHandler(
     private val mediaProps: MediaProps,
     private val mediaService: MediaService,
@@ -120,6 +127,8 @@ class LocalMediaHandler(
     override fun deleteById(id: String) {
         val media = mediaService.findByIdForDelete(id)
             ?: throw IllegalArgumentException("Media with ID [$id] not found")
+
+        mediaService.delete(media)
 
         val fullPath = buildFullPath(media.path)
         Files.delete(Paths.get(fullPath))

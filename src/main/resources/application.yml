@@ -15,16 +15,16 @@ scicms-core:
   i18n:
     default-locale: en-US
   media:
-    provider: s3
+    provider: ${MEDIA_PROVIDER:local}
     provider-options:
       local:
-        base-path: D:/storage
+        base-path: ${MEDIA_LOCAL_PATH}
         create-directories: true
       s3:
-        endpoint: http://127.0.0.1:9000
-        access-key: minioadmin
-        secret-key: minioadmin
-        default-bucket: scicms
+        endpoint: ${S3_ENDPOINT:http://127.0.0.1:9000}
+        access-key: ${S3_ACCESS_KEY:minioadmin}
+        secret-key: ${S3_SECRET_KEY:minioadmin}
+        default-bucket: ${S3_DEFAULT_BUCKET:scicms}
   schema:
     path: build/resources/main/schema
     use-file-checksum: false
