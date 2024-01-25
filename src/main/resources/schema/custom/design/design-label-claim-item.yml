@@ -9,7 +9,7 @@ metadata:
   displayPluralName: Label Claims
   dataSource: main
   tableName: design_label_claims
-  titleAttribute: claim_number
+  titleAttribute: claimNumber
   description: Label Claims
   icon: ExceptionOutlined
   core: false

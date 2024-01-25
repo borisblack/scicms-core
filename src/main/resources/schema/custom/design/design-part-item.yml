@@ -135,6 +135,28 @@ spec:
       columnName: start_sheet_id
       displayName: Start Sheet
       description: Start Sheet
+    partBOM:
+      type: relation
+      relType: oneToMany
+      target: partBOM
+      mappedBy: source
+      displayName: Part BOM
+      description: Part BOM
+    claims:
+      type: relation
+      relType: manyToMany
+      target: labelClaim
+      intermediate: partLabelClaimMap
+      inversedBy: parts
+      displayName: Label Claims
+      description: Label Claims
+    documents:
+      type: relation
+      relType: oneToMany
+      target: document
+      mappedBy: part
+      displayName: Documents
+      description: Documents
     changeNotices:
       type: relation
       relType: manyToMany
@@ -143,17 +165,3 @@ spec:
       inversedBy: parts
       displayName: Change Notices
       description: Change Notices
-    partBOM:
-      type: relation
-      relType: oneToMany
-      target: partBOM
-      mappedBy: source
-      displayName: Part BOM
-      description: Part BOM
-    documents:
-      type: relation
-      relType: oneToMany
-      target: document
-      mappedBy: part
-      displayName: Documents
-      description: Documents
