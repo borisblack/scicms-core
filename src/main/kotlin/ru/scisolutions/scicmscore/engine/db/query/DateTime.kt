@@ -35,7 +35,10 @@ object DateTime {
             false
         }
 
-    fun parseDate(source: String): LocalDate = LocalDate.parse(source, dateFormatter)
+    fun parseDate(source: String): LocalDate =
+        if (isDate(source))
+            LocalDate.parse(source, dateFormatter)
+        else OffsetDateTime.parse(source, dateTimeFormatter).toLocalDate()
 
     fun parseTime(source: String): OffsetTime =
         OffsetTime.parse(source, timeFormatter)
