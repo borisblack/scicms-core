@@ -18,6 +18,10 @@ class DatasetCacheManager(
 ) {
     init {
         // Clear caches on start
+        clearAll()
+    }
+
+    fun clearAll() {
         val keys = redissonClient.keys.getKeysByPattern("$DATASET_QUERY_RESULTS_REGION:*")
         for (key in keys) {
             val cache: RMapCache<String, Any?> = redissonClient.getMapCache(key)

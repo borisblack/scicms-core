@@ -17,6 +17,10 @@ data class ItemSpec(
     val attrNames: Set<String> =
         attributes.keys
 
+    @JsonIgnore
+    val relationAttributes: Map<String, Attribute> =
+        attributes.filterValues { it.isRelation() }
+
     fun findAttribute(attrName: String): Attribute? =
         attributes[attrName]
 

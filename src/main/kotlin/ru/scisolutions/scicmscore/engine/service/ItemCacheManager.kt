@@ -16,6 +16,10 @@ class ItemCacheManager(
 ) {
     init {
         // Clear caches on start
+        clearAll()
+    }
+
+    fun clearAll() {
         val keys = redissonClient.keys.getKeysByPattern("$ITEM_QUERY_RESULTS_REGION:*")
         for (key in keys) {
             val cache: RMapCache<String, Any?> = redissonClient.getMapCache(key)
@@ -62,8 +66,13 @@ class ItemCacheManager(
         return resSql
     }
 
-    fun clear(item: Item) =
+    fun clear(item: Item) {
         getItemCache(item.name).clear()
+        for ((_, attr) in item.spec.relationAttributes) {
+            val target = requireNotNull(attr.target)
+            getItemCache(target).clear()
+        }
+    }
 
     companion object {
         private const val ITEM_QUERY_RESULTS_REGION = "scicms_item_query_results"
