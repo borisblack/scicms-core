@@ -29,7 +29,7 @@ class CacheService(
         val hibernateCache = cache.unwrap(org.hibernate.Cache::class.java)
         // cache.evict(Item::class.java)
         // cache.evict(ItemTemplate::class.java)
-        cache.evictAll()
+        // cache.evictAll()
         hibernateCache.evictAllRegions()
         logger.debug("All schema cashes cleared.")
     }
