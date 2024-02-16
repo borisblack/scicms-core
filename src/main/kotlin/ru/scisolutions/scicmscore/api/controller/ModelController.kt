@@ -9,6 +9,8 @@ import ru.scisolutions.scicmscore.api.graphql.ReloadIndicator
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput.DeletingStrategy
+import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
+import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
@@ -19,6 +21,8 @@ class ModelController(
     private val modelsApplier: ModelsApplier,
     private val schemaLockService: SchemaLockService,
     private val reloadIndicator: ReloadIndicator,
+    private val cacheService: CacheService,
+    private val itemCacheManager: ItemCacheManager,
     private val engine: Engine
 ) {
     @PostMapping("/apply")
@@ -29,6 +33,8 @@ class ModelController(
         val appliedModelId = modelsApplier.apply(model)
         schemaLockService.unlockOrThrow()
 
+        cacheService.clearAllSchemaCaches()
+        itemCacheManager.clearAll()
         reloadIndicator.setNeedReload(true)
 
         return appliedModelId

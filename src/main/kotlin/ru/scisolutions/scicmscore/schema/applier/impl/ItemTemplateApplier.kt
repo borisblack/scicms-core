@@ -20,7 +20,7 @@ class ItemTemplateApplier(
     private val schemaProps: SchemaProps,
     private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
-    private val schemaLockService: SchemaLockService,
+    private val schemaLockService: SchemaLockService
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
 
@@ -57,6 +57,7 @@ class ItemTemplateApplier(
 
             logger.info("Updating the item template [{}]", itemTemplateEntity.name)
             itemTemplateMapper.copy(model, itemTemplateEntity)
+            itemTemplateEntity.lockedById = null
             itemTemplateService.save(itemTemplateEntity)
 
             // schemaLockService.unlockOrThrow()

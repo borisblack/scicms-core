@@ -75,6 +75,7 @@ class ItemApplier(
 
             logger.info("Updating the item [{}]", itemEntity.name)
             itemMapper.copyToEntity(item, itemEntity)
+            itemEntity.lockedById = null
             itemService.save(itemEntity)
 
             // schemaLockService.unlockOrThrow()
