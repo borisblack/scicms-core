@@ -14,6 +14,7 @@ import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.schema.model.Item
+import ru.scisolutions.scicmscore.schema.model.ModelApplyResult
 import ru.scisolutions.scicmscore.schema.service.RelationValidator
 import ru.scisolutions.scicmscore.schema.service.TableSeeder
 import ru.scisolutions.scicmscore.util.Maps
@@ -31,7 +32,7 @@ class ItemApplier(
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java
 
-    override fun apply(model: AbstractModel): String {
+    override fun apply(model: AbstractModel): ModelApplyResult {
         if (model !is Item)
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
 
@@ -58,6 +59,7 @@ class ItemApplier(
             itemService.save(itemEntity)
 
             // schemaLockService.unlockOrThrow()
+            return ModelApplyResult(true, itemEntity.id)
         } else if (isChanged(itemEntity, item)) {
             // schemaLockService.lockOrThrow()
 
@@ -66,10 +68,10 @@ class ItemApplier(
                 throw AccessDeniedException("You has no WRITE permission for [$name] item.")
             }
 
-            if (item.metadata.dataSource != itemEntity.ds) {
-                schemaLockService.unlockOrThrow()
-                throw IllegalArgumentException("Item [${name}] datasource cannot be changed.")
-            }
+//            if (item.metadata.dataSource != itemEntity.ds) {
+//                schemaLockService.unlockOrThrow()
+//                throw IllegalArgumentException("Item [${name}] datasource cannot be changed.")
+//            }
 
             tableSeeder.update(item, itemEntity) // update table
 
@@ -79,11 +81,11 @@ class ItemApplier(
             itemService.save(itemEntity)
 
             // schemaLockService.unlockOrThrow()
+            return ModelApplyResult(true, itemEntity.id)
         } else {
             logger.info("Item [{}] is unchanged. Nothing to update.", itemEntity.name)
+            return ModelApplyResult(false, itemEntity.id)
         }
-
-        return itemEntity.id
     }
 
     private fun includeTemplates(item: Item): Item {

@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.schema.mapper
 
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.extension.isUUID
 import ru.scisolutions.scicmscore.persistence.entity.Permission
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.schema.model.Item
@@ -25,8 +26,10 @@ class ItemMapper(private val datasourceService: DatasourceService) {
 
     fun copyToEntity(source: Item, target: ItemEntity) {
         val metadata = source.metadata
-        val datasource = datasourceService.findByName(metadata.dataSource)
-        
+        val datasource =
+            if (metadata.dataSource.isUUID()) datasourceService.findById(metadata.dataSource)
+            else datasourceService.findByName(metadata.dataSource)
+
         target.name = metadata.name
         target.displayName = metadata.displayName.ifBlank { metadata.name }
         target.pluralName = metadata.pluralName

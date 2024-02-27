@@ -22,6 +22,10 @@ class DatasourceService(
         datasourceRepository.findAll()
 
     @Transactional(readOnly = true)
+    fun findById(id: String): Datasource? =
+        datasourceRepository.findById(id).orElse(null)
+
+    @Transactional(readOnly = true)
     fun getById(id: String): Datasource =
         datasourceRepository.findById(id)
             .orElseThrow { IllegalArgumentException("Datasource [$id] not found.") }

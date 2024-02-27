@@ -1,10 +1,6 @@
 package ru.scisolutions.scicmscore.api.controller
 
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.scisolutions.scicmscore.api.graphql.ReloadIndicator
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
@@ -30,14 +26,16 @@ class ModelController(
         model.checksum = null
 
         schemaLockService.lockOrThrow()
-        val appliedModelId = modelsApplier.apply(model)
+        val appliedModelResult = modelsApplier.apply(model)
         schemaLockService.unlockOrThrow()
 
-        cacheService.clearAllSchemaCaches()
-        itemCacheManager.clearAll()
-        reloadIndicator.setNeedReload(true)
+        if (appliedModelResult.applied) {
+            cacheService.clearAllSchemaCaches()
+            itemCacheManager.clearAll()
+            reloadIndicator.setNeedReload(true)
+        }
 
-        return appliedModelId
+        return appliedModelResult.id
     }
 
     @PostMapping("/lock/{modelName}/{id}")

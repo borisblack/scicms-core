@@ -12,6 +12,7 @@ import ru.scisolutions.scicmscore.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.schema.mapper.ItemTemplateMapper
 import ru.scisolutions.scicmscore.schema.model.AbstractModel
 import ru.scisolutions.scicmscore.schema.model.ItemTemplate
+import ru.scisolutions.scicmscore.schema.model.ModelApplyResult
 import ru.scisolutions.scicmscore.persistence.entity.Item as ItemEntity
 import ru.scisolutions.scicmscore.persistence.entity.ItemTemplate as ItemTemplateEntity
 
@@ -24,7 +25,7 @@ class ItemTemplateApplier(
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
 
-    override fun apply(model: AbstractModel): String {
+    override fun apply(model: AbstractModel): ModelApplyResult {
         if (model !is ItemTemplate)
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
 
@@ -47,6 +48,7 @@ class ItemTemplateApplier(
             itemTemplateService.save(itemTemplateEntity)
 
             // schemaLockService.unlockOrThrow()
+            return ModelApplyResult(true, itemTemplateEntity.id)
         } else if (isChanged(model, itemTemplateEntity)) {
             // schemaLockService.lockOrThrow()
 
@@ -61,11 +63,11 @@ class ItemTemplateApplier(
             itemTemplateService.save(itemTemplateEntity)
 
             // schemaLockService.unlockOrThrow()
+            return ModelApplyResult(true, itemTemplateEntity.id)
         } else {
             logger.info("Item template [{}] is unchanged. Nothing to update", itemTemplateEntity.name)
+            return ModelApplyResult(false, itemTemplateEntity.id)
         }
-
-        return itemTemplateEntity.id
     }
 
     private fun validateModel(model: ItemTemplate) {
