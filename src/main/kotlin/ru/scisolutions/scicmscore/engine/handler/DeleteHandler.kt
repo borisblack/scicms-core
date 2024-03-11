@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.hook.DeleteHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
 import ru.scisolutions.scicmscore.persistence.entity.Permission

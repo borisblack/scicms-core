@@ -3,6 +3,8 @@ package ru.scisolutions.scicmscore.util
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
+import java.nio.charset.Charset
+import java.util.*
 
 object Acl {
     private const val QUOTE = "'"
@@ -14,6 +16,7 @@ object Acl {
     const val ROLE_ANALYST = "ROLE_ANALYST"
     const val ROLE_ANONYMOUS = "ROLE_ANONYMOUS"
     const val GROUP_ADMINISTRATORS = "Administrators"
+    const val GROUP_USERS = "Users"
 
     const val ACCESS_SELECT_SNIPPET =
         "SELECT acc.* " +
@@ -44,6 +47,8 @@ object Acl {
             "AND acc.granting = 1 " +
             "AND acc.begin_date <= {fn NOW()} " +
             "AND (acc.end_date IS NULL OR acc.end_date > {fn NOW()})"
+
+    private const val RANDOM_PASSWORD_LENGTH = 7
 
     enum class Mask(val mask: Set<Int>) {
         READ(setOf(1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31)),
@@ -84,5 +89,11 @@ object Acl {
         val authorities = authentication.authorities
 
         return AuthorityUtils.authorityListToSet(authorities)
+    }
+
+    fun randomPassword(): String {
+        val array = ByteArray(RANDOM_PASSWORD_LENGTH)
+        Random().nextBytes(array)
+        return String(array, Charset.forName("UTF-8"))
     }
 }

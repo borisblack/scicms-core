@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.InternalAuthenticationServiceException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.authority.AuthorityUtils
@@ -20,13 +19,14 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
 import ru.scisolutions.scicmscore.config.props.SecurityProps
-import ru.scisolutions.scicmscore.model.AuthRequest
+import ru.scisolutions.scicmscore.model.Oauth2AccessCodeAuthRequest
 import ru.scisolutions.scicmscore.model.TokenResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.security.JwtTokenService
+import ru.scisolutions.scicmscore.security.Oauth2AccessCodeAuthenticationToken
 import ru.scisolutions.scicmscore.security.model.User
 
-class UsernamePasswordAuthenticationFilter(
+class Oauth2AccessTokenAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val jwtTokenService: JwtTokenService,
     private val securityProps: SecurityProps
@@ -37,8 +37,8 @@ class UsernamePasswordAuthenticationFilter(
         try {
             if (postToAuthenticate(req)) {
                 val authRequest = getAuthRequest(req)
-                logger.trace("Trying to authenticate user by username [${authRequest.identifier}]")
-                processUsernamePasswordAuthentication(req, res, authRequest.identifier, authRequest.password)
+                logger.trace("Trying to authenticate user with OAuth2 provider [${authRequest.provider}]")
+                processAccessCodeAuthentication(req, res, authRequest.provider, authRequest.code)
                 return // don't proceed with filter chain
             }
             logger.trace("Passing request down the filter chain")
@@ -54,20 +54,20 @@ class UsernamePasswordAuthenticationFilter(
         }
     }
 
-    private fun getAuthRequest(req: HttpServletRequest): AuthRequest =
+    private fun getAuthRequest(req: HttpServletRequest): Oauth2AccessCodeAuthRequest =
         try {
-            objectMapper.readValue(req.inputStream, AuthRequest::class.java)
+            objectMapper.readValue(req.inputStream, Oauth2AccessCodeAuthRequest::class.java)
         } catch (e: Exception) {
             throw BadCredentialsException(e.message)
         }
 
     private fun postToAuthenticate(req: HttpServletRequest): Boolean {
         val resourcePath = pathHelper.getPathWithinApplication(req)
-        return resourcePath == "/api/auth/local" && req.method == "POST" // Strapi compatible
+        return resourcePath == "/api/auth/oauth2" && req.method == "POST"
     }
 
-    private fun processUsernamePasswordAuthentication(req: HttpServletRequest, res: HttpServletResponse, username: String, password: String) {
-        val resultAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password)
+    private fun processAccessCodeAuthentication(req: HttpServletRequest, res: HttpServletResponse, provider: String, code: String) {
+        val resultAuthentication = tryToAuthenticateWithAccessCode(provider, code)
         SecurityContextHolder.getContext().authentication = resultAuthentication
 
         // Create JWT token
@@ -78,8 +78,8 @@ class UsernamePasswordAuthenticationFilter(
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
 
-    private fun tryToAuthenticateWithUsernameAndPassword(username: String, password: String): Authentication {
-        val authentication = UsernamePasswordAuthenticationToken(username, password)
+    private fun tryToAuthenticateWithAccessCode(provider: String, code: String): Authentication {
+        val authentication = Oauth2AccessCodeAuthenticationToken(provider, code)
         return tryToAuthenticate(authentication)
     }
 

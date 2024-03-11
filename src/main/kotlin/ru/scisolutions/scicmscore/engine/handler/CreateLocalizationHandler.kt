@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
-import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager

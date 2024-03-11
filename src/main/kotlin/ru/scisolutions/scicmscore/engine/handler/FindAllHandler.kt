@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollectionMeta
-import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
 @Service

@@ -14,6 +14,7 @@ import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
+import ru.scisolutions.scicmscore.util.Acl
 
 @RestController
 @RequestMapping("/api/auth/local")
@@ -32,7 +33,7 @@ class UserController(
         userGroupManager.createUserInGroups(
             username = registrationRequest.username,
             rawPassword = registrationRequest.password,
-            groupNames = setOf(USERS_GROUP_NAME)
+            groupNames = setOf(Acl.GROUP_USERS)
         )
 
         val userDetails = userGroupManager.loadUserByUsername(registrationRequest.username)
@@ -49,9 +50,5 @@ class UserController(
                 sessionData = user.sessionData
             )
         )
-    }
-
-    companion object {
-        private const val USERS_GROUP_NAME = "Users"
     }
 }

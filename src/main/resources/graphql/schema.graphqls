@@ -260,6 +260,7 @@ type UserInfo {
 type Config {
     data: DataConfig!
     i18n: I18nConfig!
+    security: SecurityConfig!
 }
 
 type DataConfig {
@@ -268,6 +269,16 @@ type DataConfig {
 
 type I18nConfig {
     defaultLocale: String!
+}
+
+type SecurityConfig {
+    oauth2Providers: [Oauth2ProviderConfig!]!
+}
+
+type Oauth2ProviderConfig {
+    id: String!
+    name: String!
+    authUrl: String!
 }
 
 type MediaInfo {

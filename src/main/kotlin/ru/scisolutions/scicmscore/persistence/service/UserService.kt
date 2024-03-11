@@ -32,6 +32,10 @@ class UserService(
         findByNaturalId(username) ?: throw IllegalArgumentException("User [$username] not found.")
 
     @Transactional(readOnly = true)
+    fun existsByUsername(username: String): Boolean =
+        userRepository.existsByUsername(username)
+
+    @Transactional(readOnly = true)
     fun getCurrent(): User {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw AccessDeniedException("User is not authenticated.")

@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.engine.service
+package ru.scisolutions.scicmscore.service
 
 import org.springframework.beans.BeansException
 import org.springframework.context.ApplicationContext

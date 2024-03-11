@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.security
+package ru.scisolutions.scicmscore.security.model
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.User

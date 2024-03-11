@@ -21,8 +21,10 @@ import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.security.CustomLogoutHandler
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.filter.JwtTokenAuthenticationFilter
+import ru.scisolutions.scicmscore.security.filter.Oauth2AccessTokenAuthenticationFilter
 import ru.scisolutions.scicmscore.security.filter.UsernamePasswordAuthenticationFilter
 import ru.scisolutions.scicmscore.security.provider.JwtTokenAuthenticationProvider
+import ru.scisolutions.scicmscore.security.provider.Oauth2AccessCodeAuthenticationProvider
 import ru.scisolutions.scicmscore.security.provider.UsernamePasswordAuthenticationProvider
 
 @Configuration
@@ -30,7 +32,8 @@ import ru.scisolutions.scicmscore.security.provider.UsernamePasswordAuthenticati
 @EnableMethodSecurity(securedEnabled = true)
 class ApiSecurityConfig(
     private val securityProps: SecurityProps,
-    private val usernamePasswordAuthenticationProvider: UsernamePasswordAuthenticationProvider
+    private val usernamePasswordAuthenticationProvider: UsernamePasswordAuthenticationProvider,
+    private val oauth2AccessCodeAuthenticationProvider: Oauth2AccessCodeAuthenticationProvider
 ) {
     @Bean
     fun threadPoolTaskExecutor(): ThreadPoolTaskExecutor {
@@ -52,6 +55,7 @@ class ApiSecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                     "/api/auth/local/register",
+                    "/api/config/security",
                     "/graphiql/**",
                     // "/schema.json", "/graphql", "/api/**"
                 )
@@ -72,6 +76,7 @@ class ApiSecurityConfig(
         http
             .addFilterBefore(JwtTokenAuthenticationFilter(authManager), BasicAuthenticationFilter::class.java)
             .addFilterBefore(UsernamePasswordAuthenticationFilter(authManager, jwtTokenService(), securityProps), BasicAuthenticationFilter::class.java)
+            .addFilterBefore(Oauth2AccessTokenAuthenticationFilter(authManager, jwtTokenService(), securityProps), BasicAuthenticationFilter::class.java)
 
         return http.build()
     }
@@ -82,6 +87,7 @@ class ApiSecurityConfig(
         authenticationManagerBuilder
             .authenticationProvider(jwtTokenAuthenticationProvider())
             .authenticationProvider(usernamePasswordAuthenticationProvider)
+            .authenticationProvider(oauth2AccessCodeAuthenticationProvider)
 
         return authenticationManagerBuilder.build()
     }

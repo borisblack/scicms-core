@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.LockHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.FlaggedResponse
-import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.UserService

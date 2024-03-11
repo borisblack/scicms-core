@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
-import ru.scisolutions.scicmscore.security.User
+import ru.scisolutions.scicmscore.security.model.User
 
 @Component
 class UsernamePasswordAuthenticationProvider(

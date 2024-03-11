@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.hook.PurgeHook
 import ru.scisolutions.scicmscore.engine.model.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
-import ru.scisolutions.scicmscore.engine.service.ClassService
+import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 
