@@ -35,40 +35,6 @@ class DatasetQueryBuilder(
         val table = schema.addTable(dataset.qs)
         val query = buildInitialLoadQuery(dataset, input, table, paramSource)
 
-        // TODO: Deprecated feature, will be removed
-        if (input.aggregate != null && !input.aggregateField.isNullOrBlank()) {
-            val wrapTable = DbTable(schema, "($query)")
-            val datasetAggregateColumn = dataset.spec.getField(input.aggregateField)
-            val aggregateCol = DbColumn(wrapTable, datasetAggregateColumn.source ?: input.aggregateField, null, null)
-            val aggregateQuery = SelectQuery()
-                .addCustomColumns(
-                    CustomSql("${datasetSqlExprEvaluator.buildAggregateFunctionCall(aggregateCol, input.aggregate)} AS ${input.aggregateField}")
-                )
-                .addFromTable(wrapTable)
-
-            if (!input.groupFields.isNullOrEmpty()) {
-                for (groupField in input.groupFields) {
-                    val datasetGroupColumn = dataset.spec.getField(groupField)
-                    val groupCol = DbColumn(wrapTable, datasetGroupColumn.source ?: groupField, null, null)
-                    aggregateQuery
-                        .addColumns(groupCol)
-                        .addGroupings(groupCol)
-                }
-            }
-
-            // Sort
-            if (!input.sort.isNullOrEmpty())
-                datasetOrderingsParser.parseOrderings(input.sort, null, aggregateQuery)
-
-            val pagination: Pagination? =
-                if (input.pagination == null) null else datasetPaginator.paginate(dataset, input.pagination, aggregateQuery, paramSource)
-
-            return DatasetQuery(
-                sql = aggregateQuery.validate().toString(),
-                pagination = pagination
-            )
-        }
-
         // Sort
         if (!input.sort.isNullOrEmpty()) {
             datasetOrderingsParser.parseOrderings(
@@ -91,12 +57,6 @@ class DatasetQueryBuilder(
 
         if (input.fields != null && !validateFields(input.fields))
             throw IllegalArgumentException("Illegal fields input.")
-
-        if (input.aggregate == null || input.aggregateField.isNullOrBlank())
-            return
-
-        if (hasAggregation(dataset, input))
-            throw IllegalArgumentException("Duplicate aggregation clause.")
     }
 
     private fun validateFields(fields: List<DatasetFieldInput>) =

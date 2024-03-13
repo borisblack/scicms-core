@@ -12,18 +12,12 @@ class DatasetInputMapper() {
         val fields = arguments[FIELDS_ARG_NAME] as List<Map<String, Any>>?
         val paginationMap = arguments[PAGINATION_ARG_NAME] as Map<String, Int>?
         val sort = arguments[SORT_ARG_NAME] as List<String>?
-        val aggregate = arguments[AGGREGATE_ARG_NAME] as String?
-        val aggregateField = arguments[AGGREGATE_FIELD_ARG_NAME] as String?
-        val groupFields = arguments[GROUP_FIELDS_ARG_NAME] as List<String>?
 
         return DatasetInput(
             filters = datasetFiltersMap?.let { datasetFiltersInputMapper.map(it, opPrefix) },
             fields = fields?.map { mapDatasetFieldInput(it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
-            sort = sort,
-            aggregate = aggregate?.let { AggregateType.valueOf(it) },
-            aggregateField = aggregateField,
-            groupFields = groupFields
+            sort = sort
         )
     }
 
@@ -43,8 +37,6 @@ class DatasetInputMapper() {
         const val PAGINATION_ARG_NAME = "pagination"
         const val SORT_ARG_NAME = "sort"
         const val AGGREGATE_ARG_NAME = "aggregate"
-        const val AGGREGATE_FIELD_ARG_NAME = "aggregateField"
-        const val GROUP_FIELDS_ARG_NAME = "groupFields"
 
         const val FIELD_NAME_ARG_NAME = "name"
         const val FIELD_TYPE_ARG_NAME = "type"
