@@ -19,6 +19,7 @@ class SecurityProps {
     var jwtToken: JwtToken = JwtToken()
 
     var registrationDisabled: Boolean = false
+    var passwordPattern: Regex = DEFAULT_PASSWORD_PATTERN.toRegex()
     var clearAccessOnUserDelete: Boolean = false
 
     @NestedConfigurationProperty
@@ -50,8 +51,9 @@ class SecurityProps {
     }
 
     companion object {
-        const val DEFAULT_ID: String = "scisolutionsJWT"
-        const val DEFAULT_SECRET: String = "scisolutionsSecretKey"
-        const val DEFAULT_EXPIRATION_INTERVAL_MILLIS: Long = 86_400_000
+        private const val DEFAULT_PASSWORD_PATTERN: String = "^\\w{6,16}$"
+        private const val DEFAULT_ID: String = "scisolutionsJWT"
+        private const val DEFAULT_SECRET: String = "scisolutionsSecretKey"
+        private const val DEFAULT_EXPIRATION_INTERVAL_MILLIS: Long = 86_400_000
     }
 }

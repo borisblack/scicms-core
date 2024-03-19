@@ -19,8 +19,8 @@ class User(
     @org.hibernate.annotations.NaturalId
     var username: String,
 
-   // @Column(name = "passwd", nullable = false)
-   // val password: String,
+    @Column(name = "passwd", nullable = false)
+    var password: String,
 
     @Column(nullable = false, columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)

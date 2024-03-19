@@ -10,6 +10,7 @@ import ru.scisolutions.scicmscore.model.FieldType
 import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import ru.scisolutions.scicmscore.persistence.service.MediaService
+import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
 import ru.scisolutions.scicmscore.util.Json
 import ru.scisolutions.scicmscore.util.Maps
 import java.math.BigDecimal
@@ -80,7 +81,7 @@ class AttributeValueHelper(
         return when (attribute.type) {
             FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email -> value
             FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
-            FieldType.password -> if (attribute.encode == true) passwordEncoder.encode(value as String) else value
+            FieldType.password -> if (attribute.encode == true) UserGroupManagerImpl.passwordEncoder.encode(value as String) else value
             FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
             FieldType.date, FieldType.time, FieldType.datetime, FieldType.timestamp -> value
             FieldType.bool -> value
@@ -284,6 +285,5 @@ class AttributeValueHelper(
             ItemRec.STATE_ATTR_NAME
         )
         private val simpleEmailRegex = Regex("\\w+@\\w+\\.\\w+")
-        private val passwordEncoder = BCryptPasswordEncoder()
     }
 }

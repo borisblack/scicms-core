@@ -39,6 +39,7 @@ scicms-core:
       secret: scisolutionsSecretKey
       expiration-interval-millis: 86_400_000
     registration-disabled: false
+    password-pattern: '^\w{6,16}$'
     clear-access-on-user-delete: false
 
 dgs:

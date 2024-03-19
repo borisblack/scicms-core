@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
 import ru.scisolutions.scicmscore.config.props.SecurityProps
+import ru.scisolutions.scicmscore.model.AuthType
 import ru.scisolutions.scicmscore.model.Oauth2AccessCodeAuthRequest
 import ru.scisolutions.scicmscore.model.TokenResponse
 import ru.scisolutions.scicmscore.model.UserInfo
@@ -102,7 +103,8 @@ class Oauth2AccessTokenAuthenticationFilter(
                 username = user.username,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
                 sessionData = user.sessionData
-            )
+            ),
+            authType = AuthType.OAUTH2
         )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK

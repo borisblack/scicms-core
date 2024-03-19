@@ -21,6 +21,7 @@ import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.model.AuthRequest
+import ru.scisolutions.scicmscore.model.AuthType
 import ru.scisolutions.scicmscore.model.TokenResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.security.JwtTokenService
@@ -102,7 +103,8 @@ class UsernamePasswordAuthenticationFilter(
                 username = user.username,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
                 sessionData = user.sessionData
-            )
+            ),
+            authType = AuthType.LOCAL
         )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK

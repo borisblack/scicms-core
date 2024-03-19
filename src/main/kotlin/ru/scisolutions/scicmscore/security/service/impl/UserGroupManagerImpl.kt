@@ -118,6 +118,6 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
     }
 
     companion object {
-        private val passwordEncoder = BCryptPasswordEncoder()
+        val passwordEncoder = BCryptPasswordEncoder()
     }
 }

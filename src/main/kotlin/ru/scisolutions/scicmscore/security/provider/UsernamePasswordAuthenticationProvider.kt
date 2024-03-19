@@ -3,11 +3,11 @@ package ru.scisolutions.scicmscore.security.provider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
 import ru.scisolutions.scicmscore.security.model.User
+import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
 
 @Component
 class UsernamePasswordAuthenticationProvider(
@@ -16,7 +16,7 @@ class UsernamePasswordAuthenticationProvider(
 ) : DaoAuthenticationProvider() {
     init {
         userDetailsService = customUserDetailsManager
-        passwordEncoder = BCryptPasswordEncoder()
+        passwordEncoder = UserGroupManagerImpl.passwordEncoder
     }
 
     override fun authenticate(authentication: Authentication?): Authentication {
