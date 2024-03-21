@@ -41,15 +41,15 @@ class UserController(
         val user = userService.getByUsername(registrationRequest.username)
 
         return TokenResponse(
-            jwt = jwtTokenService.generateJwtToken(userDetails.username, authorities),
+            jwt = jwtTokenService.generateJwtToken(userDetails.username, authorities, AuthType.LOCAL),
             expirationIntervalMillis = securityProps.jwtToken.expirationIntervalMillis,
             user = UserInfo(
                 id = user.id,
                 username = userDetails.username,
                 roles = authorities,
+                authType = AuthType.LOCAL,
                 sessionData = user.sessionData
-            ),
-            authType = AuthType.LOCAL
+            )
         )
     }
 

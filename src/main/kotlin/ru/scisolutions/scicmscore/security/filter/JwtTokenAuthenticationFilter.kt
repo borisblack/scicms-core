@@ -44,7 +44,7 @@ class JwtTokenAuthenticationFilter(private val authenticationManager: Authentica
     }
 
     private fun tryToAuthenticateWithJwtToken(jwtToken: String): Authentication {
-        val authentication = JwtTokenAuthenticationToken(jwtToken, null)
+        val authentication = JwtTokenAuthenticationToken(jwtToken)
         return tryToAuthenticate(authentication)
     }
 

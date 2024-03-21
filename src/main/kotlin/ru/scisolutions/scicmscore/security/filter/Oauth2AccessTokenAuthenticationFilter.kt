@@ -74,7 +74,8 @@ class Oauth2AccessTokenAuthenticationFilter(
         // Create JWT token
         val jwtToken = jwtTokenService.generateJwtToken(
             resultAuthentication.name,
-            AuthorityUtils.authorityListToSet(resultAuthentication.authorities)
+            AuthorityUtils.authorityListToSet(resultAuthentication.authorities),
+            AuthType.OAUTH2
         )
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
@@ -102,9 +103,9 @@ class Oauth2AccessTokenAuthenticationFilter(
                 id = user.id,
                 username = user.username,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
+                authType = AuthType.OAUTH2,
                 sessionData = user.sessionData
-            ),
-            authType = AuthType.OAUTH2
+            )
         )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK

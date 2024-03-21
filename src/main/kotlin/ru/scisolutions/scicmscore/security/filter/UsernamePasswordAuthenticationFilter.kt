@@ -74,7 +74,8 @@ class UsernamePasswordAuthenticationFilter(
         // Create JWT token
         val jwtToken = jwtTokenService.generateJwtToken(
             resultAuthentication.name,
-            AuthorityUtils.authorityListToSet(resultAuthentication.authorities)
+            AuthorityUtils.authorityListToSet(resultAuthentication.authorities),
+            AuthType.LOCAL
         )
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
@@ -102,9 +103,9 @@ class UsernamePasswordAuthenticationFilter(
                 id = user.id,
                 username = user.username,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
+                authType = AuthType.LOCAL,
                 sessionData = user.sessionData
             ),
-            authType = AuthType.LOCAL
         )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK

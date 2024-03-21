@@ -6,11 +6,12 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.security.UserAuthenticationToken
 
 @Service
 class UserHandler(private val userService: UserService) {
     fun me(): UserInfo? {
-        val authentication = SecurityContextHolder.getContext().authentication
+        val authentication = SecurityContextHolder.getContext().authentication as UserAuthenticationToken?
         return if (authentication == null) {
             null
         } else {
@@ -20,7 +21,8 @@ class UserHandler(private val userService: UserService) {
                 id = user.id,
                 username = authentication.name,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
-                sessionData = user.sessionData
+                sessionData = user.sessionData,
+                authType = authentication.authType
             )
         }
     }

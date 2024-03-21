@@ -3,11 +3,12 @@ package ru.scisolutions.scicmscore.security.provider
 import io.jsonwebtoken.JwtException
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import ru.scisolutions.scicmscore.model.AuthType
 import ru.scisolutions.scicmscore.security.JwtTokenAuthenticationToken
 import ru.scisolutions.scicmscore.security.JwtTokenService
+import ru.scisolutions.scicmscore.security.UserAuthenticationToken
 
 class JwtTokenAuthenticationProvider(private val jwtTokenService: JwtTokenService) : AuthenticationProvider {
     override fun supports(authentication: Class<*>): Boolean = authentication == JwtTokenAuthenticationToken::class.java
@@ -22,10 +23,11 @@ class JwtTokenAuthenticationProvider(private val jwtTokenService: JwtTokenServic
         }
 
         val authorities: List<String> = claims["authorities"] as List<String>
-        return UsernamePasswordAuthenticationToken(
+        val authType = claims["authType"] as String?
+        return UserAuthenticationToken(
             claims.subject,
-            null,
-            authorities.map { SimpleGrantedAuthority(it) }
+            authorities.map { SimpleGrantedAuthority(it) },
+            if (authType == null) AuthType.LOCAL else AuthType.valueOf(authType)
         )
     }
 }
