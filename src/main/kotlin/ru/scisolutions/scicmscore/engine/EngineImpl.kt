@@ -40,6 +40,9 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
+import ru.scisolutions.scicmscore.model.ChangePasswordRequest
+import ru.scisolutions.scicmscore.model.RegistrationRequest
+import ru.scisolutions.scicmscore.model.TokenResponse
 import ru.scisolutions.scicmscore.model.UserInfo
 
 /**
@@ -63,6 +66,12 @@ class EngineImpl(
     private val datasetHandler: DatasetHandler,
     private val datasourceHandler: DatasourceHandler
 ) : Engine {
+    override fun registerUser(registrationRequest: RegistrationRequest): TokenResponse =
+        userHandler.register(registrationRequest)
+
+    override fun changePassword(changePasswordRequest: ChangePasswordRequest) =
+        userHandler.changePassword(changePasswordRequest)
+
     override fun me(): UserInfo? = userHandler.me()
 
     override fun updateSessionData(sessionData: Map<String, Any?>?): SessionDataResponse =
