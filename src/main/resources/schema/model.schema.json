@@ -183,6 +183,11 @@
             "decimal", "date", "time", "datetime", "timestamp", "bool", "array", "json", "media", "relation"
           ]
         },
+        "sortOrder": {
+          "description": "Sort order (optional, null by default)",
+          "type": "integer",
+          "minimum": 0
+        },
         "columnName": {
           "description": "Column name (optional, lowercase attribute name is used in database by default). Can be null for oneToMany and manyToMany relations",
           "type": "string",

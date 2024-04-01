@@ -9,6 +9,7 @@ import java.util.Objects
 
 class Attribute(
     val type: FieldType,
+    val sortOrder: Int? = null,
     val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
     val displayName: String,
     val description: String? = null,
@@ -110,6 +111,7 @@ class Attribute(
         other as Attribute
 
         return type == other.type &&
+            sortOrder == other.sortOrder &&
             columnName == other.columnName &&
             enumSet == other.enumSet &&
             seqName == other.seqName &&
@@ -144,6 +146,7 @@ class Attribute(
     override fun hashCode(): Int =
         Objects.hash(
             type.name,
+            sortOrder,
             columnName,
             enumSet,
             seqName,
