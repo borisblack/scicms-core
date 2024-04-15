@@ -116,6 +116,12 @@ class ItemApplier(
         if(metadata.name.first().isUpperCase())
             throw IllegalArgumentException("Model name [${metadata.name}] must start with a lowercase character.")
 
+        if (model.metadata.tableName.isNullOrBlank() && model.metadata.query.isNullOrBlank())
+            throw IllegalArgumentException("Model table and query are empty.")
+
+        if (model.metadata.performDdl && model.metadata.tableName.isNullOrBlank())
+            throw IllegalArgumentException("Model table is empty, so DDL cannot be performed.")
+
         // Check if item implementation exists
         if (metadata.implementation != null) {
             Class.forName(metadata.implementation)
