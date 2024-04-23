@@ -10,6 +10,8 @@ data class ItemMetadata(
     val query: String? = null,
     val cacheTtl: Int? = null,
     val titleAttribute: String = ID_ATTR_NAME,
+    val defaultSortAttribute: String? = null,
+    val defaultSortOrder: String? = null,
     val description: String? = null,
     val readOnly: Boolean = false,
     val icon: String? = null,

@@ -40,6 +40,8 @@ class ItemMapper(private val datasourceService: DatasourceService) {
         target.query = metadata.query
         target.cacheTtl = metadata.cacheTtl
         target.titleAttribute = metadata.titleAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }
+        target.defaultSortAttribute = metadata.defaultSortAttribute
+        target.defaultSortOrder = metadata.defaultSortOrder
         target.includeTemplates = source.includeTemplates
         target.description = metadata.description
         target.readOnly = metadata.readOnly

@@ -332,6 +332,8 @@
             <column name="title_attribute" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
+            <column name="default_sort_attribute" type="varchar(50)"/>
+            <column name="default_sort_order" type="varchar(50)"/>
             <column name="include_templates" type="text" defaultValue='["default"]'>
                 <constraints nullable="false"/>
             </column>

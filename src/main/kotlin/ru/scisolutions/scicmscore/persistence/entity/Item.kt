@@ -51,6 +51,12 @@ class Item(
     @Column(name = "title_attribute", nullable = false)
     var titleAttribute: String = ID_ATTR_NAME,
 
+    @Column(name = "default_sort_attribute")
+    var defaultSortAttribute: String? = null,
+
+    @Column(name = "default_sort_order")
+    var defaultSortOrder: String? = null,
+
     @Column(name = "include_templates")
     @Convert(converter = LinkedHashSetStringConverter::class)
     var includeTemplates: LinkedHashSet<String> = LinkedHashSet(listOf(ItemTemplate.DEFAULT_ITEM_TEMPLATE_NAME)),

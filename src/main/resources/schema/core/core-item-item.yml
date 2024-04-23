@@ -57,6 +57,7 @@ spec:
       columnName: datasource_id
       displayName: Datasource
       description: Datasource
+      colWidth: 160
     tableName:
       type: string
       columnName: table_name
@@ -84,7 +85,21 @@ spec:
       displayName: Title Attribute
       description: Title Attribute Name
       length: 50
-      colWidth: 160
+      colWidth: 180
+    defaultSortAttribute:
+      type: string
+      columnName: default_sort_attribute
+      displayName: Default Sort Attribute
+      description: Default Sort Attribute Name
+      length: 50
+      colWidth: 280
+    defaultSortOrder:
+      type: string
+      columnName: default_sort_order
+      displayName: Default Sort Order
+      description: Default Sort Order
+      length: 50
+      colWidth: 290
     includeTemplates:
       type: array
       columnName: include_templates

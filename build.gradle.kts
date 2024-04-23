@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "ru.scisolutions"
-version = "0.2.15-SNAPSHOT"
+version = "0.3.0-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21

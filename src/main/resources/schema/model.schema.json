@@ -90,6 +90,18 @@
           "minLength": 1,
           "maxLength": 50
         },
+        "defaultSortAttribute": {
+          "description": "Default sort attribute name (optional)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "defaultSortOrder": {
+          "description": "Sort order for default sort attribute (optional)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
         "dataSource": {
           "description": "Data source name (optional, 'main' is used by default)",
           "type": "string",

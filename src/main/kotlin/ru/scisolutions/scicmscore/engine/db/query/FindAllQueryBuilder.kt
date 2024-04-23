@@ -1,11 +1,7 @@
 package ru.scisolutions.scicmscore.engine.db.query
 
-import com.healthmarketscience.sqlbuilder.BinaryCondition
-import com.healthmarketscience.sqlbuilder.ComboCondition
-import com.healthmarketscience.sqlbuilder.Condition
-import com.healthmarketscience.sqlbuilder.InCondition
-import com.healthmarketscience.sqlbuilder.SelectQuery
-import com.healthmarketscience.sqlbuilder.UnaryCondition
+import com.healthmarketscience.sqlbuilder.*
+import com.healthmarketscience.sqlbuilder.OrderObject.Dir
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
@@ -41,7 +37,13 @@ class FindAllQueryBuilder(
         val pagination: Pagination
     )
 
-    fun buildFindAllQuery(item: Item, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>, paramSource: AttributeSqlParameterSource): FindAllQuery {
+    fun buildFindAllQuery(
+        item: Item,
+        input: FindAllInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>,
+        paramSource: AttributeSqlParameterSource
+    ): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
@@ -65,7 +67,9 @@ class FindAllQueryBuilder(
         val pagination = itemPaginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
         // Sort
-        if (!input.sort.isNullOrEmpty()) {
+        if (input.sort.isNullOrEmpty()) {
+            addDefaultOrdering(item, table, query)
+        } else {
             orderingsParser.parseOrderings(item, input.sort, schema, table, query)
         }
 
@@ -73,6 +77,14 @@ class FindAllQueryBuilder(
             sql = query.validate().toString(),
             pagination = pagination
         )
+    }
+
+    private fun addDefaultOrdering(item: Item, table: DbTable, query: SelectQuery) {
+        val defaultSortAttributeName = item.defaultSortAttribute ?: return
+
+        val defaultSortAttribute = item.spec.getAttribute(defaultSortAttributeName)
+        val defaultSortColumn = DbColumn(table, defaultSortAttribute.getColumnName(defaultSortAttributeName.lowercase()), null, null)
+        query.addOrdering(defaultSortColumn, if (item.defaultSortAttribute?.lowercase() == "desc") Dir.DESCENDING else Dir.ASCENDING)
     }
 
     private fun buildFindAllInitialQuery(item: Item, filters: ItemFiltersInput?, selectAttrNames: Set<String>, schema: DbSchema, paramSource: AttributeSqlParameterSource): SelectQuery {
@@ -180,7 +192,9 @@ class FindAllQueryBuilder(
         val pagination = itemPaginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
         // Sort
-        if (!input.sort.isNullOrEmpty()) {
+        if (input.sort.isNullOrEmpty()) {
+            addDefaultOrdering(item, table, query)
+        } else {
             orderingsParser.parseOrderings(item, input.sort, schema, table, query)
         }
 
