@@ -891,4 +891,54 @@
             <column name="permission_id"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="2024-04-24-properties" author="bchernysh">
+        <!--core_properties-->
+        <createTable tableName="core_properties">
+            <column name="id" type="varchar(36)">
+                <constraints primaryKey="true" primaryKeyName="core_properties_pk"/>
+            </column>
+            <column name="config_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="core_properties_name_uk"/>
+            </column>
+            <column name="property_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="property_value" type="text"/>
+            <column name="generation" type="int" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="major_rev" type="varchar(50)" defaultValue="A">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minor_rev" type="varchar(50)"/>
+            <column name="is_current" type="tinyint" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="varchar(36)"/>
+            <column name="locale" type="varchar(50)">
+                <constraints foreignKeyName="core_properties_locale_fk" references="core_locales(name)"/>
+            </column>
+            <column name="lifecycle_id" type="varchar(36)">
+                <constraints foreignKeyName="core_properties_lifecycle_fk" references="core_lifecycles(id)"/>
+            </column>
+            <column name="state" type="varchar(50)"/>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_id" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+            <column name="updated_by_id" type="varchar(36)"/>
+            <column name="locked_by_id" type="varchar(36)"/>
+        </createTable>
+
+        <createIndex tableName="core_properties" indexName="core_properties_permission_idx">
+            <column name="permission_id"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

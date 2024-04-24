@@ -1,0 +1,42 @@
+coreVersion: v1
+kind: Item
+includeTemplates:
+  - default
+metadata:
+  name: property
+  displayName: Property
+  pluralName: properties
+  displayPluralName: Properties
+  dataSource: main
+  tableName: core_properties
+  titleAttribute: name
+  description: Properties
+  icon: SettingOutlined
+  core: true
+  performDdl: false
+  implementation: ru.scisolutions.scicmscore.engine.hook.impl.PropertyItemImpl
+spec:
+  attributes:
+    name:
+      type: string
+      columnName: name
+      displayName: Name
+      description: Property Name
+      required: true
+      unique: true
+      length: 50
+      pattern: '^[a-z]\w*$'
+      colWidth: 150
+    type:
+      type: string
+      columnName: property_type
+      displayName: Type
+      description: Property Type
+      required: true
+      length: 50
+    value:
+      type: text
+      columnName: property_value
+      displayName: Value
+      description: Property Value
+      colWidth: 200
