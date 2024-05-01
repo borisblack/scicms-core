@@ -29,7 +29,7 @@ scicms-core:
     path: build/resources/main/schema
     use-file-checksum: false
     seed-on-init: true
-    clear-cache-on-seed: false
+    clear-cache-on-seed: true
     delete-if-absent: false
     rebuild-unique-attribute-indexes: true
     lock-duration-seconds: 300
@@ -59,10 +59,9 @@ spring:
       host: ${REDIS_HOST:127.0.0.1}
       port: ${REDIS_PORT:6379}
   datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@//localhost:1521/xepdb1
-    username: scicms
-    password: scicms
+    url: ${MAIN_DB_URL}
+    username: ${MAIN_DB_USERNAME}
+    password: ${MAIN_DB_PASSWORD}
     hikari:
       maximum-pool-size: 5
       minimum-idle: 1
@@ -105,7 +104,7 @@ logging:
   logback.rollingpolicy.max-history: 7
   level:
     org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#    org.hibernate.orm.jdbc.bind: trace
 #    org.springframework.jdbc.core.JdbcTemplate: debug
 #    org.springframework.jdbc.core.StatementCreatorUtils: trace
 #    org.springframework.security: debug

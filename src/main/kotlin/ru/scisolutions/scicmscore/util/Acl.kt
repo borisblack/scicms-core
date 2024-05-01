@@ -34,8 +34,8 @@ object Acl {
             "inner join Identity sid " +
                 "on acc.targetId = sid.id and ((sid.principal = true and sid.name = :username) or (sid.principal = false and sid.name in :roles)) " +
         "where acc.mask in :mask " +
-            "and acc.beginDate <= current_date " +
-            "and (acc.endDate is null or acc.endDate > current_date) " +
+            "and acc.beginDate <= current_timestamp " +
+            "and (acc.endDate is null or acc.endDate > current_timestamp) " +
         "order by acc.sortOrder asc, acc.granting desc"
 
     private const val PERMISSION_IDS_SELECT_SNIPPET =
