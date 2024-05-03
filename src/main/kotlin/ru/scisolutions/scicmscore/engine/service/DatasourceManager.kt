@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
+import ru.scisolutions.scicmscore.extension.isUUID
 import ru.scisolutions.scicmscore.persistence.entity.Datasource
 import ru.scisolutions.scicmscore.persistence.service.DatasourceService
 import java.sql.DriverManager
@@ -33,19 +34,22 @@ class DatasourceManager(
         }
         .build()
 
-    fun dataSource(name: String): DataSource =
-        dataSourceCache.get(name) {
+    fun dataSource(ds: String): DataSource {
+        val name = if (ds.isUUID()) datasourceService.getById(ds).name else ds
+
+        return dataSourceCache.get(name) {
             if (name == Datasource.MAIN_DATASOURCE_NAME) mainDataSource else createDataSource(name)
         }
+    }
 
     private fun createDataSource(name: String): DataSource {
-        val ds = datasourceService.getByName(name)
+        val datasource = datasourceService.getByName(name)
         val config = HikariConfig().apply {
-            this.jdbcUrl = environment.resolvePlaceholders(ds.connectionString)
-            this.username = environment.resolvePlaceholders(ds.username)
-            this.password = environment.resolvePlaceholders(ds.password)
-            this.maximumPoolSize = ds.maxPoolSize ?: dataProps.defaultPoolSize
-            this.minimumIdle = ds.minIdle ?: dataProps.defaultIdle
+            this.jdbcUrl = environment.resolvePlaceholders(datasource.connectionString)
+            this.username = environment.resolvePlaceholders(datasource.username)
+            this.password = environment.resolvePlaceholders(datasource.password)
+            this.maximumPoolSize = datasource.maxPoolSize ?: dataProps.defaultPoolSize
+            this.minimumIdle = datasource.minIdle ?: dataProps.defaultIdle
         }
 
         return HikariDataSource(config)

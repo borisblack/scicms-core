@@ -40,3 +40,4 @@ spec:
       displayName: Value
       description: Property Value
       colWidth: 200
+      fieldWidth: 12
