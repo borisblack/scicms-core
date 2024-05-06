@@ -908,6 +908,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="property_value" type="text"/>
+            <column name="property_scope" type="varchar(50)"/>
             <column name="generation" type="int" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
