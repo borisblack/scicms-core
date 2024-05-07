@@ -61,9 +61,8 @@ spec:
       columnName: query
       displayName: Query
       description: Query
-      colHidden: true
       fieldHidden: true
-      colWidth: 600
+      colWidth: 500
       fieldWidth: 18
     spec:
       type: json

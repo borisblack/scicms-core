@@ -39,7 +39,7 @@ spec:
       columnName: property_value
       displayName: Value
       description: Property Value
-      colWidth: 200
+      colWidth: 500
       fieldWidth: 12
     scope:
       type: enum
@@ -49,3 +49,4 @@ spec:
         - server
       displayName: Scope
       description: Scope
+      colWidth: 170
