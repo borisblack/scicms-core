@@ -61,6 +61,7 @@ spec:
       columnName: query
       displayName: Query
       description: Query
+      format: sql
       fieldHidden: true
       colWidth: 500
       fieldWidth: 18

@@ -30,6 +30,7 @@ class Attribute(
     val indexed: Boolean = false,
     val private: Boolean = false,
     val pattern: String? = null, // for string type
+    val format: String? = null, // for text type
     val length: Int? = null, // for string type
     val precision: Int? = null, // for decimal types
     val scale: Int? = null, // for decimal types
@@ -125,6 +126,7 @@ class Attribute(
             displayName == other.displayName &&
             description == other.description &&
             pattern == other.pattern &&
+            format == other.format &&
             defaultValue == other.defaultValue &&
             required == other.required &&
             readOnly == other.readOnly &&
@@ -160,6 +162,7 @@ class Attribute(
             displayName,
             description,
             pattern,
+            format,
             defaultValue,
             required,
             readOnly,
