@@ -36,8 +36,16 @@ class DatasourceItemImpl(
         // Do nothing
     }
 
+    override fun create(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
+        return null
+    }
+
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec) {
         checkConnection(DatasourceItemRec(data))
+    }
+
+    override fun update(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
+        return null
     }
 
     override fun afterUpdate(itemName: String, response: Response) {

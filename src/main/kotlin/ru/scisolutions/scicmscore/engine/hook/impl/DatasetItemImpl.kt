@@ -84,12 +84,20 @@ class DatasetItemImpl(
         return true
     }
 
+    override fun create(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
+        return null
+    }
+
     override fun afterCreate(itemName: String, response: Response) {
         // Do nothing
     }
 
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec) {
         actualizeSpec(DatasetItemRec(data))
+    }
+
+    override fun update(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
+        return null
     }
 
     override fun afterUpdate(itemName: String, response: Response) {

@@ -19,6 +19,7 @@ import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.persistence.entity.Item
 import ru.scisolutions.scicmscore.persistence.service.CacheService
 import ru.scisolutions.scicmscore.persistence.service.ItemService
 import java.util.UUID
@@ -67,16 +68,19 @@ class CreateHandler(
         val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
         implInstance?.beforeCreate(itemName, input, itemRec)
 
-        itemRecDao.insert(item, itemRec) // insert
+        val hookItemRec = implInstance?.create(itemName, input, itemRec)
+        if (hookItemRec == null) {
+            itemRecDao.insert(item, itemRec) // insert
 
-        addRelationHelper.processRelations(
-            item,
-            itemRec.id as String,
-            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
-        )
+            addRelationHelper.processRelations(
+                item,
+                itemRec.id as String,
+                itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
+            )
+        }
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
-        val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
+        val selectData = (hookItemRec ?: itemRec).filterKeys { it in attrNames }.toMutableMap()
         val response = Response(
             ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
@@ -89,9 +93,7 @@ class CreateHandler(
     }
 
     companion object {
-        private const val ITEM_ITEM_NAME = "item"
-
-        private val disabledItemNames = setOf(ITEM_ITEM_NAME)
         private val logger = LoggerFactory.getLogger(CreateHandler::class.java)
+        private val disabledItemNames = setOf(Item.ITEM_ITEM_NAME)
     }
 }

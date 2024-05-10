@@ -35,5 +35,7 @@ out/
 ### VS Code ###
 .vscode/
 
+.fleet/
+
 logs/
 .env

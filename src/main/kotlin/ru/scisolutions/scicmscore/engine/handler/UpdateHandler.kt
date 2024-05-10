@@ -76,14 +76,17 @@ class UpdateHandler(
         val implInstance = classService.getCastInstance(item.implementation, UpdateHook::class.java)
         implInstance?.beforeUpdate(itemName, input, itemRec)
 
-        itemRecDao.updateById(item, input.id, itemRec) // update
+        val hookItemRec = implInstance?.update(itemName, input, itemRec)
+        if (hookItemRec == null) {
+            itemRecDao.updateById(item, input.id, itemRec) // update
 
-        // Update relations
-        addRelationHelper.processRelations(
-            item,
-            itemRec.id as String,
-            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
-        )
+            // Update relations
+            addRelationHelper.processRelations(
+                item,
+                itemRec.id as String,
+                itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
+            )
+        }
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id)

@@ -7,5 +7,7 @@ import ru.scisolutions.scicmscore.engine.model.response.Response
 interface UpdateHook {
     fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec)
 
+    fun update(itemName: String, input: UpdateInput, data: ItemRec): ItemRec?
+
     fun afterUpdate(itemName: String, response: Response)
 }
