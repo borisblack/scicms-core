@@ -20,11 +20,11 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindAllRelatedDa
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneDataFetcher
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.query.FindOneRelatedDataFetcher
 import ru.scisolutions.scicmscore.engine.Engine
-import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.util.upperFirst
+import ru.scisolutions.scicmscore.engine.model.Attribute.RelType
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.extension.upperFirst
 
 @DgsComponent
 class DynamicDataFetcher(

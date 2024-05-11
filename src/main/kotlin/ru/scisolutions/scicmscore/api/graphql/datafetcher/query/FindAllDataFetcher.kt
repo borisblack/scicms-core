@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.mapper.FindAllInputMapper
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
-import ru.scisolutions.scicmscore.util.lowerFirst
+import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class FindAllDataFetcher(

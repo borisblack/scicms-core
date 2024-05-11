@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.api.graphql
 
-import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
 class ExcludeItemPolicy {
     fun excludeFromQuery(item: Item) = item.name in excludedFromQueryItemNames

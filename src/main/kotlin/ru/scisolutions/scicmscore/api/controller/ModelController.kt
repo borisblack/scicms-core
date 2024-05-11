@@ -6,10 +6,10 @@ import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput.DeletingStrategy
 import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
-import ru.scisolutions.scicmscore.persistence.service.CacheService
-import ru.scisolutions.scicmscore.persistence.service.SchemaLockService
-import ru.scisolutions.scicmscore.schema.applier.ModelsApplier
-import ru.scisolutions.scicmscore.schema.model.AbstractModel
+import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
+import ru.scisolutions.scicmscore.engine.persistence.service.SchemaLockService
+import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
+import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
 
 @RestController
 @RequestMapping("/api/model")

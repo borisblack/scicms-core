@@ -2,19 +2,18 @@ package ru.scisolutions.scicmscore.engine.hook.impl
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.DatasetDao
-import ru.scisolutions.scicmscore.engine.dao.DatasourceDao
-import ru.scisolutions.scicmscore.engine.db.mapper.ColumnsMapper
+import ru.scisolutions.scicmscore.engine.persistence.dao.DatasourceDao
+import ru.scisolutions.scicmscore.engine.persistence.mapper.ColumnsMapper
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
-import ru.scisolutions.scicmscore.engine.model.DatasetItemRec
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.DatasetItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.model.DatasetSpec
-import ru.scisolutions.scicmscore.persistence.entity.Dataset
-import ru.scisolutions.scicmscore.persistence.service.DatasourceService
+import ru.scisolutions.scicmscore.engine.model.DatasetSpec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Dataset
+import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.util.Json
 import java.util.Objects
 
@@ -107,6 +106,6 @@ class DatasetItemImpl(
     companion object {
         private val logger = LoggerFactory.getLogger(DatasetItemImpl::class.java)
         private val objectMapper = Json.objectMapper
-        private val columnsMapper = ColumnsMapper()
+        private val columnsMapper = ru.scisolutions.scicmscore.engine.persistence.mapper.ColumnsMapper()
     }
 }

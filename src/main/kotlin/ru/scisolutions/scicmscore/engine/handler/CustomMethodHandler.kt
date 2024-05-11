@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.hook.UpdateHook
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import java.lang.reflect.Modifier
 
 @Service

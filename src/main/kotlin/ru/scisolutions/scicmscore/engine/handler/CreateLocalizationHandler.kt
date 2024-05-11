@@ -3,13 +3,13 @@ package ru.scisolutions.scicmscore.engine.handler
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.CreateLocalizationHook
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.AuditManager
@@ -18,9 +18,9 @@ import ru.scisolutions.scicmscore.engine.service.LifecycleManager
 import ru.scisolutions.scicmscore.engine.service.LocalizationManager
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.service.SequenceManager
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.service.CacheService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import java.util.UUID
 
 @Service

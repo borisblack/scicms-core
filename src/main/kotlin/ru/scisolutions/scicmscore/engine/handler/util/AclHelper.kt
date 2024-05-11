@@ -1,10 +1,10 @@
 package ru.scisolutions.scicmscore.engine.handler.util
 
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.PermissionService
-import ru.scisolutions.scicmscore.util.Acl.Mask
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.PermissionService
+import ru.scisolutions.scicmscore.engine.util.Acl.Mask
 
 @Component
 class AclHelper(

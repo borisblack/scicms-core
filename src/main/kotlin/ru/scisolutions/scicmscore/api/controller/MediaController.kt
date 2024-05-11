@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
-import ru.scisolutions.scicmscore.persistence.service.MediaService
+import ru.scisolutions.scicmscore.engine.persistence.service.MediaService
 import java.net.URLEncoder
 
 @RestController

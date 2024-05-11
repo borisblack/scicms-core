@@ -5,8 +5,8 @@ import com.netflix.graphql.dgs.DgsQuery
 import ru.scisolutions.scicmscore.config.props.I18nProps
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.model.SecurityConfigResponse
-import ru.scisolutions.scicmscore.persistence.entity.Datasource
-import ru.scisolutions.scicmscore.persistence.service.DatasourceService
+import ru.scisolutions.scicmscore.engine.persistence.entity.Datasource
+import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 
 @DgsComponent
 class ConfigDataFetcher(

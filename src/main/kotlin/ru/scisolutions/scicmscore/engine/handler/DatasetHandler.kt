@@ -1,16 +1,15 @@
 package ru.scisolutions.scicmscore.engine.handler
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.DatasetDao
-import ru.scisolutions.scicmscore.engine.db.query.DatasetQueryBuilder
-import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
+import ru.scisolutions.scicmscore.engine.persistence.dao.DatasetDao
+import ru.scisolutions.scicmscore.engine.persistence.query.DatasetQueryBuilder
+import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.engine.model.DatasetRec
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.response.CacheStatistic
 import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollectionMeta
-import ru.scisolutions.scicmscore.persistence.service.DatasetService
-import kotlin.time.measureTimedValue
+import ru.scisolutions.scicmscore.engine.persistence.service.DatasetService
 
 @Service
 class DatasetHandler(

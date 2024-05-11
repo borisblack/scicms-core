@@ -8,13 +8,13 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.SecurityProps
-import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.engine.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.Oauth2AccessCodeAuthenticationToken
 import ru.scisolutions.scicmscore.security.model.Oauth2AccessTokenRequest
 import ru.scisolutions.scicmscore.security.model.Oauth2AccessTokenResponse
 import ru.scisolutions.scicmscore.security.model.User
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
-import ru.scisolutions.scicmscore.util.Acl
+import ru.scisolutions.scicmscore.engine.util.Acl
 import ru.scisolutions.scicmscore.util.Json
 import java.net.URI
 import java.net.http.HttpClient

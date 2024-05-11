@@ -5,14 +5,18 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SecurityProps
+import ru.scisolutions.scicmscore.engine.model.AuthType
+import ru.scisolutions.scicmscore.engine.model.ChangePasswordRequest
+import ru.scisolutions.scicmscore.engine.model.RegistrationRequest
+import ru.scisolutions.scicmscore.engine.model.UserInfo
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
-import ru.scisolutions.scicmscore.model.*
-import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
+import ru.scisolutions.scicmscore.engine.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.UserAuthenticationToken
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
 import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
-import ru.scisolutions.scicmscore.util.Acl
+import ru.scisolutions.scicmscore.engine.util.Acl
 
 @Service
 class UserHandler(

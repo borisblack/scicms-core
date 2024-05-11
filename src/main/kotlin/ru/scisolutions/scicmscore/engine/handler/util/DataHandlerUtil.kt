@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.handler.util
 
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
 object DataHandlerUtil {
     fun prepareSelectedAttrNames(item: Item, selectAttrNames: Set<String>): Set<String> =

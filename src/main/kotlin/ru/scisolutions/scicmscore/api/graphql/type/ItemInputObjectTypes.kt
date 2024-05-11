@@ -7,10 +7,10 @@ import graphql.language.InputValueDefinition
 import graphql.language.ListType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.util.upperFirst
+import ru.scisolutions.scicmscore.engine.model.Attribute
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.extension.upperFirst
 
 @Component
 class ItemInputObjectTypes(

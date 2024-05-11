@@ -3,12 +3,12 @@ package ru.scisolutions.scicmscore.engine.hook.impl
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.engine.hook.DeleteHook
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.engine.model.UserItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.UserItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.persistence.service.AccessService
-import ru.scisolutions.scicmscore.persistence.service.IdentityService
+import ru.scisolutions.scicmscore.engine.persistence.service.AccessService
+import ru.scisolutions.scicmscore.engine.persistence.service.IdentityService
 
 @Service
 class UserItemImpl(

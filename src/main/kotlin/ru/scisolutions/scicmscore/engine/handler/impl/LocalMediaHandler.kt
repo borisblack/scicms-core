@@ -13,9 +13,9 @@ import ru.scisolutions.scicmscore.engine.mapper.MediaMapper
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.service.PermissionManager
-import ru.scisolutions.scicmscore.persistence.entity.Media
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.persistence.service.MediaService
+import ru.scisolutions.scicmscore.engine.persistence.entity.Media
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.MediaService
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths

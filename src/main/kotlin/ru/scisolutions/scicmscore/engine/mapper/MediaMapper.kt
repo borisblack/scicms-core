@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.mapper
 
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
-import ru.scisolutions.scicmscore.persistence.entity.Media
+import ru.scisolutions.scicmscore.engine.persistence.entity.Media
 
 class MediaMapper {
     fun map(media: Media) = MediaInfo(

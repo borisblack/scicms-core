@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.engine.Engine
-import ru.scisolutions.scicmscore.model.ChangePasswordRequest
-import ru.scisolutions.scicmscore.model.RegistrationRequest
-import ru.scisolutions.scicmscore.model.TokenResponse
+import ru.scisolutions.scicmscore.engine.model.ChangePasswordRequest
+import ru.scisolutions.scicmscore.engine.model.RegistrationRequest
+import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
 
 @RestController
 @RequestMapping("/api/auth/local")

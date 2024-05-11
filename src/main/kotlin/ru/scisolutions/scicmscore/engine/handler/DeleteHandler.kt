@@ -3,23 +3,23 @@ package ru.scisolutions.scicmscore.engine.handler
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
-import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.persistence.dao.ACLItemRecDao
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.hook.DeleteHook
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
-import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.persistence.entity.RevisionPolicy
-import ru.scisolutions.scicmscore.persistence.service.CacheService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.entity.Lifecycle
+import ru.scisolutions.scicmscore.engine.persistence.entity.Permission
+import ru.scisolutions.scicmscore.engine.persistence.entity.RevisionPolicy
+import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Service
 class DeleteHandler(

@@ -3,10 +3,10 @@ package ru.scisolutions.scicmscore.engine.service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.handler.util.AclHelper
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.persistence.service.AllowedPermissionService
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.entity.Permission
+import ru.scisolutions.scicmscore.engine.persistence.service.AllowedPermissionService
 
 @Service
 class PermissionManager(

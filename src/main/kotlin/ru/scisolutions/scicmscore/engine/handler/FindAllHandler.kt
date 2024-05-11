@@ -1,19 +1,19 @@
 package ru.scisolutions.scicmscore.engine.handler
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
-import ru.scisolutions.scicmscore.engine.db.query.FindAllQueryBuilder
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
+import ru.scisolutions.scicmscore.engine.persistence.query.FindAllQueryBuilder
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.FindAllHook
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollectionMeta
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Service
 class FindAllHandler(

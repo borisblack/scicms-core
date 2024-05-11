@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.cache.NullUserCache
 import org.springframework.security.provisioning.JdbcUserDetailsManager
 import org.springframework.stereotype.Component
 import org.springframework.util.Assert
-import ru.scisolutions.scicmscore.persistence.entity.Permission
-import ru.scisolutions.scicmscore.persistence.entity.User
+import ru.scisolutions.scicmscore.engine.persistence.entity.Permission
+import ru.scisolutions.scicmscore.engine.persistence.entity.User
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.sql.DataSource

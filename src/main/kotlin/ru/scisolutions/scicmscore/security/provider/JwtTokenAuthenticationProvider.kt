@@ -5,7 +5,7 @@ import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import ru.scisolutions.scicmscore.model.AuthType
+import ru.scisolutions.scicmscore.engine.model.AuthType
 import ru.scisolutions.scicmscore.security.JwtTokenAuthenticationToken
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.UserAuthenticationToken

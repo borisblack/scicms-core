@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItem
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.CustomMethodInput
 import ru.scisolutions.scicmscore.engine.model.response.CustomMethodResponse
-import ru.scisolutions.scicmscore.util.lowerFirst
+import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class CustomMethodDataFetcher(

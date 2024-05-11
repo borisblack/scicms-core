@@ -2,8 +2,8 @@ package ru.scisolutions.scicmscore.engine.service
 
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.service.UserService
 import java.time.OffsetDateTime
 
 @Service

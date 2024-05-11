@@ -6,8 +6,8 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.TypeNames
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.util.upperFirst
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.extension.upperFirst
 
 @Component
 class MutationItemFields {

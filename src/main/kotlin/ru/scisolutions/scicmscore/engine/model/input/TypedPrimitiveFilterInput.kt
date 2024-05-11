@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.input
 
-import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.engine.model.FieldType
 
 class TypedPrimitiveFilterInput(
     val attrType: FieldType,

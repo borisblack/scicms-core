@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.DeleteHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
-import ru.scisolutions.scicmscore.engine.model.ItemItemRec
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.schema.service.TableSeeder
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.schema.service.TableSeeder
 
 @Service
 class ItemItemImpl(

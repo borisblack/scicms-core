@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
-import ru.scisolutions.scicmscore.util.Acl
+import ru.scisolutions.scicmscore.engine.util.Acl
 
 @Service
 @Transactional

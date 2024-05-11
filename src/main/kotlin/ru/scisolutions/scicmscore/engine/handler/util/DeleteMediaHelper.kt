@@ -3,9 +3,9 @@ package ru.scisolutions.scicmscore.engine.handler.util
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.engine.handler.MediaHandler
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.model.FieldType
 
 @Component
 class DeleteMediaHelper(

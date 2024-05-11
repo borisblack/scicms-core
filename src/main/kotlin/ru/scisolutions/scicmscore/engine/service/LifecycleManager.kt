@@ -3,11 +3,11 @@ package ru.scisolutions.scicmscore.engine.service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.handler.util.AclHelper
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.entity.Lifecycle
-import ru.scisolutions.scicmscore.persistence.service.AllowedLifecycleService
-import ru.scisolutions.scicmscore.persistence.service.LifecycleService
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.entity.Lifecycle
+import ru.scisolutions.scicmscore.engine.persistence.service.AllowedLifecycleService
+import ru.scisolutions.scicmscore.engine.persistence.service.LifecycleService
 
 @Service
 class LifecycleManager(

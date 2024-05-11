@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.extension.isUUID
-import ru.scisolutions.scicmscore.persistence.entity.Datasource
-import ru.scisolutions.scicmscore.persistence.service.DatasourceService
+import ru.scisolutions.scicmscore.engine.persistence.entity.Datasource
+import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 import java.sql.DriverManager
 import java.util.concurrent.TimeUnit
 import javax.sql.DataSource

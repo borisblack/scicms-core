@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import ru.scisolutions.scicmscore.config.props.SecurityProps
-import ru.scisolutions.scicmscore.model.AuthType
+import ru.scisolutions.scicmscore.engine.model.AuthType
 import java.util.Date
 
 class JwtTokenService(securityProps: SecurityProps) {

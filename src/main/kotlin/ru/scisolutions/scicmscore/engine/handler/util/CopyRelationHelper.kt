@@ -2,16 +2,16 @@ package ru.scisolutions.scicmscore.engine.handler.util
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.service.RelationManager
-import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.model.Attribute
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
 
 @Component
 class CopyRelationHelper(

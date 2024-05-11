@@ -1,9 +1,8 @@
 package ru.scisolutions.scicmscore.engine
 
 import org.springframework.core.io.ByteArrayResource
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.multipart.MultipartFile
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
@@ -26,10 +25,10 @@ import ru.scisolutions.scicmscore.engine.model.response.RelationResponseCollecti
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
-import ru.scisolutions.scicmscore.model.ChangePasswordRequest
-import ru.scisolutions.scicmscore.model.RegistrationRequest
-import ru.scisolutions.scicmscore.model.TokenResponse
-import ru.scisolutions.scicmscore.model.UserInfo
+import ru.scisolutions.scicmscore.engine.model.ChangePasswordRequest
+import ru.scisolutions.scicmscore.engine.model.RegistrationRequest
+import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
+import ru.scisolutions.scicmscore.engine.model.UserInfo
 
 /**
  * General facade for all operations with data

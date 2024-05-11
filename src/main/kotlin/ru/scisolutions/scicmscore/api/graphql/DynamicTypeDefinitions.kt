@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.api.graphql.field.QueryItemFields
 import ru.scisolutions.scicmscore.api.graphql.type.ItemInputObjectTypes
 import ru.scisolutions.scicmscore.api.graphql.type.ItemObjectTypes
 import ru.scisolutions.scicmscore.engine.Engine
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @DgsComponent
 class DynamicTypeDefinitions(

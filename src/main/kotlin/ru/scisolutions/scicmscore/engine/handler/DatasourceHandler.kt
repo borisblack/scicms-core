@@ -2,14 +2,14 @@ package ru.scisolutions.scicmscore.engine.handler
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.DatasourceDao
+import ru.scisolutions.scicmscore.engine.persistence.dao.DatasourceDao
 import ru.scisolutions.scicmscore.engine.model.input.DatasourceTablesInput
 import ru.scisolutions.scicmscore.engine.model.response.DatasourceTablesResponse
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollectionMeta
-import ru.scisolutions.scicmscore.persistence.entity.Datasource
-import ru.scisolutions.scicmscore.persistence.service.DatasourceService
-import ru.scisolutions.scicmscore.util.Acl
+import ru.scisolutions.scicmscore.engine.persistence.entity.Datasource
+import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
+import ru.scisolutions.scicmscore.engine.util.Acl
 
 @Service
 class DatasourceHandler(

@@ -5,8 +5,8 @@ import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.db.query.AttributeSqlParameterSource
-import ru.scisolutions.scicmscore.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import java.util.concurrent.TimeUnit
 
 @Service

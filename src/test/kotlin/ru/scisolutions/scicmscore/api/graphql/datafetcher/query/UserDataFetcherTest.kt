@@ -13,7 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.aot.DisabledInAotMode
 import ru.scisolutions.scicmscore.api.graphql.CustomScalarsRegistration
 import ru.scisolutions.scicmscore.engine.Engine
-import ru.scisolutions.scicmscore.model.UserInfo
+import ru.scisolutions.scicmscore.engine.model.UserInfo
 import java.util.UUID
 
 @SpringBootTest(classes = [

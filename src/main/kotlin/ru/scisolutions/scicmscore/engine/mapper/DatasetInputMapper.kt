@@ -4,7 +4,7 @@ import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
-import ru.scisolutions.scicmscore.model.FieldType
+import ru.scisolutions.scicmscore.engine.model.FieldType
 
 class DatasetInputMapper() {
     fun map(arguments: Map<String, Any?>, opPrefix: String = ""): DatasetInput {

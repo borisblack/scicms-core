@@ -1,15 +1,14 @@
 package ru.scisolutions.scicmscore.engine.handler.util
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.persistence.service.MediaService
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.model.Attribute
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.MediaService
 import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
 import ru.scisolutions.scicmscore.util.Json
 import ru.scisolutions.scicmscore.util.Maps

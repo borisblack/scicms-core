@@ -1,21 +1,21 @@
 package ru.scisolutions.scicmscore.engine.service
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyBidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToManyUnidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneOwningBidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneRelation
-import ru.scisolutions.scicmscore.schema.model.relation.ManyToOneUnidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.OneToManyInversedBidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.OneToOneBidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.OneToOneRelation
-import ru.scisolutions.scicmscore.schema.model.relation.OneToOneUnidirectionalRelation
-import ru.scisolutions.scicmscore.schema.model.relation.Relation
-import ru.scisolutions.scicmscore.schema.service.RelationValidator
+import ru.scisolutions.scicmscore.engine.model.Attribute
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToOneOwningBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToOneRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToOneUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.schema.model.relation.Relation
+import ru.scisolutions.scicmscore.engine.schema.service.RelationValidator
 
 @Service
 class RelationManager(

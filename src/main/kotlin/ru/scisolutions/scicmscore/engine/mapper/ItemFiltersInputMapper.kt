@@ -7,10 +7,10 @@ import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Compani
 import ru.scisolutions.scicmscore.engine.model.input.AbstractFilterInput.Companion.OR_KEY
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
-import ru.scisolutions.scicmscore.schema.service.RelationValidator
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.schema.service.RelationValidator
 
 @Component
 class ItemFiltersInputMapper(

@@ -21,9 +21,9 @@ import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.model.AuthRequest
-import ru.scisolutions.scicmscore.model.AuthType
-import ru.scisolutions.scicmscore.model.TokenResponse
-import ru.scisolutions.scicmscore.model.UserInfo
+import ru.scisolutions.scicmscore.engine.model.AuthType
+import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
+import ru.scisolutions.scicmscore.engine.model.UserInfo
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.model.User
 

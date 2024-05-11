@@ -1,11 +1,11 @@
 package ru.scisolutions.scicmscore.api.graphql.type
 
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.model.Attribute
-import ru.scisolutions.scicmscore.model.Attribute.RelType
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.model.Attribute
+import ru.scisolutions.scicmscore.engine.model.Attribute.RelType
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Component
 class IncludeAttributePolicy(

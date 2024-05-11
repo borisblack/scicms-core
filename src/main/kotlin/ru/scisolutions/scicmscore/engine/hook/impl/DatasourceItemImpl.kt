@@ -4,15 +4,15 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.DeleteHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
-import ru.scisolutions.scicmscore.engine.model.DatasourceItemRec
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.DatasourceItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
-import ru.scisolutions.scicmscore.persistence.service.DatasetService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.DatasetService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Service
 class DatasourceItemImpl(

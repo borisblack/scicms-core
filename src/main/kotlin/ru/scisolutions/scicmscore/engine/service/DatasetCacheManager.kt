@@ -5,9 +5,9 @@ import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.db.query.DatasetSqlParameterSource
+import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.engine.model.response.CacheStatistic
-import ru.scisolutions.scicmscore.persistence.entity.Dataset
+import ru.scisolutions.scicmscore.engine.persistence.entity.Dataset
 import java.util.concurrent.TimeUnit
 import kotlin.time.TimeSource
 

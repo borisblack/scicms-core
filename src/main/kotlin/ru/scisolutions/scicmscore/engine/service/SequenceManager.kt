@@ -1,10 +1,10 @@
 package ru.scisolutions.scicmscore.engine.service
 
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.model.ItemRec
-import ru.scisolutions.scicmscore.model.FieldType
-import ru.scisolutions.scicmscore.persistence.entity.Item
-import ru.scisolutions.scicmscore.persistence.service.SequenceService
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.service.SequenceService
 
 @Service
 class SequenceManager(private val sequenceService: SequenceService) {

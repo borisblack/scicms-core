@@ -2,19 +2,19 @@ package ru.scisolutions.scicmscore.engine.handler
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.dao.ACLItemRecDao
-import ru.scisolutions.scicmscore.engine.dao.ItemRecDao
+import ru.scisolutions.scicmscore.engine.persistence.dao.ACLItemRecDao
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteMediaHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DeleteRelationHelper
 import ru.scisolutions.scicmscore.engine.hook.PurgeHook
-import ru.scisolutions.scicmscore.engine.model.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.response.ResponseCollection
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.persistence.service.CacheService
-import ru.scisolutions.scicmscore.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Service
 class PurgeHandler(

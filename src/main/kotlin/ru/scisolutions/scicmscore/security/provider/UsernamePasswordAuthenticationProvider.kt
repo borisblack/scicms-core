@@ -4,7 +4,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.persistence.service.UserService
+import ru.scisolutions.scicmscore.engine.persistence.service.UserService
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
 import ru.scisolutions.scicmscore.security.model.User
 import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
