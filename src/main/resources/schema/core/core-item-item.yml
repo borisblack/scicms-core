@@ -10,6 +10,7 @@ metadata:
   dataSource: main
   tableName: core_items
   titleAttribute: displayName
+  defaultSortAttribute: name
   description: Items
   icon: AppstoreOutlined
   core: true
