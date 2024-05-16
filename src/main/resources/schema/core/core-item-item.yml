@@ -51,6 +51,21 @@ spec:
       description: Display Plural Name
       length: 50
       colWidth: 220
+    description:
+      type: string
+      columnName: description
+      displayName: Description
+      description: Description
+      length: 250
+      colWidth: 200
+      fieldWidth: 12
+    icon:
+      type: string
+      columnName: icon
+      displayName: Icon
+      description: Icon
+      length: 50
+      colWidth: 180
     datasource:
       type: relation
       relType: manyToOne
@@ -75,12 +90,14 @@ spec:
       colHidden: true
       colWidth: 300
       fieldWidth: 12
-    cacheTtl:
-      type: int
-      columnName: cache_ttl
-      displayName: Cache TTL (min)
-      description: Cache TTL (min)
-      minRange: -1
+    includeTemplates:
+      type: array
+      columnName: include_templates
+      displayName: Included Templates
+      description: Included Templates
+      defaultValue: '["default"]'
+      colHidden: true
+      colWidth: 180
     titleAttribute:
       type: string
       columnName: title_attribute
@@ -102,68 +119,6 @@ spec:
       description: Default Sort Order
       length: 50
       colWidth: 290
-    includeTemplates:
-      type: array
-      columnName: include_templates
-      displayName: Included Templates
-      description: Included Templates
-      defaultValue: '["default"]'
-      colHidden: true
-      colWidth: 180
-    description:
-      type: string
-      columnName: description
-      displayName: Description
-      description: Description
-      length: 250
-      colWidth: 200
-    icon:
-      type: string
-      columnName: icon
-      displayName: Icon
-      description: Icon
-      length: 50
-      colWidth: 180
-    readOnly:
-      type: bool
-      columnName: read_only
-      displayName: Read Only
-      description: Read Only flag
-    core:
-      type: bool
-      columnName: core
-      displayName: Core
-      description: Core flag
-    performDdl:
-      type: bool
-      columnName: perform_ddl
-      displayName: Perform DDL
-      description: Perform DDL operations
-      defaultValue: 1
-      colWidth: 150
-    notLockable:
-      type: bool
-      columnName: not_lockable
-      displayName: Not Lockable
-      description: Not Lockable
-      colWidth: 160
-    localized:
-      type: bool
-      columnName: localized
-      displayName: Localized
-      description: Localized flag
-    versioned:
-      type: bool
-      columnName: versioned
-      displayName: Versioned
-      description: Versioned flag
-      colWidth: 160
-    manualVersioning:
-      type: bool
-      columnName: manual_versioning
-      displayName: Manual Versioning
-      description: Manual Versioning flag
-      colWidth: 210
     revisionPolicy:
       type: relation
       relType: manyToOne
@@ -179,6 +134,60 @@ spec:
       description: Implementation
       length: 250
       colWidth: 400
+      fieldWidth: 12
+    cacheTtl:
+      type: int
+      columnName: cache_ttl
+      displayName: Cache TTL (min)
+      description: Cache TTL (min)
+      minRange: -1
+      fieldWidth: 3
+    readOnly:
+      type: bool
+      columnName: read_only
+      displayName: Read Only
+      description: Read Only flag
+      fieldWidth: 3
+    core:
+      type: bool
+      columnName: core
+      displayName: Core
+      description: Core flag
+      fieldWidth: 3
+    performDdl:
+      type: bool
+      columnName: perform_ddl
+      displayName: Perform DDL
+      description: Perform DDL operations
+      defaultValue: 1
+      colWidth: 150
+      fieldWidth: 3
+    notLockable:
+      type: bool
+      columnName: not_lockable
+      displayName: Not Lockable
+      description: Not Lockable
+      colWidth: 160
+      fieldWidth: 3
+    localized:
+      type: bool
+      columnName: localized
+      displayName: Localized
+      description: Localized flag
+      fieldWidth: 3
+    versioned:
+      type: bool
+      columnName: versioned
+      displayName: Versioned
+      description: Versioned flag
+      colWidth: 160
+      fieldWidth: 3
+    manualVersioning:
+      type: bool
+      columnName: manual_versioning
+      displayName: Manual Versioning
+      description: Manual Versioning flag
+      colWidth: 210
     spec:
       type: json
       columnName: spec
