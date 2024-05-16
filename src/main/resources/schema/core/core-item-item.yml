@@ -27,7 +27,7 @@ spec:
       unique: true
       length: 50
       pattern: '^[a-z]\w*$'
-      colWidth: 150
+      colWidth: 200
     displayName:
       type: string
       columnName: display_name
@@ -43,7 +43,7 @@ spec:
       required: true
       length: 50
       pattern: '^[a-z]\w*$'
-      colWidth: 150
+      colWidth: 220
     displayPluralName:
       type: string
       columnName: display_plural_name
