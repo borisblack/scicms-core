@@ -50,11 +50,13 @@ spec:
       displayName: Begin Date
       description: Begin Date
       required: true
+      colWidth: 150
     endDate:
       type: datetime
       columnName: end_date
       displayName: End Date
       description: End Date
+      colWidth: 150
     mask:
       type: int
       columnName: mask
