@@ -34,13 +34,7 @@ spec:
       description: Property Type
       required: true
       length: 50
-    value:
-      type: text
-      columnName: property_value
-      displayName: Value
-      description: Property Value
-      colWidth: 500
-      fieldWidth: 12
+      fieldWidth: 3
     scope:
       type: enum
       columnName: property_scope
@@ -50,3 +44,11 @@ spec:
       displayName: Scope
       description: Scope
       colWidth: 170
+      fieldWidth: 3
+    value:
+      type: text
+      columnName: property_value
+      displayName: Value
+      description: Property Value
+      colWidth: 500
+      fieldWidth: 12
