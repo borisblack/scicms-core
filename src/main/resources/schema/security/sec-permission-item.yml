@@ -24,7 +24,7 @@ spec:
       required: true
       unique: true
       length: 50
-      colWidth: 200
+      colWidth: 300
     accesses:
       type: relation
       relType: oneToMany
