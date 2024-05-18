@@ -1,15 +1,23 @@
 package ru.scisolutions.scicmscore.engine.schema.mapper
 
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.config.props.AppProps
+import ru.scisolutions.scicmscore.engine.model.ItemSpec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemItemRec
 import ru.scisolutions.scicmscore.extension.isUUID
 import ru.scisolutions.scicmscore.engine.persistence.entity.Permission
 import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.model.ItemMetadata
+import ru.scisolutions.scicmscore.util.Json
+import java.util.LinkedHashSet
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
 
 @Component
-class ItemMapper(private val datasourceService: DatasourceService) {
+class ItemMapper(
+    private val appProps: AppProps,
+    private val datasourceService: DatasourceService
+) {
     fun mapToEntity(source: Item): ItemEntity {
         val metadata = source.metadata
         val datasource = datasourceService.findByName(metadata.dataSource)
@@ -64,4 +72,37 @@ class ItemMapper(private val datasourceService: DatasourceService) {
 
         target.hash = source.hashCode().toString()
     }
+
+    fun mapToModel(source: ItemItemRec): Item = Item(
+        coreVersion = appProps.coreVersion,
+        includeTemplates = LinkedHashSet(requireNotNull(source.includeTemplates).toMutableList()),
+        metadata = ItemMetadata(
+            name = requireNotNull(source.name),
+            displayName = requireNotNull(source.displayName ?: source.name),
+            pluralName = requireNotNull(source.pluralName),
+            displayPluralName = requireNotNull(source.displayPluralName ?: source.pluralName),
+            dataSource = source.dataSource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
+            performDdl = source.performDdl ?: false,
+            tableName = source.tableName,
+            query = source.query,
+            cacheTtl = source.cacheTtl,
+            titleAttribute = source.titleAttribute ?: ItemMetadata.ID_ATTR_NAME,
+            defaultSortAttribute = source.defaultSortAttribute,
+            defaultSortOrder = source.defaultSortOrder,
+            description = source.description,
+            icon = source.icon,
+            core = source.core ?: false,
+            readOnly = source.readOnly ?: false,
+            versioned = source.versioned ?: false,
+            manualVersioning = source.manualVersioning ?: false,
+            localized = source.localized ?: false,
+            notLockable = source.notLockable ?: false,
+            implementation = source.implementation,
+            revisionPolicy = source.revisionPolicy,
+            lifecycle = source.lifecycle,
+            permission = source.permission
+        ),
+        spec = source.spec?.let { Json.objectMapper.convertValue(it, ItemSpec::class.java) } ?: ItemSpec(),
+        checksum = null
+    )
 }

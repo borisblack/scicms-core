@@ -20,8 +20,9 @@ class DatasourceItemImpl(
     private val itemService: ItemService,
     private val datasetService: DatasetService
 ) : CreateHook, UpdateHook, DeleteHook {
-    override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec) {
+    override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         checkConnection(DatasourceItemRec(data))
+        return null
     }
 
     private fun checkConnection(ds: DatasourceItemRec) {
@@ -36,15 +37,8 @@ class DatasourceItemImpl(
         // Do nothing
     }
 
-    override fun create(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
-        return null
-    }
-
-    override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec) {
+    override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         checkConnection(DatasourceItemRec(data))
-    }
-
-    override fun update(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         return null
     }
 

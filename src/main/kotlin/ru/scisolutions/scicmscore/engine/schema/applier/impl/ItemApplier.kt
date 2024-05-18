@@ -29,7 +29,7 @@ class ItemApplier(
     private val tableSeeder: TableSeeder,
     private val schemaLockService: SchemaLockService,
     private val relationValidator: RelationValidator
-) : ru.scisolutions.scicmscore.engine.schema.applier.ModelApplier {
+) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java
 
     override fun apply(model: AbstractModel): ModelApplyResult {

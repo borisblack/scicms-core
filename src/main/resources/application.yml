@@ -1,4 +1,5 @@
 scicms-core:
+  core-version: 'v1'
   data:
     default-pool-size: 5
     default-idle: 1

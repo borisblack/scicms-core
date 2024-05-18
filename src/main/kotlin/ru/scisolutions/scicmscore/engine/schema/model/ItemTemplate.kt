@@ -6,8 +6,9 @@ import java.util.Objects
 class ItemTemplate(
     override val coreVersion: String,
     override val metadata: ItemTemplateMetadata,
+    override var checksum: String?,
     val spec: ItemSpec
-) : AbstractModel(coreVersion, metadata) {
+) : AbstractModel(coreVersion, metadata, checksum) {
     override fun equals(other: Any?): Boolean {
         if (this === other)
             return true

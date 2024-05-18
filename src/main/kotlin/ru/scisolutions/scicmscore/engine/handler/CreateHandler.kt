@@ -66,10 +66,8 @@ class CreateHandler(
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
-        implInstance?.beforeCreate(itemName, input, itemRec)
-
-        val hookItemRec = implInstance?.create(itemName, input, itemRec)
-        if (hookItemRec == null) {
+        val preCreatedItemRec = implInstance?.beforeCreate(itemName, input, itemRec)
+        if (preCreatedItemRec == null) {
             itemRecDao.insert(item, itemRec) // insert
 
             addRelationHelper.processRelations(
@@ -80,7 +78,7 @@ class CreateHandler(
         }
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
-        val selectData = (hookItemRec ?: itemRec).filterKeys { it in attrNames }.toMutableMap()
+        val selectData = (preCreatedItemRec ?: itemRec).filterKeys { it in attrNames }.toMutableMap()
         val response = Response(
             ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
@@ -94,6 +92,6 @@ class CreateHandler(
 
     companion object {
         private val logger = LoggerFactory.getLogger(CreateHandler::class.java)
-        private val disabledItemNames = setOf(Item.ITEM_ITEM_NAME)
+        private val disabledItemNames: Set<String> = setOf(/*Item.ITEM_ITEM_NAME*/)
     }
 }

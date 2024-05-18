@@ -3,7 +3,6 @@ package ru.scisolutions.scicmscore.engine.hook.impl
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.persistence.dao.DatasourceDao
-import ru.scisolutions.scicmscore.engine.persistence.mapper.ColumnsMapper
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
 import ru.scisolutions.scicmscore.engine.model.itemrec.DatasetItemRec
@@ -22,8 +21,9 @@ class DatasetItemImpl(
     private val datasourceDao: DatasourceDao,
     private val datasourceService: DatasourceService
 ) : CreateHook, UpdateHook {
-    override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec) {
+    override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         actualizeSpec(DatasetItemRec(data))
+        return null
     }
 
     private fun actualizeSpec(data: DatasetItemRec) {
@@ -83,19 +83,12 @@ class DatasetItemImpl(
         return true
     }
 
-    override fun create(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
-        return null
-    }
-
     override fun afterCreate(itemName: String, response: Response) {
         // Do nothing
     }
 
-    override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec) {
+    override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         actualizeSpec(DatasetItemRec(data))
-    }
-
-    override fun update(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         return null
     }
 

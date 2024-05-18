@@ -74,10 +74,8 @@ class UpdateHandler(
 
         // Get and call hook
         val implInstance = classService.getCastInstance(item.implementation, UpdateHook::class.java)
-        implInstance?.beforeUpdate(itemName, input, itemRec)
-
-        val hookItemRec = implInstance?.update(itemName, input, itemRec)
-        if (hookItemRec == null) {
+        val preUpdatedItemRec = implInstance?.beforeUpdate(itemName, input, itemRec)
+        if (preUpdatedItemRec == null) {
             itemRecDao.updateById(item, input.id, itemRec) // update
 
             // Update relations
@@ -92,7 +90,7 @@ class UpdateHandler(
             itemRecDao.unlockByIdOrThrow(item, input.id)
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
-        val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
+        val selectData = (preUpdatedItemRec ?: itemRec).filterKeys { it in attrNames }.toMutableMap()
         val response = Response(
             ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
@@ -105,9 +103,8 @@ class UpdateHandler(
     }
 
     companion object {
-        private const val ITEM_ITEM_NAME = "item"
         private const val STATE_ATTR_NAME = "state"
 
-        private val disabledItemNames = setOf(ITEM_ITEM_NAME)
+        private val disabledItemNames: Set<String> = setOf(/*Item.ITEM_ITEM_NAME*/)
     }
 }

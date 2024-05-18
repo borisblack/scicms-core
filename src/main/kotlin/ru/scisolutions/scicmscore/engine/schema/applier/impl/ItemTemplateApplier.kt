@@ -21,8 +21,9 @@ class ItemTemplateApplier(
     private val schemaProps: SchemaProps,
     private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
-    private val schemaLockService: SchemaLockService
-) : ru.scisolutions.scicmscore.engine.schema.applier.ModelApplier {
+    private val schemaLockService: SchemaLockService,
+    private val itemTemplateMapper: ItemTemplateMapper
+) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
 
     override fun apply(model: AbstractModel): ModelApplyResult {
@@ -113,6 +114,5 @@ class ItemTemplateApplier(
 
     companion object {
         private val logger = LoggerFactory.getLogger(ItemTemplateApplier::class.java)
-        private val itemTemplateMapper = ItemTemplateMapper()
     }
 }

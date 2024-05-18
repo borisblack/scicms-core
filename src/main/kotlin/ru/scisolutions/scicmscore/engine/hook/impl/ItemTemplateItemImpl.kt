@@ -11,29 +11,27 @@ import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemItemRec
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemTemplateItemRec
 import ru.scisolutions.scicmscore.engine.model.response.Response
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
-import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
-import ru.scisolutions.scicmscore.engine.schema.model.ItemMetadata
+import ru.scisolutions.scicmscore.engine.schema.mapper.ItemTemplateMapper
 import ru.scisolutions.scicmscore.engine.schema.model.ModelApplyResult
-import ru.scisolutions.scicmscore.engine.schema.service.TableSeeder
 
 @Service
-class ItemItemImpl(
-    private val itemMapper: ItemMapper,
+class ItemTemplateItemImpl(
+    private val itemTemplateMapper: ItemTemplateMapper,
     private val modelsApplier: ModelsApplier,
-    private val tableSeeder: TableSeeder,
     private val reloadIndicator: ReloadIndicator,
 ) : CreateHook, UpdateHook, DeleteHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
-        val appliedModelResult = apply(ItemItemRec(data))
+        val appliedModelResult =  apply(ItemTemplateItemRec(data))
         data.id = appliedModelResult.id
         data.configId = appliedModelResult.id
         return data
     }
 
-    private fun apply(data: ItemItemRec): ModelApplyResult {
-        val model = itemMapper.mapToModel(data)
+    private fun apply(data: ItemTemplateItemRec): ModelApplyResult {
+        val model = itemTemplateMapper.mapToModel(data)
         return modelsApplier.apply(model, true)
     }
 
@@ -42,7 +40,7 @@ class ItemItemImpl(
     }
 
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
-        apply(ItemItemRec(data))
+        apply(ItemTemplateItemRec(data))
         return data
     }
 
@@ -55,20 +53,10 @@ class ItemItemImpl(
     }
 
     override fun afterDelete(itemName: String, response: Response) {
-        val itemItemRec = ItemItemRec(response.data as ItemRec)
-        if (itemItemRec.performDdl == true) {
-            tableSeeder.dropTable(
-                itemItemRec.dataSource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
-                requireNotNull(itemItemRec.tableName)
-            )
-        } else {
-            logger.info("DDL performing flag is disabled for item [{}]. Deleting skipped.", itemItemRec.name)
-        }
-
         reloadIndicator.setNeedReload(true)
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(ItemItemImpl::class.java)
+        private val logger = LoggerFactory.getLogger(ItemTemplateItemImpl::class.java)
     }
 }
