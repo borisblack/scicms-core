@@ -35,8 +35,6 @@ class ItemTemplateApplier(
         val name = model.metadata.name
         var itemTemplateEntity = itemTemplateService.findByName(name)
         if (itemTemplateEntity == null) {
-            // schemaLockService.lockOrThrow()
-
             if (model.checksum == null && !itemService.canCreate(ItemEntity.ITEM_TEMPLATE_ITEM_NAME)) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You has no CREATE permission for [${ItemEntity.ITEM_TEMPLATE_ITEM_NAME}] item")
@@ -51,8 +49,6 @@ class ItemTemplateApplier(
             // schemaLockService.unlockOrThrow()
             return ModelApplyResult(true, itemTemplateEntity.id)
         } else if (isChanged(model, itemTemplateEntity)) {
-            // schemaLockService.lockOrThrow()
-
             if (model.checksum == null && (itemTemplateEntity.core || itemService.findByNameForWrite(name) == null)) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You cannot update [$name] item template")
@@ -63,18 +59,17 @@ class ItemTemplateApplier(
             itemTemplateEntity.lockedById = null
             itemTemplateService.save(itemTemplateEntity)
 
-            // schemaLockService.unlockOrThrow()
             return ModelApplyResult(true, itemTemplateEntity.id)
         } else {
-            logger.info("Item template [{}] is unchanged. Nothing to update", itemTemplateEntity.name)
+            logger.info("Item template [{}] is unchanged. Nothing to update.", itemTemplateEntity.name)
             return ModelApplyResult(false, itemTemplateEntity.id)
         }
     }
 
     private fun validateModel(model: ItemTemplate) {
         logger.info("Validating model [{}]", model.metadata.name)
-        if(model.metadata.name.first().isUpperCase())
-            throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character")
+        if (model.metadata.name.first().isUpperCase())
+            throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character.")
 
         model.spec.attributes.asSequence()
             .filter { (_, attribute) -> attribute.type == FieldType.relation }

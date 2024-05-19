@@ -3,7 +3,6 @@ package ru.scisolutions.scicmscore.engine.schema.applier.impl
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.api.graphql.ReloadIndicator
 import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
-import ru.scisolutions.scicmscore.engine.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelApplier
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.engine.schema.model.AbstractModel
@@ -13,7 +12,6 @@ import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
 @Service
 class ModelsApplierImpl(
     private val appliers: List<ModelApplier>,
-    private val schemaLockService: SchemaLockService,
     private val reloadIndicator: ReloadIndicator,
     private val cacheService: CacheService,
     private val itemCacheManager: ItemCacheManager
@@ -21,9 +19,7 @@ class ModelsApplierImpl(
     override fun apply(model: AbstractModel, clearCachesAndReload: Boolean): ModelApplyResult {
         for (applier in appliers) {
             if (applier.supports(model::class.java)) {
-                schemaLockService.lockOrThrow()
                 val appliedModelResult = applier.apply(model)
-                schemaLockService.unlockOrThrow()
 
                 if (appliedModelResult.applied && clearCachesAndReload) {
                     cacheService.clearAllSchemaCaches()

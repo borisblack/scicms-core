@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.engine.schema.model
 data class ItemMetadata(
     override val name: String,
     val displayName: String = name,
-    override val pluralName: String,
+    val pluralName: String,
     val displayPluralName: String = pluralName,
     val dataSource: String = MAIN_DATASOURCE_NAME,
     val tableName: String? = null,
@@ -25,7 +25,7 @@ data class ItemMetadata(
     val permission: String? = null,
     val implementation: String? = null,
     val notLockable: Boolean = false
-) : BaseMetadata(name, pluralName) {
+) : BaseMetadata(name) {
     companion object {
         const val ID_ATTR_NAME = "id"
         const val MAIN_DATASOURCE_NAME = "main"

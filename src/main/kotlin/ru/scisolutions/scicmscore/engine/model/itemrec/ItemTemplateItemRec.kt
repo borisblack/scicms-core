@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.itemrec
 
-open class ItemTemplateItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : MutableMap<String, Any?> by map {
+open class ItemTemplateItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : ItemRec(map) {
     var core: Boolean?
         get() = this[CORE_ATTR_NAME] as Boolean?
         set(value) { this[CORE_ATTR_NAME] = value }

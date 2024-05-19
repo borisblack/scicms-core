@@ -2,7 +2,6 @@ coreVersion: v1
 kind: ItemTemplate
 metadata:
   name: default
-  pluralName: default
   core: true
 spec:
   attributes:

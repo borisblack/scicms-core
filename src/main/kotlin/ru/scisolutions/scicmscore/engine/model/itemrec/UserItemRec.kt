@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.itemrec
 
-open class UserItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : MutableMap<String, Any?> by map {
+open class UserItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : ItemRec(map) {
     var username: String?
         get() = this[USERNAME_ATTR_NAME] as String?
         set(value) { this[USERNAME_ATTR_NAME] = value }

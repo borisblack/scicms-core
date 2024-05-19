@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.itemrec
 
-open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : MutableMap<String, Any?> by map {
+open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) : ItemRec(map) {
     var includeTemplates: List<String>?
         get() = this[INCLUDE_TEMPLATES_ATTR_NAME] as List<String>?
         set(value) { this[INCLUDE_TEMPLATES_ATTR_NAME] = value }
@@ -93,14 +93,6 @@ open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf(
         get() = this[REVISION_POLICY_ATTR_NAME] as String?
         set(value) { this[REVISION_POLICY_ATTR_NAME] = value }
 
-    var lifecycle: String?
-        get() = this[LIFECYCLE_ATTR_NAME] as String?
-        set(value) { this[LIFECYCLE_ATTR_NAME] = value }
-
-    var permission: String?
-        get() = this[PERMISSION_ATTR_NAME] as String?
-        set(value) { this[PERMISSION_ATTR_NAME] = value }
-
     var spec: Any?
         get() = this[SPEC_ATTR_NAME] as Any?
         set(value) { this[SPEC_ATTR_NAME] = value }
@@ -129,8 +121,6 @@ open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf(
         const val NOT_LOCKABLE_ATTR_NAME = "notLockable"
         const val IMPLEMENTATION_ATTR_NAME = "implementation"
         const val REVISION_POLICY_ATTR_NAME = "revisionPolicy"
-        const val LIFECYCLE_ATTR_NAME = "lifecycle"
-        const val PERMISSION_ATTR_NAME = "permission"
         const val SPEC_ATTR_NAME = "spec"
     }
 }

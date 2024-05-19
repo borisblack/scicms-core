@@ -21,6 +21,10 @@ class ItemService(
     fun findAll(): Iterable<Item> = itemRepository.findAll()
 
     @Transactional(readOnly = true)
+    fun getById(id: String): Item =
+        itemRepository.findById(id).orElseThrow { IllegalArgumentException("Item with ID [$id] not found.") }
+
+    @Transactional(readOnly = true)
     fun findByName(name: String): Item? = findByNaturalId(name)
 
     private fun findByNaturalId(name: String): Item? {

@@ -249,9 +249,6 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_item_templates_name_uk"/>
             </column>
-            <column name="plural_name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
             <column name="core" type="tinyint"/>
             <column name="spec" type="text" defaultValue="{}">
                 <constraints nullable="false"/>

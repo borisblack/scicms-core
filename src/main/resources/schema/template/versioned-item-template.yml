@@ -2,7 +2,6 @@ coreVersion: v1
 kind: ItemTemplate
 metadata:
   name: versioned
-  pluralName: versioned
   core: true
 spec:
   indexes:

@@ -43,8 +43,6 @@ class ItemApplier(
         val name = item.metadata.name
         var itemEntity = itemService.findByName(name)
         if (itemEntity == null) {
-            // schemaLockService.lockOrThrow()
-
             if (item.checksum == null && !itemService.canCreate(ItemEntity.ITEM_ITEM_NAME)) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You has no CREATE permission for [${ItemEntity.ITEM_ITEM_NAME}] item")
@@ -57,13 +55,9 @@ class ItemApplier(
             itemEntity = itemMapper.mapToEntity(item)
 
             itemService.save(itemEntity)
-
-            // schemaLockService.unlockOrThrow()
             return ModelApplyResult(true, itemEntity.id)
         } else if (isChanged(itemEntity, item)) {
-            // schemaLockService.lockOrThrow()
-
-            if (item.checksum == null && (itemEntity.core || itemService.findByNameForWrite(name) == null)) {
+            if (item.checksum == null && (itemEntity.core || (itemService.findByNameForWrite(name)) == null)) {
                 schemaLockService.unlockOrThrow()
                 throw AccessDeniedException("You has no WRITE permission for [$name] item.")
             }
@@ -115,6 +109,12 @@ class ItemApplier(
         val metadata = model.metadata
         if(metadata.name.first().isUpperCase())
             throw IllegalArgumentException("Model name [${metadata.name}] must start with a lowercase character.")
+
+        if (model.metadata.pluralName.first().isUpperCase())
+            throw IllegalArgumentException("Model plural name [${model.metadata.pluralName}] must start with a lowercase character.")
+
+        if (model.metadata.name == model.metadata.pluralName)
+            throw IllegalArgumentException("Model name and plural name cannot be equal.")
 
         if (model.metadata.tableName.isNullOrBlank() && model.metadata.query.isNullOrBlank())
             throw IllegalArgumentException("Model table and query are empty.")

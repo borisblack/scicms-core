@@ -12,6 +12,8 @@ import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemItemRec
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
+import ru.scisolutions.scicmscore.engine.persistence.service.SchemaLockService
 import ru.scisolutions.scicmscore.engine.schema.applier.ModelsApplier
 import ru.scisolutions.scicmscore.engine.schema.mapper.ItemMapper
 import ru.scisolutions.scicmscore.engine.schema.model.ItemMetadata
@@ -20,6 +22,8 @@ import ru.scisolutions.scicmscore.engine.schema.service.TableSeeder
 
 @Service
 class ItemItemImpl(
+    private val itemService: ItemService,
+    private val schemaLockService: SchemaLockService,
     private val itemMapper: ItemMapper,
     private val modelsApplier: ModelsApplier,
     private val tableSeeder: TableSeeder,
@@ -29,12 +33,18 @@ class ItemItemImpl(
         val appliedModelResult = apply(ItemItemRec(data))
         data.id = appliedModelResult.id
         data.configId = appliedModelResult.id
+
         return data
     }
 
     private fun apply(data: ItemItemRec): ModelApplyResult {
         val model = itemMapper.mapToModel(data)
-        return modelsApplier.apply(model, true)
+
+        schemaLockService.lockOrThrow()
+        val appliedModelResult =  modelsApplier.apply(model, true)
+        schemaLockService.unlockOrThrow()
+
+        return appliedModelResult
     }
 
     override fun afterCreate(itemName: String, response: Response) {
@@ -42,7 +52,12 @@ class ItemItemImpl(
     }
 
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
-        apply(ItemItemRec(data))
+        val itemItemRec = ItemItemRec(data)
+        val existingItem = itemService.getById(input.id)
+        if (itemItemRec.name != existingItem.name)
+            throw IllegalArgumentException("Item cannot be renamed.")
+
+        apply(itemItemRec)
         return data
     }
 

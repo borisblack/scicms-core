@@ -20,9 +20,6 @@ class ItemTemplate(
     @org.hibernate.annotations.NaturalId
     var name: String,
 
-    @Column(name = "plural_name", nullable = false)
-    var pluralName: String,
-
     @Column(columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var core: Boolean = false,

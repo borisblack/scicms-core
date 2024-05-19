@@ -21,6 +21,10 @@ class ItemTemplateService(
     fun findAll(): Iterable<ItemTemplate> = itemTemplateRepository.findAll()
 
     @Transactional(readOnly = true)
+    fun getById(id: String): ItemTemplate =
+        itemTemplateRepository.findById(id).orElseThrow { IllegalArgumentException("Item template with ID [$id] not found.") }
+
+    @Transactional(readOnly = true)
     fun findByName(name: String): ItemTemplate?  = findByNaturalId(name)
 
     private fun findByNaturalId(name: String): ItemTemplate? {

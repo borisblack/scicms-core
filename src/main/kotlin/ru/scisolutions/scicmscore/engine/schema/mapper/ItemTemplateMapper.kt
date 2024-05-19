@@ -16,8 +16,7 @@ class ItemTemplateMapper(private val appProps: AppProps) {
     fun map(source: ItemTemplate): ItemTemplateEntity {
         val metadata = source.metadata
         val target = ItemTemplateEntity(
-            name = metadata.name,
-            pluralName = metadata.pluralName
+            name = metadata.name
         )
         copy(source, target)
 
@@ -28,7 +27,6 @@ class ItemTemplateMapper(private val appProps: AppProps) {
         val metadata = source.metadata
         
         target.name = metadata.name
-        target.pluralName = metadata.pluralName
         target.core = metadata.core
         target.lifecycleId = Lifecycle.DEFAULT_LIFECYCLE_ID
         target.permissionId = Permission.DEFAULT_PERMISSION_ID
@@ -45,7 +43,6 @@ class ItemTemplateMapper(private val appProps: AppProps) {
         coreVersion = appProps.coreVersion,
         metadata = ItemTemplateMetadata(
             name = requireNotNull(source.name),
-            pluralName = requireNotNull(source.pluralName),
             core = source.core ?: false
         ),
         spec = source.spec?.let { Json.objectMapper.convertValue(it, ItemSpec::class.java) } ?: ItemSpec(),
