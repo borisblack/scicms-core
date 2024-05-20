@@ -45,6 +45,10 @@ open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf(
         get() = this[CACHE_TTL_ATTR_NAME] as Int?
         set(value) { this[CACHE_TTL_ATTR_NAME] = value }
 
+    var idAttribute: String?
+        get() = this[ID_ATTRIBUTE_ATTR_NAME] as String?
+        set(value) { this[ID_ATTRIBUTE_ATTR_NAME] = value }
+
     var titleAttribute: String?
         get() = this[TITLE_ATTRIBUTE_ATTR_NAME] as String?
         set(value) { this[TITLE_ATTRIBUTE_ATTR_NAME] = value }
@@ -109,6 +113,7 @@ open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf(
         const val TABLE_NAME_ATTR_NAME = "tableName"
         const val QUERY_ATTR_NAME = "query"
         const val CACHE_TTL_ATTR_NAME = "cacheTtl"
+        const val ID_ATTRIBUTE_ATTR_NAME = "idAttribute"
         const val TITLE_ATTRIBUTE_ATTR_NAME = "titleAttribute"
         const val DEFAULT_SORT_ATTRIBUTE_ATTR_NAME = "defaultSortAttribute"
         const val DEFAULT_SORT_ORDER_ATTR_NAME = "defaultSortOrder"

@@ -47,6 +47,7 @@ class ItemMapper(
         target.tableName = metadata.tableName
         target.query = metadata.query
         target.cacheTtl = metadata.cacheTtl
+        target.idAttribute = metadata.idAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }
         target.titleAttribute = metadata.titleAttribute.ifBlank { ItemMetadata.ID_ATTR_NAME }
         target.defaultSortAttribute = metadata.defaultSortAttribute
         target.defaultSortOrder = metadata.defaultSortOrder
@@ -86,6 +87,7 @@ class ItemMapper(
             tableName = source.tableName,
             query = source.query,
             cacheTtl = source.cacheTtl,
+            idAttribute = source.idAttribute ?: ItemMetadata.ID_ATTR_NAME,
             titleAttribute = source.titleAttribute ?: ItemMetadata.ID_ATTR_NAME,
             defaultSortAttribute = source.defaultSortAttribute,
             defaultSortOrder = source.defaultSortOrder,

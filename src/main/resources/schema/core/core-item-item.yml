@@ -98,6 +98,13 @@ spec:
       defaultValue: '["default"]'
       colHidden: true
       colWidth: 180
+    idAttribute:
+      type: string
+      columnName: id_attribute
+      displayName: ID Attribute
+      description: ID Attribute Name
+      length: 50
+      colWidth: 180
     titleAttribute:
       type: string
       columnName: title_attribute
@@ -141,7 +148,7 @@ spec:
       displayName: Cache TTL (min)
       description: Cache TTL (min)
       minRange: -1
-      fieldWidth: 3
+      fieldWidth: 6
     readOnly:
       type: bool
       columnName: read_only

@@ -326,7 +326,10 @@
             <column name="table_name" type="varchar(50)"/>
             <column name="query" type="text"/>
             <column name="cache_ttl" type="int"/>
-            <column name="title_attribute" type="varchar(50)">
+            <column name="id_attribute" type="varchar(50)" defaultValue="id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title_attribute" type="varchar(50)" defaultValue="id">
                 <constraints nullable="false"/>
             </column>
             <column name="default_sort_attribute" type="varchar(50)"/>

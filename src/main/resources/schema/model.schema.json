@@ -84,6 +84,12 @@
           "minLength": 1,
           "maxLength": 50
         },
+        "idAttribute": {
+          "description": "ID attribute name (optional, 'id' is used by default)",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
         "titleAttribute": {
           "description": "Title attribute name (optional, 'id' is used by default)",
           "type": "string",

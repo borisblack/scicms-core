@@ -48,6 +48,9 @@ class Item(
     @Column(name = "cache_ttl")
     var cacheTtl: Int? = null,
 
+    @Column(name = "id_attribute", nullable = false)
+    var idAttribute: String = ID_ATTR_NAME,
+
     @Column(name = "title_attribute", nullable = false)
     var titleAttribute: String = ID_ATTR_NAME,
 
