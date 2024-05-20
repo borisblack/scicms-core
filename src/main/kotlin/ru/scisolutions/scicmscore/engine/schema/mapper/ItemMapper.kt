@@ -81,7 +81,7 @@ class ItemMapper(
             displayName = requireNotNull(source.displayName ?: source.name),
             pluralName = requireNotNull(source.pluralName),
             displayPluralName = requireNotNull(source.displayPluralName ?: source.pluralName),
-            dataSource = source.dataSource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
+            dataSource = source.datasource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
             performDdl = source.performDdl ?: false,
             tableName = source.tableName,
             query = source.query,

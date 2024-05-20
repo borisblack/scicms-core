@@ -73,7 +73,7 @@ class ItemItemImpl(
         val itemItemRec = ItemItemRec(response.data as ItemRec)
         if (itemItemRec.performDdl == true) {
             tableSeeder.dropTable(
-                itemItemRec.dataSource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
+                itemItemRec.datasource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
                 requireNotNull(itemItemRec.tableName)
             )
         } else {

@@ -25,7 +25,7 @@ open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf(
         get() = this[DISPLAY_PLURAL_NAME_ATTR_NAME] as String?
         set(value) { this[DISPLAY_PLURAL_NAME_ATTR_NAME] = value }
 
-    var dataSource: String?
+    var datasource: String?
         get() = this[DATA_SOURCE_ATTR_NAME] as String?
         set(value) { this[DATA_SOURCE_ATTR_NAME] = value }
 
@@ -104,7 +104,7 @@ open class ItemItemRec(private val map: MutableMap<String, Any?> = mutableMapOf(
         const val DISPLAY_NAME_ATTR_NAME = "displayName"
         const val PLURAL_NAME_ATTR_NAME = "pluralName"
         const val DISPLAY_PLURAL_NAME_ATTR_NAME = "displayPluralName"
-        const val DATA_SOURCE_ATTR_NAME = "dataSource"
+        const val DATA_SOURCE_ATTR_NAME = "datasource"
         const val PERFORM_DDL_ATTR_NAME = "performDdl"
         const val TABLE_NAME_ATTR_NAME = "tableName"
         const val QUERY_ATTR_NAME = "query"
