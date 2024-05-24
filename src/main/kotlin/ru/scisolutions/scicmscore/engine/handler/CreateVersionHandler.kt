@@ -9,20 +9,15 @@ import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.CreateVersionHook
+import ru.scisolutions.scicmscore.engine.hook.GenerateIdHook
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.engine.service.LifecycleManager
-import ru.scisolutions.scicmscore.engine.service.LocalizationManager
-import ru.scisolutions.scicmscore.engine.service.PermissionManager
-import ru.scisolutions.scicmscore.engine.service.SequenceManager
-import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
-import java.util.UUID
+import ru.scisolutions.scicmscore.engine.service.*
 
 @Service
 class CreateVersionHandler(
@@ -38,7 +33,8 @@ class CreateVersionHandler(
     private val addRelationHelper: AddRelationHelper,
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
-    private val cacheService: CacheService
+    private val cacheService: CacheService,
+    private val idGenerator: DefaultIdGenerator
 ) {
     fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -59,8 +55,12 @@ class CreateVersionHandler(
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
         val itemRec = ItemRec(preparedData.toMutableMap()).apply {
-            id = UUID.randomUUID().toString()
-            lockedBy = null
+            val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
+            val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
+            if (this[item.idAttribute] == null)
+                this[item.idAttribute] = id
+            this.id = id
+            this.lockedBy = null
         }
 
         // Assign other attributes
@@ -87,21 +87,21 @@ class CreateVersionHandler(
         )
 
         // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, CreateVersionHook::class.java)
-        implInstance?.beforeCreateVersion(itemName, input, itemRec)
+        val createVersionHook = classService.getCastInstance(item.implementation, CreateVersionHook::class.java)
+        createVersionHook?.beforeCreateVersion(itemName, input, itemRec)
 
         itemRecDao.insert(item, itemRec) // insert
 
         // Update relations
         addRelationHelper.processRelations(
             item,
-            itemRec.id as String,
+            itemRec.getString(item.idAttribute),
             preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         // Copy relations from previous version
         if (input.copyCollectionRelations == true)
-            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as String)
+            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.getString(item.idAttribute))
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id)
@@ -112,7 +112,7 @@ class CreateVersionHandler(
             ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
 
-        implInstance?.afterCreateVersion(itemName, response)
+        createVersionHook?.afterCreateVersion(itemName, response)
 
         cacheService.optimizeSchemaCaches(item)
 

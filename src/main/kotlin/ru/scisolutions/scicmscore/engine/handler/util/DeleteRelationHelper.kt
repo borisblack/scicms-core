@@ -30,7 +30,7 @@ class DeleteRelationHelper(
 ) {
     fun processRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
         processOneToOneRelations(item, itemRec, strategy)
-        processCollectionRelations(item, requireNotNull(itemRec.id), strategy)
+        processCollectionRelations(item, itemRec.getString(item.idAttribute), strategy)
     }
 
     private fun processOneToOneRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
@@ -114,7 +114,7 @@ class DeleteRelationHelper(
         auditManager.assignUpdateAttributes(itemRec)
         val itemsToUpdate = aclItemRecDao.findAllByAttributeForWrite(item, attrName, attrValue)
         itemsToUpdate.forEach {
-            itemRecDao.updateById(item, it.id as String, itemRec)
+            itemRecDao.updateById(item, it.getString(item.idAttribute), itemRec)
         }
 
         return itemsToUpdate.size
@@ -128,7 +128,7 @@ class DeleteRelationHelper(
 
     private fun deleteByAttribute(item: Item, attrName: String, attrValue: Any): Int {
         val itemsToDelete = aclItemRecDao.findAllByAttributeForDelete(item, attrName, attrValue)
-        itemsToDelete.forEach { deleteById(item, it.id as String) }
+        itemsToDelete.forEach { deleteById(item, it.getString(item.idAttribute)) }
 
         return itemsToDelete.size
     }

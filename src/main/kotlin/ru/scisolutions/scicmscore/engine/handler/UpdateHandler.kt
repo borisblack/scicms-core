@@ -81,7 +81,7 @@ class UpdateHandler(
             // Update relations
             addRelationHelper.processRelations(
                 item,
-                itemRec.id as String,
+                itemRec.getString(item.idAttribute),
                 itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
             )
         }

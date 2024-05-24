@@ -11,6 +11,7 @@ object DataHandlerUtil {
                 !attribute.isCollection()
             }
             .plus(ItemRec.ID_ATTR_NAME)
+            .plus(item.idAttribute)
             .toSet()
 
     fun checkRequiredAttributes(item: Item, attrNames: Set<String>) {

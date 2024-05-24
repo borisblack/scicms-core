@@ -42,7 +42,7 @@ class ItemFilterConditionBuilder(
             val attribute = item.spec.getAttribute(attrName)
             val target =
                 when (attribute.type) {
-                    FieldType.media -> MEDIA_ITEM_NAME
+                    FieldType.media -> Item.MEDIA_ITEM_NAME
                     else -> attribute.target
                 }
 
@@ -51,8 +51,8 @@ class ItemFilterConditionBuilder(
 
                 val targetItem = itemService.getByName(target)
                 val targetTable = DbTable(schema, requireNotNull(targetItem.tableName))
-                val idCol = DbColumn(table, ID_COL_NAME, null, null)
-                val targetIdCol = DbColumn(targetTable, ID_COL_NAME, null, null)
+                val idCol = DbColumn(table, item.idColName, null, null)
+                val targetIdCol = DbColumn(targetTable, targetItem.idColName, null, null)
                 val relation =
                     when (attribute.type) {
                         FieldType.media -> OneToOneUnidirectionalRelation(
@@ -240,10 +240,5 @@ class ItemFilterConditionBuilder(
         }
 
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
-    }
-
-    companion object {
-        private const val MEDIA_ITEM_NAME = "media"
-        private const val ID_COL_NAME = "id"
     }
 }

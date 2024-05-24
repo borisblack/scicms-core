@@ -11,11 +11,15 @@ import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItem
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
+import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import ru.scisolutions.scicmscore.extension.lowerFirst
 import java.util.concurrent.CompletableFuture
 
 @Component
-class FindOneRelatedDataFetcher(private val dataLoaderBuilder: DataLoaderBuilder) : DataFetcher<CompletableFuture<RelationResponse>> {
+class FindOneRelatedDataFetcher(
+    private val itemService: ItemService,
+    private val dataLoaderBuilder: DataLoaderBuilder
+) : DataFetcher<CompletableFuture<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): CompletableFuture<RelationResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
@@ -32,8 +36,9 @@ class FindOneRelatedDataFetcher(private val dataLoaderBuilder: DataLoaderBuilder
         registerDataLoaderIfAbsent(dfe, itemName)
         val dataLoader: DataLoader<String, ItemRec> = dfe.getDataLoader(itemName)
 
-        if (selectAttrNames.size == 1 && ItemRec.ID_ATTR_NAME in selectAttrNames)
-            return CompletableFuture.supplyAsync { RelationResponse(ItemRec().apply { this.id = id }) }
+        val item = itemService.getByName(itemName)
+        if (selectAttrNames.size == 1 && item.idAttribute in selectAttrNames)
+            return CompletableFuture.supplyAsync { RelationResponse(ItemRec().apply { this[item.idAttribute] = id }) }
 
         val res = dataLoader.load(id)
         dataLoader.dispatch()

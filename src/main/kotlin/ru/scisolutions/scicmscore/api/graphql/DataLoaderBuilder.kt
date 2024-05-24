@@ -25,7 +25,11 @@ class DataLoaderBuilder(
             val item = itemService.getByName(itemName)
 
             val res = CompletableFuture.supplyAsync({
-                findAllByIds(item, ids).associateBy { it.id }
+                findAllByIds(item, ids).associateBy { rec ->
+                    rec[item.idAttribute]?.let {
+                        if (it is String) it else it.toString()
+                    } ?: throw IllegalArgumentException("ID attribute is null.")
+                }
             }, executor)
 
             logger.trace("Loading data for item [{}] by IDs {} completed.", itemName, ids)
@@ -35,7 +39,7 @@ class DataLoaderBuilder(
 
     private fun findAllByIds(item: Item, ids: Set<String>): List<ItemRec> {
         if (ids.size <= dataProps.dataLoaderChunkSize)
-            aclItemRecDao.findAllByIdsForRead(item, ids)
+            return aclItemRecDao.findAllByIdsForRead(item, ids)
 
         return ids.asSequence()
             .chunked(dataProps.dataLoaderChunkSize)

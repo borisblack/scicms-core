@@ -21,7 +21,8 @@ import ru.scisolutions.scicmscore.engine.model.FieldType
 class ItemQueryBuilder {
     fun buildFindByIdQuery(item: Item, id: String, paramSource: AttributeSqlParameterSource, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
         val table = createTable(item)
-        val idCol = DbColumn(table, ItemRec.ID_COL_NAME, null, null)
+        val idColName = item.idColName
+        val idCol = DbColumn(table, idColName, null, null)
         val query = SelectQuery()
 
         if (selectAttrNames == null) {
@@ -37,7 +38,7 @@ class ItemQueryBuilder {
             query.addColumns(*columns)
         }
 
-        val sqlParamName = "${table.alias}_${ItemRec.ID_COL_NAME}"
+        val sqlParamName = "${table.alias}_$idColName"
         query.addCondition(BinaryCondition.equalTo(idCol, CustomSql(":$sqlParamName")))
         paramSource.addValue(sqlParamName, id, FieldType.string)
 
@@ -78,7 +79,7 @@ class ItemQueryBuilder {
             throw IllegalArgumentException("ID set is empty")
 
         val table = createTable(item)
-        val idCol = DbColumn(table, ItemRec.ID_COL_NAME, null, null)
+        val idCol = DbColumn(table, item.idColName, null, null)
         val query = SelectQuery()
             .addAllColumns()
             .addCondition(InCondition(idCol, *ids.toTypedArray()))

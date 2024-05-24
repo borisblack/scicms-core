@@ -63,6 +63,10 @@ open class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) :
         get() = this[LOCKED_BY_ATTR_NAME] as String?
         set(value) { this[LOCKED_BY_ATTR_NAME] = value }
 
+    fun getString(attrName: String): String =
+        this[attrName]?.let { if (it is String) it else it.toString() }
+            ?: throw IllegalArgumentException("Attribute [$attrName] is null.")
+
     companion object {
         const val ID_ATTR_NAME = "id"
         const val CONFIG_ID_ATTR_NAME = "configId"
@@ -81,7 +85,6 @@ open class ItemRec(private val map: MutableMap<String, Any?> = mutableMapOf()) :
         const val LOCKED_BY_ATTR_NAME = "lockedBy"
         const val CORE_ATTR_NAME = "lockedBy"
 
-        const val ID_COL_NAME = "id"
         const val LOCKED_BY_COL_NAME = "locked_by_id"
         const val PERMISSION_COL_NAME = "permission_id"
 

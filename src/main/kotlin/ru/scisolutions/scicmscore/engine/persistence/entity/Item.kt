@@ -129,6 +129,9 @@ class Item(
             return t ?: q ?: throw IllegalStateException("Table name anq query are empty")
         }
 
+    val idColName: String
+        get() = spec.getAttribute(idAttribute).getColumnName(idAttribute)
+
     companion object {
         const val ACCESS_ITEM_NAME = "access"
         const val ALLOWED_PERMISSION_ITEM_NAME = "allowedPermission"

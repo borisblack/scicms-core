@@ -69,7 +69,7 @@ class FindAllHandler(
     ): RelationResponseCollection {
         val item = itemService.getByName(itemName)
         val parentItem = itemService.getByName(parentItemName)
-        val parentId = parentItemRec.id ?: throw IllegalArgumentException("Parent ID not found")
+        val parentId = parentItemRec.getString(parentItem.idAttribute)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val paramSource = AttributeSqlParameterSource()
         val findAllQuery = findAllQueryBuilder.buildFindAllRelatedQuery(

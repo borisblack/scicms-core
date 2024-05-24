@@ -153,7 +153,7 @@ class FindAllQueryBuilder(
                     DbColumn(intermediateTable, parentRelation.getIntermediateSourceColumnName(), null, null)
                 val targetIntermediateCol =
                     DbColumn(intermediateTable, parentRelation.getIntermediateTargetColumnName(), null, null)
-                val idCol = DbColumn(table, ItemRec.ID_COL_NAME, null, null)
+                val idCol = DbColumn(table, item.idColName, null, null)
 
                 when (parentRelation) {
                     is ManyToManyUnidirectionalRelation -> {

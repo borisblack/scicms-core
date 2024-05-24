@@ -51,7 +51,7 @@ class ItemOrderingsParser(private val itemService: ItemService) {
         val targetTable = schema.addTable(requireNotNull(target.tableName))
         val targetOrderingAttribute = target.spec.getAttribute(targetAttrName)
         val targetOrderingCol = DbColumn(targetTable, targetOrderingAttribute.columnName ?: targetAttrName.lowercase(), null, null)
-        val targetIdCol = DbColumn(targetTable, ItemRec.ID_COL_NAME, null, null)
+        val targetIdCol = DbColumn(targetTable, target.idColName, null, null)
         query.addJoin(SelectQuery.JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
         query.addOrdering(targetOrderingCol, orderDir)
     }

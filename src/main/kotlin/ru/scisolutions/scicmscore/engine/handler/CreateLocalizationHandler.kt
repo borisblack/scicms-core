@@ -9,19 +9,15 @@ import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.CreateLocalizationHook
+import ru.scisolutions.scicmscore.engine.hook.GenerateIdHook
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.engine.service.LifecycleManager
-import ru.scisolutions.scicmscore.engine.service.LocalizationManager
-import ru.scisolutions.scicmscore.engine.service.PermissionManager
-import ru.scisolutions.scicmscore.engine.service.SequenceManager
 import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
-import java.util.UUID
+import ru.scisolutions.scicmscore.engine.service.*
 
 @Service
 class CreateLocalizationHandler(
@@ -36,7 +32,8 @@ class CreateLocalizationHandler(
     private val addRelationHelper: AddRelationHelper,
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
-    private val cacheService: CacheService
+    private val cacheService: CacheService,
+    private val idGenerator: DefaultIdGenerator
 ) {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -60,8 +57,12 @@ class CreateLocalizationHandler(
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
         val itemRec = ItemRec(preparedData.toMutableMap()).apply {
-            id = UUID.randomUUID().toString()
-            lockedBy = null
+            val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
+            val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
+            if (this[item.idAttribute] == null)
+                this[item.idAttribute] = id
+            this.id = id
+            this.lockedBy = null
         }
 
         // Assign other attributes
@@ -88,21 +89,21 @@ class CreateLocalizationHandler(
             )
 
         // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
-        implInstance?.beforeCreateLocalization(itemName, input, itemRec)
+        val createLocalizationHook = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
+        createLocalizationHook?.beforeCreateLocalization(itemName, input, itemRec)
 
         itemRecDao.insert(item, itemRec) // insert
 
         // Update relations
         addRelationHelper.processRelations(
             item,
-            itemRec.id as String,
+            itemRec.getString(item.idAttribute),
             preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         // Copy relations from previous localization
         if (input.copyCollectionRelations == true)
-            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.id as String)
+            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.getString(item.idAttribute))
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id) // unlock
@@ -113,7 +114,7 @@ class CreateLocalizationHandler(
             ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
 
-        implInstance?.afterCreateLocalization(itemName, response)
+        createLocalizationHook?.afterCreateLocalization(itemName, response)
 
         cacheService.optimizeSchemaCaches(item)
 

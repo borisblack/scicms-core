@@ -8,21 +8,15 @@ import ru.scisolutions.scicmscore.engine.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
+import ru.scisolutions.scicmscore.engine.hook.GenerateIdHook
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.engine.service.AuditManager
 import ru.scisolutions.scicmscore.service.ClassService
-import ru.scisolutions.scicmscore.engine.service.LifecycleManager
-import ru.scisolutions.scicmscore.engine.service.LocalizationManager
-import ru.scisolutions.scicmscore.engine.service.PermissionManager
-import ru.scisolutions.scicmscore.engine.service.SequenceManager
-import ru.scisolutions.scicmscore.engine.service.VersionManager
 import ru.scisolutions.scicmscore.engine.model.FieldType
-import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
-import java.util.UUID
+import ru.scisolutions.scicmscore.engine.service.*
 
 @Service
 class CreateHandler(
@@ -37,7 +31,8 @@ class CreateHandler(
     private val auditManager: AuditManager,
     private val addRelationHelper: AddRelationHelper,
     private val itemRecDao: ItemRecDao,
-    private val cacheService: CacheService
+    private val cacheService: CacheService,
+    private val idGenerator: DefaultIdGenerator
 ) {
     fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response {
         if (itemName in disabledItemNames)
@@ -50,8 +45,12 @@ class CreateHandler(
         val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val preparedData = attributeValueHelper.prepareValuesToSave(item, nonCollectionData)
         val itemRec = ItemRec(preparedData.toMutableMap()).apply {
-            id = UUID.randomUUID().toString()
-            configId = id
+            val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
+            val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
+            if (this[item.idAttribute] == null)
+                this[item.idAttribute] = id
+            this.id = id
+            this.configId = id
         }
 
         // Assign other attributes
@@ -65,8 +64,8 @@ class CreateHandler(
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
         // Get and call hook
-        val implInstance = classService.getCastInstance(item.implementation, CreateHook::class.java)
-        val preCreatedItemRec = implInstance?.beforeCreate(itemName, input, itemRec)
+        val createHook = classService.getCastInstance(item.implementation, CreateHook::class.java)
+        val preCreatedItemRec = createHook?.beforeCreate(itemName, input, itemRec)
         if (preCreatedItemRec == null) {
             itemRecDao.insert(item, itemRec) // insert
 
@@ -83,7 +82,7 @@ class CreateHandler(
             ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
 
-        implInstance?.afterCreate(itemName, response)
+        createHook?.afterCreate(itemName, response)
 
         cacheService.optimizeSchemaCaches(item)
 

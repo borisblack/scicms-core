@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.hook.FindOneHook
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
 import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
@@ -29,8 +30,8 @@ class FindOneHandler(
         implInstance?.beforeFindOne(itemName, id)
 
         val itemRec =
-            if (isOnlyId(attrNames))
-                ItemRec().apply { this.id = id }
+            if (isOnlyId(item, attrNames))
+                ItemRec().apply { this[item.idAttribute] = id }
             else
                 aclItemRecDao.findByIdForRead(item, id, attrNames)
 
@@ -43,7 +44,7 @@ class FindOneHandler(
         return response
     }
 
-    private fun isOnlyId(attrNames: Set<String>): Boolean = attrNames.size == 1 && ID_ATTR_NAME in attrNames
+    private fun isOnlyId(item: Item, attrNames: Set<String>): Boolean = attrNames.size == 1 && item.idAttribute in attrNames
 
     fun findOneRelated(
         parentItemRec: ItemRec,
@@ -60,8 +61,8 @@ class FindOneHandler(
         val item = itemService.getByName(itemName)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val itemRec =
-            if (isOnlyId(attrNames))
-                ItemRec().apply { this.id = id }
+            if (isOnlyId(item, attrNames))
+                ItemRec().apply { this[item.idAttribute]= id }
             else
                 aclItemRecDao.findByIdForRead(item, id, attrNames)
 
@@ -71,7 +72,6 @@ class FindOneHandler(
     }
 
     companion object {
-        private const val ID_ATTR_NAME = "id"
         private val logger = LoggerFactory.getLogger(FindOneHandler::class.java)
     }
 }
