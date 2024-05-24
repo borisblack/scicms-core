@@ -79,7 +79,7 @@ class DynamicTypeDefinitions(
                 mutationBuilder.fieldDefinition(mutationItemFields.promote(it))
 
                 // Add custom mutations
-                if (it.implementation != null) {
+                if (!it.implementation.isNullOrBlank()) {
                     typeDefinitionRegistry.add(itemObjectTypes.customMethodResponse(it))
 
                     val customMethods = mutationItemFields.customMethods(it, engine.getCustomMethods(it.name))

@@ -103,7 +103,7 @@ class DynamicDataFetcher(
                     .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), promoteDataFetcher)
 
                 // Custom methods
-                if (it.implementation != null) {
+                if (!it.implementation.isNullOrBlank()) {
                     val customMethodNames = engine.getCustomMethods(it.name)
                     for (methodName in customMethodNames) {
                         codeRegistryBuilder
