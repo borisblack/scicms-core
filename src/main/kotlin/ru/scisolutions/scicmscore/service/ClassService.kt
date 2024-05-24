@@ -14,7 +14,11 @@ class ClassService(private val applicationContext: ApplicationContext) {
         }
 
     fun <T> getCastInstance(className: String?, castType: Class<T>): T? {
-        val clazz = if (className != null) Class.forName(className) else return null
+        val clazz =
+            if (className.isNullOrBlank())
+                return null
+            else Class.forName(className)
+
         return if (castType.isAssignableFrom(clazz)) getInstance(clazz) as T else null
     }
 }

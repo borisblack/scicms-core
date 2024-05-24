@@ -123,7 +123,7 @@ class ItemApplier(
             throw IllegalArgumentException("Model table is empty, so DDL cannot be performed.")
 
         // Check if item implementation exists
-        if (metadata.implementation != null) {
+        if (!metadata.implementation.isNullOrBlank()) {
             Class.forName(metadata.implementation)
         }
 
