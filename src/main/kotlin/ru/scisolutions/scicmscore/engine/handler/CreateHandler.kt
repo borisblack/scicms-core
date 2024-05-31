@@ -49,8 +49,12 @@ class CreateHandler(
             val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
             if (this[item.idAttribute] == null)
                 this[item.idAttribute] = id
-            this.id = id
-            this.configId = id
+
+            if (item.hasIdAttribute())
+                this.id = id
+
+            if (item.hasConfigIdAttribute())
+                this.configId = id
         }
 
         // Assign other attributes

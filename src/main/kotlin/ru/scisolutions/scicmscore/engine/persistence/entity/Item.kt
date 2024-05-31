@@ -132,6 +132,38 @@ class Item(
     val idColName: String
         get() = spec.getAttribute(idAttribute).getColumnName(idAttribute)
 
+    fun hasAttribute(attrName: String) = attrName in spec.attributes
+
+    fun hasIdAttribute() = hasAttribute(ID_ATTR_NAME)
+
+    fun hasConfigIdAttribute() = hasAttribute(CONFIG_ID_ATTR_NAME)
+
+    fun hasGenerationAttribute() = hasAttribute(GENERATION_ATTR_NAME)
+
+    fun hasMajorRevAttribute() = hasAttribute(MAJOR_REV_ATTR_NAME)
+
+    fun hasMinorRevAttribute() = hasAttribute(MINOR_REV_ATTR_NAME)
+
+    fun hasCurrentAttribute() = hasAttribute(CURRENT_ATTR_NAME)
+
+    fun hasLocaleAttribute() = hasAttribute(LOCALE_ATTR_NAME)
+
+    fun hasLifecycleAttribute() = hasAttribute(LIFECYCLE_ATTR_NAME)
+
+    fun hasStateAttribute() = hasAttribute(STATE_ATTR_NAME)
+
+    fun hasPermissionAttribute() = hasAttribute(PERMISSION_ATTR_NAME)
+
+    fun hasCreatedAtAttribute() = hasAttribute(CREATED_AT_ATTR_NAME)
+
+    fun hasCreatedByAttribute() = hasAttribute(CREATED_BY_ATTR_NAME)
+
+    fun hasUpdatedAtAttribute() = hasAttribute(UPDATED_AT_ATTR_NAME)
+
+    fun hasUpdatedByAttribute() = hasAttribute(UPDATED_BY_ATTR_NAME)
+
+    fun hasLockedByAttribute() = hasAttribute(LOCKED_BY_ATTR_NAME)
+
     companion object {
         const val ACCESS_ITEM_NAME = "access"
         const val ALLOWED_PERMISSION_ITEM_NAME = "allowedPermission"
@@ -155,5 +187,19 @@ class Item(
         const val USER_ITEM_NAME = "user"
 
         private const val ID_ATTR_NAME = "id"
+        private const val CONFIG_ID_ATTR_NAME = "configId"
+        const val GENERATION_ATTR_NAME = "generation"
+        const val MAJOR_REV_ATTR_NAME = "majorRev"
+        const val MINOR_REV_ATTR_NAME = "minorRev"
+        const val CURRENT_ATTR_NAME = "current"
+        const val LOCALE_ATTR_NAME = "locale"
+        const val LIFECYCLE_ATTR_NAME = "lifecycle"
+        const val STATE_ATTR_NAME = "state"
+        const val PERMISSION_ATTR_NAME = "permission"
+        const val CREATED_AT_ATTR_NAME = "createdAt"
+        const val CREATED_BY_ATTR_NAME = "createdBy"
+        const val UPDATED_AT_ATTR_NAME = "updatedAt"
+        const val UPDATED_BY_ATTR_NAME = "updatedBy"
+        const val LOCKED_BY_ATTR_NAME = "lockedBy"
     }
 }
