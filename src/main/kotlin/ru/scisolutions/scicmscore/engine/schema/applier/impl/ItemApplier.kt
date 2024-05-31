@@ -127,6 +127,9 @@ class ItemApplier(
             Class.forName(metadata.implementation)
         }
 
+        if (metadata.idAttribute !in model.spec.attributes)
+            throw IllegalArgumentException("Item has not ID attribute.")
+
         model.spec.attributes
             .forEach { (attrName, attribute) ->
                 attribute.validate()
