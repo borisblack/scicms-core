@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.persistence.dao
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.dao.EmptyResultDataAccessException
 import ru.scisolutions.scicmscore.engine.persistence.mapper.ItemRecMapper
@@ -13,16 +14,11 @@ open class BaseItemRecDao(
     private val dsManager: DatasourceManager,
     private val itemCacheManager: ItemCacheManager
 ) {
+    protected open val logger: Logger = LoggerFactory.getLogger(BaseItemRecDao::class.java)
+
     fun findOne(item: Item, sql: String, paramSource: AttributeSqlParameterSource): ItemRec? =
         itemCacheManager.get(item, sql, paramSource) {
-            logger.trace("Running SQL: {}", sql)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
-
+            traceSqlAndParameters(sql, paramSource);
             try {
                 dsManager.template(item.ds).queryForObject(sql, paramSource, ItemRecMapper(item))
             } catch (e: EmptyResultDataAccessException) {
@@ -34,19 +30,18 @@ open class BaseItemRecDao(
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
 
         return itemCacheManager.get(item, countSQL, paramSource) {
-            logger.trace("Running SQL: {}", countSQL)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
-
+            traceSqlAndParameters(countSQL, paramSource);
             dsManager.template(item.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
         }
     }
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(BaseItemRecDao::class.java)
+    protected fun traceSqlAndParameters(sql: String, paramSource: AttributeSqlParameterSource) {
+        logger.trace("Running SQL: {}", sql)
+        if (paramSource.parameterNames.isNotEmpty()) {
+            logger.trace(
+                "Binding parameters: {}",
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
+            )
+        }
     }
 }

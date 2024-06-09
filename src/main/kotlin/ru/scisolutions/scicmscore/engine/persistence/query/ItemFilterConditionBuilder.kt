@@ -35,7 +35,14 @@ class ItemFilterConditionBuilder(
     private val itemService: ItemService,
     private val relationManager: RelationManager
 ) {
-    fun newFilterCondition(item: Item, itemFiltersInput: ItemFiltersInput, schema: DbSchema, table: DbTable, query: SelectQuery, paramSource: AttributeSqlParameterSource): Condition {
+    fun newFilterCondition(
+        item: Item,
+        itemFiltersInput: ItemFiltersInput,
+        schema: DbSchema,
+        table: DbTable,
+        query: SelectQuery,
+        paramSource: AttributeSqlParameterSource
+    ): Condition {
         val nestedConditions = mutableListOf<Condition>()
 
         itemFiltersInput.attributeFilters.forEach { (attrName, attrFilter) ->
@@ -51,8 +58,6 @@ class ItemFilterConditionBuilder(
 
                 val targetItem = itemService.getByName(target)
                 val targetTable = DbTable(schema, requireNotNull(targetItem.tableName))
-                val idCol = DbColumn(table, item.idColName, null, null)
-                val targetIdCol = DbColumn(targetTable, targetItem.idColName, null, null)
                 val relation =
                     when (attribute.type) {
                         FieldType.media -> OneToOneUnidirectionalRelation(
@@ -65,29 +70,41 @@ class ItemFilterConditionBuilder(
 
                 when (relation) {
                     is OneToOneUnidirectionalRelation -> {
+                        val targetKeyAttrName = relation.getAttribute().referencedBy ?: targetItem.idAttribute
+                        val targetKeyCol = DbColumn(targetTable, targetItem.spec.getColumnName(targetKeyAttrName), null, null)
                         val col = DbColumn(table, relation.getColumnName(), null, null)
-                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
+                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetKeyCol))
                     }
                     is OneToOneBidirectionalRelation -> {
                         if (relation.isOwning) {
+                            val inversedKeyAttrName = relation.getOwningAttribute().referencedBy ?: relation.inversedItem.idAttribute
+                            val inversedKeyCol = DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
                             val owningCol = DbColumn(table, relation.getOwningColumnName(), null, null)
-                            query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(owningCol, targetIdCol))
+                            query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(owningCol, inversedKeyCol))
                         } else {
+                            val owningKeyAttrName = relation.getInversedAttribute().referencedBy ?: relation.owningItem.idAttribute
+                            val owningKeyCol = DbColumn(targetTable, relation.owningItem.spec.getColumnName(owningKeyAttrName), null, null)
                             val inversedCol = DbColumn(table, relation.getInversedColumnName(), null, null)
-                            query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(inversedCol, targetIdCol))
+                            query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(inversedCol, owningKeyCol))
                         }
                     }
                     is ManyToOneUnidirectionalRelation -> {
+                        val targetKeyAttrName = relation.getAttribute().referencedBy ?: targetItem.idAttribute
+                        val targetKeyCol = DbColumn(targetTable, targetItem.spec.getColumnName(targetKeyAttrName), null, null)
                         val col = DbColumn(table, relation.getColumnName(), null, null)
-                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetIdCol))
+                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(col, targetKeyCol))
                     }
                     is ManyToOneOwningBidirectionalRelation -> {
+                        val inversedKeyAttrName = relation.getOwningAttribute().referencedBy ?: relation.inversedItem.idAttribute
+                        val inversedKeyCol = DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
                         val owningCol = DbColumn(table, relation.getOwningColumnName(), null, null)
-                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(owningCol, targetIdCol))
+                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(owningCol, inversedKeyCol))
                     }
                     is OneToManyInversedBidirectionalRelation -> {
+                        val inversedKeyAttrName = relation.getOwningAttribute().referencedBy ?: item.idAttribute
+                        val inversedKeyCol = DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
                         val owningCol = DbColumn(targetTable, relation.getOwningColumnName(), null, null)
-                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(idCol, owningCol))
+                        query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(inversedKeyCol, owningCol))
                     }
                     is ManyToManyRelation -> {
                         val intermediateTable = DbTable(schema, relation.getIntermediateTableName())
@@ -96,16 +113,28 @@ class ItemFilterConditionBuilder(
 
                         when (relation) {
                             is ManyToManyUnidirectionalRelation -> {
-                                query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, sourceIntermediateCol))
-                                query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(targetIntermediateCol, targetIdCol))
+                                val sourceKeyAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
+                                val sourceKeyCol = DbColumn(table, item.spec.getColumnName(sourceKeyAttrName), null, null)
+                                val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: targetItem.idAttribute
+                                val targetKeyCol = DbColumn(table, targetItem.spec.getColumnName(targetKeyAttrName), null, null)
+                                query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol))
+                                query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol))
                             }
                             is ManyToManyBidirectionalRelation -> {
                                 if (relation.isOwning) { // owning side
-                                    query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, sourceIntermediateCol))
-                                    query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(targetIntermediateCol, targetIdCol))
+                                    val sourceKeyAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
+                                    val sourceKeyCol = DbColumn(table, item.spec.getColumnName(sourceKeyAttrName), null, null)
+                                    val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: targetItem.idAttribute
+                                    val targetKeyCol = DbColumn(table, targetItem.spec.getColumnName(targetKeyAttrName), null, null)
+                                    query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol))
+                                    query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol))
                                 } else { // inversed side
-                                    query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(idCol, targetIntermediateCol))
-                                    query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(sourceIntermediateCol, targetIdCol))
+                                    val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
+                                    val targetKeyCol = DbColumn(table, item.spec.getColumnName(targetKeyAttrName), null, null)
+                                    val sourceKeyAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: targetItem.idAttribute
+                                    val sourceKeyCol = DbColumn(table, targetItem.spec.getColumnName(sourceKeyAttrName), null, null)
+                                    query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(targetKeyCol, targetIntermediateCol))
+                                    query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(sourceIntermediateCol, sourceKeyCol))
                                 }
                             }
                         }

@@ -24,40 +24,45 @@ class AddRelationHelper(
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao
 ) {
-    fun processRelations(item: Item, itemRecId: String, relAttributes: Map<String, Any>) {
+    fun addRelations(item: Item, itemRec: ItemRec, relAttributes: Map<String, Any>) {
         relAttributes.forEach { (attrName, value) ->
-            processRelation(item, itemRecId, attrName, value)
+            addRelation(item, itemRec, attrName, value)
         }
     }
 
-    private fun processRelation(item: Item, itemRecId: String, relAttrName: String, relAttrValue: Any) {
+    private fun addRelation(item: Item, itemRec: ItemRec, relAttrName: String, relAttrValue: Any) {
         val attribute = item.spec.getAttribute(relAttrName)
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
             is OneToOneBidirectionalRelation -> {
-                if (relation.isOwning) {
-                    val inversedItemRec = ItemRec(mutableMapOf(relation.inversedAttrName to itemRecId))
-                    updateOrInsertWithDefaults(relation.inversedItem, relAttrValue as String, inversedItemRec)
-                } else {
+                if (!relation.isOwning) {
+                    val referencedAttrName = relation.getOwningAttribute().referencedBy ?: relation.owningItem.idAttribute
+                    val itemRecId = itemRec.getString(referencedAttrName)
                     val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
                     updateOrInsertWithDefaults(relation.owningItem, relAttrValue as String, owningItemRec)
                 }
             }
             is OneToManyInversedBidirectionalRelation -> {
                 val relIds = relAttrValue as Collection<*>
-                val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
+                val referencedAttrName = relation.getOwningAttribute().referencedBy ?: item.idAttribute
+                val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRec.getString(referencedAttrName)))
                 relIds.forEach { updateOrInsertWithDefaults(relation.owningItem, it as String, owningItemRec) }
             }
             is ManyToManyRelation -> {
+                val sourceReferencedAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
+                val sourceItemRecId = itemRec.getString(sourceReferencedAttrName)
                 val relIds = relAttrValue as Collection<*>
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
-                        relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
+                        relIds.forEach { addManyToManyRelation(relation.intermediateItem, sourceItemRecId, it as String) }
                     }
                     is ManyToManyBidirectionalRelation -> {
-                        if (relation.isOwning)
-                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, itemRecId, it as String) }
-                        else
-                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, it as String, itemRecId) }
+                        if (relation.isOwning) {
+                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, sourceItemRecId, it as String) }
+                        } else {
+                            val targetReferencedAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
+                            val targetItemRecId = itemRec.getString(targetReferencedAttrName)
+                            relIds.forEach { addManyToManyRelation(relation.intermediateItem, it as String, targetItemRecId) }
+                        }
                     }
                 }
             }

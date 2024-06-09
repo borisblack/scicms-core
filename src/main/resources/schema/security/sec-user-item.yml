@@ -40,6 +40,20 @@ spec:
       displayName: Enabled
       description: Enabled
       defaultValue: true
+    roles:
+      type: relation
+      relType: oneToMany
+      target: role
+      mappedBy: user
+      displayName: Roles
+      description: Roles
+    groups:
+      type: relation
+      relType: oneToMany
+      target: groupMember
+      mappedBy: user
+      displayName: Groups
+      description: Groups
   indexes:
     sec_users_username_uk:
       columns:

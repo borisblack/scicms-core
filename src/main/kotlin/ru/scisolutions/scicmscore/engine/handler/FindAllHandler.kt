@@ -69,12 +69,11 @@ class FindAllHandler(
     ): RelationResponseCollection {
         val item = itemService.getByName(itemName)
         val parentItem = itemService.getByName(parentItemName)
-        val parentId = parentItemRec.getString(parentItem.idAttribute)
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val paramSource = AttributeSqlParameterSource()
         val findAllQuery = findAllQueryBuilder.buildFindAllRelatedQuery(
             parentItem = parentItem,
-            parentId = parentId,
+            parentItemRec = parentItemRec,
             parentAttrName = parentAttrName,
             item = item,
             input = input,

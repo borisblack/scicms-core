@@ -22,6 +22,7 @@ class Attribute(
     val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
     val mappedBy: String? = null,
     val inversedBy: String? = null,
+    val referencedBy: String? = null, // in manyToOne relation can be used as an alternate key of referenced entity
     val required: Boolean = false,
     val readOnly: Boolean = false,
     val defaultValue: String? = null,
@@ -123,6 +124,7 @@ class Attribute(
             intermediate == other.intermediate &&
             mappedBy == other.mappedBy &&
             inversedBy == other.inversedBy &&
+            referencedBy == other.referencedBy &&
             displayName == other.displayName &&
             description == other.description &&
             pattern == other.pattern &&
@@ -159,6 +161,7 @@ class Attribute(
             intermediate,
             mappedBy,
             inversedBy,
+            referencedBy,
             displayName,
             description,
             pattern,

@@ -14,15 +14,39 @@ import com.healthmarketscience.sqlbuilder.UpdateQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
+import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
-import ru.scisolutions.scicmscore.engine.model.FieldType
 
 class ItemQueryBuilder {
-    fun buildFindByIdQuery(item: Item, id: String, paramSource: AttributeSqlParameterSource, selectAttrNames: Set<String>? = null, permissionIds: Set<String>? = null): SelectQuery {
+    fun buildFindByIdQuery(
+        item: Item,
+        id: String,
+        paramSource: AttributeSqlParameterSource,
+        selectAttrNames: Set<String>? = null,
+        permissionIds: Set<String>? = null
+    ): SelectQuery =
+        buildFindByKeyQuery(
+            item = item,
+            keyAttrName = item.idAttribute,
+            key = id,
+            paramSource = paramSource,
+            selectAttrNames = selectAttrNames,
+            permissionIds = permissionIds
+        )
+
+    fun buildFindByKeyQuery(
+        item: Item,
+        keyAttrName: String,
+        key: String,
+        paramSource: AttributeSqlParameterSource,
+        selectAttrNames: Set<String>? = null,
+        permissionIds: Set<String>? = null
+    ): SelectQuery {
         val table = createTable(item)
-        val idColName = item.idColName
-        val idCol = DbColumn(table, idColName, null, null)
+        val keyAttribute = item.spec.getAttribute(keyAttrName)
+        val keyColName = keyAttribute.getColumnName(keyAttrName)
+        val keyCol = DbColumn(table, keyColName, null, null)
         val query = SelectQuery()
 
         if (selectAttrNames == null) {
@@ -31,16 +55,16 @@ class ItemQueryBuilder {
             val columns = selectAttrNames
                 .map {
                     val attribute = item.spec.getAttribute(it)
-                    DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
+                    DbColumn(table, attribute.getColumnName(it), null, null)
                 }
                 .toTypedArray()
 
             query.addColumns(*columns)
         }
 
-        val sqlParamName = "${table.alias}_$idColName"
-        query.addCondition(BinaryCondition.equalTo(idCol, CustomSql(":$sqlParamName")))
-        paramSource.addValue(sqlParamName, id, FieldType.string)
+        val sqlParamName = "${table.alias}_$keyColName"
+        query.addCondition(BinaryCondition.equalTo(keyCol, CustomSql(":$sqlParamName")))
+        paramSource.addValue(sqlParamName, key, FieldType.string)
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
         if (permissionCondition != null)
@@ -55,7 +79,13 @@ class ItemQueryBuilder {
         return DbTable(schema, item.qs)
     }
 
-    fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
+    fun buildFindAllByAttributeQuery(
+        item: Item,
+        attrName: String,
+        attrValue: Any,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): SelectQuery {
         val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
@@ -74,15 +104,36 @@ class ItemQueryBuilder {
         return query.validate()
     }
 
-    fun buildFindByIdsQuery(item: Item, ids: Set<String>, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
-        if (ids.isEmpty())
-            throw IllegalArgumentException("ID set is empty")
+    fun buildFindAllByIdsQuery(
+        item: Item,
+        ids: Set<String>,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): SelectQuery =
+        buildFindAllByKeysQuery(
+            item = item,
+            keyAttrName = item.idAttribute,
+            keys = ids,
+            paramSource = paramSource,
+            permissionIds = permissionIds
+        )
+
+    fun buildFindAllByKeysQuery(
+        item: Item,
+        keyAttrName: String,
+        keys: Set<String>,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): SelectQuery {
+        if (keys.isEmpty())
+            throw IllegalArgumentException("Keys set is empty")
 
         val table = createTable(item)
-        val idCol = DbColumn(table, item.idColName, null, null)
+        val keyAttribute = item.spec.getAttribute(keyAttrName)
+        val keyCol = DbColumn(table, keyAttribute.getColumnName(keyAttrName), null, null)
         val query = SelectQuery()
             .addAllColumns()
-            .addCondition(InCondition(idCol, *ids.toTypedArray()))
+            .addCondition(InCondition(keyCol, *keys.toTypedArray()))
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
         if (permissionCondition != null)

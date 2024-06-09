@@ -16,13 +16,16 @@ metadata:
   icon: KeyOutlined
 spec:
   attributes:
-    username:
-      type: string
+    user:
+      type: relation
+      relType: manyToOne
+      target: user
+      inversedBy: roles
+      referencedBy: username
       columnName: username
       displayName: User
       description: User
       required: true
-      length: 50
       colWidth: 200
     role:
       type: string

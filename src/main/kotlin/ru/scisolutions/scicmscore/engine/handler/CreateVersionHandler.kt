@@ -93,15 +93,15 @@ class CreateVersionHandler(
         itemRecDao.insert(item, itemRec) // insert
 
         // Update relations
-        addRelationHelper.processRelations(
+        addRelationHelper.addRelations(
             item,
-            itemRec.getString(item.idAttribute),
+            itemRec,
             preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         // Copy relations from previous version
         if (input.copyCollectionRelations == true)
-            copyRelationHelper.processCollectionRelations(item, input.id, itemRec.getString(item.idAttribute))
+            copyRelationHelper.copyCollectionRelations(item, prevItemRec, itemRec)
 
         if (!item.notLockable)
             itemRecDao.unlockByIdOrThrow(item, input.id)

@@ -79,9 +79,9 @@ class UpdateHandler(
             itemRecDao.updateById(item, input.id, itemRec) // update
 
             // Update relations
-            addRelationHelper.processRelations(
+            addRelationHelper.addRelations(
                 item,
-                itemRec.getString(item.idAttribute),
+                itemRec,
                 itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
             )
         }

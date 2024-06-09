@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.api.graphql.DataLoaderBuilder
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.extractCapitalizedItemNameFromFieldType
 import ru.scisolutions.scicmscore.api.graphql.datafetcher.selectDataFields
+import ru.scisolutions.scicmscore.api.graphql.datafetcher.unwrapParentType
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.RelationResponse
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import ru.scisolutions.scicmscore.extension.lowerFirst
 import java.util.concurrent.CompletableFuture
@@ -23,24 +25,29 @@ class FindOneRelatedDataFetcher(
     override fun get(dfe: DataFetchingEnvironment): CompletableFuture<RelationResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
-        val parentItemRec: ItemRec = dfe.getSource()
+        val parentItemName = dfe.unwrapParentType().lowerFirst()
+        val parentItemRec: ItemRec = requireNotNull(dfe.getSource())
         val parentAttrName = dfe.field.name
         val selectAttrNames = dfe.selectDataFields()
 
-        val id = parentItemRec[parentAttrName] as String?
-        if (id == null) {
+        val key = parentItemRec[parentAttrName] as String?
+        if (key == null) {
             logger.trace("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
             return CompletableFuture.supplyAsync { RelationResponse() }
         }
 
-        registerDataLoaderIfAbsent(dfe, itemName)
-        val dataLoader: DataLoader<String, ItemRec> = dfe.getDataLoader(itemName)
-
+        val parentItem = itemService.getByName(parentItemName)
         val item = itemService.getByName(itemName)
-        if (selectAttrNames.size == 1 && item.idAttribute in selectAttrNames)
-            return CompletableFuture.supplyAsync { RelationResponse(ItemRec().apply { this[item.idAttribute] = id }) }
+        val dataLoaderName = generateDataLoaderName(parentItem, parentAttrName, item)
+        registerDataLoaderIfAbsent(dfe, dataLoaderName, parentItem, parentAttrName, item)
+        val dataLoader: DataLoader<String, ItemRec> = requireNotNull(dfe.getDataLoader(dataLoaderName))
 
-        val res = dataLoader.load(id)
+        val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
+        val keyAttrName = parentAttribute.referencedBy ?: item.idAttribute
+        if (selectAttrNames.size == 1 && keyAttrName in selectAttrNames)
+            return CompletableFuture.supplyAsync { RelationResponse(ItemRec().apply { this[keyAttrName] = key }) }
+
+        val res = dataLoader.load(key)
         dataLoader.dispatch()
 
         return res.handle { itemRec, err ->
@@ -51,11 +58,22 @@ class FindOneRelatedDataFetcher(
         }
     }
 
-    private fun registerDataLoaderIfAbsent(dfe: DataFetchingEnvironment, itemName: String) {
-        if (dfe.getDataLoader<String, ItemRec>(itemName) == null)
+    private fun generateDataLoaderName(parentItem: Item, parentAttrName: String, item: Item): String {
+        val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
+        return if (parentAttribute.referencedBy == null) item.name else "${parentItem.name}#$parentAttrName"
+    }
+
+    private fun registerDataLoaderIfAbsent(
+        dfe: DataFetchingEnvironment,
+        dataLoaderName: String,
+        parentItem: Item,
+        parentAttrName: String,
+        item: Item
+    ) {
+        if (dfe.getDataLoader<String, ItemRec>(dataLoaderName) == null)
             dfe.dataLoaderRegistry.register(
-                itemName,
-                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(itemName))
+                dataLoaderName,
+                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(parentItem, parentAttrName, item))
             )
     }
 

@@ -5,46 +5,46 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.persistence.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
-import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
 @Component
 class DataLoaderBuilder(
-    private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao,
     @Qualifier("taskExecutor") private val executor: Executor,
     private val dataProps: DataProps
 ) {
-    fun build(itemName: String): MappedBatchLoader<String, ItemRec> =
-        MappedBatchLoader { ids ->
-            logger.trace("Starting loading data for item [{}] by IDs {}", itemName, ids)
-            val item = itemService.getByName(itemName)
+    fun build(parentItem: Item, parentAttrName: String, item: Item): MappedBatchLoader<String, ItemRec> {
+        val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
+        val keyAttrName = parentAttribute.referencedBy ?: item.idAttribute
+        return MappedBatchLoader { keys ->
+            logger.trace("Starting loading data for item [{}] by keys {}", item.name, keys)
 
             val res = CompletableFuture.supplyAsync({
-                findAllByIds(item, ids).associateBy { rec ->
-                    rec[item.idAttribute]?.let {
+                findAllByKeys(item, keyAttrName, keys).associateBy { rec ->
+                    rec[keyAttrName]?.let {
                         if (it is String) it else it.toString()
                     } ?: throw IllegalArgumentException("ID attribute is null.")
                 }
             }, executor)
 
-            logger.trace("Loading data for item [{}] by IDs {} completed.", itemName, ids)
+            logger.trace("Loading data for item [{}] by keys {} completed.", item.name, keys)
 
             res
         }
+    }
 
-    private fun findAllByIds(item: Item, ids: Set<String>): List<ItemRec> {
-        if (ids.size <= dataProps.dataLoaderChunkSize)
-            return aclItemRecDao.findAllByIdsForRead(item, ids)
+    private fun findAllByKeys(item: Item, keyAttrName: String, keys: Set<String>): List<ItemRec> {
+        if (keys.size <= dataProps.dataLoaderChunkSize)
+            return aclItemRecDao.findAllByKeysForRead(item, keyAttrName, keys)
 
-        return ids.asSequence()
+        return keys.asSequence()
             .chunked(dataProps.dataLoaderChunkSize)
             .map { it.toSet() }
-            .map { aclItemRecDao.findAllByIdsForRead(item, it) }
+            .map { aclItemRecDao.findAllByKeysForRead(item, keyAttrName, keys) }
             .flatten()
             .toList()
     }

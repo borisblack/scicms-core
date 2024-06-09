@@ -23,7 +23,7 @@ class FindAllRelatedDataFetcher(
         val parentItemName = parentType.lowerFirst()
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
-        val parentItemRec: ItemRec = dfe.getSource()
+        val parentItemRec: ItemRec = requireNotNull(dfe.getSource())
         val parentAttrName = dfe.field.name
         val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
         val selectAttrNames = dfe.selectDataFields()

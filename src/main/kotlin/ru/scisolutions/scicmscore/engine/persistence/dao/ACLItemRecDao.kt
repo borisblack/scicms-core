@@ -1,5 +1,6 @@
 package ru.scisolutions.scicmscore.engine.persistence.dao
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.persistence.mapper.ItemRecMapper
@@ -18,8 +19,13 @@ class ACLItemRecDao(
     private val dsManager: DatasourceManager,
     private val itemCacheManager: ItemCacheManager
 ) : BaseItemRecDao(dsManager, itemCacheManager) {
+    override val logger: Logger = LoggerFactory.getLogger(ACLItemRecDao::class.java)
+
     fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Acl.Mask.READ)
+
+    fun findByKeyForRead(item: Item, keyAttrName: String, key: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByKeyFor(item, keyAttrName, key, selectAttrNames, Acl.Mask.READ)
 
     fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Acl.Mask.WRITE)
@@ -37,6 +43,19 @@ class ACLItemRecDao(
         return findOne(item, query.toString(), paramSource)
     }
 
+    private fun findByKeyFor(
+        item: Item,
+        keyAttrName: String,
+        key: String,
+        selectAttrNames: Set<String>?,
+        accessMask: Acl.Mask
+    ): ItemRec? {
+        val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
+        val paramSource = AttributeSqlParameterSource()
+        val query =  itemQueryBuilder.buildFindByKeyQuery(item, keyAttrName, key, paramSource, selectAttrNames, permissionIds)
+        return findOne(item, query.toString(), paramSource)
+    }
+
     fun existsByIdForRead(item: Item, id: String): Boolean = existsByIdFor(item, id, Acl.Mask.READ)
 
     fun existsByIdForWrite(item: Item, id: String): Boolean = existsByIdFor(item, id, Acl.Mask.WRITE)
@@ -49,21 +68,19 @@ class ACLItemRecDao(
 
     fun findAllByIdsForRead(item: Item, ids: Set<String>): List<ItemRec> = findAllByIdsFor(item, ids, Acl.Mask.READ)
 
-    private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): List<ItemRec> {
+    fun findAllByKeysForRead(item: Item, keyAttrName: String, keys: Set<String>): List<ItemRec> = findAllByKeysFor(item, keyAttrName, keys, Acl.Mask.READ)
+
+    private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): List<ItemRec> =
+        findAllByKeysFor(item, item.idAttribute, ids, accessMask)
+
+    private fun findAllByKeysFor(item: Item, keyAttrName: String, keys: Set<String>, accessMask: Acl.Mask): List<ItemRec> {
         val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
         val paramSource = AttributeSqlParameterSource()
-        val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
+        val query = itemQueryBuilder.buildFindAllByKeysQuery(item, keyAttrName, keys, paramSource, permissionIds)
         val sql = query.toString()
 
         return itemCacheManager.get(item, sql, paramSource) {
-            logger.trace("Running SQL: {}", sql)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
-
+            traceSqlAndParameters(sql, paramSource)
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
     }
@@ -71,7 +88,7 @@ class ACLItemRecDao(
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): Int {
         val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
         val paramSource = AttributeSqlParameterSource()
-        val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource, permissionIds)
+        val query = itemQueryBuilder.buildFindAllByIdsQuery(item, ids, paramSource, permissionIds)
         return count(item, query.toString(), paramSource)
     }
 
@@ -97,20 +114,12 @@ class ACLItemRecDao(
         val sql = query.toString()
 
         return itemCacheManager.get(item, sql, paramSource) {
-            logger.trace("Running SQL: {}", sql)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
-
+            traceSqlAndParameters(sql, paramSource)
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(ACLItemRecDao::class.java)
         private val itemQueryBuilder = ItemQueryBuilder()
     }
 }

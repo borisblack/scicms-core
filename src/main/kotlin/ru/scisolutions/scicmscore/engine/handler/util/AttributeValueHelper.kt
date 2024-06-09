@@ -203,8 +203,9 @@ class AttributeValueHelper(
                     if (value !is String)
                         throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
 
-                    if (!itemRecDao.existsById(targetItem, value))
-                        throw IllegalArgumentException("Item [${attribute.target}] with ID [$value] does not exist")
+                    val keyAttrName = attribute.referencedBy ?: targetItem.idAttribute
+                    if (!itemRecDao.existsByKey(targetItem, keyAttrName, value))
+                        throw IllegalArgumentException("Item [${attribute.target}] with key [$value] does not exist")
                 }
             }
         }

@@ -91,12 +91,14 @@ class EngineImpl(
         findOneHandler.findOne(itemName, id, selectAttrNames)
 
     override fun findOneRelated(
+        parentItemName: String,
         parentItemRec: ItemRec,
         parentAttrName: String,
         itemName: String,
         selectAttrNames: Set<String>
     ): RelationResponse =
         findOneHandler.findOneRelated(
+            parentItemName = parentItemName,
             parentItemRec = parentItemRec,
             parentAttrName = parentAttrName,
             itemName = itemName,

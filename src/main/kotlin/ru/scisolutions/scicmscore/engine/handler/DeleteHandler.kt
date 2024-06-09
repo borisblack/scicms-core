@@ -60,11 +60,11 @@ class DeleteHandler(
         val implInstance = classService.getCastInstance(item.implementation, DeleteHook::class.java)
         implInstance?.beforeDelete(itemName, input, itemRec)
 
-        deleteRelationHelper.processRelations(item, itemRec, input.deletingStrategy) // process relations
+        deleteRelationHelper.deleteRelations(item, itemRec, input.deletingStrategy) // process relations
 
         // Can be used by another versions or localizations
         if (!item.versioned && !item.localized) {
-            deleteMediaHelper.processMedia(item, itemRec)
+            deleteMediaHelper.deleteMedia(item, itemRec)
         }
 
         deleteById(item, input.id) // delete

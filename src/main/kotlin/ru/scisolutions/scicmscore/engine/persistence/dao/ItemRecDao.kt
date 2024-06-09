@@ -1,15 +1,20 @@
 package ru.scisolutions.scicmscore.engine.persistence.dao
 
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.mapper.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.persistence.query.ItemQueryBuilder
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
-import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.service.UserService
-import ru.scisolutions.scicmscore.engine.service.*
-import java.util.UUID
+import ru.scisolutions.scicmscore.engine.service.AuditManager
+import ru.scisolutions.scicmscore.engine.service.DatasourceManager
+import ru.scisolutions.scicmscore.engine.service.DefaultIdGenerator
+import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
+import ru.scisolutions.scicmscore.engine.service.SequenceManager
+import ru.scisolutions.scicmscore.engine.service.VersionManager
 
 @Service
 class ItemRecDao(
@@ -21,6 +26,8 @@ class ItemRecDao(
     private val itemCacheManager: ItemCacheManager,
     private val idGenerator: DefaultIdGenerator
 ) : BaseItemRecDao(dsManager, itemCacheManager) {
+    override val logger: Logger = LoggerFactory.getLogger(ItemRecDao::class.java)
+
     fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
         val paramSource = AttributeSqlParameterSource()
         val query =  itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
@@ -32,24 +39,22 @@ class ItemRecDao(
 
     fun existsById(item: Item, id: String): Boolean = countByIds(item, setOf(id)) > 0
 
+    fun existsByKey(item: Item, keyAttrName: String, key: String): Boolean = countByKeys(item, keyAttrName, setOf(key)) > 0
+
     fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
 
-    private fun countByIds(item: Item, ids: Set<String>): Int {
+    private fun countByIds(item: Item, ids: Set<String>): Int =
+        countByKeys(item, item.idAttribute, ids)
+
+    private fun countByKeys(item: Item, keyAttrName: String, keys: Set<String>): Int {
         val paramSource = AttributeSqlParameterSource()
-        val query = itemQueryBuilder.buildFindByIdsQuery(item, ids, paramSource)
+        val query = itemQueryBuilder.buildFindAllByKeysQuery(item, keyAttrName, keys, paramSource)
         return count(item, query.toString(), paramSource)
     }
 
     fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> =
         itemCacheManager.get(item, sql, paramSource) {
-            logger.trace("Running SQL: {}", sql)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
-
+            traceSqlAndParameters(sql, paramSource)
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
 
@@ -59,13 +64,7 @@ class ItemRecDao(
         val sql = query.toString()
 
         return itemCacheManager.get(item, sql, paramSource) {
-            logger.trace("Running SQL: {}", sql)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
+            traceSqlAndParameters(sql, paramSource)
             dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
         }
     }
@@ -74,13 +73,7 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildInsertQuery(item, itemRec, paramSource)
         val sql = query.toString()
-        logger.trace("Running SQL: {}", sql)
-        if (paramSource.parameterNames.isNotEmpty()) {
-            logger.trace(
-                "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-            )
-        }
+        traceSqlAndParameters(sql, paramSource)
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -111,13 +104,7 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildUpdateByAttributesQuery(item, whereAttributes, updateAttributes, paramSource)
         val sql = query.toString()
-        logger.trace("Running SQL: {}", sql)
-        if (paramSource.parameterNames.isNotEmpty()) {
-            logger.trace(
-                "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-            )
-        }
+        traceSqlAndParameters(sql, paramSource)
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -130,13 +117,7 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildDeleteByAttributeQuery(item, attrName, attrValue, paramSource)
         val sql = query.toString()
-        logger.trace("Running SQL: {}", sql)
-        if (paramSource.parameterNames.isNotEmpty()) {
-            logger.trace(
-                "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-            )
-        }
+        traceSqlAndParameters(sql, paramSource)
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -253,14 +234,7 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildLockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
-
-        logger.trace("Running SQL: {}", sql)
-        if (paramSource.parameterNames.isNotEmpty()) {
-            logger.trace(
-                "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-            )
-        }
+        traceSqlAndParameters(sql, paramSource)
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -294,14 +268,7 @@ class ItemRecDao(
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildUnlockByAttributeQuery(item, attrName, attrValue, user.id, paramSource)
         val sql = query.toString()
-
-        logger.trace("Running SQL: {}", sql)
-        if (paramSource.parameterNames.isNotEmpty()) {
-            logger.trace(
-                "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-            )
-        }
+        traceSqlAndParameters(sql, paramSource)
         val res = dsManager.template(item.ds).update(sql, paramSource)
         itemCacheManager.clear(item)
 
@@ -312,7 +279,6 @@ class ItemRecDao(
         private const val LOCK_FAIL_MSG = "Cannot lock item %s with ID [%s]. It was locked by another user"
         private const val UNLOCK_FAIL_MSG = "Cannot unlock item %s with ID [%s]"
 
-        private val logger = LoggerFactory.getLogger(ItemRecDao::class.java)
         private val itemQueryBuilder = ItemQueryBuilder()
     }
 }

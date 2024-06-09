@@ -73,9 +73,9 @@ class CreateHandler(
         if (preCreatedItemRec == null) {
             itemRecDao.insert(item, itemRec) // insert
 
-            addRelationHelper.processRelations(
+            addRelationHelper.addRelations(
                 item,
-                itemRec.id as String,
+                itemRec,
                 itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
             )
         }

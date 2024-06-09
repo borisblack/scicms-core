@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.model.FieldType
 class DeleteMediaHelper(
     private val mediaHandler: MediaHandler
 ) {
-    fun processMedia(item: Item, itemRec: ItemRec) {
+    fun deleteMedia(item: Item, itemRec: ItemRec) {
         item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> attribute.type == FieldType.media && itemRec[attrName] != null }
             .forEach { (attrName, _) ->

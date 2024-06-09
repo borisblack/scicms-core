@@ -20,17 +20,20 @@ spec:
       type: relation
       relType: manyToOne
       target: group
-      inversedBy: roles
+      inversedBy: members
       columnName: group_id
       displayName: Group
       description: Group
-    username:
-      type: string
+    user:
+      type: relation
+      relType: manyToOne
+      target: user
+      inversedBy: groups
+      referencedBy: username
       columnName: username
       displayName: User
       description: User
       required: true
-      length: 50
       colWidth: 200
   indexes:
     sec_group_members_group_username_uk:

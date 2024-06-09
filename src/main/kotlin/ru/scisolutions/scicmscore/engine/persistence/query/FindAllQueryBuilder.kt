@@ -129,7 +129,7 @@ class FindAllQueryBuilder(
 
     fun buildFindAllRelatedQuery(
         parentItem: Item,
-        parentId: String,
+        parentItemRec: ItemRec,
         parentAttrName: String,
         item: Item,
         input: FindAllRelationInput,
@@ -140,12 +140,13 @@ class FindAllQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
-        val table = schema.findTable(requireNotNull(item.tableName)) ?: throw IllegalArgumentException("Table for currentItem is not found in schema")
+        val table = schema.findTable(requireNotNull(item.tableName)) ?: throw IllegalArgumentException("Table for item [${item.name}] not found in schema")
         val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
         when (val parentRelation = relationManager.getAttributeRelation(parentItem, parentAttrName, parentAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {
                 val owningCol = DbColumn(table, parentRelation.getOwningColumnName(), null, null)
-                query.addCondition(BinaryCondition.equalTo(owningCol, parentId))
+                val parentKey = parentItemRec.getString(parentRelation.getOwningAttribute().referencedBy ?: parentItem.idAttribute)
+                query.addCondition(BinaryCondition.equalTo(owningCol, parentKey))
             }
             is ManyToManyRelation -> {
                 val intermediateTable = schema.addTable(parentRelation.getIntermediateTableName())
@@ -153,35 +154,44 @@ class FindAllQueryBuilder(
                     DbColumn(intermediateTable, parentRelation.getIntermediateSourceColumnName(), null, null)
                 val targetIntermediateCol =
                     DbColumn(intermediateTable, parentRelation.getIntermediateTargetColumnName(), null, null)
-                val idCol = DbColumn(table, item.idColName, null, null)
 
                 when (parentRelation) {
                     is ManyToManyUnidirectionalRelation -> {
+                        val keyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
+                        val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
+                        val parentKey = parentItemRec.getString(parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute)
                         query.addJoin(
                             SelectQuery.JoinType.LEFT_OUTER,
                             table,
                             intermediateTable,
-                            BinaryCondition.equalTo(idCol, targetIntermediateCol)
+                            BinaryCondition.equalTo(keyCol, targetIntermediateCol)
                         )
-                        query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentId))
+                        query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentKey))
                     }
                     is ManyToManyBidirectionalRelation -> {
                         if (parentRelation.isOwning) {
+                            val keyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
+                            val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
+                            val parentKey = parentItemRec.getString(parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute)
                             query.addJoin(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,
                                 intermediateTable,
-                                BinaryCondition.equalTo(idCol, targetIntermediateCol)
+                                BinaryCondition.equalTo(keyCol, targetIntermediateCol)
                             )
-                            query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentId))
+                            query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentKey))
                         } else {
+                            val keyAttrName = parentRelation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
+                            val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
+                            val parentKeyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: parentItem.idAttribute
+                            val parentKey = parentItemRec.getString(parentKeyAttrName)
                             query.addJoin(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,
                                 intermediateTable,
-                                BinaryCondition.equalTo(idCol, sourceIntermediateCol)
+                                BinaryCondition.equalTo(keyCol, sourceIntermediateCol)
                             )
-                            query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentId))
+                            query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentKey))
                         }
                     }
                 }

@@ -47,11 +47,11 @@ class PurgeHandler(
 
         // Process relations and media
         itemRecsToPurge.forEach {
-            deleteRelationHelper.processRelations(item, it, input.deletingStrategy)
+            deleteRelationHelper.deleteRelations(item, it, input.deletingStrategy)
 
             // Can be used by another versions or localizations
             if (!item.versioned && !item.localized) {
-                deleteMediaHelper.processMedia(item, itemRec)
+                deleteMediaHelper.deleteMedia(item, itemRec)
             }
         }
 

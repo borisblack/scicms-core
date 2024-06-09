@@ -283,6 +283,12 @@
           "minLength": 1,
           "maxLength": 50
         },
+        "referencedBy": {
+          "description": "In manyToOne (and unidirectional or owned bidirectional oneToOne) relations can be used as an alternate key of referenced entity",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
         "keyed": {
           "description": "Primary key flag (used only for id attribute)",
           "type": "boolean"

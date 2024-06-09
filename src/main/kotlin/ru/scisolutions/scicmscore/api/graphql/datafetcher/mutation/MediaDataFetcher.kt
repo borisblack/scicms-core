@@ -11,13 +11,13 @@ import ru.scisolutions.scicmscore.engine.model.MediaInfo
 class MediaDataFetcher(private val engine: Engine) {
     @DgsMutation
     fun upload(dfe: DataFetchingEnvironment): MediaInfo {
-        val file = dfe.getArgument<MultipartFile>("file")
+        val file = requireNotNull(dfe.getArgument<MultipartFile>("file"))
         return engine.upload(file)
     }
 
     @DgsMutation
     fun uploadMultiple(dfe: DataFetchingEnvironment): List<MediaInfo> {
-        val files = dfe.getArgument<List<MultipartFile>>("files")
+        val files = requireNotNull(dfe.getArgument<List<MultipartFile>>("files"))
         return engine.uploadMultiple(files)
     }
 }
