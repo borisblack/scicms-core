@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.model
 
 class AuthRequest(
-    val identifier: String,
+    val username: String,
     val password: String
 )

@@ -57,7 +57,10 @@ class ApiSecurityConfig(
                     "/api/auth/local/register",
                     "/api/config/security",
                     "/graphiql/**",
-                    // "/schema.json", "/graphql", "/api/**"
+                    // "/schema.json",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
                 )
                     .permitAll()
                     .anyRequest()

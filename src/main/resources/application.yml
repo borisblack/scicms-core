@@ -100,6 +100,9 @@ spring:
     username: ''
     password: ''
 
+springdoc:
+  packages-to-exclude: com.netflix.graphql.dgs.mvc
+
 logging:
   file.name: logs/scicms-core.log
   logback.rollingpolicy.max-history: 7

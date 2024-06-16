@@ -1,6 +1,7 @@
 package ru.scisolutions.scicmscore.engine.handler
 
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.persistence.query.FindAllQueryBuilder
@@ -20,7 +21,8 @@ class FindAllHandler(
     private val classService: ClassService,
     private val itemService: ItemService,
     private val findAllQueryBuilder: FindAllQueryBuilder,
-    private val itemRecDao: ItemRecDao
+    private val itemRecDao: ItemRecDao,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun findAll(
         itemName: String,
@@ -45,6 +47,7 @@ class FindAllHandler(
         implInstance?.beforeFindAll(itemName, input)
 
         val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql, paramSource)
+            .map { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) }
 
         val response = ResponseCollection(
             data = itemRecList,
@@ -82,6 +85,7 @@ class FindAllHandler(
             paramSource = paramSource
         )
         val itemRecList: List<ItemRec> = itemRecDao.findAll(item, findAllQuery.sql, paramSource)
+            .map { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) }
 
         return RelationResponseCollection(
             data = itemRecList,

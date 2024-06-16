@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "ru.scisolutions"
-version = "0.8.0-SNAPSHOT"
+version = "0.8.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -39,6 +39,8 @@ dependencies {
     implementation(files("./lib/qs-1.0.0.jar"))
     implementation(files("./lib/sqlbuilder-3.0.2.jar"))
 
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
@@ -48,8 +50,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
     implementation("org.liquibase:liquibase-core")
     implementation("io.minio:minio:8.5.7")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

@@ -38,8 +38,8 @@ class UsernamePasswordAuthenticationFilter(
         try {
             if (postToAuthenticate(req)) {
                 val authRequest = getAuthRequest(req)
-                logger.trace("Trying to authenticate user by username [${authRequest.identifier}]")
-                processUsernamePasswordAuthentication(req, res, authRequest.identifier, authRequest.password)
+                logger.trace("Trying to authenticate user by username [${authRequest.username}]")
+                processUsernamePasswordAuthentication(req, res, authRequest.username, authRequest.password)
                 return // don't proceed with filter chain
             }
             logger.trace("Passing request down the filter chain")
