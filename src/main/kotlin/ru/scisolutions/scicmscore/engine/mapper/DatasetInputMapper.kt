@@ -4,7 +4,6 @@ import ru.scisolutions.scicmscore.engine.model.AggregateType
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
 import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
-import ru.scisolutions.scicmscore.engine.model.FieldType
 
 class DatasetInputMapper() {
     fun map(arguments: Map<String, Any?>, opPrefix: String = ""): DatasetInput {
@@ -24,7 +23,6 @@ class DatasetInputMapper() {
     private fun mapDatasetFieldInput(field: Map<String, Any>): DatasetFieldInput =
         DatasetFieldInput(
             name = field[FIELD_NAME_ARG_NAME] as String,
-            type = FieldType.valueOf(field[FIELD_TYPE_ARG_NAME] as String),
             custom = (field[FIELD_CUSTOM_ARG_NAME] as String).toBoolean(),
             source = field[FIELD_SOURCE_ARG_NAME] as String?,
             aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) },
@@ -39,7 +37,6 @@ class DatasetInputMapper() {
         const val AGGREGATE_ARG_NAME = "aggregate"
 
         const val FIELD_NAME_ARG_NAME = "name"
-        const val FIELD_TYPE_ARG_NAME = "type"
         const val FIELD_CUSTOM_ARG_NAME = "custom"
         const val FIELD_SOURCE_ARG_NAME = "source"
         const val FIELD_FORMULA_ARG_NAME = "formula"

@@ -106,7 +106,10 @@ class DatasetFilterConditionBuilder {
         fieldNumbers: MutableMap<String, Int>
     ): Condition {
         val field = fields[fieldName]
-        val fieldType = field?.type ?: dataset.spec.getField(fieldName).type
+        val fieldType =
+            if (field == null) dataset.spec.getField(fieldName).typeRequired
+            else datasetSqlExprEvaluator.calculateType(dataset.spec.columns, field)
+
         val nestedConditions = mutableListOf<Condition>()
         val absFieldName = customSql.toString().replace(nonWordRegex, "").lowercase()
         val fieldNumber = fieldNumbers.getOrDefault(absFieldName, 0)

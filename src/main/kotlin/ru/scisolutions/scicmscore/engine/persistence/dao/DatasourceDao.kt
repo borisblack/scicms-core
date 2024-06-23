@@ -61,6 +61,6 @@ class DatasourceDao(
 
     companion object {
         private val logger = LoggerFactory.getLogger(DatasourceDao::class.java)
-        private val columnsMapper = ru.scisolutions.scicmscore.engine.persistence.mapper.ColumnsMapper()
+        private val columnsMapper = ColumnsMapper()
     }
 }

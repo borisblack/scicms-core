@@ -4,6 +4,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData
 import ru.scisolutions.scicmscore.engine.model.Column
 import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.persistence.entity.Dataset
+import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlExprEvaluator
 import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
@@ -28,7 +29,7 @@ class ColumnsMapper {
     fun map(dataset: Dataset, metaData: SqlRowSetMetaData): Map<String, Column> {
         val prevColumns = dataset.spec.columns
         val columns =
-            if (ru.scisolutions.scicmscore.engine.persistence.mapper.ColumnsMapper.Companion.PRESERVE_CUSTOM_COLUMNS)
+            if (PRESERVE_CUSTOM_COLUMNS)
                 prevColumns.filterValues { it.custom }.toMutableMap()
             else mutableMapOf()
 
@@ -48,7 +49,22 @@ class ColumnsMapper {
             )
         }
 
-        return columns.toMap()
+        // Resolve actual types for custom columns
+        return columns.mapValues { (colName, column) ->
+            if (column.custom)
+                Column(
+                    type = datasetSqlExprEvaluator.calculateType(columns, colName, column), // resolve actual type
+                    custom = column.custom,
+                    hidden = column.hidden,
+                    source = column.source,
+                    aggregate = column.aggregate,
+                    formula = column.formula,
+                    alias = column.alias,
+                    format = column.format,
+                    colWidth = column.colWidth,
+                )
+            else column
+        }
     }
 
     private fun getColumnType(sqlType: Int): FieldType =
@@ -89,5 +105,7 @@ class ColumnsMapper {
 
     companion object {
         private const val PRESERVE_CUSTOM_COLUMNS: Boolean = true // maybe move into properties
+
+        private val datasetSqlExprEvaluator = DatasetSqlExprEvaluator()
     }
 }

@@ -5,6 +5,7 @@ import com.healthmarketscience.sqlbuilder.FunctionCall
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import ru.scisolutions.scicmscore.engine.model.AggregateType
+import ru.scisolutions.scicmscore.engine.model.Column
 import ru.scisolutions.scicmscore.engine.model.input.DatasetFieldInput
 import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.persistence.entity.Dataset
@@ -21,7 +22,6 @@ class DatasetSqlExprEvaluator {
 
         return DatasetFieldInput(
             name = fieldName,
-            type = field.type,
             custom = field.custom,
             source = field.source,
             aggregate = field.aggregate,
@@ -72,6 +72,31 @@ class DatasetSqlExprEvaluator {
 
     fun isAggregate(input: DatasetFieldInput): Boolean =
         input.custom && ((input.source != null && input.aggregate != null) || (input.formula != null && input.formula.contains(aggregateRegex)))
+
+    fun calculateType(columns: Map<String, Column>, colName: String, column: Column): FieldType =
+        calculateType(
+            columns,
+            DatasetFieldInput(
+                name = colName,
+                custom = column.custom,
+                source = column.source,
+                aggregate = column.aggregate,
+                formula = column.formula
+            )
+        )
+
+    fun calculateType(columns: Map<String, Column>, input: DatasetFieldInput): FieldType {
+        if (input.aggregate == null) {
+            return if (input.formula == null)
+                requireNotNull(columns[input.source ?: input.name]).typeRequired
+            else FieldType.decimal
+        }
+
+        val source = input.source ?: throw IllegalArgumentException("Source column must be set for aggregation.")
+        val field = columns[source] ?: throw IllegalArgumentException("Source column not found.")
+
+        return calculateAggregationResultType(field.typeRequired, input.aggregate)
+    }
 
     fun calculateAggregationResultType(type: FieldType, aggregationType: AggregateType): FieldType =
         when (aggregationType) {

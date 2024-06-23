@@ -1,12 +1,13 @@
 package ru.scisolutions.scicmscore.engine.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import java.util.Objects
 
 @JsonInclude(Include.NON_NULL)
 data class Column(
-    val type: FieldType,
+    val type: FieldType? = null,
     val custom: Boolean = false,
     val hidden: Boolean = false,
     val source: String? = null,
@@ -46,4 +47,8 @@ data class Column(
             alias,
             colWidth
         )
+
+    @get:JsonIgnore
+    val typeRequired: FieldType
+        get() = type ?: throw IllegalStateException("Type must be not null")
 }
