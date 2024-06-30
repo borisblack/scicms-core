@@ -89,7 +89,7 @@ class DatasetSqlExprEvaluator {
         if (input.aggregate == null) {
             return if (input.formula == null)
                 requireNotNull(columns[input.source ?: input.name]).typeRequired
-            else FieldType.decimal
+            else FieldType.decimal // TODO: Infer type from expression
         }
 
         val source = input.source ?: throw IllegalArgumentException("Source column must be set for aggregation.")

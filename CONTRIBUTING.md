@@ -17,7 +17,7 @@ please include tests.
 
 ## Where do I go from here?
 
-For any questions, support, or ideas, etc. [please create a GitHub discussion](https://github.com/borisblack/scicms-core/discussions/new).
+For any questions, support, or ideas, etc. [please create a GitHub discussion](https://github.com/borisblack/scicms-core/discussions/new/choose).
 If you've noticed a bug, [please submit an issue][new issue].
 
 ### Fork and create a branch
