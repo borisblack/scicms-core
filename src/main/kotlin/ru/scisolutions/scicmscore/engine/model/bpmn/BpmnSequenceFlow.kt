@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.bpmn
 
-import javax.xml.bind.annotation.XmlAttribute
+import jakarta.xml.bind.annotation.XmlAttribute
 
 class BpmnSequenceFlow(
     @get:XmlAttribute(name = "id", required = true)

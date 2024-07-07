@@ -1,8 +1,8 @@
 package ru.scisolutions.scicmscore.util
 
+import jakarta.xml.bind.JAXBContext
 import java.io.StringReader
 import java.io.StringWriter
-import javax.xml.bind.JAXBContext
 import javax.xml.transform.stream.StreamSource
 
 object Jaxb {

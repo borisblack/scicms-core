@@ -1,7 +1,7 @@
 package ru.scisolutions.scicmscore.engine.model.bpmn
 
-import javax.xml.bind.annotation.XmlAttribute
-import javax.xml.bind.annotation.XmlElement
+import jakarta.xml.bind.annotation.XmlAttribute
+import jakarta.xml.bind.annotation.XmlElement
 
 class BpmnStartEvent(
     @get:XmlAttribute(name = "id", required = true)

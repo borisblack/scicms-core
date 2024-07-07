@@ -1,6 +1,6 @@
 # Data model
 
-The SciCMS Core architecture involves storing metadata (all information necessary for the system to operate) in the primary relational database called `main`.
+The SciCMS Core architecture involves storing metadata (all information necessary for the system to operate) in the primary relational database (built-in datasource `main`).
 To improve performance and provide scalability in a cloud environment, metadata is cached via [Redis](https://redis.io).
 
 Other data can be stored either in the main database or in any other database.
@@ -122,7 +122,7 @@ The system supports the following types of attributes:
 There are four types of relations: `oneToOne`, `manyToOne`, `oneToMany` and `manyToMany`. This type is specified in the `relType` field of the attribute.
 The second required parameter of the `relation` type attribute is `target` - the name of the Item with which the relation is made.
 
-#### onToOne relationship
+#### oneToOne relationship
 
 This type of relationship implies that there is a single record in another table that is referenced by the current Item's record (the attribute column with type `relation` of the current Item stores the record identifier of the second Item).
 In this case, the current Item is the "owner" of the relationship. The Items that make up the `oneToOne` relations can belong to different data sources.
@@ -280,8 +280,8 @@ spec:
       columnName: book_id
 ```
 
-You can then create `manyToMany` relations in each of the primary Items by specifying an `intermediate` property of the relation attribute.
-If the current Item is in the `categoryBookMap` in the `source` position, then the name of the attribute of the opposite Item is indicated in the `inversedBy` property; if in the `target` position - then in the `mappedBy` property:
+We can then create `manyToMany` relations in each of the primary Items by specifying an `intermediate` property of the relation attribute.
+If the current Item is in the `categoryBookMap` in the `source` position, then the name of the attribute of the opposite Item is located in the `inversedBy` property; if in the `target` position - then in the `mappedBy` property:
 ```yaml
 # category
 metadata:
@@ -661,6 +661,6 @@ mutation {
 The database username and password can be specified directly or using environment variables (as in the example).
 Despite the fact that the password cannot be read through the external API, in the SciCMS database the credentials of the data sources are stored in pure form (since they are used when opening connections).
 Therefore, it is recommended to use the second method (environment variables).
-Once created, the data source can be used by anyone to define an Item by its name.
+Once created, a data source can be used to define any Item by its name.
 
 The entire described API is also used in the client application [SciCMS Client](https://github.com/borisblack/scicms-client), which provides a convenient user interface for managing Items, as well as many other features.
