@@ -120,7 +120,7 @@ The `spec` field contains descriptions of the columns in the `columns` subfield.
 - `custom` - the data source can contain so-called custom (virtual) columns, which are used when building analytical queries (see below); for custom columns this property is set to `true`;
 - `hidden` - some columns may be excluded from the query; in this case, this property is set to `true`;
 - `aggregate` - name of the aggregate function, can take values `count`, `countd`, `sum`, `avg`, `min`, `max` (see below); only applies to custom columns;
-- `formula` - arbitrary SQL expression for performing more complex aggregations (see below). Applies only to custom columns; if the `aggregate` and `formula` properties are specified, the first takes precedence;
+- `formula` - arbitrary SQL expression for performing more complex aggregations (see below); applies only to custom columns; if the `aggregate` and `formula` properties are specified, the first takes precedence;
 - `source` - the name of the real column if the column is custom and the `formula` property is not set;
 - `alias` - column alias for display in the user interface, used in the client application [SciCMS Client](https://github.com/borisblack/scicms-client);
 - `format` - column value format for display in the user interface, used in the client application [SciCMS Client](https://github.com/borisblack/scicms-client); can take values `int`, `float`, `date`, `time`, `datetime`;
