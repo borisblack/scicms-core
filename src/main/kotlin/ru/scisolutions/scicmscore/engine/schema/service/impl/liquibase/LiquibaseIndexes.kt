@@ -58,8 +58,9 @@ class LiquibaseIndexes {
         val metadata = item.metadata
         val attribute = item.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (columnName == GENERATION_COLUMN_NAME || columnName == MAJOR_REV_COLUMN_NAME || columnName == LOCALE_COLUMN_NAME)
+        if (columnName == GENERATION_COLUMN_NAME || columnName == MAJOR_REV_COLUMN_NAME || columnName == LOCALE_COLUMN_NAME) {
             throw IllegalArgumentException("The column [$columnName] cannot be unique.")
+        }
 
         val uniqueIndexes = mutableListOf<CreateIndexChange>()
         if (metadata.versioned) {
@@ -82,8 +83,9 @@ class LiquibaseIndexes {
     fun dropUniqueIndexes(itemEntity: ItemEntity, attrName: String): List<DropIndexChange> {
         val attribute = itemEntity.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (columnName == GENERATION_COLUMN_NAME || columnName == MAJOR_REV_COLUMN_NAME || columnName == LOCALE_COLUMN_NAME)
+        if (columnName == GENERATION_COLUMN_NAME || columnName == MAJOR_REV_COLUMN_NAME || columnName == LOCALE_COLUMN_NAME) {
             throw IllegalArgumentException("The column [$columnName] cannot be unique.")
+        }
 
         val uniqueIndexes = mutableListOf<DropIndexChange>()
         if (itemEntity.versioned) {
@@ -106,8 +108,9 @@ class LiquibaseIndexes {
     private fun createVersionedAndLocalizedUniqueIndexes(item: Item, attrName: String): List<CreateIndexChange> {
         val attribute = item.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (!attribute.unique)
+        if (!attribute.unique) {
             throw IllegalArgumentException("Only the unique index needs to be versioned and localized")
+        }
 
         val tableName = requireNotNull(item.metadata.tableName)
 
@@ -116,30 +119,33 @@ class LiquibaseIndexes {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${GENERATION_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
                 this.isUnique = true
-                this.columns = listOf(
-                    AddColumnConfig().apply { this.name = attribute.columnName },
-                    AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME },
-                    AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME }
-                )
+                this.columns =
+                    listOf(
+                        AddColumnConfig().apply { this.name = attribute.columnName },
+                        AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME },
+                        AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME },
+                    )
             },
             CreateIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${MAJOR_REV_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
                 this.isUnique = true
-                this.columns = listOf(
-                    AddColumnConfig().apply { this.name = columnName },
-                    AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME },
-                    AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME }
-                )
-            }
+                this.columns =
+                    listOf(
+                        AddColumnConfig().apply { this.name = columnName },
+                        AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME },
+                        AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME },
+                    )
+            },
         )
     }
 
     private fun dropVersionedAndLocalizedUniqueIndexes(itemEntity: ItemEntity, attrName: String): List<DropIndexChange> {
         val attribute = itemEntity.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (!attribute.unique)
+        if (!attribute.unique) {
             throw IllegalArgumentException("Only the unique index needs to be versioned and localized")
+        }
 
         val tableName = requireNotNull(itemEntity.tableName)
 
@@ -151,15 +157,16 @@ class LiquibaseIndexes {
             DropIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${MAJOR_REV_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
-            }
+            },
         )
     }
 
     private fun createVersionedUniqueIndexes(item: Item, attrName: String): List<CreateIndexChange> {
         val attribute = item.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (!attribute.unique)
+        if (!attribute.unique) {
             throw IllegalArgumentException("Only the unique index needs to be versioned")
+        }
 
         val tableName = requireNotNull(item.metadata.tableName)
 
@@ -168,28 +175,31 @@ class LiquibaseIndexes {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${GENERATION_COLUMN_NAME}_uk"
                 this.isUnique = true
-                this.columns = listOf(
-                    AddColumnConfig().apply { this.name = columnName },
-                    AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME }
-                )
+                this.columns =
+                    listOf(
+                        AddColumnConfig().apply { this.name = columnName },
+                        AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME },
+                    )
             },
             CreateIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${MAJOR_REV_COLUMN_NAME}_uk"
                 this.isUnique = true
-                this.columns = listOf(
-                    AddColumnConfig().apply { this.name = columnName },
-                    AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME }
-                )
-            }
+                this.columns =
+                    listOf(
+                        AddColumnConfig().apply { this.name = columnName },
+                        AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME },
+                    )
+            },
         )
     }
 
     private fun dropVersionedUniqueIndexes(itemEntity: ItemEntity, attrName: String): List<DropIndexChange> {
         val attribute = itemEntity.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (!attribute.unique)
+        if (!attribute.unique) {
             throw IllegalArgumentException("Only the unique index needs to be versioned")
+        }
 
         val tableName = requireNotNull(itemEntity.tableName)
 
@@ -201,15 +211,16 @@ class LiquibaseIndexes {
             DropIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${MAJOR_REV_COLUMN_NAME}_uk"
-            }
+            },
         )
     }
 
     private fun createLocalizedUniqueIndex(item: Item, attrName: String): CreateIndexChange {
         val attribute = item.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (!attribute.unique)
+        if (!attribute.unique) {
             throw IllegalArgumentException("Only the unique index needs to be localized")
+        }
 
         val tableName = requireNotNull(item.metadata.tableName)
 
@@ -217,18 +228,20 @@ class LiquibaseIndexes {
             this.tableName = tableName
             this.indexName = "${tableName}_${columnName}_${LOCALE_COLUMN_NAME}_uk"
             this.isUnique = true
-            this.columns = mutableListOf(
-                AddColumnConfig().apply { this.name = columnName },
-                AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME }
-            )
+            this.columns =
+                mutableListOf(
+                    AddColumnConfig().apply { this.name = columnName },
+                    AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME },
+                )
         }
     }
 
     private fun dropLocalizedUniqueIndex(itemEntity: ItemEntity, attrName: String): DropIndexChange {
         val attribute = itemEntity.spec.getAttribute(attrName)
         val columnName = attribute.getColumnName(attrName)
-        if (!attribute.unique)
+        if (!attribute.unique) {
             throw IllegalArgumentException("Only the unique index needs to be localized")
+        }
 
         val tableName = requireNotNull(itemEntity.tableName)
 
@@ -247,9 +260,10 @@ class LiquibaseIndexes {
             this.tableName = tableName
             this.indexName = "${tableName}_${columnName}_uk"
             this.isUnique = true
-            this.columns = mutableListOf(
-                AddColumnConfig().apply { this.name = columnName }
-            )
+            this.columns =
+                mutableListOf(
+                    AddColumnConfig().apply { this.name = columnName },
+                )
         }
     }
 
@@ -272,20 +286,19 @@ class LiquibaseIndexes {
         return CreateIndexChange().apply {
             this.tableName = tableName
             this.indexName = buildIndexName(tableName, columnName)
-            this.columns = mutableListOf(
-                AddColumnConfig().apply { this.name = columnName }
-            )
+            this.columns =
+                mutableListOf(
+                    AddColumnConfig().apply { this.name = columnName },
+                )
         }
     }
 
-    private fun buildIndexName(tableName: String, columnName: String) =
-        "${tableName}_${columnName}_idx"
+    private fun buildIndexName(tableName: String, columnName: String) = "${tableName}_${columnName}_idx"
 
-    fun dropIndexChange(tableName: String, columnName: String): DropIndexChange =
-        DropIndexChange().apply {
-            this.tableName = tableName
-            this.indexName = buildIndexName(tableName, columnName)
-        }
+    fun dropIndexChange(tableName: String, columnName: String): DropIndexChange = DropIndexChange().apply {
+        this.tableName = tableName
+        this.indexName = buildIndexName(tableName, columnName)
+    }
 
     fun createIndexIndexChange(item: Item, indexName: String): CreateIndexChange {
         val tableName = requireNotNull(item.metadata.tableName)
@@ -295,14 +308,14 @@ class LiquibaseIndexes {
             this.tableName = tableName
             this.indexName = buildIndexIndexName(tableName, indexName)
             this.isUnique = index.unique
-            this.columns = index.columns.map {
-                AddColumnConfig().apply { this.name = it }
-            }
+            this.columns =
+                index.columns.map {
+                    AddColumnConfig().apply { this.name = it }
+                }
         }
     }
 
-    private fun buildIndexIndexName(tableName: String, indexName: String) =
-        if (indexName.startsWith("_")) "${tableName}${indexName}" else indexName
+    private fun buildIndexIndexName(tableName: String, indexName: String) = if (indexName.startsWith("_")) "${tableName}$indexName" else indexName
 
     fun dropIndexIndexChange(item: Item, indexName: String): DropIndexChange {
         val tableName = requireNotNull(item.metadata.tableName)

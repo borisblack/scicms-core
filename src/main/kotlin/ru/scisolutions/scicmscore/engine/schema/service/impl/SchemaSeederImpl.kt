@@ -24,7 +24,7 @@ class SchemaSeederImpl(
     private val schemaLockService: SchemaLockService,
     private val schemaReader: SchemaReader,
     private val tableSeeder: TableSeeder,
-    private val modelsApplier: ModelsApplier
+    private val modelsApplier: ModelsApplier,
 ) : SchemaSeeder {
     init {
         if (schemaProps.seedOnInit) {
@@ -36,20 +36,23 @@ class SchemaSeederImpl(
     final override fun seedSchema(schema: Schema) {
         schemaLockService.lockOrThrow()
 
-        if (schemaProps.clearCacheOnSeed)
+        if (schemaProps.clearCacheOnSeed) {
             cacheService.clearAllSchemaCaches()
+        }
 
         // Process item templates
         val itemTemplates = schema.getItemTemplates()
         itemTemplates.forEach { (_, itemTemplate) -> modelsApplier.apply(itemTemplate) }
-        if (schemaProps.deleteIfAbsent)
+        if (schemaProps.deleteIfAbsent) {
             deleteAbsentItemTemplates(itemTemplates)
+        }
 
         // Process items
         val items = schema.getItems()
         items.forEach { (_, item) -> modelsApplier.apply(item) }
-        if (schemaProps.deleteIfAbsent)
+        if (schemaProps.deleteIfAbsent) {
             deleteAbsentItems(items)
+        }
 
         schemaLockService.unlockOrThrow()
     }

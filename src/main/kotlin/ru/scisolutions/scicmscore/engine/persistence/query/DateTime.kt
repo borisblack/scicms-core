@@ -11,38 +11,34 @@ object DateTime {
     private val timeFormatter = DateTimeFormatter.ISO_TIME
     private val dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME
 
-    fun isDate(source: String): Boolean =
-        try {
-            dateFormatter.parse(source)
-            true
-        } catch (e: DateTimeParseException) {
-            false
-        }
+    fun isDate(source: String): Boolean = try {
+        dateFormatter.parse(source)
+        true
+    } catch (e: DateTimeParseException) {
+        false
+    }
 
-    fun isTime(source: String): Boolean =
-        try {
-            timeFormatter.parse(source)
-            true
-        } catch (e: DateTimeParseException) {
-            false
-        }
+    fun isTime(source: String): Boolean = try {
+        timeFormatter.parse(source)
+        true
+    } catch (e: DateTimeParseException) {
+        false
+    }
 
-    fun isDateTime(source: String): Boolean =
-        try {
-            dateTimeFormatter.parse(source)
-            true
-        } catch (e: DateTimeParseException) {
-            false
-        }
+    fun isDateTime(source: String): Boolean = try {
+        dateTimeFormatter.parse(source)
+        true
+    } catch (e: DateTimeParseException) {
+        false
+    }
 
-    fun parseDate(source: String): LocalDate =
-        if (isDate(source))
-            LocalDate.parse(source, dateFormatter)
-        else OffsetDateTime.parse(source, dateTimeFormatter).toLocalDate()
+    fun parseDate(source: String): LocalDate = if (isDate(source)) {
+        LocalDate.parse(source, dateFormatter)
+    } else {
+        OffsetDateTime.parse(source, dateTimeFormatter).toLocalDate()
+    }
 
-    fun parseTime(source: String): OffsetTime =
-        OffsetTime.parse(source, timeFormatter)
+    fun parseTime(source: String): OffsetTime = OffsetTime.parse(source, timeFormatter)
 
-    fun parseDateTime(source: String): OffsetDateTime =
-        OffsetDateTime.parse(source, dateTimeFormatter)
+    fun parseDateTime(source: String): OffsetDateTime = OffsetDateTime.parse(source, dateTimeFormatter)
 }

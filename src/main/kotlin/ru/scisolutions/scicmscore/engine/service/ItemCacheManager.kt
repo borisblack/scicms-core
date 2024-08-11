@@ -5,14 +5,14 @@ import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
 import java.util.concurrent.TimeUnit
 
 @Service
 class ItemCacheManager(
     private val dataProps: DataProps,
-    private val redissonClient: RedissonClient
+    private val redissonClient: RedissonClient,
 ) {
     init {
         // Clear caches on start

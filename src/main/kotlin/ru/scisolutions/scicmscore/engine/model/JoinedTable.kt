@@ -7,18 +7,23 @@ data class JoinedTable(
     val columns: Map<String, Column>,
     val alias: String? = null,
     val joinType: JoinType? = null,
-    val joins: List<Join>
+    val joins: List<Join>,
 ) {
     enum class JoinType {
-        inner, left, right, full
+        inner,
+        left,
+        right,
+        full,
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other)
+        if (this === other) {
             return true
+        }
 
-        if (javaClass != other?.javaClass)
+        if (javaClass != other?.javaClass) {
             return false
+        }
 
         other as JoinedTable
 
@@ -29,12 +34,11 @@ data class JoinedTable(
             joins == other.joins
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(
-            name,
-            columns,
-            alias,
-            joinType?.name,
-            joins
-        )
+    override fun hashCode(): Int = Objects.hash(
+        name,
+        columns,
+        alias,
+        joinType?.name,
+        joins,
+    )
 }

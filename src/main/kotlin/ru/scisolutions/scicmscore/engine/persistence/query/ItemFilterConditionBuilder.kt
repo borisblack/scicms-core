@@ -14,10 +14,9 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
 import ru.scisolutions.scicmscore.engine.model.input.TypedPrimitiveFilterInput
-import ru.scisolutions.scicmscore.engine.service.RelationManager
-import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
@@ -28,12 +27,13 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToOneUnidirec
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneUnidirectionalRelation
+import ru.scisolutions.scicmscore.engine.service.RelationManager
 import kotlin.random.Random
 
 @Component
 class ItemFilterConditionBuilder(
     private val itemService: ItemService,
-    private val relationManager: RelationManager
+    private val relationManager: RelationManager,
 ) {
     fun newFilterCondition(
         item: Item,
@@ -41,7 +41,7 @@ class ItemFilterConditionBuilder(
         schema: DbSchema,
         table: DbTable,
         query: SelectQuery,
-        paramSource: AttributeSqlParameterSource
+        paramSource: AttributeSqlParameterSource,
     ): Condition {
         val nestedConditions = mutableListOf<Condition>()
 
@@ -60,11 +60,12 @@ class ItemFilterConditionBuilder(
                 val targetTable = DbTable(schema, requireNotNull(targetItem.tableName))
                 val relation =
                     when (attribute.type) {
-                        FieldType.media -> OneToOneUnidirectionalRelation(
-                            item = item,
-                            attrName = attrName,
-                            targetItem = targetItem
-                        )
+                        FieldType.media ->
+                            OneToOneUnidirectionalRelation(
+                                item = item,
+                                attrName = attrName,
+                                targetItem = targetItem,
+                            )
                         else -> relationManager.getAttributeRelation(item, attrName, attribute)
                     }
 
@@ -78,7 +79,8 @@ class ItemFilterConditionBuilder(
                     is OneToOneBidirectionalRelation -> {
                         if (relation.isOwning) {
                             val inversedKeyAttrName = relation.getOwningAttribute().referencedBy ?: relation.inversedItem.idAttribute
-                            val inversedKeyCol = DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
+                            val inversedKeyCol =
+                                DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
                             val owningCol = DbColumn(table, relation.getOwningColumnName(), null, null)
                             query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(owningCol, inversedKeyCol))
                         } else {
@@ -96,13 +98,15 @@ class ItemFilterConditionBuilder(
                     }
                     is ManyToOneOwningBidirectionalRelation -> {
                         val inversedKeyAttrName = relation.getOwningAttribute().referencedBy ?: relation.inversedItem.idAttribute
-                        val inversedKeyCol = DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
+                        val inversedKeyCol =
+                            DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
                         val owningCol = DbColumn(table, relation.getOwningColumnName(), null, null)
                         query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(owningCol, inversedKeyCol))
                     }
                     is OneToManyInversedBidirectionalRelation -> {
                         val inversedKeyAttrName = relation.getOwningAttribute().referencedBy ?: item.idAttribute
-                        val inversedKeyCol = DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
+                        val inversedKeyCol =
+                            DbColumn(targetTable, relation.inversedItem.spec.getColumnName(inversedKeyAttrName), null, null)
                         val owningCol = DbColumn(targetTable, relation.getOwningColumnName(), null, null)
                         query.addJoin(JoinType.LEFT_OUTER, table, targetTable, BinaryCondition.equalTo(inversedKeyCol, owningCol))
                     }
@@ -117,8 +121,18 @@ class ItemFilterConditionBuilder(
                                 val sourceKeyCol = DbColumn(table, item.spec.getColumnName(sourceKeyAttrName), null, null)
                                 val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: targetItem.idAttribute
                                 val targetKeyCol = DbColumn(table, targetItem.spec.getColumnName(targetKeyAttrName), null, null)
-                                query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol))
-                                query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol))
+                                query.addJoin(
+                                    JoinType.LEFT_OUTER,
+                                    table,
+                                    intermediateTable,
+                                    BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol),
+                                )
+                                query.addJoin(
+                                    JoinType.LEFT_OUTER,
+                                    intermediateTable,
+                                    targetTable,
+                                    BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol),
+                                )
                             }
                             is ManyToManyBidirectionalRelation -> {
                                 if (relation.isOwning) { // owning side
@@ -126,15 +140,35 @@ class ItemFilterConditionBuilder(
                                     val sourceKeyCol = DbColumn(table, item.spec.getColumnName(sourceKeyAttrName), null, null)
                                     val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: targetItem.idAttribute
                                     val targetKeyCol = DbColumn(table, targetItem.spec.getColumnName(targetKeyAttrName), null, null)
-                                    query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol))
-                                    query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol))
+                                    query.addJoin(
+                                        JoinType.LEFT_OUTER,
+                                        table,
+                                        intermediateTable,
+                                        BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol),
+                                    )
+                                    query.addJoin(
+                                        JoinType.LEFT_OUTER,
+                                        intermediateTable,
+                                        targetTable,
+                                        BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol),
+                                    )
                                 } else { // inversed side
                                     val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
                                     val targetKeyCol = DbColumn(table, item.spec.getColumnName(targetKeyAttrName), null, null)
                                     val sourceKeyAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: targetItem.idAttribute
                                     val sourceKeyCol = DbColumn(table, targetItem.spec.getColumnName(sourceKeyAttrName), null, null)
-                                    query.addJoin(JoinType.LEFT_OUTER, table, intermediateTable, BinaryCondition.equalTo(targetKeyCol, targetIntermediateCol))
-                                    query.addJoin(JoinType.LEFT_OUTER, intermediateTable, targetTable, BinaryCondition.equalTo(sourceIntermediateCol, sourceKeyCol))
+                                    query.addJoin(
+                                        JoinType.LEFT_OUTER,
+                                        table,
+                                        intermediateTable,
+                                        BinaryCondition.equalTo(targetKeyCol, targetIntermediateCol),
+                                    )
+                                    query.addJoin(
+                                        JoinType.LEFT_OUTER,
+                                        intermediateTable,
+                                        targetTable,
+                                        BinaryCondition.equalTo(sourceIntermediateCol, sourceKeyCol),
+                                    )
                                 }
                             }
                         }
@@ -164,7 +198,12 @@ class ItemFilterConditionBuilder(
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
     }
 
-    private fun newPrimitiveCondition(typedPrimitiveFilterInput: TypedPrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
+    private fun newPrimitiveCondition(
+        typedPrimitiveFilterInput: TypedPrimitiveFilterInput,
+        table: DbTable,
+        column: DbColumn,
+        paramSource: AttributeSqlParameterSource,
+    ): Condition {
         val nestedConditions = mutableListOf<Condition>()
         val sqlParamName = "${table.alias}_${column.name}_${Random.nextInt(0, 1000)}" // TODO: Change to truly unique name
 

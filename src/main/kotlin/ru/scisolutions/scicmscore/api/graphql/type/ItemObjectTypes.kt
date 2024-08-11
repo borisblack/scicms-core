@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.extension.upperFirst
 @Component
 class ItemObjectTypes(
     private val attributeTypes: AttributeTypes,
-    private val includeAttributePolicy: IncludeAttributePolicy
+    private val includeAttributePolicy: IncludeAttributePolicy,
 ) {
     fun item(item: Item): ObjectTypeDefinition {
         val dataSourceInfo = "Data source: ${item.ds}."
@@ -26,18 +26,19 @@ class ItemObjectTypes(
                 dataSourceInfo
             } else {
                 val separator = if (description.endsWith(".")) " " else ". "
-                "${description}${separator}${dataSourceInfo}"
+                "${description}${separator}$dataSourceInfo"
             }
 
-        val builder = ObjectTypeDefinition.newObjectTypeDefinition()
-            .name(item.name.upperFirst())
-            .description(Description(description, null, true))
+        val builder =
+            ObjectTypeDefinition.newObjectTypeDefinition()
+                .name(item.name.upperFirst())
+                .description(Description(description, null, true))
 
         item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> includeAttributePolicy.includeInObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.fieldDefinition(
-                    newAttributeField(item, attrName, attribute)
+                    newAttributeField(item, attrName, attribute),
                 )
             }
 
@@ -45,10 +46,11 @@ class ItemObjectTypes(
     }
 
     private fun newAttributeField(item: Item, attrName: String, attribute: Attribute): FieldDefinition {
-        val builder = FieldDefinition.newFieldDefinition()
-            .name(attrName)
-            .description(Description(attribute.description?.trim(), null, true))
-            .type(attributeTypes.objectType(item, attrName, attribute))
+        val builder =
+            FieldDefinition.newFieldDefinition()
+                .name(attrName)
+                .description(Description(attribute.description?.trim(), null, true))
+                .type(attributeTypes.objectType(item, attrName, attribute))
 
         if (attribute.isCollection()) {
             requireNotNull(attribute.target) { "Attribute [$attrName] has a relation type, but target is null." }
@@ -60,19 +62,19 @@ class ItemObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name("filters")
                         .type(TypeName("${capitalizedTargetItemName}FiltersInput"))
-                        .build()
+                        .build(),
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("pagination")
                         .type(TypeName("PaginationInput"))
-                        .build()
+                        .build(),
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("sort")
                         .type(ListType(TypeNames.STRING))
-                        .build()
+                        .build(),
                 )
         }
 
@@ -88,7 +90,7 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeName(capitalizedItemName))
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -102,7 +104,7 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeName(capitalizedItemName))
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -116,13 +118,13 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("success")
                     .type(TypeNames.BOOLEAN)
-                    .build()
+                    .build(),
             )
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeName(capitalizedItemName))
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -138,17 +140,17 @@ class ItemObjectTypes(
                     .type(
                         NonNullType(
                             ListType(
-                                NonNullType(TypeName(capitalizedItemName))
-                            )
-                        )
+                                NonNullType(TypeName(capitalizedItemName)),
+                            ),
+                        ),
                     )
-                    .build()
+                    .build(),
             )
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("meta")
                     .type(NonNullType(TypeName("ResponseCollectionMeta")))
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -164,17 +166,17 @@ class ItemObjectTypes(
                     .type(
                         NonNullType(
                             ListType(
-                                NonNullType(TypeName(capitalizedItemName))
-                            )
-                        )
+                                NonNullType(TypeName(capitalizedItemName)),
+                            ),
+                        ),
                     )
-                    .build()
+                    .build(),
             )
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("meta")
                     .type(NonNullType(TypeName("ResponseCollectionMeta")))
-                    .build()
+                    .build(),
             )
             .build()
     }
@@ -188,7 +190,7 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeNames.OBJECT)
-                    .build()
+                    .build(),
             )
             .build()
     }

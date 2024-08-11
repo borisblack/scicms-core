@@ -22,7 +22,7 @@ class PermissionService(
     private val accessRepository: AccessRepository,
     private val permissionRepository: PermissionRepository,
     private val cacheService: CacheService,
-    private val entityManager: EntityManager
+    private val entityManager: EntityManager,
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): Permission? = permissionRepository.findById(id).orElse(null)
@@ -33,24 +33,24 @@ class PermissionService(
 
     // @Cacheable("nativeQueryCache")
     @Transactional(readOnly = true)
-    fun idsForRead(): Set<String> =
-        idsByAccessMask(Acl.Mask.READ)
+    fun idsForRead(): Set<String> = idsByAccessMask(Acl.Mask.READ)
 
     // @Cacheable("nativeQueryCache")
     @Transactional(readOnly = true)
-    fun idsByAccessMask(accessMask: Acl.Mask): Set<String> =
-        idsByMask(accessMask.mask)
+    fun idsByAccessMask(accessMask: Acl.Mask): Set<String> = idsByMask(accessMask.mask)
 
     @Transactional(readOnly = true)
     fun idsByMask(mask: Set<Int>): Set<String> {
-        val authentication = SecurityContextHolder.getContext().authentication
-            ?: throw AccessDeniedException("User is not authenticated")
+        val authentication =
+            SecurityContextHolder.getContext().authentication
+                ?: throw AccessDeniedException("User is not authenticated")
 
-        val accessList = accessRepository.findAllByMask(
-            mask,
-            authentication.name,
-            AuthorityUtils.authorityListToSet(authentication.authorities)
-        ).sortedWith(Access.AccessComparator())
+        val accessList =
+            accessRepository.findAllByMask(
+                mask,
+                authentication.name,
+                AuthorityUtils.authorityListToSet(authentication.authorities),
+            ).sortedWith(Access.AccessComparator())
 
         val permissionAccessMap = accessList.groupBy { it.sourceId }
 

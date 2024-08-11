@@ -50,8 +50,9 @@ class JwtTokenAuthenticationFilter(private val authenticationManager: Authentica
 
     private fun tryToAuthenticate(authentication: Authentication): Authentication {
         val resultAuthentication = authenticationManager.authenticate(authentication)
-        if (resultAuthentication == null || !resultAuthentication.isAuthenticated)
+        if (resultAuthentication == null || !resultAuthentication.isAuthenticated) {
             throw InternalAuthenticationServiceException("Unable to authenticate user for provided credentials")
+        }
 
         logger.trace("User successfully authenticated")
         return resultAuthentication

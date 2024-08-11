@@ -8,9 +8,8 @@ import jakarta.xml.bind.annotation.XmlRootElement
 class BpmnDefinitions(
     @get:XmlAttribute(name = "id", required = true)
     var id: String = "",
-
     @get:XmlElement(name = "process", namespace = BPMN_NAMESPACE, required = true)
-    var bpmnProcess: BpmnProcess = BpmnProcess()
+    var bpmnProcess: BpmnProcess = BpmnProcess(),
 ) {
     companion object {
         const val BPMN_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL"

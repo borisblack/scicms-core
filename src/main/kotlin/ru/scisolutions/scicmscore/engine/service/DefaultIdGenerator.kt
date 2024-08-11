@@ -5,6 +5,5 @@ import java.util.UUID
 
 @Service
 class DefaultIdGenerator {
-    fun generateId(): String =
-        UUID.randomUUID().toString()
+    fun generateId(): String = UUID.randomUUID().toString()
 }

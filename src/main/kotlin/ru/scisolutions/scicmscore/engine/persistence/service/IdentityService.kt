@@ -11,9 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.IdentityReposito
 @Transactional
 class IdentityService(private val identityRepository: IdentityRepository) {
     @Transactional
-    fun findByUsername(username: String): Identity? =
-        identityRepository.findByNameAndPrincipal(username, true)
+    fun findByUsername(username: String): Identity? = identityRepository.findByNameAndPrincipal(username, true)
 
-    fun deleteByUsername(username: String): Int =
-        identityRepository.deleteByNameAndPrincipal(username, true)
+    fun deleteByUsername(username: String): Int = identityRepository.deleteByNameAndPrincipal(username, true)
 }

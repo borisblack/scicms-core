@@ -24,16 +24,15 @@ class ItemQueryBuilder {
         id: String,
         paramSource: AttributeSqlParameterSource,
         selectAttrNames: Set<String>? = null,
-        permissionIds: Set<String>? = null
-    ): SelectQuery =
-        buildFindByKeyQuery(
-            item = item,
-            keyAttrName = item.idAttribute,
-            key = id,
-            paramSource = paramSource,
-            selectAttrNames = selectAttrNames,
-            permissionIds = permissionIds
-        )
+        permissionIds: Set<String>? = null,
+    ): SelectQuery = buildFindByKeyQuery(
+        item = item,
+        keyAttrName = item.idAttribute,
+        key = id,
+        paramSource = paramSource,
+        selectAttrNames = selectAttrNames,
+        permissionIds = permissionIds,
+    )
 
     fun buildFindByKeyQuery(
         item: Item,
@@ -41,7 +40,7 @@ class ItemQueryBuilder {
         key: String,
         paramSource: AttributeSqlParameterSource,
         selectAttrNames: Set<String>? = null,
-        permissionIds: Set<String>? = null
+        permissionIds: Set<String>? = null,
     ): SelectQuery {
         val table = createTable(item)
         val keyAttribute = item.spec.getAttribute(keyAttrName)
@@ -52,12 +51,13 @@ class ItemQueryBuilder {
         if (selectAttrNames == null) {
             query.addAllColumns()
         } else {
-            val columns = selectAttrNames
-                .map {
-                    val attribute = item.spec.getAttribute(it)
-                    DbColumn(table, attribute.getColumnName(it), null, null)
-                }
-                .toTypedArray()
+            val columns =
+                selectAttrNames
+                    .map {
+                        val attribute = item.spec.getAttribute(it)
+                        DbColumn(table, attribute.getColumnName(it), null, null)
+                    }
+                    .toTypedArray()
 
             query.addColumns(*columns)
         }
@@ -67,8 +67,9 @@ class ItemQueryBuilder {
         paramSource.addValue(sqlParamName, key, FieldType.string)
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null)
+        if (permissionCondition != null) {
             query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }
@@ -79,72 +80,60 @@ class ItemQueryBuilder {
         return DbTable(schema, item.qs)
     }
 
-    fun buildFindAllByAttributeQuery(
-        item: Item,
-        attrName: String,
-        attrValue: Any,
-        paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null
-    ): SelectQuery {
+    fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
         val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
         val attrCol = DbColumn(table, colName, null, null)
         val sqlParamName = "${table.alias}_$colName"
-        val query = SelectQuery()
-            .addAllColumns()
-            .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
+        val query =
+            SelectQuery()
+                .addAllColumns()
+                .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
 
         paramSource.addValue(sqlParamName, attrValue, attribute.type)
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null)
+        if (permissionCondition != null) {
             query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }
 
-    fun buildFindAllByIdsQuery(
-        item: Item,
-        ids: Set<String>,
-        paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null
-    ): SelectQuery =
-        buildFindAllByKeysQuery(
-            item = item,
-            keyAttrName = item.idAttribute,
-            keys = ids,
-            paramSource = paramSource,
-            permissionIds = permissionIds
-        )
+    fun buildFindAllByIdsQuery(item: Item, ids: Set<String>, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery = buildFindAllByKeysQuery(
+        item = item,
+        keyAttrName = item.idAttribute,
+        keys = ids,
+        paramSource = paramSource,
+        permissionIds = permissionIds,
+    )
 
-    fun buildFindAllByKeysQuery(
-        item: Item,
-        keyAttrName: String,
-        keys: Set<String>,
-        paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null
-    ): SelectQuery {
-        if (keys.isEmpty())
+    fun buildFindAllByKeysQuery(item: Item, keyAttrName: String, keys: Set<String>, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
+        if (keys.isEmpty()) {
             throw IllegalArgumentException("Keys set is empty")
+        }
 
         val table = createTable(item)
         val keyAttribute = item.spec.getAttribute(keyAttrName)
         val keyCol = DbColumn(table, keyAttribute.getColumnName(keyAttrName), null, null)
-        val query = SelectQuery()
-            .addAllColumns()
-            .addCondition(InCondition(keyCol, *keys.toTypedArray()))
+        val query =
+            SelectQuery()
+                .addAllColumns()
+                .addCondition(InCondition(keyCol, *keys.toTypedArray()))
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null)
+        if (permissionCondition != null) {
             query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }
 
     private fun getPermissionCondition(table: DbTable, permissionIds: Set<String>?): Condition? {
-        if (permissionIds == null)
+        if (permissionIds == null) {
             return null
+        }
 
         val permissionIdCol = DbColumn(table, ItemRec.PERMISSION_COL_NAME, null, null)
 
@@ -154,7 +143,7 @@ class ItemQueryBuilder {
             ComboCondition(
                 Op.OR,
                 UnaryCondition.isNull(permissionIdCol),
-                InCondition(permissionIdCol, *permissionIds.toTypedArray())
+                InCondition(permissionIdCol, *permissionIds.toTypedArray()),
             )
         }
     }
@@ -181,34 +170,35 @@ class ItemQueryBuilder {
         whereAttrValue: Any?,
         updateAttributes: Map<String, Any?>,
         paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null
-    ): UpdateQuery =
-        buildUpdateByAttributesQuery(item, mapOf(whereAttrName to whereAttrValue), updateAttributes, paramSource, permissionIds)
+        permissionIds: Set<String>? = null,
+    ): UpdateQuery = buildUpdateByAttributesQuery(item, mapOf(whereAttrName to whereAttrValue), updateAttributes, paramSource, permissionIds)
 
     fun buildUpdateByAttributesQuery(
         item: Item,
         whereAttributes: Map<String, Any?>,
         updateAttributes: Map<String, Any?>,
         paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null
+        permissionIds: Set<String>? = null,
     ): UpdateQuery {
         val table = createTable(item)
-        val conditions = whereAttributes.map { (attrName, value) ->
-            val attribute = item.spec.getAttribute(attrName)
-            val colName = attribute.columnName ?: attrName.lowercase()
-            val attrCol = DbColumn(table, colName, null, null)
-            if (value == null) {
-                UnaryCondition.isNull(attrCol)
-            } else {
-                val sqlParamName = "${table.alias}_$colName"
-                paramSource.addValue(sqlParamName, value, attribute.type)
-                BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName"))
-                // BinaryCondition.equalTo(attrCol, SQL.toSqlValue(value))
+        val conditions =
+            whereAttributes.map { (attrName, value) ->
+                val attribute = item.spec.getAttribute(attrName)
+                val colName = attribute.columnName ?: attrName.lowercase()
+                val attrCol = DbColumn(table, colName, null, null)
+                if (value == null) {
+                    UnaryCondition.isNull(attrCol)
+                } else {
+                    val sqlParamName = "${table.alias}_$colName"
+                    paramSource.addValue(sqlParamName, value, attribute.type)
+                    BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName"))
+                    // BinaryCondition.equalTo(attrCol, SQL.toSqlValue(value))
+                }
             }
-        }
 
-        val query = UpdateQuery(table)
-            .addCondition(ComboCondition(Op.AND, *conditions.toTypedArray()))
+        val query =
+            UpdateQuery(table)
+                .addCondition(ComboCondition(Op.AND, *conditions.toTypedArray()))
 
         updateAttributes.forEach { (recAttrName, recValue) ->
             val recAttribute = item.spec.getAttribute(recAttrName)
@@ -221,8 +211,9 @@ class ItemQueryBuilder {
         }
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null)
+        if (permissionCondition != null) {
             query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }
@@ -233,14 +224,16 @@ class ItemQueryBuilder {
         val colName = attribute.columnName ?: attrName.lowercase()
         val attrCol = DbColumn(table, colName, null, null)
         val sqlParamName = "${table.alias}_$colName"
-        val query = DeleteQuery(table)
-            .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
+        val query =
+            DeleteQuery(table)
+                .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
 
         paramSource.addValue(sqlParamName, attrValue, attribute.type)
 
         val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null)
+        if (permissionCondition != null) {
             query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }
@@ -252,10 +245,11 @@ class ItemQueryBuilder {
         val attrCol = DbColumn(table, colName, null, null)
         val lockedByIddCol = DbColumn(table, ItemRec.LOCKED_BY_COL_NAME, null, null)
         val sqlParamName = "${table.alias}_$colName"
-        val query = UpdateQuery(table)
-            .addSetClause(lockedByIddCol, userId)
-            .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
-            .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
+        val query =
+            UpdateQuery(table)
+                .addSetClause(lockedByIddCol, userId)
+                .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
+                .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
 
         paramSource.addValue(sqlParamName, attrValue, attribute.type)
 
@@ -269,10 +263,11 @@ class ItemQueryBuilder {
         val attrCol = DbColumn(table, colName, null, null)
         val lockedByIddCol = DbColumn(table, ItemRec.LOCKED_BY_COL_NAME, null, null)
         val sqlParamName = "${table.alias}_$colName"
-        val query = UpdateQuery(table)
-            .addSetClause(lockedByIddCol, null)
-            .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
-            .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
+        val query =
+            UpdateQuery(table)
+                .addSetClause(lockedByIddCol, null)
+                .addCondition(BinaryCondition.equalTo(attrCol, CustomSql(":$sqlParamName")))
+                .addCondition(ComboCondition(Op.OR, UnaryCondition.isNull(lockedByIddCol), BinaryCondition.equalTo(lockedByIddCol, userId)))
 
         paramSource.addValue(sqlParamName, attrValue, attribute.type)
 

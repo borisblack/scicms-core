@@ -18,15 +18,17 @@ class DatasetFiltersInputMapper {
                 }
 
         val datasetFiltersMapOfLists = datasetFiltersMap.filterValues { it is List<*> } as Map<String, List<Any>>
-        val andFiltersList = datasetFiltersMapOfLists["${opPrefix}$AND_KEY"]?.let { list ->
-            list.filterIsInstance<Map<*, *>>()
-                .map { map(it as Map<String, Any>, opPrefix) } // recursive
-        }
+        val andFiltersList =
+            datasetFiltersMapOfLists["${opPrefix}$AND_KEY"]?.let { list ->
+                list.filterIsInstance<Map<*, *>>()
+                    .map { map(it as Map<String, Any>, opPrefix) } // recursive
+            }
 
-        val orFiltersList = datasetFiltersMapOfLists["${opPrefix}$OR_KEY"]?.let { list ->
-            list.filterIsInstance<Map<*, *>>()
-                .map { map(it as Map<String, Any>, opPrefix) } // recursive
-        }
+        val orFiltersList =
+            datasetFiltersMapOfLists["${opPrefix}$OR_KEY"]?.let { list ->
+                list.filterIsInstance<Map<*, *>>()
+                    .map { map(it as Map<String, Any>, opPrefix) } // recursive
+            }
 
         val notFilters = datasetFiltersMapOfMaps["${opPrefix}$NOT_KEY"]?.let { map(it, opPrefix) } // recursive
 
@@ -34,7 +36,7 @@ class DatasetFiltersInputMapper {
             fieldFilters = fieldFilters,
             andFiltersList = andFiltersList,
             orFiltersList = orFiltersList,
-            notFilters = notFilters
+            notFilters = notFilters,
         )
     }
 

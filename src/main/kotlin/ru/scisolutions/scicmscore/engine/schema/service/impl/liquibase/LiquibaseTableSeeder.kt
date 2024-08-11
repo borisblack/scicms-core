@@ -13,11 +13,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.SchemaProps
-import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.engine.model.Attribute
 import ru.scisolutions.scicmscore.engine.model.Index
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.service.TableSeeder
+import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
@@ -25,7 +25,7 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
 @Service
 class LiquibaseTableSeeder(
     private val schemaProps: SchemaProps,
-    private val dsManager: DatasourceManager
+    private val dsManager: DatasourceManager,
 ) : TableSeeder {
     private val liquibaseIndexes = LiquibaseIndexes()
 
@@ -86,18 +86,19 @@ class LiquibaseTableSeeder(
 
     private fun addChangeSet(databaseChangeLog: DatabaseChangeLog, id: String): ChangeSet {
         val fullId = "${LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}-$id"
-        val changeSet = ChangeSet(
-            fullId,
-            SecurityContextHolder.getContext().authentication?.name ?: "unknown",
-            false,
-            false,
-            fullId,
-            null,
-            null,
-            true,
-            null,
-            databaseChangeLog
-        )
+        val changeSet =
+            ChangeSet(
+                fullId,
+                SecurityContextHolder.getContext().authentication?.name ?: "unknown",
+                false,
+                false,
+                fullId,
+                null,
+                null,
+                true,
+                null,
+                databaseChangeLog,
+            )
         databaseChangeLog.addChangeSet(changeSet)
 
         return changeSet
@@ -105,9 +106,10 @@ class LiquibaseTableSeeder(
 
     private fun addCreateTableChange(changeSet: ChangeSet, item: Item) {
         val metadata = item.metadata
-        val createTableChange = CreateTableChange().apply {
-            this.tableName = metadata.tableName
-        }
+        val createTableChange =
+            CreateTableChange().apply {
+                this.tableName = metadata.tableName
+            }
         changeSet.addChange(createTableChange)
 
         // Add columns
@@ -125,11 +127,12 @@ class LiquibaseTableSeeder(
 
     private fun isTableChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
         (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash && (
-            item.metadata.tableName != existingItemEntity.tableName
-                || item.metadata.dataSource != existingItemEntity.ds
-                || item.metadata.versioned != existingItemEntity.versioned
-                || item.metadata.localized != existingItemEntity.localized
-                || item.spec.hashCode() != existingItemEntity.spec.hashCode())
+            item.metadata.tableName != existingItemEntity.tableName ||
+                item.metadata.dataSource != existingItemEntity.ds ||
+                item.metadata.versioned != existingItemEntity.versioned ||
+                item.metadata.localized != existingItemEntity.localized ||
+                item.spec.hashCode() != existingItemEntity.spec.hashCode()
+            )
 
     private fun updateTable(item: Item, existingItemEntity: ItemEntity) {
         val metadata = item.metadata
@@ -150,22 +153,25 @@ class LiquibaseTableSeeder(
             // ------------------
             // Process attributes
             // ------------------
-            val existingAttributes: Map<String, Attribute> = existingItemEntity.spec.attributes
-                .filter { (_, attribute) -> !attribute.isRelation() || !attribute.isCollection() }
-                .toMap()
+            val existingAttributes: Map<String, Attribute> =
+                existingItemEntity.spec.attributes
+                    .filter { (_, attribute) -> !attribute.isRelation() || !attribute.isCollection() }
+                    .toMap()
 
-            val newAttributes: Map<String, Attribute> = item.spec.attributes
-                .filter { (_, attribute) -> !attribute.isRelation() || !attribute.isCollection() }
-                .toMap()
+            val newAttributes: Map<String, Attribute> =
+                item.spec.attributes
+                    .filter { (_, attribute) -> !attribute.isRelation() || !attribute.isCollection() }
+                    .toMap()
 
             val attributesToAdd: Map<String, Attribute> = newAttributes - existingAttributes.keys
             val attributesToRemove: Map<String, Attribute> = existingAttributes - newAttributes.keys
 
-            val attributesToUpdate: Map<String, Attribute> = (newAttributes - attributesToAdd.keys)
-                .filter { (attrName, attribute) ->
-                    existingAttributes[attrName]?.hashCode()?.let { it != attribute.hashCode() } ?: false
-                }
-                .toMap()
+            val attributesToUpdate: Map<String, Attribute> =
+                (newAttributes - attributesToAdd.keys)
+                    .filter { (attrName, attribute) ->
+                        existingAttributes[attrName]?.hashCode()?.let { it != attribute.hashCode() } ?: false
+                    }
+                    .toMap()
 
             // Validate attributes before updating
             for ((attrName, attribute) in attributesToUpdate) {
@@ -177,7 +183,10 @@ class LiquibaseTableSeeder(
                 val existingAttribute = requireNotNull(existingAttributes[attrName])
                 logger.warn(
                     "Column {}.{}/{}.{} will be UPDATED",
-                    existingItemEntity.tableName, existingAttribute.getColumnName(attrName), newTableName, attribute.getColumnName(attrName)
+                    existingItemEntity.tableName,
+                    existingAttribute.getColumnName(attrName),
+                    newTableName,
+                    attribute.getColumnName(attrName),
                 )
                 val modifyChanges = modifyColumnChangeList(existingItemEntity, item, attrName)
                 for (modifyChange in modifyChanges) {
@@ -204,26 +213,30 @@ class LiquibaseTableSeeder(
             // ------------------------------------------------------------------------
             // Process non-unique indexes. Don't touch unique indexes due to complexity
             // ------------------------------------------------------------------------
-            val existingIndexes: Map<String, Index> = existingItemEntity.spec.indexes
-                .filter { (_, index) -> !index.unique }
-                .toMap()
+            val existingIndexes: Map<String, Index> =
+                existingItemEntity.spec.indexes
+                    .filter { (_, index) -> !index.unique }
+                    .toMap()
 
-            val newIndexes: Map<String, Index> = item.spec.indexes
-                .filter { (_, index) -> !index.unique }
-                .toMap()
+            val newIndexes: Map<String, Index> =
+                item.spec.indexes
+                    .filter { (_, index) -> !index.unique }
+                    .toMap()
 
             val indexesToAdd: Map<String, Index> = newIndexes - existingIndexes.keys
 
             val actualAttrNames = existingAttributes.keys - attributesToRemove.keys
-            val indexesToRemove: Map<String, Index> = (existingIndexes - newIndexes.keys)
-                .filter { (idxName, _) -> idxName in actualAttrNames } // if attribute not exists, index is already dropped
-                .toMap()
+            val indexesToRemove: Map<String, Index> =
+                (existingIndexes - newIndexes.keys)
+                    .filter { (idxName, _) -> idxName in actualAttrNames } // if attribute not exists, index is already dropped
+                    .toMap()
 
-            val indexesToUpdate: Map<String, Index> = (newIndexes - indexesToAdd.keys)
-                .filter { (idxName, index) ->
-                    existingAttributes[idxName]?.hashCode()?.let { it != index.hashCode() } ?: false
-                }
-                .toMap()
+            val indexesToUpdate: Map<String, Index> =
+                (newIndexes - indexesToAdd.keys)
+                    .filter { (idxName, index) ->
+                        existingAttributes[idxName]?.hashCode()?.let { it != index.hashCode() } ?: false
+                    }
+                    .toMap()
 
             // Update indexes
             for ((indexName, index) in indexesToUpdate) {
@@ -255,14 +268,12 @@ class LiquibaseTableSeeder(
         }
     }
 
-    private fun isTableRenamedOnly(item: Item, itemEntity: ItemEntity) =
-        isTableRenamed(item, itemEntity) &&
-            item.metadata.versioned == itemEntity.versioned &&
-            item.metadata.localized == itemEntity.localized &&
-            item.spec.hashCode() == itemEntity.spec.hashCode()
+    private fun isTableRenamedOnly(item: Item, itemEntity: ItemEntity) = isTableRenamed(item, itemEntity) &&
+        item.metadata.versioned == itemEntity.versioned &&
+        item.metadata.localized == itemEntity.localized &&
+        item.spec.hashCode() == itemEntity.spec.hashCode()
 
-    private fun isTableRenamed(item: Item, itemEntity: ItemEntity) =
-        item.metadata.tableName != itemEntity.tableName
+    private fun isTableRenamed(item: Item, itemEntity: ItemEntity) = item.metadata.tableName != itemEntity.tableName
 
     private fun renameTable(existingItemEntity: ItemEntity, item: Item) {
         val metadata = item.metadata
@@ -273,8 +284,8 @@ class LiquibaseTableSeeder(
         changeSet.addChange(
             renameTableChange(
                 requireNotNull(existingItemEntity.tableName),
-                requireNotNull(metadata.tableName)
-            )
+                requireNotNull(metadata.tableName),
+            ),
         )
 
         val liquibase = newLiquibase(item.metadata.dataSource, databaseChangeLog)
@@ -282,11 +293,10 @@ class LiquibaseTableSeeder(
         liquibase.close()
     }
 
-    private fun renameTableChange(oldTableName: String, newTableName: String): RenameTableChange =
-        RenameTableChange().apply {
-            this.oldTableName = oldTableName
-            this.newTableName = newTableName
-        }
+    private fun renameTableChange(oldTableName: String, newTableName: String): RenameTableChange = RenameTableChange().apply {
+        this.oldTableName = oldTableName
+        this.newTableName = newTableName
+    }
 
     override fun dropTable(dataSource: String, tableName: String) {
         val databaseChangeLog = DatabaseChangeLog("")
@@ -301,19 +311,22 @@ class LiquibaseTableSeeder(
     }
 
     private fun addDropTableChange(changeSet: ChangeSet, tableName: String, cascade: Boolean) {
-        val dropTableChange = DropTableChange().apply {
-            this.tableName = tableName
-            this.isCascadeConstraints = cascade
-        }
+        val dropTableChange =
+            DropTableChange().apply {
+                this.tableName = tableName
+                this.isCascadeConstraints = cascade
+            }
         changeSet.addChange(dropTableChange)
     }
 
     private fun validateAttributeChanging(attrName: String, existingAttribute: Attribute, newAttribute: Attribute) {
-        if (newAttribute.isRelation() && !existingAttribute.isRelation())
+        if (newAttribute.isRelation() && !existingAttribute.isRelation()) {
             throw IllegalArgumentException("Cannot convert non-relation attribute [$attrName] into relation.")
+        }
 
-        if (newAttribute.isRelation() && existingAttribute.isRelation() && newAttribute.target != existingAttribute.target)
+        if (newAttribute.isRelation() && existingAttribute.isRelation() && newAttribute.target != existingAttribute.target) {
             throw IllegalArgumentException("Cannot change target relation for attribute [$attrName].")
+        }
     }
 
     private fun addColumnChangeList(item: Item, attrName: String): List<Change> {
@@ -354,7 +367,8 @@ class LiquibaseTableSeeder(
         if (newAttribute.type != existingAttribute.type ||
             newAttribute.length != existingAttribute.length ||
             newAttribute.precision != existingAttribute.precision ||
-            newAttribute.scale != existingAttribute.scale) {
+            newAttribute.scale != existingAttribute.scale
+        ) {
             logger.debug("Data type of column {}.{} will be MODIFIED", tableName, newColumnName)
             changeList.add(liquibaseColumns.modifyDataTypeChange(item, attrName))
         }
@@ -421,11 +435,14 @@ class LiquibaseTableSeeder(
         }
 
         if (schemaProps.rebuildUniqueAttributeIndexes &&
-            (metadata.versioned != existingItemEntity.versioned || metadata.localized != existingItemEntity.localized)
-            && newAttribute.unique && existingAttribute.unique) {
+            (metadata.versioned != existingItemEntity.versioned || metadata.localized != existingItemEntity.localized) &&
+            newAttribute.unique && existingAttribute.unique
+        ) {
             logger.debug(
                 "Versioned/localized flags for item [{}] has changed. Unique index(es) for column {}.{} will be RECREATED",
-                metadata.name, tableName, newColumnName
+                metadata.name,
+                tableName,
+                newColumnName,
             )
             changeList.addAll(liquibaseIndexes.dropUniqueIndexes(existingItemEntity, attrName))
             changeList.addAll(liquibaseIndexes.createUniqueIndexes(item, attrName))
@@ -434,11 +451,10 @@ class LiquibaseTableSeeder(
         return changeList
     }
 
-    private fun modifyIndexChangeList(item: Item, indexName: String): List<Change> =
-        listOf(
-            liquibaseIndexes.dropIndexIndexChange(item, indexName),
-            liquibaseIndexes.createIndexIndexChange(item, indexName)
-        )
+    private fun modifyIndexChangeList(item: Item, indexName: String): List<Change> = listOf(
+        liquibaseIndexes.dropIndexIndexChange(item, indexName),
+        liquibaseIndexes.createIndexIndexChange(item, indexName),
+    )
 
     private fun newLiquibase(dataSourceName: String, databaseChangeLog: DatabaseChangeLog): Liquibase {
         val dataSource = dsManager.dataSource(dataSourceName)
@@ -447,8 +463,8 @@ class LiquibaseTableSeeder(
             databaseChangeLog,
             null,
             DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-                JdbcConnection(dataSource.connection)
-            )
+                JdbcConnection(dataSource.connection),
+            ),
         )
     }
 

@@ -20,9 +20,9 @@ import org.springframework.web.filter.GenericFilterBean
 import org.springframework.web.util.UrlPathHelper
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.engine.model.AuthType
-import ru.scisolutions.scicmscore.model.Oauth2AccessCodeAuthRequest
-import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
 import ru.scisolutions.scicmscore.engine.model.UserInfo
+import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
+import ru.scisolutions.scicmscore.model.Oauth2AccessCodeAuthRequest
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.Oauth2AccessCodeAuthenticationToken
 import ru.scisolutions.scicmscore.security.model.User
@@ -30,7 +30,7 @@ import ru.scisolutions.scicmscore.security.model.User
 class Oauth2AccessTokenAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val jwtTokenService: JwtTokenService,
-    private val securityProps: SecurityProps
+    private val securityProps: SecurityProps,
 ) : GenericFilterBean() {
     override fun doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) {
         req as HttpServletRequest
@@ -55,12 +55,11 @@ class Oauth2AccessTokenAuthenticationFilter(
         }
     }
 
-    private fun getAuthRequest(req: HttpServletRequest): Oauth2AccessCodeAuthRequest =
-        try {
-            objectMapper.readValue(req.inputStream, Oauth2AccessCodeAuthRequest::class.java)
-        } catch (e: Exception) {
-            throw BadCredentialsException(e.message)
-        }
+    private fun getAuthRequest(req: HttpServletRequest): Oauth2AccessCodeAuthRequest = try {
+        objectMapper.readValue(req.inputStream, Oauth2AccessCodeAuthRequest::class.java)
+    } catch (e: Exception) {
+        throw BadCredentialsException(e.message)
+    }
 
     private fun postToAuthenticate(req: HttpServletRequest): Boolean {
         val resourcePath = pathHelper.getPathWithinApplication(req)
@@ -72,11 +71,12 @@ class Oauth2AccessTokenAuthenticationFilter(
         SecurityContextHolder.getContext().authentication = resultAuthentication
 
         // Create JWT token
-        val jwtToken = jwtTokenService.generateJwtToken(
-            resultAuthentication.name,
-            AuthorityUtils.authorityListToSet(resultAuthentication.authorities),
-            AuthType.OAUTH2
-        )
+        val jwtToken =
+            jwtTokenService.generateJwtToken(
+                resultAuthentication.name,
+                AuthorityUtils.authorityListToSet(resultAuthentication.authorities),
+                AuthType.OAUTH2,
+            )
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
 
@@ -87,8 +87,9 @@ class Oauth2AccessTokenAuthenticationFilter(
 
     private fun tryToAuthenticate(authentication: Authentication): Authentication {
         val resultAuthentication = authenticationManager.authenticate(authentication)
-        if (resultAuthentication == null || !resultAuthentication.isAuthenticated)
+        if (resultAuthentication == null || !resultAuthentication.isAuthenticated) {
             throw InternalAuthenticationServiceException("Unable to authenticate user for provided credentials")
+        }
 
         logger.trace("User successfully authenticated")
         return resultAuthentication
@@ -96,17 +97,19 @@ class Oauth2AccessTokenAuthenticationFilter(
 
     private fun sendJWTTokenResponse(req: HttpServletRequest, res: HttpServletResponse, jwtToken: String, authentication: Authentication) {
         val user = (authentication.principal as User).user ?: throw IllegalArgumentException("Authentication has not user entity")
-        val tokenResponse = TokenResponse(
-            jwt = jwtToken,
-            expirationIntervalMillis = securityProps.jwtToken.expirationIntervalMillis,
-            user = UserInfo(
-                id = user.id,
-                username = user.username,
-                roles = AuthorityUtils.authorityListToSet(authentication.authorities),
-                authType = AuthType.OAUTH2,
-                sessionData = user.sessionData
+        val tokenResponse =
+            TokenResponse(
+                jwt = jwtToken,
+                expirationIntervalMillis = securityProps.jwtToken.expirationIntervalMillis,
+                user =
+                UserInfo(
+                    id = user.id,
+                    username = user.username,
+                    roles = AuthorityUtils.authorityListToSet(authentication.authorities),
+                    authType = AuthType.OAUTH2,
+                    sessionData = user.sessionData,
+                ),
             )
-        )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK
         res.addHeader("Content-Type", "application/json")
@@ -118,10 +121,11 @@ class Oauth2AccessTokenAuthenticationFilter(
     companion object {
         private val pathHelper = UrlPathHelper()
 
-        private val objectMapper = jacksonObjectMapper().apply {
-            this.registerModule(JavaTimeModule())
-            this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            this.setSerializationInclusion(Include.NON_NULL)
-        }
+        private val objectMapper =
+            jacksonObjectMapper().apply {
+                this.registerModule(JavaTimeModule())
+                this.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                this.setSerializationInclusion(Include.NON_NULL)
+            }
     }
 }

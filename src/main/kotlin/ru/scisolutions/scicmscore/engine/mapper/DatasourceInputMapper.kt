@@ -12,9 +12,10 @@ class DatasourceInputMapper() {
         return DatasourceTablesInput(
             schema = schema,
             q = q,
-            pagination = paginationMap?.let { PaginationInput.fromMap(it) }
+            pagination = paginationMap?.let { PaginationInput.fromMap(it) },
         )
     }
+
     companion object {
         const val SCHEMA_ARG_NAME = "schema"
         const val Q_ARG_NAME = "q"

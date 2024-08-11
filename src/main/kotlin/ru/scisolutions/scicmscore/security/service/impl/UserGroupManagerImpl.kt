@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.scisolutions.scicmscore.engine.util.Acl
 import ru.scisolutions.scicmscore.security.CustomUserDetailsManager
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
-import ru.scisolutions.scicmscore.engine.util.Acl
 
 @Service
 @Transactional
@@ -20,15 +20,16 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
     override fun createUser(username: String, rawPassword: String, authorities: Set<String>) {
         if (!customUserDetailsManager.userExists(username)) {
             val grantedAuthorities = authorities.map { SimpleGrantedAuthority(it) }
-            val userDetails: UserDetails = User(
-                username,
-                passwordEncoder.encode(rawPassword),
-                true,
-                true,
-                true,
-                true,
-                grantedAuthorities
-            )
+            val userDetails: UserDetails =
+                User(
+                    username,
+                    passwordEncoder.encode(rawPassword),
+                    true,
+                    true,
+                    true,
+                    true,
+                    grantedAuthorities,
+                )
             customUserDetailsManager.createUser(userDetails)
         } else {
             throw IllegalArgumentException("User already exists.")
@@ -56,8 +57,7 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
         }
     }
 
-    override fun loadUserByUsername(username: String): UserDetails =
-        customUserDetailsManager.loadUserByUsername(username)
+    override fun loadUserByUsername(username: String): UserDetails = customUserDetailsManager.loadUserByUsername(username)
 
     override fun createGroup(groupName: String, authorities: Collection<String>) {
         val allGroups: List<String> = customUserDetailsManager.findAllGroups()
@@ -75,14 +75,16 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
 
     override fun addUserToGroup(username: String, groupName: String) {
         val userExistInGroup: Boolean = customUserDetailsManager.findUsersInGroup(groupName).contains(username)
-        if (!userExistInGroup)
+        if (!userExistInGroup) {
             customUserDetailsManager.addUserToGroup(username, groupName)
+        }
     }
 
     override fun removeUserFromGroup(username: String, groupName: String) {
         val userExistInGroup: Boolean = customUserDetailsManager.findUsersInGroup(groupName).contains(username)
-        if (userExistInGroup)
+        if (userExistInGroup) {
             customUserDetailsManager.removeUserFromGroup(username, groupName)
+        }
     }
 
     override fun deleteUser(username: String) = customUserDetailsManager.deleteUser(username)
@@ -107,9 +109,15 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
         customUserDetailsManager.updateUser(newDetails)
     }
 
-    override fun addGroupAuthority(groupName: String, authority: GrantedAuthority) = customUserDetailsManager.addGroupAuthority(groupName, authority)
+    override fun addGroupAuthority(groupName: String, authority: GrantedAuthority) = customUserDetailsManager.addGroupAuthority(
+        groupName,
+        authority,
+    )
 
-    override fun removeGroupAuthority(groupName: String, authority: GrantedAuthority) = customUserDetailsManager.removeGroupAuthority(groupName, authority)
+    override fun removeGroupAuthority(groupName: String, authority: GrantedAuthority) = customUserDetailsManager.removeGroupAuthority(
+        groupName,
+        authority,
+    )
 
     override fun setAuthentication(username: String) {
         val user: UserDetails = customUserDetailsManager.loadUserByUsername(username)

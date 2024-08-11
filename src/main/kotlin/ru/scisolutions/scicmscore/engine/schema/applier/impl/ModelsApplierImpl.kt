@@ -14,8 +14,8 @@ class ModelsApplierImpl(
     private val appliers: List<ModelApplier>,
     private val reloadIndicator: ReloadIndicator,
     private val cacheService: CacheService,
-    private val itemCacheManager: ItemCacheManager
-): ModelsApplier {
+    private val itemCacheManager: ItemCacheManager,
+) : ModelsApplier {
     override fun apply(model: AbstractModel, clearCachesAndReload: Boolean): ModelApplyResult {
         for (applier in appliers) {
             if (applier.supports(model::class.java)) {

@@ -43,7 +43,7 @@ class DynamicDataFetcher(
     private val lockDataFetcher: LockDataFetcher,
     private val unlockDataFetcher: UnlockDataFetcher,
     private val promoteDataFetcher: PromoteDataFetcher,
-    private val customMethodDataFetcher: CustomMethodDataFetcher
+    private val customMethodDataFetcher: CustomMethodDataFetcher,
 ) {
     @DgsCodeRegistry
     fun registry(codeRegistryBuilder: GraphQLCodeRegistry.Builder, registry: TypeDefinitionRegistry): GraphQLCodeRegistry.Builder {
@@ -66,48 +66,58 @@ class DynamicDataFetcher(
             .forEach {
                 val capitalizedItemName = it.name.upperFirst()
 
-                if (!excludeItemPolicy.excludeFromCreateMutation(it))
-                codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}"), createDataFetcher)
+                if (!excludeItemPolicy.excludeFromCreateMutation(it)) {
+                    codeRegistryBuilder
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create$capitalizedItemName"), createDataFetcher)
+                }
 
                 if (it.versioned) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"), createVersionDataFetcher)
+                        .dataFetcher(
+                            FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"),
+                            createVersionDataFetcher,
+                        )
                 } else if (!excludeItemPolicy.excludeFromUpdateMutation(it)) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "update${capitalizedItemName}"), updateDataFetcher)
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "update$capitalizedItemName"), updateDataFetcher)
                 }
 
                 if (it.localized) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"), createLocalizationDataFetcher)
+                        .dataFetcher(
+                            FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"),
+                            createLocalizationDataFetcher,
+                        )
                 }
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "delete${capitalizedItemName}"), deleteDataFetcher)
+                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "delete$capitalizedItemName"), deleteDataFetcher)
 
                 if (it.versioned) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge${capitalizedItemName}"), purgeDataFetcher)
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge$capitalizedItemName"), purgeDataFetcher)
                 }
 
                 if (!it.notLockable) {
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "lock${capitalizedItemName}"), lockDataFetcher)
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "lock$capitalizedItemName"), lockDataFetcher)
 
                     codeRegistryBuilder
-                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "unlock${capitalizedItemName}"), unlockDataFetcher)
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "unlock$capitalizedItemName"), unlockDataFetcher)
                 }
 
                 codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote${capitalizedItemName}"), promoteDataFetcher)
+                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote$capitalizedItemName"), promoteDataFetcher)
 
                 // Custom methods
                 if (!it.implementation.isNullOrBlank()) {
                     val customMethodNames = engine.getCustomMethods(it.name)
                     for (methodName in customMethodNames) {
                         codeRegistryBuilder
-                            .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "${methodName}${capitalizedItemName}"), customMethodDataFetcher)
+                            .dataFetcher(
+                                FieldCoordinates.coordinates(MUTATION_TYPE, "${methodName}$capitalizedItemName"),
+                                customMethodDataFetcher,
+                            )
                     }
                 }
             }

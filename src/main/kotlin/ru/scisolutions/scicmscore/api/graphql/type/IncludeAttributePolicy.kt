@@ -9,11 +9,12 @@ import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Component
 class IncludeAttributePolicy(
-    private val itemService: ItemService
+    private val itemService: ItemService,
 ) {
     fun includeInObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
-        if (attribute.private)
+        if (attribute.private) {
             return false
+        }
 
         // if (!item.versioned && (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME))
         //     return false
@@ -25,27 +26,33 @@ class IncludeAttributePolicy(
     }
 
     fun includeInFiltersInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
-        if (attribute.private)
+        if (attribute.private) {
             return false
+        }
 
-        if (!item.versioned && (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME))
+        if (!item.versioned && (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME)) {
             return false
+        }
 
-        if (!item.localized && attrName == LOCALE_ATTR_NAME)
+        if (!item.localized && attrName == LOCALE_ATTR_NAME) {
             return false
+        }
 
-        if (attribute.type == FieldType.media && itemService.getMedia().ds != item.ds)
+        if (attribute.type == FieldType.media && itemService.getMedia().ds != item.ds) {
             return false
+        }
 
         if (attribute.isCollection()) {
             val targetItem = itemService.getByName(requireNotNull(attribute.target))
-            if (targetItem.ds != item.ds)
+            if (targetItem.ds != item.ds) {
                 return false
+            }
 
             if (attribute.relType == RelType.manyToMany) {
                 val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
-                if (intermediateItem.ds != item.ds)
+                if (intermediateItem.ds != item.ds) {
                     return false
+                }
             }
         }
 
@@ -53,25 +60,33 @@ class IncludeAttributePolicy(
     }
 
     fun includeInInputObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
-        if (attribute.private || attribute.readOnly)
+        if (attribute.private || attribute.readOnly) {
             return false
-
-        if (item.versioned) {
-            if (!item.manualVersioning && (attrName == MAJOR_REV_ATTR_NAME/* || attrName == MINOR_REV_ATTR_NAME*/)) // minor revision can be set for any versioned item
-                return false
-        } else {
-            if (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME)
-                return false
         }
 
-        if (!item.localized && attrName == LOCALE_ATTR_NAME)
-            return false
+        if (item.versioned) {
+            if (!item.manualVersioning && (attrName == MAJOR_REV_ATTR_NAME/* || attrName == MINOR_REV_ATTR_NAME*/)) {
+                // minor revision can be set for any versioned item
+                return false
+            }
+        } else {
+            if (attrName == MAJOR_REV_ATTR_NAME || attrName == MINOR_REV_ATTR_NAME) {
+                return false
+            }
+        }
 
-        if (attrName == STATE_ATTR_NAME) // use [promote] for state change
+        if (!item.localized && attrName == LOCALE_ATTR_NAME) {
             return false
+        }
 
-        if (attribute.type == FieldType.sequence)
+        if (attrName == STATE_ATTR_NAME) {
+            // use [promote] for state change
             return false
+        }
+
+        if (attribute.type == FieldType.sequence) {
+            return false
+        }
 
         return true
     }

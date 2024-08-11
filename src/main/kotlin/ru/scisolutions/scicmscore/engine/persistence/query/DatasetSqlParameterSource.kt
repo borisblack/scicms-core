@@ -29,7 +29,8 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
             FieldType.password,
             FieldType.media,
             FieldType.relation,
-            FieldType.text -> this.addValue(paramName, value, Types.VARCHAR)
+            FieldType.text,
+            -> this.addValue(paramName, value, Types.VARCHAR)
             FieldType.bool -> this.addValue(paramName, if (value is String) value.toBoolean() else value, Types.SMALLINT)
             FieldType.int -> this.addValue(paramName, if (value is String) value.toInt() else value, Types.INTEGER)
             FieldType.long -> this.addValue(paramName, if (value is String) value.toLong() else value, Types.BIGINT)
@@ -37,21 +38,31 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
             FieldType.double -> addValue(paramName, if (value is String) value.toDouble() else value, Types.DOUBLE)
             FieldType.decimal -> this.addValue(paramName, if (value is String) value.toBigDecimal() else value, Types.DECIMAL)
             FieldType.date -> this.addValue(paramName, if (value is String) DateTime.parseDate(value) else value, Types.DATE)
-            FieldType.time -> this.addValue(
-                paramName,
-                if (value is String) DateTime.parseTime(value).withOffsetSameLocal(ZoneOffset.UTC)
-                else (if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value),
-                Types.TIME_WITH_TIMEZONE
-            )
+            FieldType.time ->
+                this.addValue(
+                    paramName,
+                    if (value is String) {
+                        DateTime.parseTime(value).withOffsetSameLocal(ZoneOffset.UTC)
+                    } else {
+                        (if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value)
+                    },
+                    Types.TIME_WITH_TIMEZONE,
+                )
             FieldType.datetime,
-            FieldType.timestamp -> this.addValue(
-                paramName,
-                if (value is String) DateTime.parseDateTime(value).withOffsetSameLocal(ZoneOffset.UTC)
-                else (if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value),
-                Types.TIMESTAMP_WITH_TIMEZONE
-            )
+            FieldType.timestamp,
+            ->
+                this.addValue(
+                    paramName,
+                    if (value is String) {
+                        DateTime.parseDateTime(value).withOffsetSameLocal(ZoneOffset.UTC)
+                    } else {
+                        (if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value)
+                    },
+                    Types.TIMESTAMP_WITH_TIMEZONE,
+                )
             FieldType.array,
-            FieldType.json -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
+            FieldType.json,
+            -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
         }
 
         return this
@@ -74,22 +85,23 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
     }
 
     @Deprecated("Incorrect parsing in case of numerical strings with non-numerical meaning")
-    private fun addStringValue(paramName: String, value: String): Any =
-        if (Numeric.isInt(value)) {
-            this.addValue(paramName, value.toInt(), Types.INTEGER)
-        } else if (Numeric.isLong(value)) {
-            this.addValue(paramName, value.toLong(), Types.BIGINT)
-        } else if (Numeric.isFloat(value)) {
-            this.addValue(paramName, value.toFloat(), Types.FLOAT)
-        } else if (Numeric.isDouble(value)) {
-            this.addValue(paramName, value.toDouble(), Types.DOUBLE)
-        } else if (value == "true" || value == "false") {
-            this.addValue(paramName, value.toBoolean(), Types.BOOLEAN)
-        } else if (DateTime.isDate(value)) {
-            this.addValue(paramName, DateTime.parseDate(value), Types.DATE)
-        } else if (DateTime.isTime(value)) {
-            this.addValue(paramName, DateTime.parseTime(value), Types.TIME)
-        } else if (DateTime.isDateTime(value)) {
-            this.addValue(paramName, DateTime.parseDateTime(value), Types.TIMESTAMP)
-        } else this.addValue(paramName, value, Types.VARCHAR)
+    private fun addStringValue(paramName: String, value: String): Any = if (Numeric.isInt(value)) {
+        this.addValue(paramName, value.toInt(), Types.INTEGER)
+    } else if (Numeric.isLong(value)) {
+        this.addValue(paramName, value.toLong(), Types.BIGINT)
+    } else if (Numeric.isFloat(value)) {
+        this.addValue(paramName, value.toFloat(), Types.FLOAT)
+    } else if (Numeric.isDouble(value)) {
+        this.addValue(paramName, value.toDouble(), Types.DOUBLE)
+    } else if (value == "true" || value == "false") {
+        this.addValue(paramName, value.toBoolean(), Types.BOOLEAN)
+    } else if (DateTime.isDate(value)) {
+        this.addValue(paramName, DateTime.parseDate(value), Types.DATE)
+    } else if (DateTime.isTime(value)) {
+        this.addValue(paramName, DateTime.parseTime(value), Types.TIME)
+    } else if (DateTime.isDateTime(value)) {
+        this.addValue(paramName, DateTime.parseDateTime(value), Types.TIMESTAMP)
+    } else {
+        this.addValue(paramName, value, Types.VARCHAR)
+    }
 }

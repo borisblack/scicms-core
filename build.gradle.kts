@@ -2,8 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "3.2.0"
-    id("io.spring.dependency-management") version "1.1.4"
-    id("org.graalvm.buildtools.native") version "0.9.28"
+    id("io.spring.dependency-management") version "1.1.6"
+    // id("org.graalvm.buildtools.native") version "0.9.28"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
@@ -24,14 +25,15 @@ configurations {
 }
 
 repositories {
-   mavenCentral()
+    mavenCentral()
 }
 
 val jacksonVersion: String by project
+val netflixDgsVersion: String by project
 
 dependencyManagement {
     imports {
-        mavenBom("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release")
+        mavenBom("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:$netflixDgsVersion")
     }
 }
 

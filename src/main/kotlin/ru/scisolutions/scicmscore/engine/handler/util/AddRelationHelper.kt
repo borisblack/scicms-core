@@ -2,11 +2,9 @@ package ru.scisolutions.scicmscore.engine.handler.util
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.persistence.dao.ACLItemRecDao
 import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
-import ru.scisolutions.scicmscore.engine.service.AuditManager
-import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
@@ -14,6 +12,8 @@ import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelatio
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToOneBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.service.AuditManager
+import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.util.Maps
 
 @Component
@@ -22,7 +22,7 @@ class AddRelationHelper(
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
 ) {
     fun addRelations(item: Item, itemRec: ItemRec, relAttributes: Map<String, Any>) {
         relAttributes.forEach { (attrName, value) ->
@@ -96,10 +96,13 @@ class AddRelationHelper(
             return
         }
 
-        val intermediateItemRec = ItemRec(mutableMapOf(
-            INTERMEDIATE_SOURCE_ATTR_NAME to sourceId,
-            INTERMEDIATE_TARGET_ATTR_NAME to targetId
-        ))
+        val intermediateItemRec =
+            ItemRec(
+                mutableMapOf(
+                    INTERMEDIATE_SOURCE_ATTR_NAME to sourceId,
+                    INTERMEDIATE_TARGET_ATTR_NAME to targetId,
+                ),
+            )
 
         itemRecDao.insertWithDefaults(intermediateItem, intermediateItemRec)
     }

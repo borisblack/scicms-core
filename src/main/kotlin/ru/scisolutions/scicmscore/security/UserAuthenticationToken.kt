@@ -7,5 +7,5 @@ import ru.scisolutions.scicmscore.engine.model.AuthType
 class UserAuthenticationToken(
     username: String,
     authorities: Collection<GrantedAuthority>,
-    val authType: AuthType
+    val authType: AuthType,
 ) : PreAuthenticatedAuthenticationToken(username, null, authorities)

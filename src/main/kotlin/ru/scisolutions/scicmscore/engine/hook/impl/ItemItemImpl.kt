@@ -41,7 +41,7 @@ class ItemItemImpl(
         val model = itemMapper.mapToModel(data)
 
         schemaLockService.lockOrThrow()
-        val appliedModelResult =  modelsApplier.apply(model, true)
+        val appliedModelResult = modelsApplier.apply(model, true)
         schemaLockService.unlockOrThrow()
 
         return appliedModelResult
@@ -54,8 +54,9 @@ class ItemItemImpl(
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         val itemItemRec = ItemItemRec(data)
         val existingItem = itemService.getById(input.id)
-        if (itemItemRec.name != existingItem.name)
+        if (itemItemRec.name != existingItem.name) {
             throw IllegalArgumentException("Item cannot be renamed.")
+        }
 
         apply(itemItemRec)
         return data
@@ -74,7 +75,7 @@ class ItemItemImpl(
         if (itemItemRec.performDdl == true) {
             tableSeeder.dropTable(
                 itemItemRec.datasource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
-                requireNotNull(itemItemRec.tableName)
+                requireNotNull(itemItemRec.tableName),
             )
         } else {
             logger.info("DDL performing flag is disabled for item [{}]. Deleting skipped.", itemItemRec.name)

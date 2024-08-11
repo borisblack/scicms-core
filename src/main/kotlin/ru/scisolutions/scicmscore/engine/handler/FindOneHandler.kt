@@ -17,7 +17,7 @@ class FindOneHandler(
     private val classService: ClassService,
     private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao,
-    private val attributeValueHelper: AttributeValueHelper
+    private val attributeValueHelper: AttributeValueHelper,
 ) {
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -30,27 +30,23 @@ class FindOneHandler(
 
         val isOnlyId = attrNames.size == 1 && item.idAttribute in attrNames
         val itemRec =
-            if (isOnlyId)
+            if (isOnlyId) {
                 ItemRec().apply { this[item.idAttribute] = id }
-            else
+            } else {
                 aclItemRecDao.findByIdForRead(item, id, attrNames)
+            }
 
-        val response = Response(
-            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, itemRec)) }
-        )
+        val response =
+            Response(
+                itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, itemRec)) },
+            )
 
         implInstance?.afterFindOne(itemName, response)
 
         return response
     }
 
-    fun findOneRelated(
-        parentItemName: String,
-        parentItemRec: ItemRec,
-        parentAttrName: String,
-        itemName: String,
-        selectAttrNames: Set<String>
-    ): RelationResponse {
+    fun findOneRelated(parentItemName: String, parentItemRec: ItemRec, parentAttrName: String, itemName: String, selectAttrNames: Set<String>): RelationResponse {
         val key = parentItemRec[parentAttrName] as String?
         if (key == null) {
             logger.trace("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
@@ -64,13 +60,14 @@ class FindOneHandler(
         val keyAttrName = parentAttribute.referencedBy ?: item.idAttribute
         val isOnlyKey = attrNames.size == 1 && keyAttrName in attrNames
         val itemRec =
-            if (isOnlyKey)
+            if (isOnlyKey) {
                 ItemRec().apply { this[keyAttrName] = key }
-            else
+            } else {
                 aclItemRecDao.findByKeyForRead(item, keyAttrName, key, attrNames)
+            }
 
         return RelationResponse(
-            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) }
+            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) },
         )
     }
 

@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class UnlockDataFetcher(
-    private val engine: Engine
+    private val engine: Engine,
 ) : DataFetcher<DataFetcherResult<FlaggedResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<FlaggedResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(flaggedResponseFieldTypeRegex)

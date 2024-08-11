@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.security.provider;
+package ru.scisolutions.scicmscore.security.provider
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
 @Component
 class UsernamePasswordAuthenticationProvider(
     customUserDetailsManager: CustomUserDetailsManager,
-    private val userService: UserService
+    private val userService: UserService,
 ) : DaoAuthenticationProvider() {
     init {
         userDetailsService = customUserDetailsManager

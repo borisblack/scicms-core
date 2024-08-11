@@ -5,16 +5,16 @@ import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.engine.model.response.CacheStatistic
 import ru.scisolutions.scicmscore.engine.persistence.entity.Dataset
+import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlParameterSource
 import java.util.concurrent.TimeUnit
 import kotlin.time.TimeSource
 
 @Service
 class DatasetCacheManager(
     private val dataProps: DataProps,
-    private val redissonClient: RedissonClient
+    private val redissonClient: RedissonClient,
 ) {
     init {
         // Clear caches on start
@@ -43,7 +43,7 @@ class DatasetCacheManager(
                 return CacheStatistic(
                     res,
                     startMark.elapsedNow().inWholeMilliseconds,
-                    true
+                    true,
                 )
             }
             logger.trace("Loading missed result for SQL: {}", fullSql)
@@ -58,7 +58,7 @@ class DatasetCacheManager(
         return CacheStatistic(
             res,
             startMark.elapsedNow().inWholeMilliseconds,
-            false
+            false,
         )
     }
 
@@ -80,8 +80,7 @@ class DatasetCacheManager(
         return resSql
     }
 
-    fun clear(dataset: Dataset) =
-        getDatasetCache(dataset.name).clear()
+    fun clear(dataset: Dataset) = getDatasetCache(dataset.name).clear()
 
     companion object {
         private const val DATASET_QUERY_RESULTS_REGION = "scicms_dataset_query_results"

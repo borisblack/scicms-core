@@ -13,7 +13,10 @@ class ExcludeItemPolicy {
 
     companion object {
         private val excludedFromQueryItemNames = setOf(Item.EXAMPLE_ITEM_NAME)
-        private val excludedFromMutationItemNames = excludedFromQueryItemNames + setOf(/*Item.ITEM_TEMPLATE_ITEM_NAME, Item.ITEM_ITEM_NAME*/)
+        private val excludedFromMutationItemNames = excludedFromQueryItemNames + setOf(
+            // Item.ITEM_TEMPLATE_ITEM_NAME,
+            // Item.ITEM_ITEM_NAME
+        )
         private val excludedFromCreateMutationItemNames = setOf(Item.MEDIA_ITEM_NAME)
         private val excludedFromUpdateMutationItemNames = setOf<String>()
     }

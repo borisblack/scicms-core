@@ -10,12 +10,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class CorsConfig {
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration().apply {
-            this.allowedOriginPatterns = listOf("*")
-            this.allowedMethods = listOf("*")
-            this.allowedHeaders = listOf("*")
-            this.allowCredentials = true
-        }
+        val configuration =
+            CorsConfiguration().apply {
+                this.allowedOriginPatterns = listOf("*")
+                this.allowedMethods = listOf("*")
+                this.allowedHeaders = listOf("*")
+                this.allowCredentials = true
+            }
 
         return UrlBasedCorsConfigurationSource().apply {
             this.registerCorsConfiguration("/**", configuration)

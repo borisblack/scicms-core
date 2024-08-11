@@ -7,13 +7,13 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import java.util.regex.Pattern
 
 class DatasetOrderingsParser {
-    fun parseOrderings(inputSortList: List<String>, table: DbTable?, query: SelectQuery) =
-        inputSortList.forEach { parseOrdering(it, table, query) }
+    fun parseOrderings(inputSortList: List<String>, table: DbTable?, query: SelectQuery) = inputSortList.forEach { parseOrdering(it, table, query) }
 
     private fun parseOrdering(inputSort: String, table: DbTable?, query: SelectQuery) {
         val matcher = sortAttrPattern.matcher(inputSort)
-        if (!matcher.matches())
+        if (!matcher.matches()) {
             throw IllegalArgumentException("Invalid sort expression: $inputSort")
+        }
 
         val fieldName = matcher.group(1)
         val order = matcher.group(2) ?: "asc"

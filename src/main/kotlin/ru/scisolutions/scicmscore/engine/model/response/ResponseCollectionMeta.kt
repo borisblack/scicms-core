@@ -5,5 +5,5 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include
 
 @JsonInclude(Include.NON_NULL)
 class ResponseCollectionMeta(
-    val pagination: Pagination? = null
+    val pagination: Pagination? = null,
 )

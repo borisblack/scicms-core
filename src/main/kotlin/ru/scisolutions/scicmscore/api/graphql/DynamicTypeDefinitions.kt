@@ -18,7 +18,7 @@ class DynamicTypeDefinitions(
     private val itemObjectTypes: ItemObjectTypes,
     private val itemInputObjectTypes: ItemInputObjectTypes,
     private val queryItemFields: QueryItemFields,
-    private val mutationItemFields: MutationItemFields
+    private val mutationItemFields: MutationItemFields,
 ) {
     @DgsTypeDefinitionRegistry
     fun registry(): TypeDefinitionRegistry {
@@ -54,21 +54,25 @@ class DynamicTypeDefinitions(
             .filter { !it.readOnly }
             .filter { !excludeItemPolicy.excludeFromMutation(it) }
             .forEach {
-                if (!excludeItemPolicy.excludeFromCreateMutation(it))
+                if (!excludeItemPolicy.excludeFromCreateMutation(it)) {
                     mutationBuilder.fieldDefinition(mutationItemFields.create(it))
+                }
 
-                if (it.versioned)
+                if (it.versioned) {
                     mutationBuilder.fieldDefinition(mutationItemFields.createVersion(it))
-                else if (!excludeItemPolicy.excludeFromUpdateMutation(it))
+                } else if (!excludeItemPolicy.excludeFromUpdateMutation(it)) {
                     mutationBuilder.fieldDefinition(mutationItemFields.update(it))
+                }
 
-                if (it.localized)
+                if (it.localized) {
                     mutationBuilder.fieldDefinition(mutationItemFields.createLocalization(it))
+                }
 
                 mutationBuilder.fieldDefinition(mutationItemFields.delete(it))
 
-                if (it.versioned)
+                if (it.versioned) {
                     mutationBuilder.fieldDefinition(mutationItemFields.purge(it))
+                }
 
                 if (!it.notLockable) {
                     typeDefinitionRegistry.add(itemObjectTypes.flaggedResponse(it))

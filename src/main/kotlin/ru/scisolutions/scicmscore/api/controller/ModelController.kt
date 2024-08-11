@@ -1,6 +1,10 @@
 package ru.scisolutions.scicmscore.api.controller
 
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import ru.scisolutions.scicmscore.api.graphql.ReloadIndicator
 import ru.scisolutions.scicmscore.engine.Engine
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
@@ -15,7 +19,7 @@ class ModelController(
     private val schemaLockService: SchemaLockService,
     private val modelsApplier: ModelsApplier,
     private val reloadIndicator: ReloadIndicator,
-    private val engine: Engine
+    private val engine: Engine,
 ) {
     @PostMapping("/apply")
     fun apply(@RequestBody model: AbstractModel): String {
@@ -40,10 +44,11 @@ class ModelController(
 
     @PostMapping("/delete/{modelName}/{id}")
     fun delete(@PathVariable("modelName") modelName: String, @PathVariable("id") id: String) {
-        val deleteInput = DeleteInput(
-            id = id,
-            deletingStrategy = DeletingStrategy.CASCADE
-        )
+        val deleteInput =
+            DeleteInput(
+                id = id,
+                deletingStrategy = DeletingStrategy.CASCADE,
+            )
         engine.delete(modelName, deleteInput, emptySet())
         reloadIndicator.setNeedReload(true)
     }

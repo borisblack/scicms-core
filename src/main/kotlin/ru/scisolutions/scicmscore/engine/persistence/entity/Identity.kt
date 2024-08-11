@@ -10,8 +10,7 @@ import jakarta.persistence.Table
 class Identity(
     @Column(nullable = false)
     var name: String,
-
     @Column(nullable = false, columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
-    var principal: Boolean = false
+    var principal: Boolean = false,
 ) : AbstractEntity()

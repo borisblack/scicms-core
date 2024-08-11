@@ -50,8 +50,9 @@ class ItemTemplateItemImpl(
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         val itemTemplateItemRec = ItemTemplateItemRec(data)
         val existingItemTemplate = itemTemplateService.getById(input.id)
-        if (itemTemplateItemRec.name != existingItemTemplate.name)
+        if (itemTemplateItemRec.name != existingItemTemplate.name) {
             throw IllegalArgumentException("Item template cannot be renamed.")
+        }
 
         apply(itemTemplateItemRec)
         return data

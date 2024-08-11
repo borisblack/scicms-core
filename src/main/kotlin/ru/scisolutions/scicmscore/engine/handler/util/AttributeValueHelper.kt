@@ -2,10 +2,10 @@ package ru.scisolutions.scicmscore.engine.handler.util
 
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.DataProps
-import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.Attribute
 import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import ru.scisolutions.scicmscore.engine.persistence.service.MediaService
@@ -23,24 +23,26 @@ class AttributeValueHelper(
     private val dataProps: DataProps,
     private val itemService: ItemService,
     private val mediaService: MediaService,
-    private val itemRecDao: ItemRecDao
+    private val itemRecDao: ItemRecDao,
 ) {
-    fun merge (item: Item, from: Map<String, Any?>, to: ItemRec): Map<String, Any?> {
-        val filteredFrom = from.filter { (k, v) ->
-            val attribute = item.spec.getAttribute(k)
-            !(attribute.type == FieldType.password && v == ItemRec.PASSWORD_PLACEHOLDER)
-        }
+    fun merge(item: Item, from: Map<String, Any?>, to: ItemRec): Map<String, Any?> {
+        val filteredFrom =
+            from.filter { (k, v) ->
+                val attribute = item.spec.getAttribute(k)
+                !(attribute.type == FieldType.password && v == ItemRec.PASSWORD_PLACEHOLDER)
+            }
 
         return Maps.merge(filteredFrom, to)
     }
 
     fun prepareValuesToSave(item: Item, values: Map<String, Any?>): Map<String, Any?> {
-        val map = values
-            .filterKeys {
-                val attribute = item.spec.getAttribute(it)
-                !attribute.private && attribute.type != FieldType.sequence && it !in excludeAttrNames
-            }
-            .toMutableMap()
+        val map =
+            values
+                .filterKeys {
+                    val attribute = item.spec.getAttribute(it)
+                    !attribute.private && attribute.type != FieldType.sequence && it !in excludeAttrNames
+                }
+                .toMutableMap()
 
         // Set default values for required attributes
         val requiredAttributesWithDefaultValue =
@@ -51,14 +53,16 @@ class AttributeValueHelper(
                 }
 
         requiredAttributesWithDefaultValue.forEach { (attrName, attr) ->
-            if (map[attrName] == null)
+            if (map[attrName] == null) {
                 map[attrName] = attr.parseDefaultValue()
+            }
         }
 
         val result = map.mapValues { (attrName, value) -> prepareValueToSave(item, attrName, value) }
 
-        if (dataProps.trimStrings)
+        if (dataProps.trimStrings) {
             return result.mapValues { (_, value) -> if (value is String) value.trim() else value }
+        }
 
         return result
     }
@@ -66,11 +70,13 @@ class AttributeValueHelper(
     fun prepareValueToSave(item: Item, attrName: String, value: Any?): Any? {
         val attribute = item.spec.getAttribute(attrName)
         if (value == null) {
-            if (attribute.defaultValue !== null)
+            if (attribute.defaultValue !== null) {
                 return attribute.parseDefaultValue()
+            }
 
-            if (attribute.required)
-                throw IllegalArgumentException("Item [${item.name}], attribute [${attrName}]: Value is required")
+            if (attribute.required) {
+                throw IllegalArgumentException("Item [${item.name}], attribute [$attrName]: Value is required")
+            }
 
             return null
         }
@@ -94,118 +100,145 @@ class AttributeValueHelper(
         when (attribute.type) {
             FieldType.uuid -> {}
             FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.password, FieldType.media -> {
-                if (value !is String)
+                if (value !is String) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
 
                 when (attribute.type) {
                     FieldType.string -> {
-                        if (attribute.length == null)
+                        if (attribute.length == null) {
                             throw IllegalArgumentException("The length is required for the string type")
+                        }
 
-                        if (value.length > attribute.length)
+                        if (value.length > attribute.length) {
                             throw IllegalArgumentException("The string length exceeds maximum")
+                        }
 
                         if (!attribute.pattern.isNullOrBlank()) {
                             val regex = attribute.pattern.toRegex()
-                            if (!regex.matches(value))
+                            if (!regex.matches(value)) {
                                 throw IllegalArgumentException("The string [$value] does not match pattern [${attribute.pattern}]")
+                            }
                         }
                     }
                     FieldType.text -> {}
                     FieldType.enum -> {
-                        if (attribute.enumSet == null)
+                        if (attribute.enumSet == null) {
                             throw IllegalArgumentException("enumSet is required for the enum type")
+                        }
 
-                        if (value !in attribute.enumSet)
-                            throw IllegalArgumentException("Enumeration set does not contain value [$value]. Possible values: ${attribute.enumSet.joinToString()}")
+                        if (value !in attribute.enumSet) {
+                            throw IllegalArgumentException(
+                                "Enumeration set does not contain value [$value]. Possible values: ${attribute.enumSet.joinToString()}",
+                            )
+                        }
                     }
                     FieldType.email -> {
-                        if (!simpleEmailRegex.matches(value))
+                        if (!simpleEmailRegex.matches(value)) {
                             throw IllegalArgumentException("The string [$value] does not match the email pattern")
+                        }
                     }
                     FieldType.password -> {
-                        if (value.isBlank())
+                        if (value.isBlank()) {
                             throw IllegalArgumentException("Password string cannot be blank")
+                        }
                     }
                     FieldType.media -> {
-                        if (!mediaService.existsById(value))
+                        if (!mediaService.existsById(value)) {
                             throw IllegalArgumentException("Media with ID [$value] does not exist")
+                        }
                     }
                     else -> throw IllegalArgumentException("Unsupported attribute type")
                 }
             }
             FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
             FieldType.int -> {
-                if (value !is Int)
+                if (value !is Int) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
 
                 validateAttributeNumberValue(item, attrName, attribute, value)
             }
             FieldType.long -> {
-                if (value !is Int && value !is Long)
+                if (value !is Int && value !is Long) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
             FieldType.float, FieldType.double -> {
-                if (value !is Float && value !is Double)
+                if (value !is Float && value !is Double) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
             FieldType.decimal -> {
-                if (value !is Float && value !is Double && value !is BigDecimal)
+                if (value !is Float && value !is Double && value !is BigDecimal) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
 
                 validateAttributeNumberValue(item, attrName, attribute, value as Number)
             }
             FieldType.date -> {
-                if (value !is LocalDate)
+                if (value !is LocalDate) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.time -> {
-                if (value !is OffsetTime)
+                if (value !is OffsetTime) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.datetime -> {
-                if (value !is OffsetDateTime)
+                if (value !is OffsetDateTime) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.timestamp -> {
-                if (value !is OffsetDateTime)
+                if (value !is OffsetDateTime) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.bool -> {
-                if (value !is Boolean)
+                if (value !is Boolean) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.array -> {
-                if (value !is String && value !is List<*>)
+                if (value !is String && value !is List<*>) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.json -> {
-                if (value !is String && value !is Map<*, *>)
+                if (value !is String && value !is Map<*, *>) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                }
             }
             FieldType.relation -> {
                 val targetItem = itemService.getByName(requireNotNull(attribute.target))
                 if (attribute.isCollection()) {
-                    if (value !is List<*>)
+                    if (value !is List<*>) {
                         throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                    }
 
                     val ids = value.filterIsInstance<String>()
-                    if (ids.size != value.size)
+                    if (ids.size != value.size) {
                         throw IllegalArgumentException("Wrong type of item [${item.name}] IDs")
+                    }
 
-                    if (!itemRecDao.existAllByIds(targetItem, ids.toSet()))
+                    if (!itemRecDao.existAllByIds(targetItem, ids.toSet())) {
                         throw IllegalArgumentException("Items [${attribute.target}] with IDs [${ids.joinToString()}] do not exist")
+                    }
                 } else {
-                    if (value !is String)
+                    if (value !is String) {
                         throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
+                    }
 
                     val keyAttrName = attribute.referencedBy ?: targetItem.idAttribute
-                    if (!itemRecDao.existsByKey(targetItem, keyAttrName, value))
+                    if (!itemRecDao.existsByKey(targetItem, keyAttrName, value)) {
                         throw IllegalArgumentException("Item [${attribute.target}] with key [$value] does not exist")
+                    }
                 }
             }
         }
@@ -214,47 +247,56 @@ class AttributeValueHelper(
     private fun validateAttributeNumberValue(item: Item, attrName: String, attribute: Attribute, value: Number) {
         when (value) {
             is Int -> {
-                if (attribute.minRange != null && value < attribute.minRange)
+                if (attribute.minRange != null && value < attribute.minRange) {
                     throw IllegalArgumentException(VALUE_LESS_THAN_MIN_MSG.format(item.name, attrName, value))
+                }
 
-                if (attribute.maxRange != null && value > attribute.maxRange)
+                if (attribute.maxRange != null && value > attribute.maxRange) {
                     throw IllegalArgumentException(VALUE_MORE_THAN_MAX_MSG.format(item.name, attrName, value))
+                }
             }
             is Long -> {
-                if (attribute.minRange != null && value < attribute.minRange)
+                if (attribute.minRange != null && value < attribute.minRange) {
                     throw IllegalArgumentException(VALUE_LESS_THAN_MIN_MSG.format(item.name, attrName, value))
+                }
 
-                if (attribute.maxRange != null && value > attribute.maxRange)
+                if (attribute.maxRange != null && value > attribute.maxRange) {
                     throw IllegalArgumentException(VALUE_MORE_THAN_MAX_MSG.format(item.name, attrName, value))
+                }
             }
             is Float -> {
-                if (attribute.minRange != null && value < attribute.minRange)
+                if (attribute.minRange != null && value < attribute.minRange) {
                     throw IllegalArgumentException(VALUE_LESS_THAN_MIN_MSG.format(item.name, attrName, value))
+                }
 
-                if (attribute.maxRange != null && value > attribute.maxRange)
+                if (attribute.maxRange != null && value > attribute.maxRange) {
                     throw IllegalArgumentException(VALUE_MORE_THAN_MAX_MSG.format(item.name, attrName, value))
+                }
             }
             is Double -> {
-                if (attribute.minRange != null && value < attribute.minRange)
+                if (attribute.minRange != null && value < attribute.minRange) {
                     throw IllegalArgumentException(VALUE_LESS_THAN_MIN_MSG.format(item.name, attrName, value))
+                }
 
-                if (attribute.maxRange != null && value > attribute.maxRange)
+                if (attribute.maxRange != null && value > attribute.maxRange) {
                     throw IllegalArgumentException(VALUE_MORE_THAN_MAX_MSG.format(item.name, attrName, value))
+                }
             }
             is BigDecimal -> {
-                if (attribute.minRange != null && value < attribute.minRange.toBigDecimal())
+                if (attribute.minRange != null && value < attribute.minRange.toBigDecimal()) {
                     throw IllegalArgumentException(VALUE_LESS_THAN_MIN_MSG.format(item.name, attrName, value))
+                }
 
-                if (attribute.maxRange != null && value > attribute.maxRange.toBigDecimal())
+                if (attribute.maxRange != null && value > attribute.maxRange.toBigDecimal()) {
                     throw IllegalArgumentException(VALUE_MORE_THAN_MAX_MSG.format(item.name, attrName, value))
+                }
             }
         }
     }
 
-    fun prepareValuesToReturn(item: Item, attributes: Map<String, Any?>): MutableMap<String, Any?> =
-        attributes
-            .mapValues { (attrName, value) -> prepareValueToReturn(item, attrName, value) }
-            .toMutableMap()
+    fun prepareValuesToReturn(item: Item, attributes: Map<String, Any?>): MutableMap<String, Any?> = attributes
+        .mapValues { (attrName, value) -> prepareValueToReturn(item, attrName, value) }
+        .toMutableMap()
 
     fun prepareValueToReturn(item: Item, attrName: String, value: Any?): Any? {
         val attribute = item.spec.getAttribute(attrName)
@@ -278,12 +320,13 @@ class AttributeValueHelper(
         private const val VALUE_LESS_THAN_MIN_MSG = "Item [%s], attribute [%s], value [%s]: The value is less than minRange"
         private const val VALUE_MORE_THAN_MAX_MSG = "Item [%s], attribute [%s], value [%s]: The value is more than maxRange"
 
-        private val excludeAttrNames = setOf(
-            ItemRec.MAJOR_REV_ATTR_NAME,
-            ItemRec.CURRENT_ATTR_NAME,
-            ItemRec.LOCALE_ATTR_NAME,
-            ItemRec.STATE_ATTR_NAME
-        )
+        private val excludeAttrNames =
+            setOf(
+                ItemRec.MAJOR_REV_ATTR_NAME,
+                ItemRec.CURRENT_ATTR_NAME,
+                ItemRec.LOCALE_ATTR_NAME,
+                ItemRec.STATE_ATTR_NAME,
+            )
         private val simpleEmailRegex = Regex("\\w+@\\w+\\.\\w+")
     }
 }

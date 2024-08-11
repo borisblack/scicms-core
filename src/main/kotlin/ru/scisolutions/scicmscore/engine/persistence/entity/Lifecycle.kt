@@ -16,21 +16,19 @@ import ru.scisolutions.scicmscore.util.Jaxb
 @Table(name = "core_lifecycles")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
 )
 class Lifecycle(
     @Column(nullable = false)
     var name: String,
-
     @Column(name = "display_name")
     var displayName: String? = name,
-
     var description: String? = null,
     var icon: String? = null,
     var implementation: String? = null,
     var spec: String,
     var checksum: String? = null,
-    var hash: String? = null
+    var hash: String? = null,
 ) : AbstractEntity() {
     @Transient
     private var parsedSpec: LifecycleSpec? = null
@@ -42,32 +40,36 @@ class Lifecycle(
             val taskMap = process.tasks.associateBy { it.id }
             val sequenceFlowMap = process.sequenceFlows.associateBy { it.id }
 
-            val startTransitions = process.startEvent.outgoings.asSequence()
-                .map { sequenceFlowId -> sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow }
-                .filter { sequenceFlow -> sequenceFlow.targetRef != process.endEvent.id }
-                .map { sequenceFlow ->
-                    val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
-                    targetTask.name
+            val startTransitions =
+                process.startEvent.outgoings.asSequence()
+                    .map { sequenceFlowId -> sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow }
+                    .filter { sequenceFlow -> sequenceFlow.targetRef != process.endEvent.id }
+                    .map { sequenceFlow ->
+                        val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
+                        targetTask.name
+                    }
+                    .toSet()
+
+            val states =
+                process.tasks.associate { task ->
+                    task.name to
+                        State(
+                            task.outgoings.asSequence()
+                                .map { sequenceFlowId -> sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow }
+                                .filter { sequenceFlow -> sequenceFlow.targetRef != process.endEvent.id }
+                                .map { sequenceFlow ->
+                                    val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
+                                    targetTask.name
+                                }
+                                .toSet(),
+                        )
                 }
-                .toSet()
 
-            val states = process.tasks.associate { task ->
-                task.name to State(
-                    task.outgoings.asSequence()
-                        .map { sequenceFlowId -> sequenceFlowMap[sequenceFlowId] as BpmnSequenceFlow }
-                        .filter { sequenceFlow -> sequenceFlow.targetRef != process.endEvent.id }
-                        .map { sequenceFlow ->
-                            val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
-                            targetTask.name
-                        }
-                        .toSet()
+            parsedSpec =
+                LifecycleSpec(
+                    startEvent = State(startTransitions),
+                    states = states,
                 )
-            }
-
-            parsedSpec = LifecycleSpec(
-                startEvent = State(startTransitions),
-                states = states
-            )
         }
 
         return parsedSpec as LifecycleSpec

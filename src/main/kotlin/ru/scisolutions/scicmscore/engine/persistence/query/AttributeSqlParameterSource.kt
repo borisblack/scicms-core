@@ -24,28 +24,34 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             FieldType.email,
             FieldType.password,
             FieldType.media,
-            FieldType.relation -> this.addValue(paramName, value, Types.VARCHAR)
+            FieldType.relation,
+            -> this.addValue(paramName, value, Types.VARCHAR)
             FieldType.bool -> this.addValue(paramName, value, Types.SMALLINT)
             FieldType.int,
             FieldType.long,
             FieldType.float,
             FieldType.double,
-            FieldType.decimal -> this.addValue(paramName, value)
+            FieldType.decimal,
+            -> this.addValue(paramName, value)
             FieldType.date -> this.addValue(paramName, value, Types.DATE)
-            FieldType.time -> this.addValue(
-                paramName,
-                if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
-                Types.TIME_WITH_TIMEZONE
-            )
+            FieldType.time ->
+                this.addValue(
+                    paramName,
+                    if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
+                    Types.TIME_WITH_TIMEZONE,
+                )
             FieldType.datetime,
-            FieldType.timestamp -> this.addValue(
-                paramName,
-                if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
-                Types.TIMESTAMP_WITH_TIMEZONE
-            )
+            FieldType.timestamp,
+            ->
+                this.addValue(
+                    paramName,
+                    if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value,
+                    Types.TIMESTAMP_WITH_TIMEZONE,
+                )
             FieldType.text -> this.addValue(paramName, value)
             FieldType.array,
-            FieldType.json -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
+            FieldType.json,
+            -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
         }
 
         return this

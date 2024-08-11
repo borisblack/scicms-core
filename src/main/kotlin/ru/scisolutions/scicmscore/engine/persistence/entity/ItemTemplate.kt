@@ -12,23 +12,20 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.ItemSpecConverter
 @Table(name = "core_item_templates")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
 )
 @org.hibernate.annotations.NaturalIdCache
 class ItemTemplate(
     @Column(nullable = false, unique = true)
     @org.hibernate.annotations.NaturalId
     var name: String,
-
     @Column(columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var core: Boolean = false,
-
     @Convert(converter = ItemSpecConverter::class)
     var spec: ItemSpec = ItemSpec(),
-
     var checksum: String? = null,
-    var hash: String? = null
+    var hash: String? = null,
 ) : AbstractEntity() {
     override fun toString(): String = "ItemTemplate(name=$name)"
 

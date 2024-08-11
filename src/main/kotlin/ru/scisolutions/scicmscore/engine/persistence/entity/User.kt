@@ -11,21 +11,18 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.MapConverter
 @Table(name = "sec_users")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
 )
 @org.hibernate.annotations.NaturalIdCache
 class User(
     @Column(nullable = false, unique = true)
     @org.hibernate.annotations.NaturalId
     var username: String,
-
     @Column(name = "passwd", nullable = false)
     var password: String,
-
     @Column(nullable = false, columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var enabled: Boolean,
-
     @Convert(converter = MapConverter::class)
     var sessionData: Map<String, Any?>? = null,
 ) : AbstractEntity() {

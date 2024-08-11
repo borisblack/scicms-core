@@ -15,7 +15,7 @@ class CacheService(
     private val emf: EntityManagerFactory,
     private val entityManager: EntityManager,
     private val cacheManager: CacheManager,
-    private val redissonClient: RedissonClient
+    private val redissonClient: RedissonClient,
 ) {
     fun clearSchemaCaches(vararg classes: Class<*>) {
         val cache = emf.cache
@@ -35,8 +35,9 @@ class CacheService(
     }
 
     fun optimizeSchemaCaches(changedItem: Item) {
-        if (!changedItem.core || changedItem.name in excludedItemNames)
+        if (!changedItem.core || changedItem.name in excludedItemNames) {
             return
+        }
 
         clearAllSchemaCaches()
     }

@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.AllowedPermissionSe
 @Service
 class PermissionManager(
     private val allowedPermissionService: AllowedPermissionService,
-    private val aclHelper: AclHelper
+    private val aclHelper: AclHelper,
 ) {
     fun assignPermissionAttribute(item: Item, itemRec: ItemRec) {
         itemRec.permission = checkPermissionId(item, itemRec.permission)
@@ -44,8 +44,9 @@ class PermissionManager(
         val defaultPermission = getDefaultPermission(item.name)
         val effectiveDefaultPermission = allowedPermissions.find { it.isDefault }?.targetId ?: defaultPermission
 
-        if (permissionId == null)
+        if (permissionId == null) {
             return prevPermissionId ?: effectiveDefaultPermission
+        }
 
         if (!aclHelper.canAdmin(prevPermissionId)) {
             logger.warn("User cannot change permission")
@@ -56,17 +57,21 @@ class PermissionManager(
         return if (permissionId in allowedPermissionIds) {
             permissionId
         } else {
-            logger.warn("Permission '$permissionId' is not allowed for item '${item.name}'. Resetting to default permission '$effectiveDefaultPermission'")
+            logger.warn(
+                "Permission '$permissionId' is not allowed for item '${item.name}'. Resetting to default permission '$effectiveDefaultPermission'",
+            )
             effectiveDefaultPermission
         }
     }
 
     private fun getDefaultPermission(itemName: String): String {
-        if (isSecurityItem(itemName))
+        if (isSecurityItem(itemName)) {
             return Permission.SECURITY_PERMISSION_ID
+        }
 
-        if (isBiItem(itemName))
+        if (isBiItem(itemName)) {
             return Permission.BI_PERMISSION_ID
+        }
 
         return Permission.DEFAULT_PERMISSION_ID
     }
@@ -77,23 +82,25 @@ class PermissionManager(
 
     companion object {
         private val logger = LoggerFactory.getLogger(PermissionManager::class.java)
-        private val securityItemNames = setOf(
-            // Item.ACCESS_ITEM_NAME,
-            // Item.ALLOWED_PERMISSION_ITEM_NAME,
-            Item.GROUP_ITEM_NAME,
-            Item.GROUP_MEMBER_ITEM_NAME,
-            Item.GROUP_ROLE_ITEM_NAME,
-            // Item.IDENTITY_ITEM_NAME,
-            // Item.PERMISSION_ITEM_NAME,
-            Item.ROLE_ITEM_NAME,
-            Item.USER_ITEM_NAME
-        )
-        private val biItemNames = setOf(
-            Item.DASHBOARD_ITEM_NAME,
-            Item.DASHBOARD_CATEGORY_ITEM_NAME,
-            Item.DASHBOARD_CATEGORY_HIERARCHY_ITEM_NAME,
-            Item.DASHBOARD_CATEGORY_MAP_ITEM_NAME,
-            Item.DATASET_ITEM_NAME
-        )
+        private val securityItemNames =
+            setOf(
+                // Item.ACCESS_ITEM_NAME,
+                // Item.ALLOWED_PERMISSION_ITEM_NAME,
+                Item.GROUP_ITEM_NAME,
+                Item.GROUP_MEMBER_ITEM_NAME,
+                Item.GROUP_ROLE_ITEM_NAME,
+                // Item.IDENTITY_ITEM_NAME,
+                // Item.PERMISSION_ITEM_NAME,
+                Item.ROLE_ITEM_NAME,
+                Item.USER_ITEM_NAME,
+            )
+        private val biItemNames =
+            setOf(
+                Item.DASHBOARD_ITEM_NAME,
+                Item.DASHBOARD_CATEGORY_ITEM_NAME,
+                Item.DASHBOARD_CATEGORY_HIERARCHY_ITEM_NAME,
+                Item.DASHBOARD_CATEGORY_MAP_ITEM_NAME,
+                Item.DATASET_ITEM_NAME,
+            )
     }
 }

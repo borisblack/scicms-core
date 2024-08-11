@@ -1,4 +1,4 @@
-package ru.scisolutions.scicmscore.security.provider;
+package ru.scisolutions.scicmscore.security.provider
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationProvider
@@ -9,12 +9,12 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.SecurityProps
 import ru.scisolutions.scicmscore.engine.persistence.service.UserService
+import ru.scisolutions.scicmscore.engine.util.Acl
 import ru.scisolutions.scicmscore.security.Oauth2AccessCodeAuthenticationToken
 import ru.scisolutions.scicmscore.security.model.Oauth2AccessTokenRequest
 import ru.scisolutions.scicmscore.security.model.Oauth2AccessTokenResponse
 import ru.scisolutions.scicmscore.security.model.User
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
-import ru.scisolutions.scicmscore.engine.util.Acl
 import ru.scisolutions.scicmscore.util.Json
 import java.net.URI
 import java.net.http.HttpClient
@@ -22,12 +22,11 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.net.http.HttpResponse.BodyHandlers
 
-
 @Component
 class Oauth2AccessCodeAuthenticationProvider(
     private val securityProps: SecurityProps,
     private val userGroupManager: UserGroupManager,
-    private val userService: UserService
+    private val userService: UserService,
 ) : AuthenticationProvider {
     override fun supports(authentication: Class<*>): Boolean = authentication == Oauth2AccessCodeAuthenticationToken::class.java
 
@@ -44,7 +43,7 @@ class Oauth2AccessCodeAuthenticationProvider(
             userGroupManager.createUserInGroups(
                 username = username,
                 rawPassword = Acl.randomPassword(),
-                groupNames = setOf(Acl.GROUP_USERS)
+                groupNames = setOf(Acl.GROUP_USERS),
             )
         }
 
@@ -57,27 +56,33 @@ class Oauth2AccessCodeAuthenticationProvider(
     }
 
     private fun fetchAccessToken(provider: SecurityProps.Oauth2Provider, accessCode: String): Oauth2AccessTokenResponse {
-        val accessTokenRequest: HttpRequest = HttpRequest.newBuilder()
-            .uri(URI(provider.accessTokenUrl))
-            .headers(
-                "Content-Type", "application/json;charset=UTF-8",
-                "Accept", "application/json"
-            )
-            .POST(HttpRequest.BodyPublishers.ofString(
-                Json.objectMapper.writeValueAsString(
-                    Oauth2AccessTokenRequest(
-                        clientId = provider.clientId,
-                        clientSecret = provider.clientSecret,
-                        accessCode = accessCode
-                    )
+        val accessTokenRequest: HttpRequest =
+            HttpRequest.newBuilder()
+                .uri(URI(provider.accessTokenUrl))
+                .headers(
+                    "Content-Type",
+                    "application/json;charset=UTF-8",
+                    "Accept",
+                    "application/json",
                 )
-            ))
-            .build()
+                .POST(
+                    HttpRequest.BodyPublishers.ofString(
+                        Json.objectMapper.writeValueAsString(
+                            Oauth2AccessTokenRequest(
+                                clientId = provider.clientId,
+                                clientSecret = provider.clientSecret,
+                                accessCode = accessCode,
+                            ),
+                        ),
+                    ),
+                )
+                .build()
 
         logger.trace("Fetching access token")
-        val accessTokenRawResponse: HttpResponse<String> = HttpClient.newBuilder()
-            .build()
-            .send(accessTokenRequest, BodyHandlers.ofString())
+        val accessTokenRawResponse: HttpResponse<String> =
+            HttpClient.newBuilder()
+                .build()
+                .send(accessTokenRequest, BodyHandlers.ofString())
         val accessTokenResponse = Json.objectMapper.readValue(accessTokenRawResponse.body(), Oauth2AccessTokenResponse::class.java)
         logger.trace("Access token fetched.")
 
@@ -85,19 +90,23 @@ class Oauth2AccessCodeAuthenticationProvider(
     }
 
     private fun fetchUserInfo(provider: SecurityProps.Oauth2Provider, accessTokenResponse: Oauth2AccessTokenResponse): Any {
-        val userInfoRequest: HttpRequest = HttpRequest.newBuilder()
-            .uri(URI(provider.apiUrl))
-            .headers(
-                "Authorization", "Bearer ${accessTokenResponse.accessToken}",
-                "Accept", "application/json"
-            )
-            .POST(HttpRequest.BodyPublishers.noBody())
-            .build()
+        val userInfoRequest: HttpRequest =
+            HttpRequest.newBuilder()
+                .uri(URI(provider.apiUrl))
+                .headers(
+                    "Authorization",
+                    "Bearer ${accessTokenResponse.accessToken}",
+                    "Accept",
+                    "application/json",
+                )
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build()
 
         logger.trace("Fetching user info")
-        val userInfoRawResponse: HttpResponse<String> = HttpClient.newBuilder()
-            .build()
-            .send(userInfoRequest, BodyHandlers.ofString())
+        val userInfoRawResponse: HttpResponse<String> =
+            HttpClient.newBuilder()
+                .build()
+                .send(userInfoRequest, BodyHandlers.ofString())
         val userInfoResponse = Json.objectMapper.readValue(userInfoRawResponse.body(), Any::class.java)
         logger.trace("User info fetched.")
 

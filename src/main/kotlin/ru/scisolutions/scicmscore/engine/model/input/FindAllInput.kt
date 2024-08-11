@@ -6,5 +6,5 @@ class FindAllInput(
     sort: List<String>?,
     val majorRev: String?,
     val locale: String?,
-    val state: String?
+    val state: String?,
 ) : FindAllRelationInput(filters, pagination, sort)

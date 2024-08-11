@@ -13,15 +13,16 @@ import ru.scisolutions.scicmscore.extension.upperFirst
 @Component
 class QueryItemFields {
     fun item(item: Item): FieldDefinition {
-        val builder = FieldDefinition.newFieldDefinition()
-            .name(item.name)
-            .type(TypeName("${item.name.upperFirst()}Response"))
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("id")
-                    .type(NonNullType(TypeNames.ID))
-                    .build()
-            )
+        val builder =
+            FieldDefinition.newFieldDefinition()
+                .name(item.name)
+                .type(TypeName("${item.name.upperFirst()}Response"))
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("id")
+                        .type(NonNullType(TypeNames.ID))
+                        .build(),
+                )
 
         // if (item.versioned)
         //     builder.inputValueDefinition(InputValues.MAJOR_REV)
@@ -34,33 +35,36 @@ class QueryItemFields {
 
     fun itemCollection(item: Item): FieldDefinition {
         val capitalizedItemName = item.name.upperFirst()
-        val builder = FieldDefinition.newFieldDefinition()
-            .name(item.pluralName)
-            .type(TypeName("${capitalizedItemName}ResponseCollection"))
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("filters")
-                    .type(TypeName("${capitalizedItemName}FiltersInput"))
-                    .build()
-            )
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("pagination")
-                    .type(TypeName("PaginationInput"))
-                    .build()
-            )
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("sort")
-                    .type(ListType(TypeNames.STRING))
-                    .build()
-            )
+        val builder =
+            FieldDefinition.newFieldDefinition()
+                .name(item.pluralName)
+                .type(TypeName("${capitalizedItemName}ResponseCollection"))
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("filters")
+                        .type(TypeName("${capitalizedItemName}FiltersInput"))
+                        .build(),
+                )
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("pagination")
+                        .type(TypeName("PaginationInput"))
+                        .build(),
+                )
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("sort")
+                        .type(ListType(TypeNames.STRING))
+                        .build(),
+                )
 
-        if (item.versioned)
+        if (item.versioned) {
             builder.inputValueDefinition(InputValues.MAJOR_REV)
+        }
 
-        if (item.localized)
+        if (item.localized) {
             builder.inputValueDefinition(InputValues.LOCALE)
+        }
 
         builder.inputValueDefinition(InputValues.STATE)
 

@@ -20,7 +20,7 @@ import ru.scisolutions.scicmscore.engine.schema.service.RelationValidator
 @Service
 class RelationManager(
     private val relationValidator: RelationValidator,
-    private val itemService: ItemService
+    private val itemService: ItemService,
 ) {
     fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): Relation {
         relationValidator.validateAttribute(item, attrName, attribute)
@@ -29,7 +29,7 @@ class RelationManager(
             Attribute.RelType.oneToOne -> getOneToOneAttributeRelation(item, attrName, attribute)
             Attribute.RelType.manyToOne -> getManyToOneAttributeRelation(item, attrName, attribute)
             Attribute.RelType.oneToMany -> getOneToManyAttributeRelation(item, attrName, attribute)
-            Attribute.RelType.manyToMany ->getManyToManyAttributeRelation(item, attrName, attribute)
+            Attribute.RelType.manyToMany -> getManyToManyAttributeRelation(item, attrName, attribute)
             else -> throw IllegalArgumentException("Unsupported attribute relation type")
         }
     }
@@ -44,7 +44,7 @@ class RelationManager(
                 owningItem = item,
                 owningAttrName = attrName,
                 inversedItem = targetItem,
-                inversedAttrName = attribute.inversedBy
+                inversedAttrName = attribute.inversedBy,
             )
         } else if (attribute.mappedBy != null) { // inversed side
             OneToOneBidirectionalRelation(
@@ -52,20 +52,21 @@ class RelationManager(
                 owningItem = targetItem,
                 owningAttrName = attribute.mappedBy,
                 inversedItem = item,
-                inversedAttrName = attrName
+                inversedAttrName = attrName,
             )
         } else {
             OneToOneUnidirectionalRelation(
                 item = item,
                 attrName = attrName,
-                targetItem = targetItem
+                targetItem = targetItem,
             )
         }
     }
 
     private fun getManyToOneAttributeRelation(item: Item, attrName: String, attribute: Attribute): ManyToOneRelation {
-        if (attribute.mappedBy != null)
+        if (attribute.mappedBy != null) {
             throw IllegalStateException("The mappedBy field cannot be set for manyToOne relation type")
+        }
 
         val targetItem = itemService.getByName(requireNotNull(attribute.target))
 
@@ -73,14 +74,14 @@ class RelationManager(
             ManyToOneUnidirectionalRelation(
                 item = item,
                 attrName = attrName,
-                targetItem = targetItem
+                targetItem = targetItem,
             )
         } else {
             ManyToOneOwningBidirectionalRelation(
                 owningItem = item,
                 owningAttrName = attrName,
                 inversedItem = targetItem,
-                inversedAttrName = attribute.inversedBy
+                inversedAttrName = attribute.inversedBy,
             )
         }
     }
@@ -92,7 +93,7 @@ class RelationManager(
             owningItem = owningItem,
             owningAttrName = requireNotNull(attribute.mappedBy),
             inversedItem = item,
-            inversedAttrName = attrName
+            inversedAttrName = attrName,
         )
     }
 
@@ -106,7 +107,7 @@ class RelationManager(
                 item = item,
                 attrName = attrName,
                 targetItem = targetItem,
-                intermediateItem = intermediateItem
+                intermediateItem = intermediateItem,
             )
         } else if (attribute.inversedBy != null) { // owning side
             ManyToManyBidirectionalRelation(
@@ -115,7 +116,7 @@ class RelationManager(
                 owningAttrName = attrName,
                 inversedItem = targetItem,
                 inversedAttrName = attribute.inversedBy,
-                intermediateItem = intermediateItem
+                intermediateItem = intermediateItem,
             )
         } else if (attribute.mappedBy != null) { // inversed side
             ManyToManyBidirectionalRelation(
@@ -124,7 +125,7 @@ class RelationManager(
                 owningAttrName = attribute.mappedBy,
                 inversedItem = item,
                 inversedAttrName = attrName,
-                intermediateItem = intermediateItem
+                intermediateItem = intermediateItem,
             )
         } else {
             throw IllegalStateException("Illegal state for manyToMany context")

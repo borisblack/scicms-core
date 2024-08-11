@@ -11,13 +11,15 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 class VersionConditionBuilder {
     fun newVersionCondition(table: DbTable, item: Item, majorRev: String?): Condition? {
         val currentCol = DbColumn(table, IS_CURRENT_COL_NAME, null, null)
-        return if (item.versioned)  {
+        return if (item.versioned) {
             if (majorRev == null) {
                 BinaryCondition.equalTo(currentCol, true)
             } else if (majorRev != ALL_VERSIONS) {
                 val majorRevCol = DbColumn(table, MAJOR_REV_COL_NAME, null, null)
                 BinaryCondition.equalTo(majorRevCol, majorRev)
-            } else null
+            } else {
+                null
+            }
         } else {
             BinaryCondition.equalTo(currentCol, true)
         }

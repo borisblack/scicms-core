@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 @Component
 class FindAllRelatedDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
-    private val engine: Engine
+    private val engine: Engine,
 ) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
         val parentType = dfe.unwrapParentType()
@@ -27,19 +27,21 @@ class FindAllRelatedDataFetcher(
         val parentAttrName = dfe.field.name
         val responseCollectionInput = findAllInputMapper.mapToRelationResponseCollectionInput(itemName, dfe.arguments)
         val selectAttrNames = dfe.selectDataFields()
-        val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
-            .map { it.name }
-            .toSet()
+        val selectPaginationFields =
+            dfe.selectionSet.getFields("meta/pagination/*").asSequence()
+                .map { it.name }
+                .toSet()
 
-        val result = engine.findAllRelated(
-            parentItemName = parentItemName,
-            parentItemRec = parentItemRec,
-            parentAttrName = parentAttrName,
-            itemName = itemName,
-            input = responseCollectionInput,
-            selectAttrNames = selectAttrNames,
-            selectPaginationFields = selectPaginationFields
-        )
+        val result =
+            engine.findAllRelated(
+                parentItemName = parentItemName,
+                parentItemRec = parentItemRec,
+                parentAttrName = parentAttrName,
+                itemName = itemName,
+                input = responseCollectionInput,
+                selectAttrNames = selectAttrNames,
+                selectPaginationFields = selectPaginationFields,
+            )
 
         return DataFetcherResult.newResult<RelationResponseCollection>()
             .data(result)

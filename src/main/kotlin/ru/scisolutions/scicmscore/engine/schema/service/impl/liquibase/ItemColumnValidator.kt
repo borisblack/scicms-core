@@ -9,7 +9,8 @@ class ItemColumnValidator {
         val tableName = requireNotNull(item.metadata.tableName)
         val columnName = attribute.columnName ?: attrName.lowercase()
 
-        if (attribute.type == FieldType.relation && attribute.isCollection())
-            throw IllegalArgumentException("Column [${tableName}.${columnName}] has invalid relation type (${attribute.relType})")
+        if (attribute.type == FieldType.relation && attribute.isCollection()) {
+            throw IllegalArgumentException("Column [$tableName.$columnName] has invalid relation type (${attribute.relType})")
+        }
     }
 }

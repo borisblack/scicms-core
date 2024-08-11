@@ -25,7 +25,7 @@ class DeleteRelationHelper(
     private val auditManager: AuditManager,
     private val deleteMediaHelper: DeleteMediaHelper,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao
+    private val aclItemRecDao: ACLItemRecDao,
 ) {
     fun deleteRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
         deleteNonCollectionRelations(item, itemRec, strategy)
@@ -38,27 +38,24 @@ class DeleteRelationHelper(
     }
 
     private fun deleteNonCollectionRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
-        if (strategy == DeletingStrategy.NO_ACTION)
+        if (strategy == DeletingStrategy.NO_ACTION) {
             return
+        }
 
-        val nonCollectionRelAttributes = item.spec.relationAttributes
-            .filterValues { !it.isCollection() }
-            .map { (attrName, _) -> attrName to (itemRec[attrName] as String?) }
+        val nonCollectionRelAttributes =
+            item.spec.relationAttributes
+                .filterValues { !it.isCollection() }
+                .map { (attrName, _) -> attrName to (itemRec[attrName] as String?) }
 
         nonCollectionRelAttributes.forEach { (attrName, targetId) ->
             deleteNonCollectionRelation(item, itemRec, attrName, targetId, strategy)
         }
     }
 
-    private fun deleteNonCollectionRelation(
-        item: Item,
-        itemRec: ItemRec,
-        relAttrName: String,
-        targetId: String?,
-        strategy: DeletingStrategy
-    ) {
-        if (strategy == DeletingStrategy.NO_ACTION)
+    private fun deleteNonCollectionRelation(item: Item, itemRec: ItemRec, relAttrName: String, targetId: String?, strategy: DeletingStrategy) {
+        if (strategy == DeletingStrategy.NO_ACTION) {
             return
+        }
 
         val attribute = item.spec.getAttribute(relAttrName)
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, attribute)) {
@@ -67,8 +64,11 @@ class DeleteRelationHelper(
                 when (strategy) {
                     DeletingStrategy.SET_NULL -> {
                         if (!relation.isOwning) {
-                            if (relation.getOwningAttribute().required)
-                                throw IllegalStateException("The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.")
+                            if (relation.getOwningAttribute().required) {
+                                throw IllegalStateException(
+                                    "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.",
+                                )
+                            }
 
                             val referencedRecId = itemRec.getString(referencedAttrName)
                             val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
@@ -79,7 +79,12 @@ class DeleteRelationHelper(
                         logger.debug("Deleting oneToOne relations recursively")
 
                         if (relation.isOwning) {
-                            val targetItemRecs = aclItemRecDao.findAllByAttributeForDelete(relation.inversedItem, referencedAttrName, requireNotNull(targetId))
+                            val targetItemRecs =
+                                aclItemRecDao.findAllByAttributeForDelete(
+                                    relation.inversedItem,
+                                    referencedAttrName,
+                                    requireNotNull(targetId),
+                                )
 
                             // Should be only one
                             for (targetItemRec in targetItemRecs) {
@@ -88,7 +93,12 @@ class DeleteRelationHelper(
                             }
                         } else if (ENABLE_ONE_TO_ONE_NOT_OWNING_CASCADE_DELETE) {
                             val referencedRecId = itemRec.getString(referencedAttrName)
-                            val targetItemRecs = aclItemRecDao.findAllByAttributeForDelete(relation.owningItem, relation.owningAttrName, referencedRecId)
+                            val targetItemRecs =
+                                aclItemRecDao.findAllByAttributeForDelete(
+                                    relation.owningItem,
+                                    relation.owningAttrName,
+                                    referencedRecId,
+                                )
 
                             // Should be only one
                             for (targetItemRec in targetItemRecs) {
@@ -104,8 +114,11 @@ class DeleteRelationHelper(
                 val referencedAttrName = relation.getOwningAttribute().referencedBy ?: relation.owningItem.idAttribute
                 when (strategy) {
                     DeletingStrategy.SET_NULL -> {
-                        if (relation.getOwningAttribute().required)
-                            throw IllegalStateException("The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.")
+                        if (relation.getOwningAttribute().required) {
+                            throw IllegalStateException(
+                                "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.",
+                            )
+                        }
 
                         val referencedRecId = itemRec.getString(referencedAttrName)
                         val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
@@ -115,7 +128,12 @@ class DeleteRelationHelper(
                         if (ENABLE_MANY_TO_ONE_OWNING_CASCADE_DELETE) {
                             logger.debug("Deleting manyToOne relations recursively")
 
-                            val targetItemRecs = aclItemRecDao.findAllByAttributeForDelete(relation.inversedItem, referencedAttrName, requireNotNull(targetId))
+                            val targetItemRecs =
+                                aclItemRecDao.findAllByAttributeForDelete(
+                                    relation.inversedItem,
+                                    referencedAttrName,
+                                    requireNotNull(targetId),
+                                )
 
                             // Should be only one
                             for (targetItemRec in targetItemRecs) {
@@ -148,11 +166,11 @@ class DeleteRelationHelper(
         return itemsToDelete.size
     }
 
-    private fun deleteById(item: Item, id: String): Int =
-        if (item.versioned)
-            itemRecDao.deleteVersionedById(item, id)
-        else
-            itemRecDao.deleteById(item, id)
+    private fun deleteById(item: Item, id: String): Int = if (item.versioned) {
+        itemRecDao.deleteVersionedById(item, id)
+    } else {
+        itemRecDao.deleteById(item, id)
+    }
 
     private fun deleteCollectionRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
         val collectionRelAttributes = item.spec.relationAttributes.filterValues { it.isCollection() }
@@ -162,20 +180,25 @@ class DeleteRelationHelper(
     }
 
     private fun deleteCollectionRelation(item: Item, itemRec: ItemRec, relAttrName: String, relAttribute: Attribute, strategy: DeletingStrategy) {
-        if (!relAttribute.isCollection())
+        if (!relAttribute.isCollection()) {
             throw IllegalArgumentException("Attribute [$relAttrName] is not collection")
+        }
 
         when (val relation = relationManager.getAttributeRelation(item, relAttrName, relAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {
-                if (strategy == DeletingStrategy.NO_ACTION)
+                if (strategy == DeletingStrategy.NO_ACTION) {
                     return
+                }
 
                 val referencedAttrName = relation.getOwningAttribute().referencedBy ?: item.idAttribute
                 val referencedKey = itemRec.getString(referencedAttrName)
                 when (strategy) {
                     DeletingStrategy.SET_NULL -> {
-                        if (relation.getOwningAttribute().required)
-                            throw IllegalStateException("The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.")
+                        if (relation.getOwningAttribute().required) {
+                            throw IllegalStateException(
+                                "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.",
+                            )
+                        }
 
                         val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to null))
                         updateByAttribute(relation.owningItem, relation.owningAttrName, referencedKey, owningItemRec)
@@ -184,7 +207,12 @@ class DeleteRelationHelper(
                         // Recursive calls
                         logger.debug("Processing relations recursively")
                         val targetItem = itemService.getByName(requireNotNull(relAttribute.target))
-                        val targetItemRecList = aclItemRecDao.findAllByAttributeForDelete(targetItem, relation.owningAttrName, referencedKey)
+                        val targetItemRecList =
+                            aclItemRecDao.findAllByAttributeForDelete(
+                                targetItem,
+                                relation.owningAttrName,
+                                referencedKey,
+                            )
                         targetItemRecList.forEach { deleteRelations(targetItem, it, strategy) }
 
                         deleteByAttribute(relation.owningItem, relation.owningAttrName, referencedKey)
@@ -215,8 +243,8 @@ class DeleteRelationHelper(
     }
 
     companion object {
-        private const val ENABLE_ONE_TO_ONE_NOT_OWNING_CASCADE_DELETE = false;
-        private const val ENABLE_MANY_TO_ONE_OWNING_CASCADE_DELETE = false;
+        private const val ENABLE_ONE_TO_ONE_NOT_OWNING_CASCADE_DELETE = false
+        private const val ENABLE_MANY_TO_ONE_OWNING_CASCADE_DELETE = false
         private const val INTERMEDIATE_SOURCE_ATTR_NAME = "source"
         private const val INTERMEDIATE_TARGET_ATTR_NAME = "target"
 

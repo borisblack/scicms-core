@@ -7,7 +7,6 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.Attribute.RelType
 import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
@@ -21,8 +20,9 @@ class ItemOrderingsParser(private val itemService: ItemService) {
 
     private fun parseOrdering(item: Item, inputSort: String, schema: DbSchema, query: SelectQuery, table: DbTable) {
         val matcher = sortAttrPattern.matcher(inputSort)
-        if (!matcher.matches())
+        if (!matcher.matches()) {
             throw IllegalArgumentException("Invalid sort expression: $inputSort")
+        }
 
         val attrName = matcher.group(1)
         val attribute = item.spec.getAttribute(attrName)
@@ -35,8 +35,9 @@ class ItemOrderingsParser(private val itemService: ItemService) {
         } else {
             when (attribute.type) {
                 FieldType.relation -> {
-                    if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany)
+                    if (attribute.relType == RelType.oneToMany || attribute.relType == RelType.manyToMany) {
                         throw IllegalArgumentException("Invalid sort attribute")
+                    }
 
                     val target = itemService.getByName(requireNotNull(attribute.target))
                     addOrdering(target, nestedAttrName, schema, query, table, col, orderDir)

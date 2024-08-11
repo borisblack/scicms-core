@@ -10,16 +10,18 @@ class Schema {
         validateModel(model)
 
         val metadata = model.metadata
-        when(model) {
+        when (model) {
             is ItemTemplate -> {
-                if (metadata.name in itemTemplates)
+                if (metadata.name in itemTemplates) {
                     throw IllegalArgumentException("Model [${metadata.name}] already exists in schema")
+                }
 
                 itemTemplates[metadata.name] = model
             }
             is Item -> {
-                if (metadata.name in items)
+                if (metadata.name in items) {
                     throw IllegalArgumentException("Model [${metadata.name}] already exists in schema")
+                }
 
                 items[metadata.name] = model
             }
@@ -28,8 +30,9 @@ class Schema {
     }
 
     private fun validateModel(model: AbstractModel) {
-        if(model.metadata.name.first().isUpperCase())
+        if (model.metadata.name.first().isUpperCase()) {
             throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character")
+        }
     }
 
     fun getItemTemplates(): Map<String, ItemTemplate> = itemTemplates.toMap()

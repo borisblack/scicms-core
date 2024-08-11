@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.UserRepository
 @Transactional
 class UserService(
     private val em: EntityManager,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
     @Transactional(readOnly = true)
     fun findByUsername(username: String): User? = findByNaturalId(username)
@@ -28,21 +28,19 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    fun getByUsername(username: String): User =
-        findByNaturalId(username) ?: throw IllegalArgumentException("User [$username] not found.")
+    fun getByUsername(username: String): User = findByNaturalId(username) ?: throw IllegalArgumentException("User [$username] not found.")
 
     @Transactional(readOnly = true)
-    fun existsByUsername(username: String): Boolean =
-        userRepository.existsByUsername(username)
+    fun existsByUsername(username: String): Boolean = userRepository.existsByUsername(username)
 
     @Transactional(readOnly = true)
     fun getCurrent(): User {
-        val authentication = SecurityContextHolder.getContext().authentication
-            ?: throw AccessDeniedException("User is not authenticated.")
+        val authentication =
+            SecurityContextHolder.getContext().authentication
+                ?: throw AccessDeniedException("User is not authenticated.")
 
         return getByUsername(authentication.name)
     }
 
-    fun save(user: User): User =
-        userRepository.save(user)
+    fun save(user: User): User = userRepository.save(user)
 }

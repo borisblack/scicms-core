@@ -7,5 +7,5 @@ import ru.scisolutions.scicmscore.engine.model.Table
 @JsonInclude(Include.NON_NULL)
 class DatasourceTablesResponse(
     val data: List<Table>,
-    val meta: ResponseCollectionMeta = ResponseCollectionMeta()
+    val meta: ResponseCollectionMeta = ResponseCollectionMeta(),
 )

@@ -6,11 +6,13 @@ open class BaseMetadata(
     open val name: String, // must start with a lowercase character
 ) {
     override fun equals(other: Any?): Boolean {
-        if (this === other)
+        if (this === other) {
             return true
+        }
 
-        if (javaClass != other?.javaClass)
+        if (javaClass != other?.javaClass) {
             return false
+        }
 
         other as BaseMetadata
 

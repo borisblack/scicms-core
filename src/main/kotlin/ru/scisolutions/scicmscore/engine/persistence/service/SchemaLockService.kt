@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 @Transactional
 class SchemaLockService(
     private val schemaProps: SchemaProps,
-    private val schemaLockRepository: SchemaLockRepository
+    private val schemaLockRepository: SchemaLockRepository,
 ) {
     private val hostName = InetAddress.getLocalHost().hostName
 
@@ -31,8 +31,9 @@ class SchemaLockService(
     }
 
     fun lockOrThrow() {
-        if (!lock())
+        if (!lock()) {
             throw IllegalStateException(LOCK_FAIL_MSG)
+        }
     }
 
     fun unlock(): Boolean {
@@ -48,8 +49,9 @@ class SchemaLockService(
     }
 
     fun unlockOrThrow() {
-        if (!unlock())
+        if (!unlock()) {
             throw IllegalStateException(UNLOCK_FAIL_MSG)
+        }
     }
 
     companion object {

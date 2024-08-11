@@ -12,25 +12,27 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
 @Component
 class LocaleConditionBuilder(
-    private val i18nProps: I18nProps
+    private val i18nProps: I18nProps,
 ) {
     fun newLocaleCondition(table: DbTable, item: Item, locale: String?): Condition? {
         val localeCol = DbColumn(table, LOCALE_COL_NAME, null, null)
-        return if (item.localized)  {
+        return if (item.localized) {
             if (locale == null) {
                 ComboCondition(
                     ComboCondition.Op.OR,
                     BinaryCondition.equalTo(localeCol, i18nProps.defaultLocale),
-                    UnaryCondition.isNull(localeCol)
+                    UnaryCondition.isNull(localeCol),
                 )
             } else if (locale != ALL_LOCALES) {
                 BinaryCondition.equalTo(localeCol, locale)
-            } else null
+            } else {
+                null
+            }
         } else {
             ComboCondition(
                 ComboCondition.Op.OR,
                 BinaryCondition.equalTo(localeCol, i18nProps.defaultLocale),
-                UnaryCondition.isNull(localeCol)
+                UnaryCondition.isNull(localeCol),
             )
         }
     }

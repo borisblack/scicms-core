@@ -15,7 +15,7 @@ import java.util.concurrent.Executor
 class DataLoaderBuilder(
     private val aclItemRecDao: ACLItemRecDao,
     @Qualifier("taskExecutor") private val executor: Executor,
-    private val dataProps: DataProps
+    private val dataProps: DataProps,
 ) {
     fun build(parentItem: Item, parentAttrName: String, item: Item): MappedBatchLoader<String, ItemRec> {
         val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
@@ -23,13 +23,14 @@ class DataLoaderBuilder(
         return MappedBatchLoader { keys ->
             logger.trace("Starting loading data for item [{}] by keys {}", item.name, keys)
 
-            val res = CompletableFuture.supplyAsync({
-                findAllByKeys(item, keyAttrName, keys).associateBy { rec ->
-                    rec[keyAttrName]?.let {
-                        if (it is String) it else it.toString()
-                    } ?: throw IllegalArgumentException("ID attribute is null.")
-                }
-            }, executor)
+            val res =
+                CompletableFuture.supplyAsync({
+                    findAllByKeys(item, keyAttrName, keys).associateBy { rec ->
+                        rec[keyAttrName]?.let {
+                            if (it is String) it else it.toString()
+                        } ?: throw IllegalArgumentException("ID attribute is null.")
+                    }
+                }, executor)
 
             logger.trace("Loading data for item [{}] by keys {} completed.", item.name, keys)
 
@@ -38,8 +39,9 @@ class DataLoaderBuilder(
     }
 
     private fun findAllByKeys(item: Item, keyAttrName: String, keys: Set<String>): List<ItemRec> {
-        if (keys.size <= dataProps.dataLoaderChunkSize)
+        if (keys.size <= dataProps.dataLoaderChunkSize) {
             return aclItemRecDao.findAllByKeysForRead(item, keyAttrName, keys)
+        }
 
         return keys.asSequence()
             .chunked(dataProps.dataLoaderChunkSize)

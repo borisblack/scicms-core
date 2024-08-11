@@ -5,5 +5,5 @@ class UserInfo(
     val username: String,
     val roles: Set<String>,
     val authType: AuthType,
-    val sessionData: Map<String, Any?>?
+    val sessionData: Map<String, Any?>?,
 )

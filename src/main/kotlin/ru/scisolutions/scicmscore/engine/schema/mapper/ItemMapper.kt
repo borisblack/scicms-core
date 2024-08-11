@@ -4,11 +4,11 @@ import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.AppProps
 import ru.scisolutions.scicmscore.engine.model.ItemSpec
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemItemRec
-import ru.scisolutions.scicmscore.extension.isUUID
 import ru.scisolutions.scicmscore.engine.persistence.entity.Permission
 import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.engine.schema.model.Item
 import ru.scisolutions.scicmscore.engine.schema.model.ItemMetadata
+import ru.scisolutions.scicmscore.extension.isUUID
 import ru.scisolutions.scicmscore.util.Json
 import java.util.LinkedHashSet
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
@@ -16,17 +16,18 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
 @Component
 class ItemMapper(
     private val appProps: AppProps,
-    private val datasourceService: DatasourceService
+    private val datasourceService: DatasourceService,
 ) {
     fun mapToEntity(source: Item): ItemEntity {
         val metadata = source.metadata
         val datasource = datasourceService.findByName(metadata.dataSource)
-        val target = ItemEntity(
-            name = metadata.name,
-            pluralName = metadata.pluralName,
-            datasourceId = datasource?.id,
-            datasource = datasource
-        )
+        val target =
+            ItemEntity(
+                name = metadata.name,
+                pluralName = metadata.pluralName,
+                datasourceId = datasource?.id,
+                datasource = datasource,
+            )
         copyToEntity(source, target)
 
         return target
@@ -35,8 +36,11 @@ class ItemMapper(
     fun copyToEntity(source: Item, target: ItemEntity) {
         val metadata = source.metadata
         val datasource =
-            if (metadata.dataSource.isUUID()) datasourceService.findById(metadata.dataSource)
-            else datasourceService.findByName(metadata.dataSource)
+            if (metadata.dataSource.isUUID()) {
+                datasourceService.findById(metadata.dataSource)
+            } else {
+                datasourceService.findByName(metadata.dataSource)
+            }
 
         target.name = metadata.name
         target.displayName = metadata.displayName.ifBlank { metadata.name }
@@ -68,8 +72,9 @@ class ItemMapper(
         target.spec = source.spec
 
         // Update the checksum only if it's a change from a file
-        if (source.checksum != null)
+        if (source.checksum != null) {
             target.checksum = source.checksum
+        }
 
         target.hash = source.hashCode().toString()
     }
@@ -77,7 +82,8 @@ class ItemMapper(
     fun mapToModel(source: ItemItemRec): Item = Item(
         coreVersion = appProps.coreVersion,
         includeTemplates = LinkedHashSet(requireNotNull(source.includeTemplates).toMutableList()),
-        metadata = ItemMetadata(
+        metadata =
+        ItemMetadata(
             name = requireNotNull(source.name),
             displayName = requireNotNull(source.displayName ?: source.name),
             pluralName = requireNotNull(source.pluralName),
@@ -102,9 +108,9 @@ class ItemMapper(
             implementation = source.implementation,
             revisionPolicy = source.revisionPolicy,
             lifecycle = source.lifecycle,
-            permission = source.permission
+            permission = source.permission,
         ),
         spec = source.spec?.let { Json.objectMapper.convertValue(it, ItemSpec::class.java) } ?: ItemSpec(),
-        checksum = null
+        checksum = null,
     )
 }

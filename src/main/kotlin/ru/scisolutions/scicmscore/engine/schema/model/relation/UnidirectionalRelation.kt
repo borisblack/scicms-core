@@ -10,5 +10,6 @@ interface UnidirectionalRelation : Relation {
     val targetItem: Item
 
     fun getTableName(): String = requireNotNull(item.tableName)
+
     fun getAttribute(): Attribute = item.spec.getAttribute(attrName)
 }

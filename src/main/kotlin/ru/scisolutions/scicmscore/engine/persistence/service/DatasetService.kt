@@ -12,19 +12,15 @@ import ru.scisolutions.scicmscore.engine.util.Acl.Mask
 @Transactional
 class DatasetService(
     private val permissionService: PermissionService,
-    private val datasetRepository: DatasetRepository
+    private val datasetRepository: DatasetRepository,
 ) {
-    fun getById(id: String): Dataset =
-        datasetRepository.findById(id).orElseThrow { IllegalArgumentException("Dataset [$id] not found") }
+    fun getById(id: String): Dataset = datasetRepository.findById(id).orElseThrow { IllegalArgumentException("Dataset [$id] not found") }
 
     @Transactional(readOnly = true)
-    fun findByNameForRead(name: String): Dataset? =
-        findByNameFor(name, Mask.READ)
+    fun findByNameForRead(name: String): Dataset? = findByNameFor(name, Mask.READ)
 
-    private fun findByNameFor(name: String, accessMask: Mask): Dataset? =
-        datasetRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
+    private fun findByNameFor(name: String, accessMask: Mask): Dataset? = datasetRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
-    fun existsByDatasourceId(id: String): Boolean =
-        datasetRepository.existsByDatasourceId(id)
+    fun existsByDatasourceId(id: String): Boolean = datasetRepository.existsByDatasourceId(id)
 }

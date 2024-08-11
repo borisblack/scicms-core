@@ -12,5 +12,5 @@ open class Pagination(
     val total: Int?,
     val pageCount: Int?,
     var timeMs: Long? = null,
-    var cacheHit: Boolean? = null
+    var cacheHit: Boolean? = null,
 )

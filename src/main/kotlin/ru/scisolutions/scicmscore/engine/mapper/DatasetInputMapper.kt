@@ -16,18 +16,17 @@ class DatasetInputMapper() {
             filters = datasetFiltersMap?.let { datasetFiltersInputMapper.map(it, opPrefix) },
             fields = fields?.map { mapDatasetFieldInput(it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
-            sort = sort
+            sort = sort,
         )
     }
 
-    private fun mapDatasetFieldInput(field: Map<String, Any>): DatasetFieldInput =
-        DatasetFieldInput(
-            name = field[FIELD_NAME_ARG_NAME] as String,
-            custom = (field[FIELD_CUSTOM_ARG_NAME] as String).toBoolean(),
-            source = field[FIELD_SOURCE_ARG_NAME] as String?,
-            aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) },
-            formula = field[FIELD_FORMULA_ARG_NAME] as String?
-        )
+    private fun mapDatasetFieldInput(field: Map<String, Any>): DatasetFieldInput = DatasetFieldInput(
+        name = field[FIELD_NAME_ARG_NAME] as String,
+        custom = (field[FIELD_CUSTOM_ARG_NAME] as String).toBoolean(),
+        source = field[FIELD_SOURCE_ARG_NAME] as String?,
+        aggregate = (field[AGGREGATE_ARG_NAME] as String?)?.let { AggregateType.valueOf(it) },
+        formula = field[FIELD_FORMULA_ARG_NAME] as String?,
+    )
 
     companion object {
         const val FILTERS_ARG_NAME = "filters"

@@ -15,9 +15,10 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.ItemTemplate as Item
 class ItemTemplateMapper(private val appProps: AppProps) {
     fun map(source: ItemTemplate): ItemTemplateEntity {
         val metadata = source.metadata
-        val target = ItemTemplateEntity(
-            name = metadata.name
-        )
+        val target =
+            ItemTemplateEntity(
+                name = metadata.name,
+            )
         copy(source, target)
 
         return target
@@ -25,7 +26,7 @@ class ItemTemplateMapper(private val appProps: AppProps) {
 
     fun copy(source: ItemTemplate, target: ItemTemplateEntity) {
         val metadata = source.metadata
-        
+
         target.name = metadata.name
         target.core = metadata.core
         target.lifecycleId = Lifecycle.DEFAULT_LIFECYCLE_ID
@@ -33,19 +34,21 @@ class ItemTemplateMapper(private val appProps: AppProps) {
         target.spec = source.spec
 
         // Update the checksum only if it's a change from a file
-        if (source.checksum != null)
+        if (source.checksum != null) {
             target.checksum = source.checksum
+        }
 
         target.hash = source.hashCode().toString()
     }
 
     fun mapToModel(source: ItemTemplateItemRec): ItemTemplate = ItemTemplate(
         coreVersion = appProps.coreVersion,
-        metadata = ItemTemplateMetadata(
+        metadata =
+        ItemTemplateMetadata(
             name = requireNotNull(source.name),
-            core = source.core ?: false
+            core = source.core ?: false,
         ),
         spec = source.spec?.let { Json.objectMapper.convertValue(it, ItemSpec::class.java) } ?: ItemSpec(),
-        checksum = null
+        checksum = null,
     )
 }

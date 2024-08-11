@@ -10,9 +10,8 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.AllowedPermissio
 @Repository
 @Transactional
 class AllowedPermissionService(
-    private val allowedPermissionRepository: AllowedPermissionRepository
+    private val allowedPermissionRepository: AllowedPermissionRepository,
 ) {
     @Transactional(readOnly = true)
-    fun findAllByItemName(itemName: String): List<AllowedPermission> =
-        allowedPermissionRepository.findAllByItemName(itemName)
+    fun findAllByItemName(itemName: String): List<AllowedPermission> = allowedPermissionRepository.findAllByItemName(itemName)
 }

@@ -18,27 +18,25 @@ import java.time.Duration
 @EnableCaching
 class CacheConfig {
     @Bean
-    fun cacheConfiguration(): RedisCacheConfiguration =
-        RedisCacheConfiguration.defaultCacheConfig()
-            .entryTtl(Duration.ofMinutes(60))
-            .disableCachingNullValues()
-            .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer()))
+    fun cacheConfiguration(): RedisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+        .entryTtl(Duration.ofMinutes(60))
+        .disableCachingNullValues()
+        .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer()))
 
     @Bean
-    fun redisCacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer =
-        RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
-            builder
-                .withCacheConfiguration(
-                    "itemRecCache",
-                    RedisCacheConfiguration.defaultCacheConfig()
-                        .entryTtl(Duration.ofMinutes(10))
-                )
-                .withCacheConfiguration(
-                    "methodCache",
-                    RedisCacheConfiguration.defaultCacheConfig()
-                        .entryTtl(Duration.ofMinutes(5))
-                )
-        }
+    fun redisCacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer = RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
+        builder
+            .withCacheConfiguration(
+                "itemRecCache",
+                RedisCacheConfiguration.defaultCacheConfig()
+                    .entryTtl(Duration.ofMinutes(10)),
+            )
+            .withCacheConfiguration(
+                "methodCache",
+                RedisCacheConfiguration.defaultCacheConfig()
+                    .entryTtl(Duration.ofMinutes(5)),
+            )
+    }
 
     @Bean
     fun redissonClient(): RedissonClient {

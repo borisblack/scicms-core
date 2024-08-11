@@ -9,6 +9,5 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.AccessRepository
 @Repository
 @Transactional
 class AccessService(private val accessRepository: AccessRepository) {
-    fun deleteAllByIdentityId(identityId: String): Int =
-        accessRepository.deleteAllByTargetId(identityId)
+    fun deleteAllByIdentityId(identityId: String): Int = accessRepository.deleteAllByTargetId(identityId)
 }

@@ -15,14 +15,16 @@ data class Column(
     val formula: String? = null,
     val alias: String? = null,
     val format: String? = null,
-    val colWidth: Int? = null
+    val colWidth: Int? = null,
 ) {
     override fun equals(other: Any?): Boolean {
-        if (this === other)
+        if (this === other) {
             return true
+        }
 
-        if (javaClass != other?.javaClass)
+        if (javaClass != other?.javaClass) {
             return false
+        }
 
         other as Column
         return type != other.type &&
@@ -36,17 +38,16 @@ data class Column(
             colWidth == other.colWidth
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(
-            type,
-            custom,
-            source,
-            formula,
-            hidden,
-            aggregate?.name,
-            alias,
-            colWidth
-        )
+    override fun hashCode(): Int = Objects.hash(
+        type,
+        custom,
+        source,
+        formula,
+        hidden,
+        aggregate?.name,
+        alias,
+        colWidth,
+    )
 
     @get:JsonIgnore
     val typeRequired: FieldType

@@ -15,16 +15,17 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 @Component
 class FindAllDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
-    private val engine: Engine
+    private val engine: Engine,
 ) : DataFetcher<DataFetcherResult<ResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<ResponseCollection> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseCollectionFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
         val responseCollectionInput = findAllInputMapper.mapToResponseCollectionInput(itemName, dfe.arguments)
-        val selectPaginationFields = dfe.selectionSet.getFields("meta/pagination/*").asSequence()
-            .map { it.name }
-            .toSet()
+        val selectPaginationFields =
+            dfe.selectionSet.getFields("meta/pagination/*").asSequence()
+                .map { it.name }
+                .toSet()
 
         val result = engine.findAll(itemName, responseCollectionInput, selectAttrNames, selectPaginationFields)
 

@@ -12,15 +12,15 @@ class ConfigController(
     private val securityProps: SecurityProps,
 ) {
     @GetMapping("/security")
-    fun getSecurityConfig(): SecurityConfigResponse =
-        SecurityConfigResponse(
-            oauth2Providers = securityProps.oauth2Providers.map {
-                SecurityConfigResponse.Oauth2ProviderConfigResponse(
-                    id = it.id,
-                    name = it.name,
-                    authUrl = it.authUrl,
-                    clientId = it.clientId
-                )
-            }
-        )
+    fun getSecurityConfig(): SecurityConfigResponse = SecurityConfigResponse(
+        oauth2Providers =
+        securityProps.oauth2Providers.map {
+            SecurityConfigResponse.Oauth2ProviderConfigResponse(
+                id = it.id,
+                name = it.name,
+                authUrl = it.authUrl,
+                clientId = it.clientId,
+            )
+        },
+    )
 }

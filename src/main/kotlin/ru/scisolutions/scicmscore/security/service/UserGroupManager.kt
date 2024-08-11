@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 interface UserGroupManager {
-        /**
+    /**
      * Creates the user.
      */
     fun createUser(username: String, rawPassword: String, authorities: Set<String>)

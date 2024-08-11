@@ -12,10 +12,10 @@ import ru.scisolutions.scicmscore.engine.handler.MediaHandler
 import ru.scisolutions.scicmscore.engine.mapper.MediaMapper
 import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
-import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import ru.scisolutions.scicmscore.engine.persistence.entity.Media
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 import ru.scisolutions.scicmscore.engine.persistence.service.MediaService
+import ru.scisolutions.scicmscore.engine.service.PermissionManager
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -27,20 +27,22 @@ import com.google.common.io.Files as GFiles
     prefix = "scicms-core.media",
     name = ["provider"],
     havingValue = "local",
-    matchIfMissing = false
+    matchIfMissing = false,
 )
 class LocalMediaHandler(
     private val mediaProps: MediaProps,
     private val mediaService: MediaService,
     private val itemService: ItemService,
-    private val permissionManager: PermissionManager
+    private val permissionManager: PermissionManager,
 ) : MediaHandler {
     init {
-        if (mediaProps.provider != MediaProps.PROVIDER_LOCAL)
+        if (mediaProps.provider != MediaProps.PROVIDER_LOCAL) {
             logger.warn("Local provider is not configured")
+        }
 
-        if (mediaProps.providerOptions.local.basePath.isNullOrBlank())
+        if (mediaProps.providerOptions.local.basePath.isNullOrBlank()) {
             logger.warn("Local provider storage path is not configured")
+        }
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
@@ -50,30 +52,33 @@ class LocalMediaHandler(
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
         val fullPath = buildFullPath(filePath)
         val fileToSave = File(fullPath)
-        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.local.createDirectories)
+        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.local.createDirectories) {
             fileToSave.parentFile.mkdirs()
+        }
 
         file.transferTo(fileToSave) // try to save
 
         val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
-        val media = Media(
-            filename = filename,
-            fileSize = file.size,
-            mimetype = mimetype,
-            path = filePath,
-            checksum = md5.toString()
-        )
+        val media =
+            Media(
+                filename = filename,
+                fileSize = file.size,
+                mimetype = mimetype,
+                path = filePath,
+                checksum = md5.toString(),
+            )
 
         return mediaMapper.map(
-            mediaService.save(media)
+            mediaService.save(media),
         )
     }
 
     private fun buildFullPath(filePath: String): String {
-        if (mediaProps.providerOptions.local.basePath.isNullOrBlank())
+        if (mediaProps.providerOptions.local.basePath.isNullOrBlank()) {
             throw IllegalStateException("Local provider storage base path is not configured")
+        }
 
-        return "${mediaProps.providerOptions.local.basePath}/${filePath}"
+        return "${mediaProps.providerOptions.local.basePath}/$filePath"
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
@@ -87,36 +92,38 @@ class LocalMediaHandler(
         val filePath = "${UUID.randomUUID()}.${filename.substringAfterLast(".")}"
         val fullPath = buildFullPath(filePath)
         val fileToSave = File(fullPath)
-        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.local.createDirectories)
+        if (!fileToSave.parentFile.exists() && mediaProps.providerOptions.local.createDirectories) {
             fileToSave.parentFile.mkdirs()
+        }
 
         file.write(fullPath) // try to save
 
         val md5 = GFiles.asByteSource(fileToSave).hash(Hashing.md5())
-        val media = Media(
-            filename = filename,
-            label = uploadInput.label,
-            description = uploadInput.description,
-            fileSize = file.size,
-            mimetype = mimetype,
-            path = filePath,
-            checksum = md5.toString()
-        ).apply {
-            permissionId = permissionManager.checkPermissionId(itemService.getMedia(), uploadInput.permissionId)
-        }
+        val media =
+            Media(
+                filename = filename,
+                label = uploadInput.label,
+                description = uploadInput.description,
+                fileSize = file.size,
+                mimetype = mimetype,
+                path = filePath,
+                checksum = md5.toString(),
+            ).apply {
+                permissionId = permissionManager.checkPermissionId(itemService.getMedia(), uploadInput.permissionId)
+            }
 
         return mediaMapper.map(
-            mediaService.save(media)
+            mediaService.save(media),
         )
     }
 
     @Secured("ROLE_UPLOAD", "ROLE_ADMIN")
-    override fun uploadDataMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> =
-        uploadInputList.map { uploadData(it) }
+    override fun uploadDataMultiple(uploadInputList: List<UploadInput>): List<MediaInfo> = uploadInputList.map { uploadData(it) }
 
     override fun downloadById(id: String): ByteArrayResource {
-        val media = mediaService.findByIdForRead(id)
-            ?: throw IllegalArgumentException("Media with ID [$id] not found")
+        val media =
+            mediaService.findByIdForRead(id)
+                ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
         val fullPath = buildFullPath(media.path)
         val data = Files.readAllBytes(Paths.get(fullPath))
@@ -125,8 +132,9 @@ class LocalMediaHandler(
     }
 
     override fun deleteById(id: String) {
-        val media = mediaService.findByIdForDelete(id)
-            ?: throw IllegalArgumentException("Media with ID [$id] not found")
+        val media =
+            mediaService.findByIdForDelete(id)
+                ?: throw IllegalArgumentException("Media with ID [$id] not found")
 
         mediaService.delete(media)
 

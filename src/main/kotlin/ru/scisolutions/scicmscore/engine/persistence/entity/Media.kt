@@ -9,20 +9,14 @@ import jakarta.persistence.Table
 class Media(
     @Column(nullable = false)
     var filename: String,
-
     var label: String? = null,
-
     var description: String? = null,
-
     @Column(name = "file_size", nullable = false)
     var fileSize: Long,
-
     @Column(nullable = false)
     var mimetype: String,
-
     @Column(nullable = false)
     var path: String,
-
     @Column(nullable = false)
-    var checksum: String
+    var checksum: String,
 ) : AbstractEntity()

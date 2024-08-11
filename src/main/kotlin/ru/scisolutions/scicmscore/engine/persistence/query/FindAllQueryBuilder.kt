@@ -1,25 +1,30 @@
 package ru.scisolutions.scicmscore.engine.persistence.query
 
-import com.healthmarketscience.sqlbuilder.*
+import com.healthmarketscience.sqlbuilder.BinaryCondition
+import com.healthmarketscience.sqlbuilder.ComboCondition
+import com.healthmarketscience.sqlbuilder.Condition
+import com.healthmarketscience.sqlbuilder.InCondition
 import com.healthmarketscience.sqlbuilder.OrderObject.Dir
+import com.healthmarketscience.sqlbuilder.SelectQuery
+import com.healthmarketscience.sqlbuilder.UnaryCondition
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import org.springframework.stereotype.Component
-import ru.scisolutions.scicmscore.engine.persistence.paginator.ItemPaginator
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.input.FindAllInput
 import ru.scisolutions.scicmscore.engine.model.input.FindAllRelationInput
 import ru.scisolutions.scicmscore.engine.model.input.ItemFiltersInput
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
-import ru.scisolutions.scicmscore.engine.service.RelationManager
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.paginator.ItemPaginator
 import ru.scisolutions.scicmscore.engine.persistence.service.PermissionService
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyBidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.ManyToManyUnidirectionalRelation
 import ru.scisolutions.scicmscore.engine.schema.model.relation.OneToManyInversedBidirectionalRelation
+import ru.scisolutions.scicmscore.engine.service.RelationManager
 
 @Component
 class FindAllQueryBuilder(
@@ -30,11 +35,11 @@ class FindAllQueryBuilder(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val itemPaginator: ItemPaginator,
     private val relationManager: RelationManager,
-    private val orderingsParser: ItemOrderingsParser
+    private val orderingsParser: ItemOrderingsParser,
 ) {
     class FindAllQuery(
         val sql: String,
-        val pagination: Pagination
+        val pagination: Pagination,
     )
 
     fun buildFindAllQuery(
@@ -42,7 +47,7 @@ class FindAllQueryBuilder(
         input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>,
-        paramSource: AttributeSqlParameterSource
+        paramSource: AttributeSqlParameterSource,
     ): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -51,18 +56,21 @@ class FindAllQueryBuilder(
 
         // Version
         val versionCondition = versionConditionBuilder.newVersionCondition(table, item, input.majorRev)
-        if (versionCondition != null)
+        if (versionCondition != null) {
             query.addCondition(versionCondition)
+        }
 
         // Locale
         val localeCondition = localeConditionBuilder.newLocaleCondition(table, item, input.locale)
-        if (localeCondition != null)
+        if (localeCondition != null) {
             query.addCondition(localeCondition)
+        }
 
         // State
         val stateCondition = stateConditionBuilder.newStateCondition(table, item, input.state)
-        if (stateCondition != null)
+        if (stateCondition != null) {
             query.addCondition(stateCondition)
+        }
 
         val pagination = itemPaginator.paginate(item, input.pagination, selectPaginationFields, query, paramSource)
 
@@ -75,7 +83,7 @@ class FindAllQueryBuilder(
 
         return FindAllQuery(
             sql = query.validate().toString(),
-            pagination = pagination
+            pagination = pagination,
         )
     }
 
@@ -87,22 +95,29 @@ class FindAllQueryBuilder(
         query.addOrdering(defaultSortColumn, if (item.defaultSortAttribute?.lowercase() == "desc") Dir.DESCENDING else Dir.ASCENDING)
     }
 
-    private fun buildFindAllInitialQuery(item: Item, filters: ItemFiltersInput?, selectAttrNames: Set<String>, schema: DbSchema, paramSource: AttributeSqlParameterSource): SelectQuery {
+    private fun buildFindAllInitialQuery(
+        item: Item,
+        filters: ItemFiltersInput?,
+        selectAttrNames: Set<String>,
+        schema: DbSchema,
+        paramSource: AttributeSqlParameterSource,
+    ): SelectQuery {
         val table = schema.addTable(item.qs)
 
-        val columns = selectAttrNames
-            .map {
-                val attribute = item.spec.getAttribute(it)
-                DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
-            }
-            .toTypedArray()
+        val columns =
+            selectAttrNames
+                .map {
+                    val attribute = item.spec.getAttribute(it)
+                    DbColumn(table, attribute.columnName ?: it.lowercase(), null, null)
+                }
+                .toTypedArray()
 
         val query = SelectQuery().addColumns(*columns)
 
         // Filters
         if (filters != null) {
             query.addCondition(
-                itemFilterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource)
+                itemFilterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource),
             )
         }
 
@@ -121,11 +136,10 @@ class FindAllQueryBuilder(
             ComboCondition(
                 ComboCondition.Op.OR,
                 UnaryCondition.isNull(permissionIdCol),
-                InCondition(permissionIdCol, *permissionIds.toTypedArray())
+                InCondition(permissionIdCol, *permissionIds.toTypedArray()),
             )
         }
     }
-
 
     fun buildFindAllRelatedQuery(
         parentItem: Item,
@@ -135,7 +149,7 @@ class FindAllQueryBuilder(
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>,
-        paramSource: AttributeSqlParameterSource
+        paramSource: AttributeSqlParameterSource,
     ): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -159,12 +173,15 @@ class FindAllQueryBuilder(
                     is ManyToManyUnidirectionalRelation -> {
                         val keyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
                         val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
-                        val parentKey = parentItemRec.getString(parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute)
+                        val parentKey =
+                            parentItemRec.getString(
+                                parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute,
+                            )
                         query.addJoin(
                             SelectQuery.JoinType.LEFT_OUTER,
                             table,
                             intermediateTable,
-                            BinaryCondition.equalTo(keyCol, targetIntermediateCol)
+                            BinaryCondition.equalTo(keyCol, targetIntermediateCol),
                         )
                         query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentKey))
                     }
@@ -172,12 +189,15 @@ class FindAllQueryBuilder(
                         if (parentRelation.isOwning) {
                             val keyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
                             val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
-                            val parentKey = parentItemRec.getString(parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute)
+                            val parentKey =
+                                parentItemRec.getString(
+                                    parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute,
+                                )
                             query.addJoin(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,
                                 intermediateTable,
-                                BinaryCondition.equalTo(keyCol, targetIntermediateCol)
+                                BinaryCondition.equalTo(keyCol, targetIntermediateCol),
                             )
                             query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentKey))
                         } else {
@@ -189,7 +209,7 @@ class FindAllQueryBuilder(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,
                                 intermediateTable,
-                                BinaryCondition.equalTo(keyCol, sourceIntermediateCol)
+                                BinaryCondition.equalTo(keyCol, sourceIntermediateCol),
                             )
                             query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentKey))
                         }
@@ -210,7 +230,7 @@ class FindAllQueryBuilder(
 
         return FindAllQuery(
             sql = query.validate().toString(),
-            pagination = pagination
+            pagination = pagination,
         )
     }
 }

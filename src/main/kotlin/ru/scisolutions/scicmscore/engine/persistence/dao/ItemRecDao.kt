@@ -24,13 +24,13 @@ class ItemRecDao(
     private val auditManager: AuditManager,
     private val dsManager: DatasourceManager,
     private val itemCacheManager: ItemCacheManager,
-    private val idGenerator: DefaultIdGenerator
+    private val idGenerator: DefaultIdGenerator,
 ) : BaseItemRecDao(dsManager, itemCacheManager) {
     override val logger: Logger = LoggerFactory.getLogger(ItemRecDao::class.java)
 
     fun findById(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? {
         val paramSource = AttributeSqlParameterSource()
-        val query =  itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
+        val query = itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames)
         return findOne(item, query.toString(), paramSource)
     }
 
@@ -43,8 +43,7 @@ class ItemRecDao(
 
     fun existAllByIds(item: Item, ids: Set<String>): Boolean = countByIds(item, ids) == ids.size
 
-    private fun countByIds(item: Item, ids: Set<String>): Int =
-        countByKeys(item, item.idAttribute, ids)
+    private fun countByIds(item: Item, ids: Set<String>): Int = countByKeys(item, item.idAttribute, ids)
 
     private fun countByKeys(item: Item, keyAttrName: String, keys: Set<String>): Int {
         val paramSource = AttributeSqlParameterSource()
@@ -52,11 +51,10 @@ class ItemRecDao(
         return count(item, query.toString(), paramSource)
     }
 
-    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> =
-        itemCacheManager.get(item, sql, paramSource) {
-            traceSqlAndParameters(sql, paramSource)
-            dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
-        }
+    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> = itemCacheManager.get(item, sql, paramSource) {
+        traceSqlAndParameters(sql, paramSource)
+        dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+    }
 
     fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
         val paramSource = AttributeSqlParameterSource()
@@ -82,8 +80,9 @@ class ItemRecDao(
 
     fun insertWithDefaults(item: Item, itemRec: ItemRec): Int {
         val id = idGenerator.generateId()
-        if (itemRec[item.idAttribute] == null)
+        if (itemRec[item.idAttribute] == null) {
             itemRec[item.idAttribute] = id
+        }
         itemRec.id = id
         itemRec.configId = id
 
@@ -94,8 +93,7 @@ class ItemRecDao(
         return insert(item, itemRec)
     }
 
-    fun updateById(item: Item, id: String, updateAttributes: Map<String, Any?>): Int =
-        updateByAttribute(item, item.idAttribute, id, updateAttributes)
+    fun updateById(item: Item, id: String, updateAttributes: Map<String, Any?>): Int = updateByAttribute(item, item.idAttribute, id, updateAttributes)
 
     fun updateByAttribute(item: Item, whereAttrName: String, whereAttrValue: Any?, updateAttributes: Map<String, Any?>): Int =
         updateByAttributes(item, mapOf(whereAttrName to whereAttrValue), updateAttributes)
@@ -125,13 +123,15 @@ class ItemRecDao(
     }
 
     fun deleteVersionedById(item: Item, id: String): Int {
-        if (!item.versioned)
+        if (!item.versioned) {
             throw IllegalArgumentException("Item [${item.name}] is not versioned")
+        }
 
         val itemRec = findByIdOrThrow(item, id)
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             lockByIdOrThrow(item, id)
+        }
 
         val rows = deleteById(item, id)
         if (itemRec.current == true) {
@@ -139,15 +139,17 @@ class ItemRecDao(
             assignNewCurrent(item, itemRec)
         }
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             unlockById(item, id)
+        }
 
         return rows
     }
 
     fun deleteVersionedByAttribute(item: Item, attrName: String, attrValue: Any): Int {
-        if (!item.versioned)
+        if (!item.versioned) {
             throw IllegalArgumentException("Item [${item.name}] is not versioned")
+        }
 
         val itemsToDelete = findAllByAttribute(item, attrName, attrValue)
 
@@ -170,19 +172,22 @@ class ItemRecDao(
         }
 
         // Unlock
-        if (!item.notLockable)
+        if (!item.notLockable) {
             unlockByAttribute(item, attrName, attrValue)
+        }
 
         return itemsToDelete.size
     }
 
     private fun assignNewCurrent(item: Item, deletedItemRec: ItemRec) {
-        if (!item.versioned)
+        if (!item.versioned) {
             throw IllegalArgumentException("Item [${item.name}] is not versioned")
+        }
 
         val deletedId = deletedItemRec.getString(item.idAttribute)
-        if (deletedItemRec.current != true)
+        if (deletedItemRec.current != true) {
             throw IllegalArgumentException("Item [${item.name}] with ID [$deletedId] is not current")
+        }
 
         val group = findAllByAttribute(item, ItemRec.CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
         if (!item.notLockable) {
@@ -192,9 +197,10 @@ class ItemRecDao(
                 throw IllegalStateException("Failed to lock items group")
             }
         }
-        val lastItemRec = group
-            .filter { it.getString(item.idAttribute) != deletedId && it.locale == deletedItemRec.locale }
-            .maxByOrNull { it.generation as Int }
+        val lastItemRec =
+            group
+                .filter { it.getString(item.idAttribute) != deletedId && it.locale == deletedItemRec.locale }
+                .maxByOrNull { it.generation as Int }
 
         if (lastItemRec != null) {
             val lastId = lastItemRec.getString(item.idAttribute)
@@ -206,13 +212,15 @@ class ItemRecDao(
             logger.debug("There are no another items [${item.name}] within group.")
         }
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             unlockByAttribute(item, ItemRec.CONFIG_ID_ATTR_NAME, deletedItemRec.configId as String)
+        }
     }
 
     fun lockByIdOrThrow(item: Item, id: String) {
-        if (!lockById(item, id))
+        if (!lockById(item, id)) {
             throw IllegalStateException(LOCK_FAIL_MSG.format(item.name, id))
+        }
     }
 
     fun lockById(item: Item, id: String): Boolean {
@@ -227,8 +235,9 @@ class ItemRecDao(
     }
 
     fun lockByAttribute(item: Item, attrName: String, attrValue: Any): Int {
-        if (item.notLockable)
+        if (item.notLockable) {
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
+        }
 
         val user = userService.getCurrent()
         val paramSource = AttributeSqlParameterSource()
@@ -242,13 +251,15 @@ class ItemRecDao(
     }
 
     fun unlockByIdOrThrow(item: Item, id: String) {
-        if (!unlockById(item, id))
+        if (!unlockById(item, id)) {
             throw IllegalStateException(UNLOCK_FAIL_MSG.format(item.name, id))
+        }
     }
 
     fun unlockById(item: Item, id: String): Boolean {
-        if (item.notLockable)
+        if (item.notLockable) {
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
+        }
 
         val rows = unlockByAttribute(item, item.idAttribute, id)
         return if (rows == 1) {
@@ -261,8 +272,9 @@ class ItemRecDao(
     }
 
     fun unlockByAttribute(item: Item, attrName: String, attrValue: Any): Int {
-        if (item.notLockable)
+        if (item.notLockable) {
             throw IllegalArgumentException("Item [${item.name}] is not lockable")
+        }
 
         val user = userService.getCurrent()
         val paramSource = AttributeSqlParameterSource()

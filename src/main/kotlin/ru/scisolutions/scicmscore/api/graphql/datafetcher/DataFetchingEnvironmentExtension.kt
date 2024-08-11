@@ -25,12 +25,11 @@ fun DataFetchingEnvironment.unwrapParentType(): String = unwrapGraphQLType(this.
 
 fun DataFetchingEnvironment.unwrapFieldType(): String = unwrapGraphQLType(this.fieldType)
 
-private fun unwrapGraphQLType(graphQLType: GraphQLType): String =
-    when (graphQLType) {
-        is GraphQLList -> unwrapGraphQLType(graphQLType.wrappedType)
-        is GraphQLNonNull -> unwrapGraphQLType(graphQLType.wrappedType)
-        else -> (graphQLType as GraphQLNamedType).name
-    }
+private fun unwrapGraphQLType(graphQLType: GraphQLType): String = when (graphQLType) {
+    is GraphQLList -> unwrapGraphQLType(graphQLType.wrappedType)
+    is GraphQLNonNull -> unwrapGraphQLType(graphQLType.wrappedType)
+    else -> (graphQLType as GraphQLNamedType).name
+}
 
 fun DataFetchingEnvironment.selectDataFields() = this.selectionSet.getFields("data/*").asSequence()
     .map { it.name }

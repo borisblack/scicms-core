@@ -11,36 +11,37 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.RevisionsConverte
 @Table(name = "core_revision_policies")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
 )
 class RevisionPolicy(
     @Column(nullable = false)
     var name: String,
-
     @Column(name = "display_name")
     var displayName: String?,
-
     @Column(nullable = false)
     @Convert(converter = RevisionsConverter::class)
     var revisions: List<String>,
 ) : AbstractEntity() {
     fun firstRevision(): String {
-        if (revisions.isEmpty())
+        if (revisions.isEmpty()) {
             throw IllegalStateException("Revision list is empty")
+        }
 
         return revisions[0]
     }
 
     fun nextRevision(currentRevision: String): String {
-        if (revisions.isEmpty())
+        if (revisions.isEmpty()) {
             throw IllegalStateException("Revision list is empty")
+        }
 
         for (i in revisions.indices) {
             if (revisions[i] == currentRevision) {
-                if (i < revisions.size - 1)
+                if (i < revisions.size - 1) {
                     return revisions[i + 1]
-                else
+                } else {
                     throw IllegalStateException("Revision [$currentRevision] is last in revision policy [$name]")
+                }
             }
         }
 

@@ -12,27 +12,28 @@ import ru.scisolutions.scicmscore.engine.model.UserInfo
 import ru.scisolutions.scicmscore.engine.model.response.SessionDataResponse
 import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
 import ru.scisolutions.scicmscore.engine.persistence.service.UserService
+import ru.scisolutions.scicmscore.engine.util.Acl
 import ru.scisolutions.scicmscore.security.JwtTokenService
 import ru.scisolutions.scicmscore.security.UserAuthenticationToken
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
 import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
-import ru.scisolutions.scicmscore.engine.util.Acl
 
 @Service
 class UserHandler(
     private val securityProps: SecurityProps,
     private val userGroupManager: UserGroupManager,
     private val jwtTokenService: JwtTokenService,
-    private val userService: UserService
+    private val userService: UserService,
 ) {
     fun register(registrationRequest: RegistrationRequest): TokenResponse {
-        if (securityProps.registrationDisabled)
+        if (securityProps.registrationDisabled) {
             throw AccessDeniedException("Users registration is disabled.")
+        }
 
         userGroupManager.createUserInGroups(
             username = registrationRequest.username,
             rawPassword = registrationRequest.password,
-            groupNames = setOf(Acl.GROUP_USERS)
+            groupNames = setOf(Acl.GROUP_USERS),
         )
 
         val userDetails = userGroupManager.loadUserByUsername(registrationRequest.username)
@@ -42,13 +43,14 @@ class UserHandler(
         return TokenResponse(
             jwt = jwtTokenService.generateJwtToken(userDetails.username, authorities, AuthType.LOCAL),
             expirationIntervalMillis = securityProps.jwtToken.expirationIntervalMillis,
-            user = UserInfo(
+            user =
+            UserInfo(
                 id = user.id,
                 username = userDetails.username,
                 roles = authorities,
                 authType = AuthType.LOCAL,
-                sessionData = user.sessionData
-            )
+                sessionData = user.sessionData,
+            ),
         )
     }
 
@@ -65,11 +67,13 @@ class UserHandler(
     }
 
     private fun validatePassword(oldPassword: String, newPassword: String) {
-        if (newPassword == oldPassword)
+        if (newPassword == oldPassword) {
             throw IllegalArgumentException("The new and old passwords must not be the same.")
+        }
 
-        if (!securityProps.passwordPattern.matches(newPassword))
+        if (!securityProps.passwordPattern.matches(newPassword)) {
             throw IllegalArgumentException("Password must match te pattern: ${securityProps.passwordPattern}.")
+        }
     }
 
     fun me(): UserInfo? {
@@ -84,7 +88,7 @@ class UserHandler(
                 username = authentication.name,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
                 sessionData = user.sessionData,
-                authType = authentication.authType
+                authType = authentication.authType,
             )
         }
     }

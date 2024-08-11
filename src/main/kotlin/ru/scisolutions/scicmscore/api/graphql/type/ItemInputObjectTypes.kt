@@ -15,30 +15,31 @@ import ru.scisolutions.scicmscore.extension.upperFirst
 @Component
 class ItemInputObjectTypes(
     private val includeAttributePolicy: IncludeAttributePolicy,
-    private val attributeTypes: AttributeTypes
+    private val attributeTypes: AttributeTypes,
 ) {
     fun filtersInput(item: Item): InputObjectTypeDefinition {
         val inputName = "${item.name.upperFirst()}FiltersInput"
-        val builder = InputObjectTypeDefinition.newInputObjectDefinition()
-            .name(inputName)
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("and")
-                    .type(ListType(TypeName(inputName)))
-                    .build()
-            )
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("or")
-                    .type(ListType(TypeName(inputName)))
-                    .build()
-            )
-            .inputValueDefinition(
-                InputValueDefinition.newInputValueDefinition()
-                    .name("not")
-                    .type(TypeName(inputName))
-                    .build()
-            )
+        val builder =
+            InputObjectTypeDefinition.newInputObjectDefinition()
+                .name(inputName)
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("and")
+                        .type(ListType(TypeName(inputName)))
+                        .build(),
+                )
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("or")
+                        .type(ListType(TypeName(inputName)))
+                        .build(),
+                )
+                .inputValueDefinition(
+                    InputValueDefinition.newInputValueDefinition()
+                        .name("not")
+                        .type(TypeName(inputName))
+                        .build(),
+                )
 
         item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> includeAttributePolicy.includeInFiltersInputObjectType(item, attrName, attribute) }
@@ -47,7 +48,7 @@ class ItemInputObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
                         .type(attributeTypes.filterInputType(item, attrName, attribute))
-                        .build()
+                        .build(),
                 )
             }
 
@@ -55,8 +56,9 @@ class ItemInputObjectTypes(
     }
 
     fun itemInput(item: Item): InputObjectTypeDefinition {
-        val builder = InputObjectTypeDefinition.newInputObjectDefinition()
-            .name("${item.name.upperFirst()}Input")
+        val builder =
+            InputObjectTypeDefinition.newInputObjectDefinition()
+                .name("${item.name.upperFirst()}Input")
 
         item.spec.attributes.asSequence()
             .filter { (attrName, attribute) -> includeAttributePolicy.includeInInputObjectType(item, attrName, attribute) }
@@ -65,34 +67,34 @@ class ItemInputObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
                         .type(attributeTypes.inputType(item, attrName, attribute))
-                        .build()
-
+                        .build(),
                 )
             }
 
         return builder.build()
     }
 
-    fun enumTypes(item: Item): List<EnumTypeDefinition> =
-        item.spec.attributes
-            .filter { (_, attribute) -> attribute.type == FieldType.enum }
-            .map { (attrName, attribute) ->
-                enumType(item, attrName, attribute)
-            }
+    fun enumTypes(item: Item): List<EnumTypeDefinition> = item.spec.attributes
+        .filter { (_, attribute) -> attribute.type == FieldType.enum }
+        .map { (attrName, attribute) ->
+            enumType(item, attrName, attribute)
+        }
 
     private fun enumType(item: Item, attrName: String, attribute: Attribute): EnumTypeDefinition {
-        if (attribute.type != FieldType.enum)
+        if (attribute.type != FieldType.enum) {
             throw IllegalArgumentException("Attribute [$attrName] is not enumeration.")
+        }
 
-        if (attribute.enumSet.isNullOrEmpty())
+        if (attribute.enumSet.isNullOrEmpty()) {
             throw IllegalArgumentException("Attribute [$attrName] enumeration set is null or empty.")
+        }
 
         return EnumTypeDefinition.newEnumTypeDefinition()
             .name("${item.name.upperFirst()}${attrName.upperFirst()}Enum")
             .enumValueDefinitions(
                 attribute.enumSet.map {
                     EnumValueDefinition.newEnumValueDefinition().name(it).build()
-                }
+                },
             )
             .build()
     }

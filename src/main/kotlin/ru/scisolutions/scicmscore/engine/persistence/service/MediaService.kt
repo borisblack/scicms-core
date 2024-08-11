@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 @Transactional
 class MediaService(
     private val permissionService: PermissionService,
-    private val mediaRepository: MediaRepository
+    private val mediaRepository: MediaRepository,
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): Media? = mediaRepository.findById(id).orElse(null)
@@ -23,8 +23,7 @@ class MediaService(
     @Transactional(readOnly = true)
     fun findByIdForDelete(id: String): Media? = findByIdFor(id, Acl.Mask.DELETE)
 
-    private fun findByIdFor(id: String, accessMask: Acl.Mask): Media? =
-        mediaRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
+    private fun findByIdFor(id: String, accessMask: Acl.Mask): Media? = mediaRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
     fun getById(id: String): Media = mediaRepository.findById(id).orElseThrow {

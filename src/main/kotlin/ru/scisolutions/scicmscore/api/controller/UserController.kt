@@ -12,13 +12,11 @@ import ru.scisolutions.scicmscore.engine.model.response.TokenResponse
 @RestController
 @RequestMapping("/api/auth/local")
 class UserController(
-    private val engine: Engine
+    private val engine: Engine,
 ) {
     @PostMapping("/register")
-    fun register(@RequestBody registrationRequest: RegistrationRequest): TokenResponse =
-        engine.registerUser(registrationRequest)
+    fun register(@RequestBody registrationRequest: RegistrationRequest): TokenResponse = engine.registerUser(registrationRequest)
 
     @PostMapping("/password")
-    fun changePassword(@RequestBody changePasswordRequest: ChangePasswordRequest) =
-        engine.changePassword(changePasswordRequest)
+    fun changePassword(@RequestBody changePasswordRequest: ChangePasswordRequest) = engine.changePassword(changePasswordRequest)
 }

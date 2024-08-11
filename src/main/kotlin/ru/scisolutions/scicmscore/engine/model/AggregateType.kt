@@ -6,5 +6,5 @@ enum class AggregateType {
     sum,
     avg,
     min,
-    max
+    max,
 }

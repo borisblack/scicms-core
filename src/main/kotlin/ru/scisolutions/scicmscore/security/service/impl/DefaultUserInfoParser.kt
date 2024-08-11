@@ -4,12 +4,14 @@ import ru.scisolutions.scicmscore.security.service.UserInfoParser
 
 class DefaultUserInfoParser : UserInfoParser {
     override fun parseUsername(payload: Any): String {
-        if (payload !is Map<*, *>)
+        if (payload !is Map<*, *>) {
             throw IllegalArgumentException("Invalid payload type.")
+        }
 
         val login = payload["login"]
-        if (login !is String)
+        if (login !is String) {
             throw IllegalArgumentException("Invalid login type.")
+        }
 
         return login
     }

@@ -9,11 +9,10 @@ import java.util.regex.Pattern
 @DgsComponent
 class CustomScalarsRegistration {
     @DgsRuntimeWiring
-    fun addScalars(builder: RuntimeWiring.Builder): RuntimeWiring.Builder =
-        builder
-            .scalar(
-                ExtendedScalars.newRegexScalar("Email")
-                    .addPattern(Pattern.compile("\\w+@\\w+\\.\\w+"))
-                    .build()
-            )
+    fun addScalars(builder: RuntimeWiring.Builder): RuntimeWiring.Builder = builder
+        .scalar(
+            ExtendedScalars.newRegexScalar("Email")
+                .addPattern(Pattern.compile("\\w+@\\w+\\.\\w+"))
+                .build(),
+        )
 }

@@ -24,16 +24,17 @@ import com.google.common.io.Files as GFiles
 
 @Service
 class FileSchemaReader(
-    private val schemaProps: SchemaProps
+    private val schemaProps: SchemaProps,
 ) : SchemaReader {
     override fun read(): Schema {
         val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")
         logger.info("Reading the models path [{}]", schemaPath)
-        val models = Files.walk(Paths.get(schemaPath)).asSequence()
-            .filter(Files::isRegularFile)
-            .filter { !it.name.endsWith("schema.json") }
-            .map { readModel(it.toFile()) }
-            .toList()
+        val models =
+            Files.walk(Paths.get(schemaPath)).asSequence()
+                .filter(Files::isRegularFile)
+                .filter { !it.name.endsWith("schema.json") }
+                .map { readModel(it.toFile()) }
+                .toList()
 
         logger.info("Read {} models", models.size)
 

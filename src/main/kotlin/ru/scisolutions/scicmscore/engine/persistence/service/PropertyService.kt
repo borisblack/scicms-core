@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.PropertyReposito
 @Transactional
 class PropertyService(
     private val em: EntityManager,
-    private val propertyRepository: PropertyRepository
+    private val propertyRepository: PropertyRepository,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): Iterable<Property> = propertyRepository.findAll()

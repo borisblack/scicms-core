@@ -15,24 +15,20 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 class DatasourceService(
     private val em: EntityManager,
     private val permissionService: PermissionService,
-    private val datasourceRepository: DatasourceRepository
+    private val datasourceRepository: DatasourceRepository,
 ) {
     @Transactional(readOnly = true)
-    fun findAll(): Iterable<Datasource> =
-        datasourceRepository.findAll()
+    fun findAll(): Iterable<Datasource> = datasourceRepository.findAll()
 
     @Transactional(readOnly = true)
-    fun findById(id: String): Datasource? =
-        datasourceRepository.findById(id).orElse(null)
+    fun findById(id: String): Datasource? = datasourceRepository.findById(id).orElse(null)
 
     @Transactional(readOnly = true)
-    fun getById(id: String): Datasource =
-        datasourceRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Datasource [$id] not found.") }
+    fun getById(id: String): Datasource = datasourceRepository.findById(id)
+        .orElseThrow { IllegalArgumentException("Datasource [$id] not found.") }
 
     @Transactional(readOnly = true)
-    fun findByName(name: String): Datasource? =
-        findByNaturalId(name)
+    fun findByName(name: String): Datasource? = findByNaturalId(name)
 
     private fun findByNaturalId(name: String): Datasource? {
         val session = em.delegate as Session
@@ -42,20 +38,15 @@ class DatasourceService(
     }
 
     @Transactional(readOnly = true)
-    fun getByName(name: String): Datasource =
-        findByNaturalId(name) ?: throw IllegalArgumentException("Datasource [$name] not found.")
+    fun getByName(name: String): Datasource = findByNaturalId(name) ?: throw IllegalArgumentException("Datasource [$name] not found.")
 
     @Transactional(readOnly = true)
-    fun findByIdForRead(name: String): Datasource? =
-        findByIdFor(name, Acl.Mask.READ)
+    fun findByIdForRead(name: String): Datasource? = findByIdFor(name, Acl.Mask.READ)
 
-    private fun findByIdFor(id: String, accessMask: Acl.Mask): Datasource? =
-        datasourceRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
+    private fun findByIdFor(id: String, accessMask: Acl.Mask): Datasource? = datasourceRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
-    fun findByNameForRead(name: String): Datasource? =
-        findByNameFor(name, Acl.Mask.READ)
+    fun findByNameForRead(name: String): Datasource? = findByNameFor(name, Acl.Mask.READ)
 
-    private fun findByNameFor(name: String, accessMask: Acl.Mask): Datasource? =
-        datasourceRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
+    private fun findByNameFor(name: String, accessMask: Acl.Mask): Datasource? = datasourceRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 }

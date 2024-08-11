@@ -9,7 +9,7 @@ import jakarta.persistence.Table
 @Table(name = "sec_permissions")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
 )
 class Permission(
     @Column(nullable = false)

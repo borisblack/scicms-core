@@ -17,12 +17,14 @@ import ru.scisolutions.scicmscore.engine.model.AuthType
 import ru.scisolutions.scicmscore.engine.model.UserInfo
 import java.util.UUID
 
-@SpringBootTest(classes = [
-    DgsAutoConfiguration::class,
-    DgsExtendedScalarsAutoConfiguration::class,
-    CustomScalarsRegistration::class,
-    UserDataFetcher::class
-])
+@SpringBootTest(
+    classes = [
+        DgsAutoConfiguration::class,
+        DgsExtendedScalarsAutoConfiguration::class,
+        CustomScalarsRegistration::class,
+        UserDataFetcher::class,
+    ],
+)
 @DisabledInAotMode
 class UserDataFetcherTest {
     @Autowired
@@ -39,35 +41,36 @@ class UserDataFetcherTest {
                 username = TEST_USER,
                 roles = setOf(ROLE_TEST),
                 sessionData = emptyMap(),
-                authType = AuthType.LOCAL
+                authType = AuthType.LOCAL,
             )
         }
     }
 
     @Test
     fun testUsername() {
-        val username : String = dgsQueryExecutor.executeAndExtractJsonPath("""
-            {
-                me {
-		            username
-		            roles
-	            }
-            }
-        """.trimIndent(), "data.me.username")
+        val username: String =
+            dgsQueryExecutor.executeAndExtractJsonPath(
+                """
+                    {
+                        me {
+                            username
+                            roles
+                        }
+                }
+                """.trimIndent(),
+                "data.me.username",
+            )
 
         Assertions.assertEquals(TEST_USER, username)
     }
 
     @Test
     fun testRoles() {
-        val roles : List<String> = dgsQueryExecutor.executeAndExtractJsonPath("""
-            {
-                me {
-		            username
-		            roles
-	            }
-            }
-        """.trimIndent(), "data.me.roles")
+        val roles: List<String> =
+            dgsQueryExecutor.executeAndExtractJsonPath(
+                "{ me { username roles } }",
+                "data.me.roles",
+            )
 
         Assertions.assertTrue(ROLE_TEST in roles)
     }

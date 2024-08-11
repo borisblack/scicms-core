@@ -18,11 +18,12 @@ private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) 
 @Component
 class AttributeTypes(
     private val itemService: ItemService,
-    private val relationValidator: RelationValidator
+    private val relationValidator: RelationValidator,
 ) {
     fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
-        if (attribute.keyed)
+        if (attribute.keyed) {
             return TypeNames.ID.nonNull(attribute.required)
+        }
 
         return when (attribute.type) {
             FieldType.uuid -> TypeNames.UUID.nonNull(attribute.required)
@@ -41,17 +42,19 @@ class AttributeTypes(
                 relationValidator.validateAttribute(item, attrName, attribute)
 
                 val capitalizedTargetItemName = requireNotNull(attribute.target).upperFirst()
-                if (attribute.isCollection())
+                if (attribute.isCollection()) {
                     TypeName("${capitalizedTargetItemName}RelationResponseCollection")
-                else
+                } else {
                     TypeName("${capitalizedTargetItemName}RelationResponse").nonNull(attribute.required)
+                }
             }
         }
     }
 
     fun filterInputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
-        if (attribute.keyed)
+        if (attribute.keyed) {
             return TypeNames.ID_FILTER_INPUT
+        }
 
         return when (attribute.type) {
             FieldType.uuid -> TypeNames.UUID_FILTER_INPUT
@@ -67,10 +70,11 @@ class AttributeTypes(
 
             FieldType.media -> {
                 val media = itemService.getMedia()
-                if (media.ds == item.ds)
+                if (media.ds == item.ds) {
                     TypeName("MediaFiltersInput")
-                else
+                } else {
                     TypeNames.ID_FILTER_INPUT
+                }
             }
 
             FieldType.relation -> {
@@ -81,8 +85,9 @@ class AttributeTypes(
                     val capitalizedTargetItemName = attribute.target.upperFirst()
                     TypeName("${capitalizedTargetItemName}FiltersInput")
                 } else {
-                    if (attribute.isCollection())
+                    if (attribute.isCollection()) {
                         throw IllegalArgumentException("Filtering collections from different datasource is not supported.")
+                    }
 
                     TypeNames.ID_FILTER_INPUT
                 }
@@ -91,8 +96,9 @@ class AttributeTypes(
     }
 
     fun inputType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
-        if (attribute.keyed)
+        if (attribute.keyed) {
             return TypeNames.ID
+        }
 
         return when (attribute.type) {
             FieldType.uuid -> TypeNames.UUID

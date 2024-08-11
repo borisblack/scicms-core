@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.LifecycleReposit
 @Repository
 @Transactional
 class LifecycleService(
-    private val lifecycleRepository: LifecycleRepository
+    private val lifecycleRepository: LifecycleRepository,
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): Lifecycle? = lifecycleRepository.findById(id).orElse(null)

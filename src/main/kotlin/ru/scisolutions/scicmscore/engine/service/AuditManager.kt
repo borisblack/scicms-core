@@ -8,7 +8,7 @@ import java.time.OffsetDateTime
 
 @Service
 class AuditManager(
-    private val userService: UserService
+    private val userService: UserService,
 ) {
     fun assignAuditAttributes(itemRec: ItemRec) {
         val now = OffsetDateTime.now()

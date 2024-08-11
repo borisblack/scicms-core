@@ -40,7 +40,7 @@ class Attribute(
     val colHidden: Boolean? = null, // hide column in UI table
     val colWidth: Int? = null, // column width in UI table
     val fieldHidden: Boolean? = null, // hide field in UI form
-    val fieldWidth: Int? = null // field width in UI form
+    val fieldWidth: Int? = null, // field width in UI form
 ) {
     @JsonIgnore
     fun isRelation() = type == FieldType.relation
@@ -51,39 +51,47 @@ class Attribute(
     fun validate() {
         when (type) {
             FieldType.string -> {
-                if (length == null || length <= 0)
-                    throw IllegalArgumentException("Invalid string length (${length})")
+                if (length == null || length <= 0) {
+                    throw IllegalArgumentException("Invalid string length ($length)")
+                }
             }
             FieldType.enum -> {
-                if (enumSet == null)
+                if (enumSet == null) {
                     throw IllegalArgumentException("The enumSet is required for the enum type")
+                }
             }
             FieldType.sequence -> {
-                if (seqName == null)
+                if (seqName == null) {
                     throw IllegalArgumentException("The seqName is required for the sequence type")
+                }
             }
             FieldType.int, FieldType.long, FieldType.float, FieldType.double -> {
-                if (minRange != null && maxRange != null && minRange > maxRange)
-                    throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
+                if (minRange != null && maxRange != null && minRange > maxRange) {
+                    throw IllegalArgumentException("Invalid range ratio (minRange=$minRange > maxRange=$maxRange)")
+                }
             }
             FieldType.decimal -> {
-                if ((precision != null && precision <= 0) || (scale != null && scale < 0))
-                    throw IllegalArgumentException("Invalid precision and/or scale (${precision}, ${scale})")
+                if ((precision != null && precision <= 0) || (scale != null && scale < 0)) {
+                    throw IllegalArgumentException("Invalid precision and/or scale ($precision, $scale)")
+                }
 
-                if (minRange != null && maxRange != null && minRange > maxRange)
-                    throw IllegalArgumentException("Invalid range ratio (minRange=${minRange} > maxRange=${maxRange})")
+                if (minRange != null && maxRange != null && minRange > maxRange) {
+                    throw IllegalArgumentException("Invalid range ratio (minRange=$minRange > maxRange=$maxRange)")
+                }
             }
             FieldType.relation -> {
-                if (isCollection() && required)
+                if (isCollection() && required) {
                     throw IllegalArgumentException("Collection relation attribute cannot be required")
+                }
             }
             else -> {}
         }
     }
 
-    fun parseDefaultValue(): Any? =
-        if (defaultValue == null) null
-        else when (type) {
+    fun parseDefaultValue(): Any? = if (defaultValue == null) {
+        null
+    } else {
+        when (type) {
             FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.sequence, FieldType.password -> defaultValue
             FieldType.int -> defaultValue.toInt()
             FieldType.long -> defaultValue.toLong()
@@ -97,18 +105,28 @@ class Attribute(
             FieldType.array -> Json.objectMapper.readValue(defaultValue, List::class.java)
             FieldType.json -> Json.objectMapper.readValue(defaultValue, Map::class.java)
             FieldType.media -> defaultValue
-            FieldType.relation -> if (isCollection()) Json.objectMapper.readValue(defaultValue, List::class.java).toSet() else defaultValue
+            FieldType.relation ->
+                if (isCollection()) {
+                    Json.objectMapper.readValue(
+                        defaultValue,
+                        List::class.java,
+                    ).toSet()
+                } else {
+                    defaultValue
+                }
         }
+    }
 
-    fun getColumnName(fallbackColumnName: String): String =
-        columnName ?: fallbackColumnName.lowercase()
+    fun getColumnName(fallbackColumnName: String): String = columnName ?: fallbackColumnName.lowercase()
 
     override fun equals(other: Any?): Boolean {
-        if (this === other)
+        if (this === other) {
             return true
+        }
 
-        if (javaClass != other?.javaClass)
+        if (javaClass != other?.javaClass) {
             return false
+        }
 
         other as Attribute
 
@@ -147,42 +165,41 @@ class Attribute(
             fieldWidth == other.fieldWidth
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(
-            type.name,
-            sortOrder,
-            columnName,
-            enumSet,
-            seqName,
-            confirm,
-            encode,
-            target,
-            relType?.name,
-            intermediate,
-            mappedBy,
-            inversedBy,
-            referencedBy,
-            displayName,
-            description,
-            pattern,
-            format,
-            defaultValue,
-            required,
-            readOnly,
-            keyed,
-            unique,
-            indexed,
-            private,
-            length,
-            precision,
-            scale,
-            minRange,
-            maxRange,
-            colHidden,
-            colWidth,
-            fieldWidth,
-            fieldHidden
-        )
+    override fun hashCode(): Int = Objects.hash(
+        type.name,
+        sortOrder,
+        columnName,
+        enumSet,
+        seqName,
+        confirm,
+        encode,
+        target,
+        relType?.name,
+        intermediate,
+        mappedBy,
+        inversedBy,
+        referencedBy,
+        displayName,
+        description,
+        pattern,
+        format,
+        defaultValue,
+        required,
+        readOnly,
+        keyed,
+        unique,
+        indexed,
+        private,
+        length,
+        precision,
+        scale,
+        minRange,
+        maxRange,
+        colHidden,
+        colWidth,
+        fieldWidth,
+        fieldHidden,
+    )
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }
 }

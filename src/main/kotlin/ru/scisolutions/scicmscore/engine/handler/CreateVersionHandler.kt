@@ -3,21 +3,27 @@ package ru.scisolutions.scicmscore.engine.handler
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.CreateVersionHook
 import ru.scisolutions.scicmscore.engine.hook.GenerateIdHook
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
-import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
-import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.model.input.CreateVersionInput
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
-import ru.scisolutions.scicmscore.engine.service.*
+import ru.scisolutions.scicmscore.engine.service.AuditManager
+import ru.scisolutions.scicmscore.engine.service.DefaultIdGenerator
+import ru.scisolutions.scicmscore.engine.service.LifecycleManager
+import ru.scisolutions.scicmscore.engine.service.LocalizationManager
+import ru.scisolutions.scicmscore.engine.service.PermissionManager
+import ru.scisolutions.scicmscore.engine.service.SequenceManager
+import ru.scisolutions.scicmscore.engine.service.VersionManager
+import ru.scisolutions.scicmscore.service.ClassService
 
 @Service
 class CreateVersionHandler(
@@ -34,34 +40,40 @@ class CreateVersionHandler(
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
     private val cacheService: CacheService,
-    private val idGenerator: DefaultIdGenerator
+    private val idGenerator: DefaultIdGenerator,
 ) {
     fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
-        if (!item.versioned)
+        if (!item.versioned) {
             throw IllegalArgumentException("Item [$itemName] is not versioned")
+        }
 
-        if (!itemService.canCreate(item.name))
+        if (!itemService.canCreate(item.name)) {
             throw AccessDeniedException("You are not allowed to create version for item [$itemName]")
+        }
 
         val prevItemRec = itemRecDao.findByIdOrThrow(item, input.id)
-        if (prevItemRec.current != true)
+        if (prevItemRec.current != true) {
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is not a current version")
+        }
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id)
+        }
 
         val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
-        val itemRec = ItemRec(preparedData.toMutableMap()).apply {
-            val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
-            val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
-            if (this[item.idAttribute] == null)
-                this[item.idAttribute] = id
-            this.id = id
-            this.lockedBy = null
-        }
+        val itemRec =
+            ItemRec(preparedData.toMutableMap()).apply {
+                val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
+                val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
+                if (this[item.idAttribute] == null) {
+                    this[item.idAttribute] = id
+                }
+                this.id = id
+                this.lockedBy = null
+            }
 
         // Assign other attributes
         sequenceManager.assignSequenceAttributes(item, itemRec)
@@ -77,13 +89,15 @@ class CreateVersionHandler(
         // Reset current flag
         itemRecDao.updateByAttributes(
             item = item,
-            whereAttributes = mapOf(
+            whereAttributes =
+            mapOf(
                 ItemRec.CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
-                ItemRec.LOCALE_ATTR_NAME to itemRec.locale
+                ItemRec.LOCALE_ATTR_NAME to itemRec.locale,
             ),
-            updateAttributes = mapOf(
-                ItemRec.CURRENT_ATTR_NAME to false
-            )
+            updateAttributes =
+            mapOf(
+                ItemRec.CURRENT_ATTR_NAME to false,
+            ),
         )
 
         // Get and call hook
@@ -96,21 +110,24 @@ class CreateVersionHandler(
         addRelationHelper.addRelations(
             item,
             itemRec,
-            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
+            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>,
         )
 
         // Copy relations from previous version
-        if (input.copyCollectionRelations == true)
+        if (input.copyCollectionRelations == true) {
             copyRelationHelper.copyCollectionRelations(item, prevItemRec, itemRec)
+        }
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             itemRecDao.unlockByIdOrThrow(item, input.id)
+        }
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-        val response = Response(
-            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
-        )
+        val response =
+            Response(
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+            )
 
         createVersionHook?.afterCreateVersion(itemName, response)
 

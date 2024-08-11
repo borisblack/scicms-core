@@ -11,8 +11,7 @@ class ListPagination<T>(
     start: Int? = null,
     limit: Int? = null,
     total: Int?,
-    pageCount: Int?
+    pageCount: Int?,
 ) : Pagination(page, pageSize, start, limit, total, pageCount) {
-    fun toBasePagination() =
-        Pagination(page, pageSize, start, limit, total, pageCount)
+    fun toBasePagination() = Pagination(page, pageSize, start, limit, total, pageCount)
 }

@@ -3,21 +3,26 @@ package ru.scisolutions.scicmscore.engine.handler
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
-import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.handler.util.AddRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.AttributeValueHelper
 import ru.scisolutions.scicmscore.engine.handler.util.CopyRelationHelper
 import ru.scisolutions.scicmscore.engine.handler.util.DataHandlerUtil
 import ru.scisolutions.scicmscore.engine.hook.CreateLocalizationHook
 import ru.scisolutions.scicmscore.engine.hook.GenerateIdHook
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
-import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
-import ru.scisolutions.scicmscore.engine.model.response.Response
-import ru.scisolutions.scicmscore.service.ClassService
 import ru.scisolutions.scicmscore.engine.model.FieldType
+import ru.scisolutions.scicmscore.engine.model.input.CreateLocalizationInput
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
+import ru.scisolutions.scicmscore.engine.model.response.Response
+import ru.scisolutions.scicmscore.engine.persistence.dao.ItemRecDao
 import ru.scisolutions.scicmscore.engine.persistence.service.CacheService
 import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
-import ru.scisolutions.scicmscore.engine.service.*
+import ru.scisolutions.scicmscore.engine.service.AuditManager
+import ru.scisolutions.scicmscore.engine.service.DefaultIdGenerator
+import ru.scisolutions.scicmscore.engine.service.LifecycleManager
+import ru.scisolutions.scicmscore.engine.service.LocalizationManager
+import ru.scisolutions.scicmscore.engine.service.PermissionManager
+import ru.scisolutions.scicmscore.engine.service.SequenceManager
+import ru.scisolutions.scicmscore.service.ClassService
 
 @Service
 class CreateLocalizationHandler(
@@ -33,37 +38,44 @@ class CreateLocalizationHandler(
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
     private val cacheService: CacheService,
-    private val idGenerator: DefaultIdGenerator
+    private val idGenerator: DefaultIdGenerator,
 ) {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
-        if (!item.localized)
+        if (!item.localized) {
             throw IllegalArgumentException("Item [$itemName] is not localized")
+        }
 
-        if (!itemService.canCreate(item.name))
+        if (!itemService.canCreate(item.name)) {
             throw AccessDeniedException("You are not allowed to create localization for item [$itemName]")
+        }
 
-        if (MAJOR_REV_ATTR_NAME in input.data)
+        if (MAJOR_REV_ATTR_NAME in input.data) {
             throw IllegalArgumentException("Major revision can be changed only by createVersion action")
+        }
 
         val prevItemRec = itemRecDao.findByIdOrThrow(item, input.id)
-        if (prevItemRec.locale == input.locale)
+        if (prevItemRec.locale == input.locale) {
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] has the same locale (${input.locale})")
+        }
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id) // lock
+        }
 
         val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
-        val itemRec = ItemRec(preparedData.toMutableMap()).apply {
-            val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
-            val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
-            if (this[item.idAttribute] == null)
-                this[item.idAttribute] = id
-            this.id = id
-            this.lockedBy = null
-        }
+        val itemRec =
+            ItemRec(preparedData.toMutableMap()).apply {
+                val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
+                val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
+                if (this[item.idAttribute] == null) {
+                    this[item.idAttribute] = id
+                }
+                this.id = id
+                this.lockedBy = null
+            }
 
         // Assign other attributes
         sequenceManager.assignSequenceAttributes(item, itemRec)
@@ -76,17 +88,20 @@ class CreateLocalizationHandler(
 
         // TODO: Do in one transaction
         // Reset current flag
-        if (item.versioned && itemRec.current == true)
+        if (item.versioned && itemRec.current == true) {
             itemRecDao.updateByAttributes(
                 item = item,
-                whereAttributes = mapOf(
+                whereAttributes =
+                mapOf(
                     ItemRec.CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
-                    ItemRec.LOCALE_ATTR_NAME to itemRec.locale
+                    ItemRec.LOCALE_ATTR_NAME to itemRec.locale,
                 ),
-                updateAttributes = mapOf(
-                    ItemRec.CURRENT_ATTR_NAME to false
-                )
+                updateAttributes =
+                mapOf(
+                    ItemRec.CURRENT_ATTR_NAME to false,
+                ),
             )
+        }
 
         // Get and call hook
         val createLocalizationHook = classService.getCastInstance(item.implementation, CreateLocalizationHook::class.java)
@@ -98,21 +113,24 @@ class CreateLocalizationHandler(
         addRelationHelper.addRelations(
             item,
             itemRec,
-            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
+            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>,
         )
 
         // Copy relations from previous localization
-        if (input.copyCollectionRelations == true)
+        if (input.copyCollectionRelations == true) {
             copyRelationHelper.copyCollectionRelations(item, prevItemRec, itemRec)
+        }
 
-        if (!item.notLockable)
+        if (!item.notLockable) {
             itemRecDao.unlockByIdOrThrow(item, input.id) // unlock
+        }
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
-        val response = Response(
-            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
-        )
+        val response =
+            Response(
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+            )
 
         createLocalizationHook?.afterCreateLocalization(itemName, response)
 

@@ -16,18 +16,19 @@ class JwtTokenAuthenticationProvider(private val jwtTokenService: JwtTokenServic
     override fun authenticate(authentication: Authentication): Authentication {
         val jwtToken = (authentication.principal as String?) ?: throw BadCredentialsException("Wrong JWT token")
 
-        val claims = try {
-            jwtTokenService.parseToken(jwtToken)
-        } catch (e: JwtException) {
-            throw BadCredentialsException(e.message)
-        }
+        val claims =
+            try {
+                jwtTokenService.parseToken(jwtToken)
+            } catch (e: JwtException) {
+                throw BadCredentialsException(e.message)
+            }
 
         val authorities: List<String> = claims["authorities"] as List<String>
         val authType = claims["authType"] as String?
         return UserAuthenticationToken(
             claims.subject,
             authorities.map { SimpleGrantedAuthority(it) },
-            if (authType == null) AuthType.LOCAL else AuthType.valueOf(authType)
+            if (authType == null) AuthType.LOCAL else AuthType.valueOf(authType),
         )
     }
 }

@@ -1,8 +1,8 @@
 package ru.scisolutions.scicmscore.engine.persistence.entity
 
-import java.time.OffsetDateTime
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
+import java.time.OffsetDateTime
 
 class AuditEntityListener {
     @PrePersist

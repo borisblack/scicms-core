@@ -17,26 +17,24 @@ import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
 @RestController
 @RequestMapping("/api/dataset")
 class DatasetController(
-    private val engine: Engine
+    private val engine: Engine,
 ) {
     @GetMapping("/{datasetName}")
-    fun load(
-        req: HttpServletRequest,
-        @PathVariable("datasetName") datasetName: String
-    ): DatasetResponse {
+    fun load(req: HttpServletRequest, @PathVariable("datasetName") datasetName: String): DatasetResponse {
         val qsObject = QS.parse(req.queryString ?: "")
-        val input = datasetInputMapper.map(qsObject.filterKeys { it in  datasetInputKeys}, "$")
+        val input = datasetInputMapper.map(qsObject.filterKeys { it in datasetInputKeys }, "$")
 
         return engine.loadDataset(datasetName, input)
     }
 
     companion object {
-        private val datasetInputKeys = setOf(
-            FILTERS_ARG_NAME,
-            FIELDS_ARG_NAME,
-            PAGINATION_ARG_NAME,
-            SORT_ARG_NAME
-        )
+        private val datasetInputKeys =
+            setOf(
+                FILTERS_ARG_NAME,
+                FIELDS_ARG_NAME,
+                PAGINATION_ARG_NAME,
+                SORT_ARG_NAME,
+            )
         private val datasetInputMapper = DatasetInputMapper()
     }
 }

@@ -24,7 +24,10 @@ class LiquibaseTypeResolver {
             FieldType.uuid, FieldType.media, FieldType.relation -> VarcharType().apply { addParameter(UUID_STRING_LENGTH) }.toString()
             FieldType.string -> VarcharType().apply { addParameter(attribute.length) }.toString()
             FieldType.text, FieldType.array, FieldType.json -> ClobType().toString()
-            FieldType.enum, FieldType.sequence, FieldType.email, FieldType.password -> VarcharType().apply { addParameter(DEFAULT_STRING_LENGTH) }.toString()
+            FieldType.enum, FieldType.sequence, FieldType.email, FieldType.password ->
+                VarcharType().apply {
+                    addParameter(DEFAULT_STRING_LENGTH)
+                }.toString()
             FieldType.int -> IntType().toString()
             FieldType.long -> BigIntType().toString()
             FieldType.float -> FloatType().toString()

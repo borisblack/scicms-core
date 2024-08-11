@@ -14,16 +14,17 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class UpdateDataFetcher(
-    private val engine: Engine
+    private val engine: Engine,
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
-        val input = UpdateInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
-            data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
-        )
+        val input =
+            UpdateInput(
+                id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+                data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
+            )
 
         val result = engine.update(itemName, input, selectAttrNames)
 

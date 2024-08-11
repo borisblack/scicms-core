@@ -18,13 +18,15 @@ class PurgeDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResu
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseCollectionFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
-        val deletingStrategy = dfe.arguments[DELETING_STRATEGY_ARG_NAME] as String?
-            ?: throw IllegalArgumentException("The [$DELETING_STRATEGY_ARG_NAME] argument is null.")
+        val deletingStrategy =
+            dfe.arguments[DELETING_STRATEGY_ARG_NAME] as String?
+                ?: throw IllegalArgumentException("The [$DELETING_STRATEGY_ARG_NAME] argument is null.")
 
-        val input = DeleteInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
-            deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
-        )
+        val input =
+            DeleteInput(
+                id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+                deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
+            )
 
         val result = engine.purge(itemName, input, selectAttrNames)
 

@@ -21,13 +21,15 @@ class SequenceService(private val sequenceRepository: SequenceRepository) {
         val curValue = sequence.currentValue
         val nextValue = (curValue ?: sequence.initialValue) + sequence.step
         val rows =
-            if (curValue == null)
+            if (curValue == null) {
                 sequenceRepository.initCurrentValueByName(name, nextValue)
-            else
+            } else {
                 sequenceRepository.updateCurrentValueByName(name, curValue, nextValue)
+            }
 
-        if (rows == 0)
+        if (rows == 0) {
             throw IllegalStateException("Cannot update sequence [$name] value. Please try again")
+        }
 
         val padWith = sequence.padWith
         val padTo = sequence.padTo

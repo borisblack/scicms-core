@@ -9,5 +9,8 @@ import ru.scisolutions.scicmscore.util.Json
 class LinkedHashSetStringConverter : AttributeConverter<LinkedHashSet<String>, String> {
     override fun convertToDatabaseColumn(attribute: LinkedHashSet<String>): String = Json.objectMapper.writeValueAsString(attribute)
 
-    override fun convertToEntityAttribute(dbData: String): LinkedHashSet<String> = Json.objectMapper.readValue(dbData, object: TypeReference<LinkedHashSet<String>>() {})
+    override fun convertToEntityAttribute(dbData: String): LinkedHashSet<String> = Json.objectMapper.readValue(
+        dbData,
+        object : TypeReference<LinkedHashSet<String>>() {},
+    )
 }

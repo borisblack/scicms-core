@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture
 @Component
 class FindOneRelatedDataFetcher(
     private val itemService: ItemService,
-    private val dataLoaderBuilder: DataLoaderBuilder
+    private val dataLoaderBuilder: DataLoaderBuilder,
 ) : DataFetcher<CompletableFuture<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): CompletableFuture<RelationResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
@@ -44,15 +44,17 @@ class FindOneRelatedDataFetcher(
 
         val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
         val keyAttrName = parentAttribute.referencedBy ?: item.idAttribute
-        if (selectAttrNames.size == 1 && keyAttrName in selectAttrNames)
+        if (selectAttrNames.size == 1 && keyAttrName in selectAttrNames) {
             return CompletableFuture.supplyAsync { RelationResponse(ItemRec().apply { this[keyAttrName] = key }) }
+        }
 
         val res = dataLoader.load(key)
         dataLoader.dispatch()
 
         return res.handle { itemRec, err ->
-            if (err != null)
+            if (err != null) {
                 throw err
+            }
 
             RelationResponse(itemRec)
         }
@@ -63,18 +65,13 @@ class FindOneRelatedDataFetcher(
         return if (parentAttribute.referencedBy == null) item.name else "${parentItem.name}#$parentAttrName"
     }
 
-    private fun registerDataLoaderIfAbsent(
-        dfe: DataFetchingEnvironment,
-        dataLoaderName: String,
-        parentItem: Item,
-        parentAttrName: String,
-        item: Item
-    ) {
-        if (dfe.getDataLoader<String, ItemRec>(dataLoaderName) == null)
+    private fun registerDataLoaderIfAbsent(dfe: DataFetchingEnvironment, dataLoaderName: String, parentItem: Item, parentAttrName: String, item: Item) {
+        if (dfe.getDataLoader<String, ItemRec>(dataLoaderName) == null) {
             dfe.dataLoaderRegistry.register(
                 dataLoaderName,
-                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(parentItem, parentAttrName, item))
+                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(parentItem, parentAttrName, item)),
             )
+        }
     }
 
     companion object {

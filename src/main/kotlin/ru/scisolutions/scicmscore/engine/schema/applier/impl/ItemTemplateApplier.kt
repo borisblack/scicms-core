@@ -22,13 +22,14 @@ class ItemTemplateApplier(
     private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
     private val schemaLockService: SchemaLockService,
-    private val itemTemplateMapper: ItemTemplateMapper
+    private val itemTemplateMapper: ItemTemplateMapper,
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
 
     override fun apply(model: AbstractModel): ModelApplyResult {
-        if (model !is ItemTemplate)
+        if (model !is ItemTemplate) {
             throw IllegalArgumentException("Unsupported type [${model::class.java.simpleName}]")
+        }
 
         validateModel(model)
 
@@ -68,8 +69,9 @@ class ItemTemplateApplier(
 
     private fun validateModel(model: ItemTemplate) {
         logger.info("Validating model [{}]", model.metadata.name)
-        if (model.metadata.name.first().isUpperCase())
+        if (model.metadata.name.first().isUpperCase()) {
             throw IllegalArgumentException("Model name [${model.metadata.name}] must start with a lowercase character.")
+        }
 
         model.spec.attributes.asSequence()
             .filter { (_, attribute) -> attribute.type == FieldType.relation }
@@ -88,19 +90,24 @@ class ItemTemplateApplier(
             } else if (isFileChanged) {
                 logger.warn(
                     "Checksum for item template [{}] is different in database ({}) and file ({}).",
-                    existingItemTemplateEntity.name, existingItemTemplateEntity.checksum, itemTemplate.checksum
+                    existingItemTemplateEntity.name,
+                    existingItemTemplateEntity.checksum,
+                    itemTemplate.checksum,
                 )
             }
         }
 
-        if (isFileExist && !ignoreFileChecksum && !isFileChanged)
+        if (isFileExist && !ignoreFileChecksum && !isFileChanged) {
             return false
+        }
 
         val isHashChanged = itemTemplate.hashCode().toString() != existingItemTemplateEntity.hash
         if (isHashChanged) {
             logger.warn(
                 "Hash for item template [{}] in database is {}, but now is {}.",
-                existingItemTemplateEntity.name, existingItemTemplateEntity.hash, itemTemplate.hashCode()
+                existingItemTemplateEntity.name,
+                existingItemTemplateEntity.hash,
+                itemTemplate.hashCode(),
             )
         }
 

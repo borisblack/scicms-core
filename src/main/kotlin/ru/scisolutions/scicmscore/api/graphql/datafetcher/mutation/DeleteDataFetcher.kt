@@ -18,13 +18,15 @@ class DeleteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherRes
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
         val itemName = capitalizedItemName.lowerFirst()
         val selectAttrNames = dfe.selectDataFields()
-        val deletingStrategy = dfe.arguments[DELETING_STRATEGY_ARG_NAME] as String?
-            ?: throw IllegalArgumentException("The [$DELETING_STRATEGY_ARG_NAME] argument is null.")
+        val deletingStrategy =
+            dfe.arguments[DELETING_STRATEGY_ARG_NAME] as String?
+                ?: throw IllegalArgumentException("The [$DELETING_STRATEGY_ARG_NAME] argument is null.")
 
-        val input = DeleteInput(
-            id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
-            deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
-        )
+        val input =
+            DeleteInput(
+                id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
+                deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
+            )
 
         val result = engine.delete(itemName, input, selectAttrNames)
 
