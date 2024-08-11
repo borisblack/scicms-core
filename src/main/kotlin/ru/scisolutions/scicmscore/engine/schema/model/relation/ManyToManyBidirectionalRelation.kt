@@ -8,5 +8,5 @@ class ManyToManyBidirectionalRelation(
     override val owningAttrName: String,
     override val inversedItem: Item,
     override val inversedAttrName: String,
-    override val intermediateItem: Item,
+    override val intermediateItem: Item
 ) : BidirectionalRelation, ManyToManyRelation

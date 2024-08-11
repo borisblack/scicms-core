@@ -22,7 +22,7 @@ class FindAllHandler(
     private val itemService: ItemService,
     private val findAllQueryBuilder: FindAllQueryBuilder,
     private val itemRecDao: ItemRecDao,
-    private val attributeValueHelper: AttributeValueHelper,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun findAll(itemName: String, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>): ResponseCollection {
         val item = itemService.getByName(itemName)
@@ -35,7 +35,7 @@ class FindAllHandler(
                 input = input,
                 selectAttrNames = attrNames,
                 selectPaginationFields = selectPaginationFields,
-                paramSource = paramSource,
+                paramSource = paramSource
             )
 
         // Get and call hook
@@ -51,8 +51,8 @@ class FindAllHandler(
                 data = itemRecList,
                 meta =
                 ResponseCollectionMeta(
-                    pagination = findAllQuery.pagination,
-                ),
+                    pagination = findAllQuery.pagination
+                )
             )
 
         implInstance?.afterFindAll(itemName, response)
@@ -67,7 +67,7 @@ class FindAllHandler(
         itemName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
-        selectPaginationFields: Set<String>,
+        selectPaginationFields: Set<String>
     ): RelationResponseCollection {
         val item = itemService.getByName(itemName)
         val parentItem = itemService.getByName(parentItemName)
@@ -82,7 +82,7 @@ class FindAllHandler(
                 input = input,
                 selectAttrNames = attrNames,
                 selectPaginationFields = selectPaginationFields,
-                paramSource = paramSource,
+                paramSource = paramSource
             )
         val itemRecList: List<ItemRec> =
             itemRecDao.findAll(item, findAllQuery.sql, paramSource)
@@ -92,8 +92,8 @@ class FindAllHandler(
             data = itemRecList,
             meta =
             ResponseCollectionMeta(
-                pagination = findAllQuery.pagination,
-            ),
+                pagination = findAllQuery.pagination
+            )
         )
     }
 }

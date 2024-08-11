@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.LinkedHashSetStri
 @Table(name = "core_items")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 @org.hibernate.annotations.NaturalIdCache
 class Item(
@@ -80,7 +80,7 @@ class Item(
     @Convert(converter = ItemSpecConverter::class)
     var spec: ItemSpec = ItemSpec(),
     var checksum: String? = null,
-    var hash: String? = null,
+    var hash: String? = null
     // @ManyToMany(cascade = [CascadeType.ALL])
     // @JoinTable(
     //     name = "sec_allowed_permissions",

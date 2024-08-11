@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.UserRepository
 @Transactional
 class UserService(
     private val em: EntityManager,
-    private val userRepository: UserRepository,
+    private val userRepository: UserRepository
 ) {
     @Transactional(readOnly = true)
     fun findByUsername(username: String): User? = findByNaturalId(username)

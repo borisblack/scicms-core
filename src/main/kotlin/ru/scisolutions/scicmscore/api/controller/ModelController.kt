@@ -19,7 +19,7 @@ class ModelController(
     private val schemaLockService: SchemaLockService,
     private val modelsApplier: ModelsApplier,
     private val reloadIndicator: ReloadIndicator,
-    private val engine: Engine,
+    private val engine: Engine
 ) {
     @PostMapping("/apply")
     fun apply(@RequestBody model: AbstractModel): String {
@@ -47,7 +47,7 @@ class ModelController(
         val deleteInput =
             DeleteInput(
                 id = id,
-                deletingStrategy = DeletingStrategy.CASCADE,
+                deletingStrategy = DeletingStrategy.CASCADE
             )
         engine.delete(modelName, deleteInput, emptySet())
         reloadIndicator.setNeedReload(true)

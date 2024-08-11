@@ -20,7 +20,7 @@ class PrimitiveFilterInput(
     val notNullFilter: Boolean?,
     andFilterList: List<PrimitiveFilterInput>?,
     orFilterList: List<PrimitiveFilterInput>?,
-    notFilter: PrimitiveFilterInput?,
+    notFilter: PrimitiveFilterInput?
 ) : AbstractFilterInput<PrimitiveFilterInput>(andFilterList, orFilterList, notFilter) {
     companion object {
         fun fromMap(filters: Map<String, Any>, opPrefix: String = ""): PrimitiveFilterInput = PrimitiveFilterInput(
@@ -79,7 +79,7 @@ class PrimitiveFilterInput(
                 } else {
                     throw IllegalArgumentException("Invalid NOT clause")
                 }
-            },
+            }
         )
     }
 }

@@ -43,7 +43,7 @@ class DynamicDataFetcher(
     private val lockDataFetcher: LockDataFetcher,
     private val unlockDataFetcher: UnlockDataFetcher,
     private val promoteDataFetcher: PromoteDataFetcher,
-    private val customMethodDataFetcher: CustomMethodDataFetcher,
+    private val customMethodDataFetcher: CustomMethodDataFetcher
 ) {
     @DgsCodeRegistry
     fun registry(codeRegistryBuilder: GraphQLCodeRegistry.Builder, registry: TypeDefinitionRegistry): GraphQLCodeRegistry.Builder {
@@ -75,7 +75,7 @@ class DynamicDataFetcher(
                     codeRegistryBuilder
                         .dataFetcher(
                             FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"),
-                            createVersionDataFetcher,
+                            createVersionDataFetcher
                         )
                 } else if (!excludeItemPolicy.excludeFromUpdateMutation(it)) {
                     codeRegistryBuilder
@@ -86,7 +86,7 @@ class DynamicDataFetcher(
                     codeRegistryBuilder
                         .dataFetcher(
                             FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"),
-                            createLocalizationDataFetcher,
+                            createLocalizationDataFetcher
                         )
                 }
 
@@ -116,7 +116,7 @@ class DynamicDataFetcher(
                         codeRegistryBuilder
                             .dataFetcher(
                                 FieldCoordinates.coordinates(MUTATION_TYPE, "${methodName}$capitalizedItemName"),
-                                customMethodDataFetcher,
+                                customMethodDataFetcher
                             )
                     }
                 }

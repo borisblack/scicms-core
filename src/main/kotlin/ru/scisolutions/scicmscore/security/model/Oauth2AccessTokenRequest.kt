@@ -10,5 +10,5 @@ class Oauth2AccessTokenRequest(
     @JsonProperty("client_secret")
     val clientSecret: String,
     @JsonProperty("code")
-    val accessCode: String,
+    val accessCode: String
 )

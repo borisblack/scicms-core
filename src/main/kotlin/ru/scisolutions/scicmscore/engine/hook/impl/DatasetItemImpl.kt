@@ -19,7 +19,7 @@ import java.util.Objects
 @Service
 class DatasetItemImpl(
     private val datasourceDao: DatasourceDao,
-    private val datasourceService: DatasourceService,
+    private val datasourceService: DatasourceService
 ) : CreateHook, UpdateHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         actualizeSpec(DatasetItemRec(data))
@@ -37,7 +37,7 @@ class DatasetItemImpl(
                 tableName = data[Dataset::tableName.name] as String?,
                 query = data[Dataset::query.name] as String?,
                 spec = parseSpec(data[Dataset::spec.name]).validate(),
-                hash = data[Dataset::hash.name] as String?,
+                hash = data[Dataset::hash.name] as String?
             )
 
         if (actualizeSpec(dataset)) {
@@ -70,7 +70,7 @@ class DatasetItemImpl(
         val hash =
             Objects.hash(
                 dataset.ds,
-                dataset.qs,
+                dataset.qs
             ).toString()
 
         if (dataset.hash == hash) {
@@ -83,7 +83,7 @@ class DatasetItemImpl(
             DatasetSpec(
                 columns = columnsMapper.map(dataset, datasourceDao.loadMetaData(dataset.ds, dataset.qs)),
                 sources = dataset.spec.sources,
-                useDesigner = dataset.spec.useDesigner,
+                useDesigner = dataset.spec.useDesigner
             )
         dataset.hash = hash
 

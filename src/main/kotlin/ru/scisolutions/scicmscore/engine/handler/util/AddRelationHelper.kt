@@ -22,7 +22,7 @@ class AddRelationHelper(
     private val relationManager: RelationManager,
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
 ) {
     fun addRelations(item: Item, itemRec: ItemRec, relAttributes: Map<String, Any>) {
         relAttributes.forEach { (attrName, value) ->
@@ -100,8 +100,8 @@ class AddRelationHelper(
             ItemRec(
                 mutableMapOf(
                     INTERMEDIATE_SOURCE_ATTR_NAME to sourceId,
-                    INTERMEDIATE_TARGET_ATTR_NAME to targetId,
-                ),
+                    INTERMEDIATE_TARGET_ATTR_NAME to targetId
+                )
             )
 
         itemRecDao.insertWithDefaults(intermediateItem, intermediateItemRec)

@@ -25,7 +25,7 @@ class PurgeDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherResu
         val input =
             DeleteInput(
                 id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
-                deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy),
+                deletingStrategy = DeleteInput.DeletingStrategy.valueOf(deletingStrategy)
             )
 
         val result = engine.purge(itemName, input, selectAttrNames)

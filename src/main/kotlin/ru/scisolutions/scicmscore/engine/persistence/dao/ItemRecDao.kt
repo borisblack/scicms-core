@@ -24,7 +24,7 @@ class ItemRecDao(
     private val auditManager: AuditManager,
     private val dsManager: DatasourceManager,
     private val itemCacheManager: ItemCacheManager,
-    private val idGenerator: DefaultIdGenerator,
+    private val idGenerator: DefaultIdGenerator
 ) : BaseItemRecDao(dsManager, itemCacheManager) {
     override val logger: Logger = LoggerFactory.getLogger(ItemRecDao::class.java)
 

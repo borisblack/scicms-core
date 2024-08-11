@@ -4,7 +4,7 @@ class PaginationInput(
     val page: Int? = null,
     val pageSize: Int? = null,
     val start: Int? = null,
-    val limit: Int? = null,
+    val limit: Int? = null
 ) {
     companion object {
         fun fromMap(map: Map<String, Any>): PaginationInput {
@@ -17,7 +17,7 @@ class PaginationInput(
                 page = if (page is String) page.toInt() else page as Int?,
                 pageSize = if (pageSize is String) pageSize.toInt() else pageSize as Int?,
                 start = if (start is String) start.toInt() else start as Int?,
-                limit = if (limit is String) limit.toInt() else limit as Int?,
+                limit = if (limit is String) limit.toInt() else limit as Int?
             )
         }
     }

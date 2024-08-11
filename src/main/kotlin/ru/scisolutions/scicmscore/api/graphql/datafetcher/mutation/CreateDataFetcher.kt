@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class CreateDataFetcher(
-    private val engine: Engine,
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
@@ -24,7 +24,7 @@ class CreateDataFetcher(
             CreateInput(
                 data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
                 majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
-                locale = dfe.arguments[LOCALE_ARG_NAME] as String?,
+                locale = dfe.arguments[LOCALE_ARG_NAME] as String?
             )
 
         val result = engine.create(itemName, input, selectAttrNames)

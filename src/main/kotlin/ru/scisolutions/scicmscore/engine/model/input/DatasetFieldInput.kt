@@ -7,5 +7,5 @@ class DatasetFieldInput(
     val custom: Boolean,
     val source: String?,
     val aggregate: AggregateType?,
-    val formula: String?,
+    val formula: String?
 )

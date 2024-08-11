@@ -24,14 +24,14 @@ class ItemQueryBuilder {
         id: String,
         paramSource: AttributeSqlParameterSource,
         selectAttrNames: Set<String>? = null,
-        permissionIds: Set<String>? = null,
+        permissionIds: Set<String>? = null
     ): SelectQuery = buildFindByKeyQuery(
         item = item,
         keyAttrName = item.idAttribute,
         key = id,
         paramSource = paramSource,
         selectAttrNames = selectAttrNames,
-        permissionIds = permissionIds,
+        permissionIds = permissionIds
     )
 
     fun buildFindByKeyQuery(
@@ -40,7 +40,7 @@ class ItemQueryBuilder {
         key: String,
         paramSource: AttributeSqlParameterSource,
         selectAttrNames: Set<String>? = null,
-        permissionIds: Set<String>? = null,
+        permissionIds: Set<String>? = null
     ): SelectQuery {
         val table = createTable(item)
         val keyAttribute = item.spec.getAttribute(keyAttrName)
@@ -106,7 +106,7 @@ class ItemQueryBuilder {
         keyAttrName = item.idAttribute,
         keys = ids,
         paramSource = paramSource,
-        permissionIds = permissionIds,
+        permissionIds = permissionIds
     )
 
     fun buildFindAllByKeysQuery(item: Item, keyAttrName: String, keys: Set<String>, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
@@ -143,7 +143,7 @@ class ItemQueryBuilder {
             ComboCondition(
                 Op.OR,
                 UnaryCondition.isNull(permissionIdCol),
-                InCondition(permissionIdCol, *permissionIds.toTypedArray()),
+                InCondition(permissionIdCol, *permissionIds.toTypedArray())
             )
         }
     }
@@ -170,7 +170,7 @@ class ItemQueryBuilder {
         whereAttrValue: Any?,
         updateAttributes: Map<String, Any?>,
         paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null,
+        permissionIds: Set<String>? = null
     ): UpdateQuery = buildUpdateByAttributesQuery(item, mapOf(whereAttrName to whereAttrValue), updateAttributes, paramSource, permissionIds)
 
     fun buildUpdateByAttributesQuery(
@@ -178,7 +178,7 @@ class ItemQueryBuilder {
         whereAttributes: Map<String, Any?>,
         updateAttributes: Map<String, Any?>,
         paramSource: AttributeSqlParameterSource,
-        permissionIds: Set<String>? = null,
+        permissionIds: Set<String>? = null
     ): UpdateQuery {
         val table = createTable(item)
         val conditions =

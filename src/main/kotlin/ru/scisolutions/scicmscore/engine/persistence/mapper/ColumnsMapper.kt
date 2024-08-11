@@ -20,7 +20,7 @@ class ColumnsMapper {
             val colName = metaData.getColumnName(i).lowercase()
             columns[colName] =
                 Column(
-                    type = getColumnType(metaData.getColumnType(i)),
+                    type = getColumnType(metaData.getColumnType(i))
                 )
         }
 
@@ -49,7 +49,7 @@ class ColumnsMapper {
                     formula = null,
                     alias = prevColumn?.alias,
                     format = prevColumn?.format,
-                    colWidth = prevColumn?.colWidth,
+                    colWidth = prevColumn?.colWidth
                 )
         }
 
@@ -65,7 +65,7 @@ class ColumnsMapper {
                     formula = column.formula,
                     alias = column.alias,
                     format = column.format,
-                    colWidth = column.colWidth,
+                    colWidth = column.colWidth
                 )
             } else {
                 column
@@ -81,7 +81,7 @@ class ColumnsMapper {
         Types.REAL -> FieldType.float
         Types.FLOAT, Types.DOUBLE -> FieldType.double
         Types.BINARY, Types.VARBINARY, Types.LONGVARBINARY -> throw IllegalArgumentException(
-            "Unsupported type",
+            "Unsupported type"
         ) // TODO: Think how to handle
         Types.DATE -> FieldType.date
         Types.TIME -> FieldType.time

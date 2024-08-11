@@ -12,5 +12,5 @@ class Identity(
     var name: String,
     @Column(nullable = false, columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
-    var principal: Boolean = false,
+    var principal: Boolean = false
 ) : AbstractEntity()

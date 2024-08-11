@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.engine.model.response.DatasourceTablesResponse
 @RestController
 @RequestMapping("/api/datasource")
 class DatasourceController(
-    private val engine: Engine,
+    private val engine: Engine
 ) {
     @GetMapping("/{datasourceName}/tables")
     fun loadTables(req: HttpServletRequest, @PathVariable("datasourceName") datasourceName: String): DatasourceTablesResponse {
@@ -31,7 +31,7 @@ class DatasourceController(
             setOf(
                 SCHEMA_ARG_NAME,
                 Q_ARG_NAME,
-                PAGINATION_ARG_NAME,
+                PAGINATION_ARG_NAME
             )
         private val datasourceInputMapper = DatasourceInputMapper()
     }

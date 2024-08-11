@@ -15,7 +15,7 @@ interface AllowedPermissionRepository : CrudRepository<AllowedPermission, String
         "select ap from AllowedPermission ap " +
             "left join Item i on ap.sourceId = i.id " +
             "where i.name = :itemName " +
-            "order by ap.sortOrder",
+            "order by ap.sortOrder"
     )
     @QueryHints(QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_CACHEABLE, value = "true"))
     fun findAllByItemName(itemName: String): List<AllowedPermission>

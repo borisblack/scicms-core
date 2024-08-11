@@ -21,7 +21,7 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(DATA_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeName("${capitalizedItemName}Input")))
-                        .build(),
+                        .build()
                 )
 
         if (item.versioned && item.manualVersioning) {
@@ -49,19 +49,19 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(DATA_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeName("${capitalizedItemName}Input")))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("copyCollectionRelations")
                         .type(TypeNames.BOOLEAN)
-                        .build(),
+                        .build()
                 )
 
         if (item.manualVersioning) {
@@ -89,19 +89,19 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(DATA_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeName("${capitalizedItemName}Input")))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("copyCollectionRelations")
                         .type(TypeNames.BOOLEAN)
-                        .build(),
+                        .build()
                 )
 
         builder.inputValueDefinition(InputValues.NON_NULL_LOCALE)
@@ -123,13 +123,13 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name(DATA_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeName("${capitalizedItemName}Input")))
-                        .build(),
+                        .build()
                 )
 
         // if (item.localized)
@@ -148,13 +148,13 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("deletingStrategy")
                         .type(NonNullType(TypeNames.DELETING_STRATEGY))
-                        .build(),
+                        .build()
                 )
 
         // if (item.versioned)
@@ -180,13 +180,13 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("deletingStrategy")
                         .type(NonNullType(TypeNames.DELETING_STRATEGY))
-                        .build(),
+                        .build()
                 )
 
         // if (item.localized)
@@ -209,7 +209,7 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
 
         // if (item.localized)
@@ -232,7 +232,7 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
 
         // if (item.localized)
@@ -251,13 +251,13 @@ class MutationItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name(ID_INPUT_VALUE_NAME)
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("state")
                         .type(NonNullType(TypeNames.STRING))
-                        .build(),
+                        .build()
                 )
 
         // if (item.localized)
@@ -278,9 +278,9 @@ class MutationItemFields {
                         InputValueDefinition.newInputValueDefinition()
                             .name(DATA_INPUT_VALUE_NAME)
                             .type(TypeNames.OBJECT)
-                            .build(),
+                            .build()
                     )
-                    .build(),
+                    .build()
             )
         }
 

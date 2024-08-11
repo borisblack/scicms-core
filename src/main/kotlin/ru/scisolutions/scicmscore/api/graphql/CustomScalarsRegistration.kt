@@ -13,6 +13,6 @@ class CustomScalarsRegistration {
         .scalar(
             ExtendedScalars.newRegexScalar("Email")
                 .addPattern(Pattern.compile("\\w+@\\w+\\.\\w+"))
-                .build(),
+                .build()
         )
 }

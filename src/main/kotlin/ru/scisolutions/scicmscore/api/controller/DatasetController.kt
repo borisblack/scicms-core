@@ -17,7 +17,7 @@ import ru.scisolutions.scicmscore.engine.model.response.DatasetResponse
 @RestController
 @RequestMapping("/api/dataset")
 class DatasetController(
-    private val engine: Engine,
+    private val engine: Engine
 ) {
     @GetMapping("/{datasetName}")
     fun load(req: HttpServletRequest, @PathVariable("datasetName") datasetName: String): DatasetResponse {
@@ -33,7 +33,7 @@ class DatasetController(
                 FILTERS_ARG_NAME,
                 FIELDS_ARG_NAME,
                 PAGINATION_ARG_NAME,
-                SORT_ARG_NAME,
+                SORT_ARG_NAME
             )
         private val datasetInputMapper = DatasetInputMapper()
     }

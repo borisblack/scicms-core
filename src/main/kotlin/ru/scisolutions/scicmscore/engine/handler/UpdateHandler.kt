@@ -34,7 +34,7 @@ class UpdateHandler(
     private val addRelationHelper: AddRelationHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
-    private val cacheService: CacheService,
+    private val cacheService: CacheService
 ) {
     fun update(itemName: String, input: UpdateInput, selectAttrNames: Set<String>): Response {
         if (itemName in disabledItemNames) {
@@ -89,7 +89,7 @@ class UpdateHandler(
             addRelationHelper.addRelations(
                 item,
                 itemRec,
-                itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>,
+                itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
             )
         }
 
@@ -101,7 +101,7 @@ class UpdateHandler(
         val selectData = (preUpdatedItemRec ?: itemRec).filterKeys { it in attrNames }.toMutableMap()
         val response =
             Response(
-                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             )
 
         implInstance?.afterUpdate(itemName, response)

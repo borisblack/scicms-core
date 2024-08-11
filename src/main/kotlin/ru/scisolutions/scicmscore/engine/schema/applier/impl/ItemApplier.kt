@@ -28,7 +28,7 @@ class ItemApplier(
     private val itemService: ItemService,
     private val tableSeeder: TableSeeder,
     private val schemaLockService: SchemaLockService,
-    private val relationValidator: RelationValidator,
+    private val relationValidator: RelationValidator
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == Item::class.java
 
@@ -97,12 +97,12 @@ class ItemApplier(
         metadata = item.metadata,
         checksum = item.checksum,
         includeTemplates = item.includeTemplates,
-        spec = mergeSpec(itemTemplateEntity.spec, item.spec),
+        spec = mergeSpec(itemTemplateEntity.spec, item.spec)
     )
 
     private fun mergeSpec(from: ItemSpec, to: ItemSpec) = ItemSpec(
         attributes = Maps.merge(from.attributes, to.attributes),
-        indexes = Maps.merge(from.indexes, to.indexes),
+        indexes = Maps.merge(from.indexes, to.indexes)
     )
 
     private fun validateModel(model: Item) {
@@ -165,7 +165,7 @@ class ItemApplier(
                     "Checksum for item [{}] is different in database ({}) and file ({}).",
                     existingItemEntity.name,
                     existingItemEntity.checksum,
-                    item.checksum,
+                    item.checksum
                 )
             }
         }
@@ -180,7 +180,7 @@ class ItemApplier(
                 "Hash for item [{}] in database is {}, but now is {}.",
                 existingItemEntity.name,
                 existingItemEntity.hash,
-                item.hashCode(),
+                item.hashCode()
             )
         }
 

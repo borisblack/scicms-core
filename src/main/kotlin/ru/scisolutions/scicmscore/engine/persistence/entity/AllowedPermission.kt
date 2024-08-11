@@ -10,7 +10,7 @@ import jakarta.persistence.Table
 @Table(name = "sec_allowed_permissions")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 class AllowedPermission(
     @Column(name = "sort_order")
@@ -21,5 +21,5 @@ class AllowedPermission(
     var targetId: String,
     @Column(name = "is_default", nullable = false, columnDefinition = "TINYINT")
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
-    var isDefault: Boolean = false,
+    var isDefault: Boolean = false
 ) : AbstractEntity()

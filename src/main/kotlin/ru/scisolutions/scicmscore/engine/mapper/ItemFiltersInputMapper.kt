@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.schema.service.RelationValidator
 @Component
 class ItemFiltersInputMapper(
     private val itemService: ItemService,
-    private val relationValidator: RelationValidator,
+    private val relationValidator: RelationValidator
 ) {
     fun map(itemName: String, itemFiltersMap: Map<String, Any>, opPrefix: String = ""): ItemFiltersInput {
         val item = itemService.getByName(itemName)
@@ -73,7 +73,7 @@ class ItemFiltersInputMapper(
             attributeFilters = attributeFilters,
             andFiltersList = andFiltersList,
             orFiltersList = orFiltersList,
-            notFilters = notFilters,
+            notFilters = notFilters
         )
     }
 

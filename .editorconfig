@@ -6,3 +6,7 @@ ktlint_standard_comment-wrapping = disabled
 ktlint_standard_discouraged-comment-location = disabled
 ktlint_standard_enum-entry-name-case = disabled
 max_line_length = 180
+
+[*.{kt,kts}]
+ij_kotlin_allow_trailing_comma = false
+ij_kotlin_allow_trailing_comma_on_call_site = false

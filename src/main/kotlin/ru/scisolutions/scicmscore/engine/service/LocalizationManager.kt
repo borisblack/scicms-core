@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.LocaleService
 @Service
 class LocalizationManager(
     private val i18nProps: I18nProps,
-    private val localeService: LocaleService,
+    private val localeService: LocaleService
 ) {
     fun assignLocaleAttribute(item: Item, itemRec: ItemRec, locale: String?) {
         if (!item.localized) {

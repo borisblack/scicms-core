@@ -23,7 +23,7 @@ class UserHandler(
     private val securityProps: SecurityProps,
     private val userGroupManager: UserGroupManager,
     private val jwtTokenService: JwtTokenService,
-    private val userService: UserService,
+    private val userService: UserService
 ) {
     fun register(registrationRequest: RegistrationRequest): TokenResponse {
         if (securityProps.registrationDisabled) {
@@ -33,7 +33,7 @@ class UserHandler(
         userGroupManager.createUserInGroups(
             username = registrationRequest.username,
             rawPassword = registrationRequest.password,
-            groupNames = setOf(Acl.GROUP_USERS),
+            groupNames = setOf(Acl.GROUP_USERS)
         )
 
         val userDetails = userGroupManager.loadUserByUsername(registrationRequest.username)
@@ -49,8 +49,8 @@ class UserHandler(
                 username = userDetails.username,
                 roles = authorities,
                 authType = AuthType.LOCAL,
-                sessionData = user.sessionData,
-            ),
+                sessionData = user.sessionData
+            )
         )
     }
 
@@ -88,7 +88,7 @@ class UserHandler(
                 username = authentication.name,
                 roles = AuthorityUtils.authorityListToSet(authentication.authorities),
                 sessionData = user.sessionData,
-                authType = authentication.authType,
+                authType = authentication.authType
             )
         }
     }

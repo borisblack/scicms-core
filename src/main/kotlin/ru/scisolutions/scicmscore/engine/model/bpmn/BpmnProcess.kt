@@ -15,5 +15,5 @@ class BpmnProcess(
     @get:XmlElement(name = "task", namespace = BpmnDefinitions.BPMN_NAMESPACE, required = true)
     var tasks: MutableList<BpmnTask> = mutableListOf(),
     @get:XmlElement(name = "sequenceFlow", namespace = BpmnDefinitions.BPMN_NAMESPACE, required = true)
-    var sequenceFlows: MutableList<BpmnSequenceFlow> = mutableListOf(),
+    var sequenceFlows: MutableList<BpmnSequenceFlow> = mutableListOf()
 )

@@ -21,7 +21,7 @@ class QueryItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name("id")
                         .type(NonNullType(TypeNames.ID))
-                        .build(),
+                        .build()
                 )
 
         // if (item.versioned)
@@ -43,19 +43,19 @@ class QueryItemFields {
                     InputValueDefinition.newInputValueDefinition()
                         .name("filters")
                         .type(TypeName("${capitalizedItemName}FiltersInput"))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("pagination")
                         .type(TypeName("PaginationInput"))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("sort")
                         .type(ListType(TypeNames.STRING))
-                        .build(),
+                        .build()
                 )
 
         if (item.versioned) {

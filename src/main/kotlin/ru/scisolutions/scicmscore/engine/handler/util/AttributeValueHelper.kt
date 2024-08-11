@@ -23,7 +23,7 @@ class AttributeValueHelper(
     private val dataProps: DataProps,
     private val itemService: ItemService,
     private val mediaService: MediaService,
-    private val itemRecDao: ItemRecDao,
+    private val itemRecDao: ItemRecDao
 ) {
     fun merge(item: Item, from: Map<String, Any?>, to: ItemRec): Map<String, Any?> {
         val filteredFrom =
@@ -129,7 +129,7 @@ class AttributeValueHelper(
 
                         if (value !in attribute.enumSet) {
                             throw IllegalArgumentException(
-                                "Enumeration set does not contain value [$value]. Possible values: ${attribute.enumSet.joinToString()}",
+                                "Enumeration set does not contain value [$value]. Possible values: ${attribute.enumSet.joinToString()}"
                             )
                         }
                     }
@@ -325,7 +325,7 @@ class AttributeValueHelper(
                 ItemRec.MAJOR_REV_ATTR_NAME,
                 ItemRec.CURRENT_ATTR_NAME,
                 ItemRec.LOCALE_ATTR_NAME,
-                ItemRec.STATE_ATTR_NAME,
+                ItemRec.STATE_ATTR_NAME
             )
         private val simpleEmailRegex = Regex("\\w+@\\w+\\.\\w+")
     }

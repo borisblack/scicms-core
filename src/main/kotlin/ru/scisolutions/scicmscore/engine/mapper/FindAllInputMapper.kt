@@ -21,7 +21,7 @@ class FindAllInputMapper(private val itemFiltersInputMapper: ItemFiltersInputMap
             sort = sort,
             majorRev = majorRev,
             locale = locale,
-            state = state,
+            state = state
         )
     }
 
@@ -33,7 +33,7 @@ class FindAllInputMapper(private val itemFiltersInputMapper: ItemFiltersInputMap
         return FindAllRelationInput(
             filters = itemFiltersMap?.let { itemFiltersInputMapper.map(itemName, it) },
             pagination = paginationMap?.let { PaginationInput.fromMap(it) },
-            sort = sort,
+            sort = sort
         )
     }
 

@@ -22,7 +22,7 @@ class LockHandler(
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
     private val userService: UserService,
-    private val attributeValueHelper: AttributeValueHelper,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
@@ -48,7 +48,7 @@ class LockHandler(
         val response =
             FlaggedResponse(
                 success = success,
-                data = ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+                data = ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             )
         implInstance?.afterLock(itemName, response)
 
@@ -83,7 +83,7 @@ class LockHandler(
         val response =
             FlaggedResponse(
                 success = success,
-                data = ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+                data = ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             )
 
         implInstance?.afterUnlock(itemName, response)

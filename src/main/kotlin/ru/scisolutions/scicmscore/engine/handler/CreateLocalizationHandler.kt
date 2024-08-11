@@ -38,7 +38,7 @@ class CreateLocalizationHandler(
     private val copyRelationHelper: CopyRelationHelper,
     private val itemRecDao: ItemRecDao,
     private val cacheService: CacheService,
-    private val idGenerator: DefaultIdGenerator,
+    private val idGenerator: DefaultIdGenerator
 ) {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -94,12 +94,12 @@ class CreateLocalizationHandler(
                 whereAttributes =
                 mapOf(
                     ItemRec.CONFIG_ID_ATTR_NAME to requireNotNull(itemRec.configId),
-                    ItemRec.LOCALE_ATTR_NAME to itemRec.locale,
+                    ItemRec.LOCALE_ATTR_NAME to itemRec.locale
                 ),
                 updateAttributes =
                 mapOf(
-                    ItemRec.CURRENT_ATTR_NAME to false,
-                ),
+                    ItemRec.CURRENT_ATTR_NAME to false
+                )
             )
         }
 
@@ -113,7 +113,7 @@ class CreateLocalizationHandler(
         addRelationHelper.addRelations(
             item,
             itemRec,
-            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>,
+            preparedData.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
         )
 
         // Copy relations from previous localization
@@ -129,7 +129,7 @@ class CreateLocalizationHandler(
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
         val response =
             Response(
-                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             )
 
         createLocalizationHook?.afterCreateLocalization(itemName, response)

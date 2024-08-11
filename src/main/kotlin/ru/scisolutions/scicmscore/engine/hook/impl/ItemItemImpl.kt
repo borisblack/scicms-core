@@ -27,7 +27,7 @@ class ItemItemImpl(
     private val itemMapper: ItemMapper,
     private val modelsApplier: ModelsApplier,
     private val tableSeeder: TableSeeder,
-    private val reloadIndicator: ReloadIndicator,
+    private val reloadIndicator: ReloadIndicator
 ) : CreateHook, UpdateHook, DeleteHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         val appliedModelResult = apply(ItemItemRec(data))
@@ -75,7 +75,7 @@ class ItemItemImpl(
         if (itemItemRec.performDdl == true) {
             tableSeeder.dropTable(
                 itemItemRec.datasource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
-                requireNotNull(itemItemRec.tableName),
+                requireNotNull(itemItemRec.tableName)
             )
         } else {
             logger.info("DDL performing flag is disabled for item [{}]. Deleting skipped.", itemItemRec.name)

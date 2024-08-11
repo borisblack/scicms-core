@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl.Mask
 @Transactional
 class DatasetService(
     private val permissionService: PermissionService,
-    private val datasetRepository: DatasetRepository,
+    private val datasetRepository: DatasetRepository
 ) {
     fun getById(id: String): Dataset = datasetRepository.findById(id).orElseThrow { IllegalArgumentException("Dataset [$id] not found") }
 

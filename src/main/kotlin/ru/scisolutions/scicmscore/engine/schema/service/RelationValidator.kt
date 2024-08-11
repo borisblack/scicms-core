@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
 
 @Component
 class RelationValidator(
-    private val itemService: ItemService,
+    private val itemService: ItemService
 ) {
     fun validateAttribute(item: Item, attrName: String, attribute: Attribute) {
         validateAttribute(attrName, attribute)
@@ -28,7 +28,7 @@ class RelationValidator(
 
         if (attribute.inversedBy != null && attribute.mappedBy != null) {
             throw IllegalStateException(
-                "The [$attrName] attribute has both inversedBy and mappedBy fields, which is an invalid relation state.",
+                "The [$attrName] attribute has both inversedBy and mappedBy fields, which is an invalid relation state."
             )
         }
 
@@ -55,7 +55,7 @@ class RelationValidator(
         if (attribute.relType == RelType.manyToMany) {
             if (item.metadata.dataSource != targetItem.ds) {
                 throw IllegalStateException(
-                    "Item [${item.metadata.name}] and it's manyToMany attribute target item have different data sources",
+                    "Item [${item.metadata.name}] and it's manyToMany attribute target item have different data sources"
                 )
             }
 
@@ -67,7 +67,7 @@ class RelationValidator(
 
             if (item.metadata.dataSource != intermediateItem.ds) {
                 throw IllegalStateException(
-                    "Item [${item.metadata.name}] and it's manyToMany attribute intermediate item have different data sources",
+                    "Item [${item.metadata.name}] and it's manyToMany attribute intermediate item have different data sources"
                 )
             }
         }
@@ -83,14 +83,14 @@ class RelationValidator(
         if (attribute.relType == RelType.manyToMany) {
             if (itemEntity.ds != targetItem.ds) {
                 throw IllegalStateException(
-                    "Item [${itemEntity.name}] and it's manyToMany attribute target item have different data sources",
+                    "Item [${itemEntity.name}] and it's manyToMany attribute target item have different data sources"
                 )
             }
 
             val intermediateItem = itemService.getByName(requireNotNull(attribute.intermediate))
             if (itemEntity.ds != intermediateItem.ds) {
                 throw IllegalStateException(
-                    "Item [${itemEntity.name}] and it's manyToMany attribute intermediate item have different data sources",
+                    "Item [${itemEntity.name}] and it's manyToMany attribute intermediate item have different data sources"
                 )
             }
         }

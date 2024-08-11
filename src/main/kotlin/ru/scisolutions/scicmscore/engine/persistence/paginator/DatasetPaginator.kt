@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlParameterSo
 @Component
 class DatasetPaginator(
     dataProps: DataProps,
-    private val datasetDao: DatasetDao,
+    private val datasetDao: DatasetDao
 ) : AbstractPaginator(dataProps) {
     fun paginate(dataset: Dataset, paginationInput: PaginationInput, query: SelectQuery, paramSource: DatasetSqlParameterSource): Pagination {
         val total: CacheStatistic<Int> = datasetDao.count(dataset, query.toString(), paramSource)
@@ -21,7 +21,7 @@ class DatasetPaginator(
             dbMetaData = datasetDao.dbMetaData(dataset),
             paginationInput = paginationInput,
             query = query,
-            total = total.result,
+            total = total.result
         ).apply {
             this.timeMs = total.timeMs
             this.cacheHit = total.cacheHit

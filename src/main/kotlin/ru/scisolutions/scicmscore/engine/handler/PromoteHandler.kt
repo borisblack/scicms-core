@@ -24,7 +24,7 @@ class PromoteHandler(
     private val auditManager: AuditManager,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
-    private val attributeValueHelper: AttributeValueHelper,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -79,7 +79,7 @@ class PromoteHandler(
         val selectData = itemRec.filterKeys { it in attrNames }.toMutableMap()
 
         return Response(
-            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+            ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
         )
     }
 

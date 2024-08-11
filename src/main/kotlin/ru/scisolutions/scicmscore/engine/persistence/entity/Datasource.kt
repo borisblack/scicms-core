@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.MapConverter
 @Table(name = "core_datasources")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 @org.hibernate.annotations.NaturalIdCache
 class Datasource(
@@ -29,7 +29,7 @@ class Datasource(
     @Column(name = "min_idle")
     var minIdle: Int?,
     @Convert(converter = MapConverter::class)
-    var params: Map<String, Any?> = mapOf(),
+    var params: Map<String, Any?> = mapOf()
 ) : AbstractEntity() {
     override fun toString(): String = "Datasource(name=$name)"
 

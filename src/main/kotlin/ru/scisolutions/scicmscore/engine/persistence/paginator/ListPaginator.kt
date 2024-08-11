@@ -37,7 +37,7 @@ class ListPaginator(private val dataProps: DataProps) {
                     page = page,
                     pageSize = pageSize,
                     total = total,
-                    pageCount = pageCount,
+                    pageCount = pageCount
                 )
             } else if (paginationInput.start != null || paginationInput.limit != null) {
                 val start = paginationInput.start ?: 0
@@ -59,7 +59,7 @@ class ListPaginator(private val dataProps: DataProps) {
                     start = start,
                     limit = limit,
                     total = total,
-                    pageCount = null,
+                    pageCount = null
                 )
             }
         }
@@ -67,7 +67,7 @@ class ListPaginator(private val dataProps: DataProps) {
         return ListPagination(
             list = list,
             total = total,
-            pageCount = null,
+            pageCount = null
         )
     }
 }

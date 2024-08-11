@@ -22,7 +22,7 @@ class ItemTemplateApplier(
     private val itemTemplateService: ItemTemplateService,
     private val itemService: ItemService,
     private val schemaLockService: SchemaLockService,
-    private val itemTemplateMapper: ItemTemplateMapper,
+    private val itemTemplateMapper: ItemTemplateMapper
 ) : ModelApplier {
     override fun supports(clazz: Class<*>): Boolean = clazz == ItemTemplate::class.java
 
@@ -92,7 +92,7 @@ class ItemTemplateApplier(
                     "Checksum for item template [{}] is different in database ({}) and file ({}).",
                     existingItemTemplateEntity.name,
                     existingItemTemplateEntity.checksum,
-                    itemTemplate.checksum,
+                    itemTemplate.checksum
                 )
             }
         }
@@ -107,7 +107,7 @@ class ItemTemplateApplier(
                 "Hash for item template [{}] in database is {}, but now is {}.",
                 existingItemTemplateEntity.name,
                 existingItemTemplateEntity.hash,
-                itemTemplate.hashCode(),
+                itemTemplate.hashCode()
             )
         }
 

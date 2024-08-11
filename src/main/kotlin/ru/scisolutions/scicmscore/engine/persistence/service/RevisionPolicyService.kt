@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.RevisionPolicyRe
 @Repository
 @Transactional
 class RevisionPolicyService(
-    private val revisionPolicyRepository: RevisionPolicyRepository,
+    private val revisionPolicyRepository: RevisionPolicyRepository
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): RevisionPolicy? = revisionPolicyRepository.findById(id).orElse(null)

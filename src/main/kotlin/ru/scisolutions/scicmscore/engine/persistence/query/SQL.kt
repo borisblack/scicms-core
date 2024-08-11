@@ -38,14 +38,14 @@ object SQL {
         FieldType.float,
         FieldType.double,
         FieldType.decimal,
-        FieldType.date,
+        FieldType.date
         -> value
         FieldType.time -> if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
         FieldType.datetime,
-        FieldType.timestamp,
+        FieldType.timestamp
         -> if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value
         FieldType.array,
-        FieldType.json,
+        FieldType.json
         -> if (value is String) value else Json.objectMapper.writeValueAsString(value)
     }
 

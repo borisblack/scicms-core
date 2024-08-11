@@ -11,5 +11,5 @@ class BpmnTask(
     @get:XmlElement(name = "incoming", namespace = BpmnDefinitions.BPMN_NAMESPACE, required = true)
     var incomings: MutableSet<String> = mutableSetOf(),
     @get:XmlElement(name = "outgoing", namespace = BpmnDefinitions.BPMN_NAMESPACE, required = true)
-    var outgoings: MutableSet<String> = mutableSetOf(),
+    var outgoings: MutableSet<String> = mutableSetOf()
 )

@@ -17,7 +17,7 @@ import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 @Service
 class DatasourceDao(
     dataProps: DataProps,
-    private val dsManager: DatasourceManager,
+    private val dsManager: DatasourceManager
 ) {
     private val tablesMapper = TablesMapper(dataProps)
 
@@ -49,7 +49,7 @@ class DatasourceDao(
                     it.catalog,
                     if (input.schema.isNullOrBlank()) it.schema else input.schema,
                     null,
-                    arrayOf("TABLE"),
+                    arrayOf("TABLE")
                 )
             logger.debug("Fetched metaData tables.")
 

@@ -10,7 +10,7 @@ import ru.scisolutions.scicmscore.engine.persistence.repository.AllowedLifecycle
 @Repository
 @Transactional
 class AllowedLifecycleService(
-    private val allowedLifecycleRepository: AllowedLifecycleRepository,
+    private val allowedLifecycleRepository: AllowedLifecycleRepository
 ) {
     @Transactional(readOnly = true)
     fun findAllByItemName(itemName: String): List<AllowedLifecycle> = allowedLifecycleRepository.findAllByItemName(itemName)

@@ -22,7 +22,7 @@ class PermissionService(
     private val accessRepository: AccessRepository,
     private val permissionRepository: PermissionRepository,
     private val cacheService: CacheService,
-    private val entityManager: EntityManager,
+    private val entityManager: EntityManager
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): Permission? = permissionRepository.findById(id).orElse(null)
@@ -49,7 +49,7 @@ class PermissionService(
             accessRepository.findAllByMask(
                 mask,
                 authentication.name,
-                AuthorityUtils.authorityListToSet(authentication.authorities),
+                AuthorityUtils.authorityListToSet(authentication.authorities)
             ).sortedWith(Access.AccessComparator())
 
         val permissionAccessMap = accessList.groupBy { it.sourceId }

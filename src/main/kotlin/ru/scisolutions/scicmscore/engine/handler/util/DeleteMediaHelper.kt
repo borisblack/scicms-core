@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
 @Component
 class DeleteMediaHelper(
-    private val mediaHandler: MediaHandler,
+    private val mediaHandler: MediaHandler
 ) {
     fun deleteMedia(item: Item, itemRec: ItemRec) {
         item.spec.attributes.asSequence()

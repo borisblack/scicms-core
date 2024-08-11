@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class CustomMethodDataFetcher(
-    private val engine: Engine,
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<CustomMethodResponse>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<CustomMethodResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)

@@ -15,7 +15,7 @@ class CacheService(
     private val emf: EntityManagerFactory,
     private val entityManager: EntityManager,
     private val cacheManager: CacheManager,
-    private val redissonClient: RedissonClient,
+    private val redissonClient: RedissonClient
 ) {
     fun clearSchemaCaches(vararg classes: Class<*>) {
         val cache = emf.cache

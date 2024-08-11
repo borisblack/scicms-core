@@ -19,7 +19,7 @@ import javax.sql.DataSource
 @Component
 class CustomUserDetailsManager(
     dataSource: DataSource,
-    jdbcTemplate: JdbcTemplate,
+    jdbcTemplate: JdbcTemplate
 ) : JdbcUserDetailsManager() {
     private val groupAuthoritiesByUsernameQuery = GROUP_AUTHORITIES_BY_USERNAME_QUERY.trimIndent()
 
@@ -89,7 +89,7 @@ class CustomUserDetailsManager(
         jdbcTemplate!!.update(
             insertGroupAuthoritySql, newId, newId, groupId, authority.authority,
             DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
-            now, ROOT_USER_ID, now, ROOT_USER_ID,
+            now, ROOT_USER_ID, now, ROOT_USER_ID
         )
     }
 
@@ -113,7 +113,7 @@ class CustomUserDetailsManager(
         jdbcTemplate!!.update(
             insertGroupMemberSql, newId, newId, groupId, username,
             DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
-            now, ROOT_USER_ID, now, ROOT_USER_ID,
+            now, ROOT_USER_ID, now, ROOT_USER_ID
         )
         userCache.removeUserFromCache(username)
     }
@@ -126,7 +126,7 @@ class CustomUserDetailsManager(
         jdbcTemplate!!.update(
             createUserSql, newId, newId, username, user.password, if (user.isEnabled) 1 else 0,
             DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
-            now, ROOT_USER_ID, now, ROOT_USER_ID,
+            now, ROOT_USER_ID, now, ROOT_USER_ID
         )
         if (enableAuthorities) {
             insertUserAuthorities(user)
@@ -144,7 +144,7 @@ class CustomUserDetailsManager(
             Assert.notNull(authority, "Authorities list contains a null entry")
             Assert.hasText(
                 authority.authority,
-                "getAuthority() method must return a non-empty string",
+                "getAuthority() method must return a non-empty string"
             )
         }
     }
@@ -156,7 +156,7 @@ class CustomUserDetailsManager(
             jdbcTemplate!!.update(
                 createAuthoritySql, newId, newId, user.username, auth.authority,
                 DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
-                now, ROOT_USER_ID, now, ROOT_USER_ID,
+                now, ROOT_USER_ID, now, ROOT_USER_ID
             )
         }
     }
@@ -168,14 +168,14 @@ class CustomUserDetailsManager(
             (
                 "Creating new group '" + groupName + "' with authorities " +
                     AuthorityUtils.authorityListToSet(authorities)
-                ),
+                )
         )
         val newId = generateUUID()
         val now = LocalDateTime.now()
         jdbcTemplate!!.update(
             insertGroupSql, newId, newId, groupName,
             DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
-            now, ROOT_USER_ID, now, ROOT_USER_ID,
+            now, ROOT_USER_ID, now, ROOT_USER_ID
         )
         val groupId = findGroupId(groupName)
         for (a: GrantedAuthority in authorities) {
@@ -184,7 +184,7 @@ class CustomUserDetailsManager(
             jdbcTemplate!!.update(
                 insertGroupAuthoritySql, groupAuthorityId, groupAuthorityId, groupId, authority,
                 DEFAULT_GENERATION, DEFAULT_MAJOR_REV, if (DEFAULT_IS_CURRENT) 1 else 0, DEFAULT_PERMISSION_ID,
-                now, ROOT_USER_ID, now, ROOT_USER_ID,
+                now, ROOT_USER_ID, now, ROOT_USER_ID
             )
         }
     }
@@ -220,7 +220,7 @@ class CustomUserDetailsManager(
         if (users.size == 0) {
             logger.debug("Query returned no results for user '$username'")
             throw UsernameNotFoundException(
-                messages.getMessage("JdbcDaoImpl.notFound", arrayOf(username), "Username {0} not found"),
+                messages.getMessage("JdbcDaoImpl.notFound", arrayOf(username), "Username {0} not found")
             )
         }
         val user = users[0] // contains no GrantedAuthority[]
@@ -239,8 +239,8 @@ class CustomUserDetailsManager(
                 messages.getMessage(
                     "JdbcDaoImpl.noAuthority",
                     arrayOf(username),
-                    "User {0} has no GrantedAuthority",
-                ),
+                    "User {0} has no GrantedAuthority"
+                )
             )
         }
         return createUserDetails(username, user, dbAuths)

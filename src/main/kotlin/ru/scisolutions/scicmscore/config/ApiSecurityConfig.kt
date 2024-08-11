@@ -33,7 +33,7 @@ import ru.scisolutions.scicmscore.security.provider.UsernamePasswordAuthenticati
 class ApiSecurityConfig(
     private val securityProps: SecurityProps,
     private val usernamePasswordAuthenticationProvider: UsernamePasswordAuthenticationProvider,
-    private val oauth2AccessCodeAuthenticationProvider: Oauth2AccessCodeAuthenticationProvider,
+    private val oauth2AccessCodeAuthenticationProvider: Oauth2AccessCodeAuthenticationProvider
 ) {
     @Bean
     fun threadPoolTaskExecutor(): ThreadPoolTaskExecutor {
@@ -59,7 +59,7 @@ class ApiSecurityConfig(
                     // "/schema.json",
                     "/swagger-ui.html",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**",
+                    "/v3/api-docs/**"
                 )
                     .permitAll()
                     .anyRequest()
@@ -79,11 +79,11 @@ class ApiSecurityConfig(
             .addFilterBefore(JwtTokenAuthenticationFilter(authManager), BasicAuthenticationFilter::class.java)
             .addFilterBefore(
                 UsernamePasswordAuthenticationFilter(authManager, jwtTokenService(), securityProps),
-                BasicAuthenticationFilter::class.java,
+                BasicAuthenticationFilter::class.java
             )
             .addFilterBefore(
                 Oauth2AccessTokenAuthenticationFilter(authManager, jwtTokenService(), securityProps),
-                BasicAuthenticationFilter::class.java,
+                BasicAuthenticationFilter::class.java
             )
 
         return http.build()

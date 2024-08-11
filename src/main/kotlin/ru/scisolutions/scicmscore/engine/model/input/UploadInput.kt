@@ -6,5 +6,5 @@ class UploadInput(
     val file: Part,
     val label: String?,
     val description: String?,
-    val permissionId: String?,
+    val permissionId: String?
 )

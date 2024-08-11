@@ -29,12 +29,12 @@ class CacheConfig {
             .withCacheConfiguration(
                 "itemRecCache",
                 RedisCacheConfiguration.defaultCacheConfig()
-                    .entryTtl(Duration.ofMinutes(10)),
+                    .entryTtl(Duration.ofMinutes(10))
             )
             .withCacheConfiguration(
                 "methodCache",
                 RedisCacheConfiguration.defaultCacheConfig()
-                    .entryTtl(Duration.ofMinutes(5)),
+                    .entryTtl(Duration.ofMinutes(5))
             )
     }
 

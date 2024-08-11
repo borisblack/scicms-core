@@ -30,7 +30,7 @@ class DeleteHandler(
     private val attributeValueHelper: AttributeValueHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
-    private val cacheService: CacheService,
+    private val cacheService: CacheService
 ) {
     fun delete(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): Response {
         if (itemName == Item.REVISION_POLICY_ITEM_NAME && input.id == RevisionPolicy.DEFAULT_REVISION_POLICY_ID) {
@@ -83,7 +83,7 @@ class DeleteHandler(
 
         val response =
             Response(
-                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             )
 
         implInstance?.afterDelete(itemName, response)

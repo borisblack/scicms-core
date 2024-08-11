@@ -11,6 +11,6 @@ class LinkedHashSetStringConverter : AttributeConverter<LinkedHashSet<String>, S
 
     override fun convertToEntityAttribute(dbData: String): LinkedHashSet<String> = Json.objectMapper.readValue(
         dbData,
-        object : TypeReference<LinkedHashSet<String>>() {},
+        object : TypeReference<LinkedHashSet<String>>() {}
     )
 }

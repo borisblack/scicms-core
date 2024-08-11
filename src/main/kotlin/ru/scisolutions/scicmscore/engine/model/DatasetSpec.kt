@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.engine.model
 data class DatasetSpec(
     val columns: Map<String, Column> = emptyMap(),
     val sources: DatasetSources? = null,
-    val useDesigner: Boolean? = null,
+    val useDesigner: Boolean? = null
 ) {
     fun getField(fieldName: String): Column = columns[fieldName] ?: throw IllegalArgumentException("Column [$fieldName] not found.")
 

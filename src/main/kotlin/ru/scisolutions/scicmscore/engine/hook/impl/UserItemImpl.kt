@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.IdentityService
 class UserItemImpl(
     private val securityProps: SecurityProps,
     private val identityService: IdentityService,
-    private val accessService: AccessService,
+    private val accessService: AccessService
 ) : DeleteHook {
     override fun beforeDelete(itemName: String, input: DeleteInput, data: ItemRec) {
         // Do nothing

@@ -123,7 +123,7 @@ class LiquibaseIndexes {
                     listOf(
                         AddColumnConfig().apply { this.name = attribute.columnName },
                         AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME },
-                        AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME },
+                        AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME }
                     )
             },
             CreateIndexChange().apply {
@@ -134,9 +134,9 @@ class LiquibaseIndexes {
                     listOf(
                         AddColumnConfig().apply { this.name = columnName },
                         AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME },
-                        AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME },
+                        AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME }
                     )
-            },
+            }
         )
     }
 
@@ -157,7 +157,7 @@ class LiquibaseIndexes {
             DropIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${MAJOR_REV_COLUMN_NAME}_${LOCALE_COLUMN_NAME}_uk"
-            },
+            }
         )
     }
 
@@ -178,7 +178,7 @@ class LiquibaseIndexes {
                 this.columns =
                     listOf(
                         AddColumnConfig().apply { this.name = columnName },
-                        AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME },
+                        AddColumnConfig().apply { this.name = GENERATION_COLUMN_NAME }
                     )
             },
             CreateIndexChange().apply {
@@ -188,9 +188,9 @@ class LiquibaseIndexes {
                 this.columns =
                     listOf(
                         AddColumnConfig().apply { this.name = columnName },
-                        AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME },
+                        AddColumnConfig().apply { this.name = MAJOR_REV_COLUMN_NAME }
                     )
-            },
+            }
         )
     }
 
@@ -211,7 +211,7 @@ class LiquibaseIndexes {
             DropIndexChange().apply {
                 this.tableName = tableName
                 this.indexName = "${tableName}_${columnName}_${MAJOR_REV_COLUMN_NAME}_uk"
-            },
+            }
         )
     }
 
@@ -231,7 +231,7 @@ class LiquibaseIndexes {
             this.columns =
                 mutableListOf(
                     AddColumnConfig().apply { this.name = columnName },
-                    AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME },
+                    AddColumnConfig().apply { this.name = LOCALE_COLUMN_NAME }
                 )
         }
     }
@@ -262,7 +262,7 @@ class LiquibaseIndexes {
             this.isUnique = true
             this.columns =
                 mutableListOf(
-                    AddColumnConfig().apply { this.name = columnName },
+                    AddColumnConfig().apply { this.name = columnName }
                 )
         }
     }
@@ -288,7 +288,7 @@ class LiquibaseIndexes {
             this.indexName = buildIndexName(tableName, columnName)
             this.columns =
                 mutableListOf(
-                    AddColumnConfig().apply { this.name = columnName },
+                    AddColumnConfig().apply { this.name = columnName }
                 )
         }
     }

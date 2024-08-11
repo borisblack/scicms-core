@@ -10,5 +10,5 @@ class Locale(
     @Column(nullable = false)
     var name: String,
     @Column(name = "display_name")
-    var displayName: String?,
+    var displayName: String?
 ) : AbstractEntity()

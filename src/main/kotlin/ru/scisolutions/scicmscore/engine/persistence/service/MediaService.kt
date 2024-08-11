@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 @Transactional
 class MediaService(
     private val permissionService: PermissionService,
-    private val mediaRepository: MediaRepository,
+    private val mediaRepository: MediaRepository
 ) {
     @Transactional(readOnly = true)
     fun findById(id: String): Media? = mediaRepository.findById(id).orElse(null)

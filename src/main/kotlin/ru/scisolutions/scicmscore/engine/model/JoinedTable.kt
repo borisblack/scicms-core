@@ -7,13 +7,13 @@ data class JoinedTable(
     val columns: Map<String, Column>,
     val alias: String? = null,
     val joinType: JoinType? = null,
-    val joins: List<Join>,
+    val joins: List<Join>
 ) {
     enum class JoinType {
         inner,
         left,
         right,
-        full,
+        full
     }
 
     override fun equals(other: Any?): Boolean {
@@ -39,6 +39,6 @@ data class JoinedTable(
         columns,
         alias,
         joinType?.name,
-        joins,
+        joins
     )
 }

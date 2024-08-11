@@ -64,7 +64,7 @@ class EngineImpl(
     private val promoteHandler: PromoteHandler,
     private val customMethodHandler: CustomMethodHandler,
     private val datasetHandler: DatasetHandler,
-    private val datasourceHandler: DatasourceHandler,
+    private val datasourceHandler: DatasourceHandler
 ) : Engine {
     override fun registerUser(registrationRequest: RegistrationRequest): TokenResponse = userHandler.register(registrationRequest)
 
@@ -92,14 +92,14 @@ class EngineImpl(
             parentItemRec = parentItemRec,
             parentAttrName = parentAttrName,
             itemName = itemName,
-            selectAttrNames = selectAttrNames,
+            selectAttrNames = selectAttrNames
         )
 
     override fun findAll(itemName: String, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>): ResponseCollection = findAllHandler.findAll(
         itemName = itemName,
         input = input,
         selectAttrNames = selectAttrNames,
-        selectPaginationFields = selectPaginationFields,
+        selectPaginationFields = selectPaginationFields
     )
 
     override fun findAllRelated(
@@ -109,7 +109,7 @@ class EngineImpl(
         itemName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
-        selectPaginationFields: Set<String>,
+        selectPaginationFields: Set<String>
     ): RelationResponseCollection = findAllHandler.findAllRelated(
         parentItemName = parentItemName,
         parentItemRec = parentItemRec,
@@ -117,7 +117,7 @@ class EngineImpl(
         itemName = itemName,
         input = input,
         selectAttrNames = selectAttrNames,
-        selectPaginationFields = selectPaginationFields,
+        selectPaginationFields = selectPaginationFields
     )
 
     override fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response = createHandler.create(itemName, input, selectAttrNames)

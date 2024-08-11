@@ -18,7 +18,7 @@ import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 class DatasourceItemImpl(
     private val datasourceManager: DatasourceManager,
     private val itemService: ItemService,
-    private val datasetService: DatasetService,
+    private val datasetService: DatasetService
 ) : CreateHook, UpdateHook, DeleteHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         checkConnection(DatasourceItemRec(data))
@@ -29,7 +29,7 @@ class DatasourceItemImpl(
         datasourceManager.checkConnection(
             requireNotNull(ds.connectionString),
             requireNotNull(ds.username),
-            requireNotNull(ds.password),
+            requireNotNull(ds.password)
         )
     }
 

@@ -19,12 +19,12 @@ import ru.scisolutions.scicmscore.engine.persistence.paginator.DatasetPaginator
 @Component
 class DatasetQueryBuilder(
     private val datasetFilterConditionBuilder: DatasetFilterConditionBuilder,
-    private val datasetPaginator: DatasetPaginator,
+    private val datasetPaginator: DatasetPaginator
 ) {
     @JsonInclude(Include.NON_NULL)
     class DatasetQuery(
         val sql: String,
-        val pagination: Pagination?,
+        val pagination: Pagination?
     )
 
     fun buildLoadQuery(dataset: Dataset, input: DatasetInput, paramSource: DatasetSqlParameterSource): DatasetQuery {
@@ -40,7 +40,7 @@ class DatasetQueryBuilder(
             datasetOrderingsParser.parseOrderings(
                 input.sort,
                 null, // no table for custom fields
-                query,
+                query
             )
         }
 
@@ -49,7 +49,7 @@ class DatasetQueryBuilder(
 
         return DatasetQuery(
             sql = query.validate().toString(),
-            pagination = pagination,
+            pagination = pagination
         )
     }
 
@@ -78,7 +78,7 @@ class DatasetQueryBuilder(
             if (fieldInput == null) {
                 !datasetSqlExprEvaluator.isAggregate(
                     dataset,
-                    it,
+                    it
                 )
             } else {
                 !datasetSqlExprEvaluator.isAggregate(fieldInput)
@@ -86,7 +86,7 @@ class DatasetQueryBuilder(
         },
         andFiltersList = filters.andFilterList?.map { whereFiltersInput(dataset, fields, it) },
         orFiltersList = filters.orFilterList?.map { whereFiltersInput(dataset, fields, it) },
-        notFilters = filters.notFilter?.let { whereFiltersInput(dataset, fields, it) },
+        notFilters = filters.notFilter?.let { whereFiltersInput(dataset, fields, it) }
     )
 
     fun havingFiltersInput(dataset: Dataset, fields: Map<String, DatasetFieldInput>, filters: DatasetFiltersInput): DatasetFiltersInput = DatasetFiltersInput(
@@ -96,7 +96,7 @@ class DatasetQueryBuilder(
             if (fieldInput == null) {
                 datasetSqlExprEvaluator.isAggregate(
                     dataset,
-                    it,
+                    it
                 )
             } else {
                 datasetSqlExprEvaluator.isAggregate(fieldInput)
@@ -104,7 +104,7 @@ class DatasetQueryBuilder(
         },
         andFiltersList = filters.andFilterList?.map { havingFiltersInput(dataset, fields, it) },
         orFiltersList = filters.orFilterList?.map { havingFiltersInput(dataset, fields, it) },
-        notFilters = filters.notFilter?.let { havingFiltersInput(dataset, fields, it) },
+        notFilters = filters.notFilter?.let { havingFiltersInput(dataset, fields, it) }
     )
 
     private fun buildInitialLoadQuery(dataset: Dataset, input: DatasetInput, table: DbTable, paramSource: DatasetSqlParameterSource): SelectQuery {
@@ -141,8 +141,8 @@ class DatasetQueryBuilder(
                         datasetFiltersInput = whereFilters,
                         table = table,
                         query = query,
-                        paramSource = paramSource,
-                    ),
+                        paramSource = paramSource
+                    )
                 )
             }
 
@@ -155,8 +155,8 @@ class DatasetQueryBuilder(
                         datasetFiltersInput = havingFilters,
                         table = table,
                         query = query,
-                        paramSource = paramSource,
-                    ),
+                        paramSource = paramSource
+                    )
                 )
             }
         }

@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
 @Component
 class ItemMapper(
     private val appProps: AppProps,
-    private val datasourceService: DatasourceService,
+    private val datasourceService: DatasourceService
 ) {
     fun mapToEntity(source: Item): ItemEntity {
         val metadata = source.metadata
@@ -26,7 +26,7 @@ class ItemMapper(
                 name = metadata.name,
                 pluralName = metadata.pluralName,
                 datasourceId = datasource?.id,
-                datasource = datasource,
+                datasource = datasource
             )
         copyToEntity(source, target)
 
@@ -108,9 +108,9 @@ class ItemMapper(
             implementation = source.implementation,
             revisionPolicy = source.revisionPolicy,
             lifecycle = source.lifecycle,
-            permission = source.permission,
+            permission = source.permission
         ),
         spec = source.spec?.let { Json.objectMapper.convertValue(it, ItemSpec::class.java) } ?: ItemSpec(),
-        checksum = null,
+        checksum = null
     )
 }

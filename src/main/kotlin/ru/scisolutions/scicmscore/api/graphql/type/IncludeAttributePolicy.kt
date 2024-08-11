@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.ItemService
 
 @Component
 class IncludeAttributePolicy(
-    private val itemService: ItemService,
+    private val itemService: ItemService
 ) {
     fun includeInObjectType(item: Item, attrName: String, attribute: Attribute): Boolean {
         if (attribute.private) {

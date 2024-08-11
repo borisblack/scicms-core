@@ -18,7 +18,7 @@ class DynamicTypeDefinitions(
     private val itemObjectTypes: ItemObjectTypes,
     private val itemInputObjectTypes: ItemInputObjectTypes,
     private val queryItemFields: QueryItemFields,
-    private val mutationItemFields: MutationItemFields,
+    private val mutationItemFields: MutationItemFields
 ) {
     @DgsTypeDefinitionRegistry
     fun registry(): TypeDefinitionRegistry {

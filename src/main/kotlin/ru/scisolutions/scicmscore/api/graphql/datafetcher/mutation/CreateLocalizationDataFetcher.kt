@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class CreateLocalizationDataFetcher(
-    private val engine: Engine,
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
@@ -25,7 +25,7 @@ class CreateLocalizationDataFetcher(
                 id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
                 data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
                 locale = dfe.arguments[LOCALE_ARG_NAME] as String? ?: throw IllegalArgumentException("The [$LOCALE_ARG_NAME] argument is null."),
-                copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?,
+                copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?
             )
 
         val result = engine.createLocalization(itemName, input, selectAttrNames)

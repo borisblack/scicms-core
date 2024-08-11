@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 @Component
 class FindAllDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
-    private val engine: Engine,
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<ResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<ResponseCollection> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseCollectionFieldTypeRegex)

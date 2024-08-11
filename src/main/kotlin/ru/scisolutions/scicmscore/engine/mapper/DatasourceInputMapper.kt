@@ -12,7 +12,7 @@ class DatasourceInputMapper() {
         return DatasourceTablesInput(
             schema = schema,
             q = q,
-            pagination = paginationMap?.let { PaginationInput.fromMap(it) },
+            pagination = paginationMap?.let { PaginationInput.fromMap(it) }
         )
     }
 

@@ -24,7 +24,7 @@ class ItemTemplateItemImpl(
     private val schemaLockService: SchemaLockService,
     private val itemTemplateMapper: ItemTemplateMapper,
     private val modelsApplier: ModelsApplier,
-    private val reloadIndicator: ReloadIndicator,
+    private val reloadIndicator: ReloadIndicator
 ) : CreateHook, UpdateHook, DeleteHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         val appliedModelResult = apply(ItemTemplateItemRec(data))

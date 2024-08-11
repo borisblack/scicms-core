@@ -33,7 +33,7 @@ import kotlin.random.Random
 @Component
 class ItemFilterConditionBuilder(
     private val itemService: ItemService,
-    private val relationManager: RelationManager,
+    private val relationManager: RelationManager
 ) {
     fun newFilterCondition(
         item: Item,
@@ -41,7 +41,7 @@ class ItemFilterConditionBuilder(
         schema: DbSchema,
         table: DbTable,
         query: SelectQuery,
-        paramSource: AttributeSqlParameterSource,
+        paramSource: AttributeSqlParameterSource
     ): Condition {
         val nestedConditions = mutableListOf<Condition>()
 
@@ -64,7 +64,7 @@ class ItemFilterConditionBuilder(
                             OneToOneUnidirectionalRelation(
                                 item = item,
                                 attrName = attrName,
-                                targetItem = targetItem,
+                                targetItem = targetItem
                             )
                         else -> relationManager.getAttributeRelation(item, attrName, attribute)
                     }
@@ -125,13 +125,13 @@ class ItemFilterConditionBuilder(
                                     JoinType.LEFT_OUTER,
                                     table,
                                     intermediateTable,
-                                    BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol),
+                                    BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol)
                                 )
                                 query.addJoin(
                                     JoinType.LEFT_OUTER,
                                     intermediateTable,
                                     targetTable,
-                                    BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol),
+                                    BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol)
                                 )
                             }
                             is ManyToManyBidirectionalRelation -> {
@@ -144,13 +144,13 @@ class ItemFilterConditionBuilder(
                                         JoinType.LEFT_OUTER,
                                         table,
                                         intermediateTable,
-                                        BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol),
+                                        BinaryCondition.equalTo(sourceKeyCol, sourceIntermediateCol)
                                     )
                                     query.addJoin(
                                         JoinType.LEFT_OUTER,
                                         intermediateTable,
                                         targetTable,
-                                        BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol),
+                                        BinaryCondition.equalTo(targetIntermediateCol, targetKeyCol)
                                     )
                                 } else { // inversed side
                                     val targetKeyAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
@@ -161,13 +161,13 @@ class ItemFilterConditionBuilder(
                                         JoinType.LEFT_OUTER,
                                         table,
                                         intermediateTable,
-                                        BinaryCondition.equalTo(targetKeyCol, targetIntermediateCol),
+                                        BinaryCondition.equalTo(targetKeyCol, targetIntermediateCol)
                                     )
                                     query.addJoin(
                                         JoinType.LEFT_OUTER,
                                         intermediateTable,
                                         targetTable,
-                                        BinaryCondition.equalTo(sourceIntermediateCol, sourceKeyCol),
+                                        BinaryCondition.equalTo(sourceIntermediateCol, sourceKeyCol)
                                     )
                                 }
                             }
@@ -198,12 +198,7 @@ class ItemFilterConditionBuilder(
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
     }
 
-    private fun newPrimitiveCondition(
-        typedPrimitiveFilterInput: TypedPrimitiveFilterInput,
-        table: DbTable,
-        column: DbColumn,
-        paramSource: AttributeSqlParameterSource,
-    ): Condition {
+    private fun newPrimitiveCondition(typedPrimitiveFilterInput: TypedPrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
         val nestedConditions = mutableListOf<Condition>()
         val sqlParamName = "${table.alias}_${column.name}_${Random.nextInt(0, 1000)}" // TODO: Change to truly unique name
 

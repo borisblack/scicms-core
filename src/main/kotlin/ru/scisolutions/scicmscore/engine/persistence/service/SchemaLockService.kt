@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 @Transactional
 class SchemaLockService(
     private val schemaProps: SchemaProps,
-    private val schemaLockRepository: SchemaLockRepository,
+    private val schemaLockRepository: SchemaLockRepository
 ) {
     private val hostName = InetAddress.getLocalHost().hostName
 

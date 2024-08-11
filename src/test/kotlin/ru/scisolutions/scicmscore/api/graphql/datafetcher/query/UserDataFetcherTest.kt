@@ -22,8 +22,8 @@ import java.util.UUID
         DgsAutoConfiguration::class,
         DgsExtendedScalarsAutoConfiguration::class,
         CustomScalarsRegistration::class,
-        UserDataFetcher::class,
-    ],
+        UserDataFetcher::class
+    ]
 )
 @DisabledInAotMode
 class UserDataFetcherTest {
@@ -41,7 +41,7 @@ class UserDataFetcherTest {
                 username = TEST_USER,
                 roles = setOf(ROLE_TEST),
                 sessionData = emptyMap(),
-                authType = AuthType.LOCAL,
+                authType = AuthType.LOCAL
             )
         }
     }
@@ -58,7 +58,7 @@ class UserDataFetcherTest {
                         }
                 }
                 """.trimIndent(),
-                "data.me.username",
+                "data.me.username"
             )
 
         Assertions.assertEquals(TEST_USER, username)
@@ -69,7 +69,7 @@ class UserDataFetcherTest {
         val roles: List<String> =
             dgsQueryExecutor.executeAndExtractJsonPath(
                 "{ me { username roles } }",
-                "data.me.roles",
+                "data.me.roles"
             )
 
         Assertions.assertTrue(ROLE_TEST in roles)

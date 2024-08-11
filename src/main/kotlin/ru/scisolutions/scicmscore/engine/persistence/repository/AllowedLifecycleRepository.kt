@@ -15,7 +15,7 @@ interface AllowedLifecycleRepository : CrudRepository<AllowedLifecycle, String> 
         "select al from AllowedLifecycle al " +
             "left join Item i on al.sourceId = i.id " +
             "where i.name = :itemName " +
-            "order by al.sortOrder",
+            "order by al.sortOrder"
     )
     @QueryHints(QueryHint(name = org.hibernate.jpa.HibernateHints.HINT_CACHEABLE, value = "true"))
     fun findAllByItemName(itemName: String): List<AllowedLifecycle>

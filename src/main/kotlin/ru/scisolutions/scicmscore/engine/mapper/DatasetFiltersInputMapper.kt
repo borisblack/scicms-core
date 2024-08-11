@@ -36,7 +36,7 @@ class DatasetFiltersInputMapper {
             fieldFilters = fieldFilters,
             andFiltersList = andFiltersList,
             orFiltersList = orFiltersList,
-            notFilters = notFilters,
+            notFilters = notFilters
         )
     }
 

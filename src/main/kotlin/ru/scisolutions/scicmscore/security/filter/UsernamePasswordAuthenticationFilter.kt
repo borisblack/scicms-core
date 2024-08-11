@@ -30,7 +30,7 @@ import ru.scisolutions.scicmscore.security.model.User
 class UsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val jwtTokenService: JwtTokenService,
-    private val securityProps: SecurityProps,
+    private val securityProps: SecurityProps
 ) : GenericFilterBean() {
     override fun doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) {
         req as HttpServletRequest
@@ -75,7 +75,7 @@ class UsernamePasswordAuthenticationFilter(
             jwtTokenService.generateJwtToken(
                 resultAuthentication.name,
                 AuthorityUtils.authorityListToSet(resultAuthentication.authorities),
-                AuthType.LOCAL,
+                AuthType.LOCAL
             )
         sendJWTTokenResponse(req, res, jwtToken, resultAuthentication)
     }
@@ -107,8 +107,8 @@ class UsernamePasswordAuthenticationFilter(
                     username = user.username,
                     roles = AuthorityUtils.authorityListToSet(authentication.authorities),
                     authType = AuthType.LOCAL,
-                    sessionData = user.sessionData,
-                ),
+                    sessionData = user.sessionData
+                )
             )
         val jsonResponse = objectMapper.writeValueAsString(tokenResponse)
         res.status = HttpServletResponse.SC_OK

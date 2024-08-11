@@ -25,7 +25,7 @@ class DeleteRelationHelper(
     private val auditManager: AuditManager,
     private val deleteMediaHelper: DeleteMediaHelper,
     private val itemRecDao: ItemRecDao,
-    private val aclItemRecDao: ACLItemRecDao,
+    private val aclItemRecDao: ACLItemRecDao
 ) {
     fun deleteRelations(item: Item, itemRec: ItemRec, strategy: DeletingStrategy) {
         deleteNonCollectionRelations(item, itemRec, strategy)
@@ -66,7 +66,7 @@ class DeleteRelationHelper(
                         if (!relation.isOwning) {
                             if (relation.getOwningAttribute().required) {
                                 throw IllegalStateException(
-                                    "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.",
+                                    "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared."
                                 )
                             }
 
@@ -83,7 +83,7 @@ class DeleteRelationHelper(
                                 aclItemRecDao.findAllByAttributeForDelete(
                                     relation.inversedItem,
                                     referencedAttrName,
-                                    requireNotNull(targetId),
+                                    requireNotNull(targetId)
                                 )
 
                             // Should be only one
@@ -97,7 +97,7 @@ class DeleteRelationHelper(
                                 aclItemRecDao.findAllByAttributeForDelete(
                                     relation.owningItem,
                                     relation.owningAttrName,
-                                    referencedRecId,
+                                    referencedRecId
                                 )
 
                             // Should be only one
@@ -116,7 +116,7 @@ class DeleteRelationHelper(
                     DeletingStrategy.SET_NULL -> {
                         if (relation.getOwningAttribute().required) {
                             throw IllegalStateException(
-                                "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.",
+                                "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared."
                             )
                         }
 
@@ -132,7 +132,7 @@ class DeleteRelationHelper(
                                 aclItemRecDao.findAllByAttributeForDelete(
                                     relation.inversedItem,
                                     referencedAttrName,
-                                    requireNotNull(targetId),
+                                    requireNotNull(targetId)
                                 )
 
                             // Should be only one
@@ -196,7 +196,7 @@ class DeleteRelationHelper(
                     DeletingStrategy.SET_NULL -> {
                         if (relation.getOwningAttribute().required) {
                             throw IllegalStateException(
-                                "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared.",
+                                "The [${relation.owningAttrName}] is required in item [${relation.owningItem.name}], so it cannot be cleared."
                             )
                         }
 
@@ -211,7 +211,7 @@ class DeleteRelationHelper(
                             aclItemRecDao.findAllByAttributeForDelete(
                                 targetItem,
                                 relation.owningAttrName,
-                                referencedKey,
+                                referencedKey
                             )
                         targetItemRecList.forEach { deleteRelations(targetItem, it, strategy) }
 

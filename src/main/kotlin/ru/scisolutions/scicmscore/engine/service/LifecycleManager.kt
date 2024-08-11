@@ -13,7 +13,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.LifecycleService
 class LifecycleManager(
     private val allowedLifecycleService: AllowedLifecycleService,
     private val lifecycleService: LifecycleService,
-    private val aclHelper: AclHelper,
+    private val aclHelper: AclHelper
 ) {
     fun assignLifecycleAttributes(item: Item, itemRec: ItemRec) {
         var lifecycleId = itemRec.lifecycle
@@ -51,7 +51,7 @@ class LifecycleManager(
             val allowedLifecycleIds = allowedLifecycles.asSequence().map { it.targetId }.toSet() + Lifecycle.DEFAULT_LIFECYCLE_ID
             if (lifecycleId !in allowedLifecycleIds) {
                 logger.warn(
-                    "Lifecycle '$lifecycleId' is not allowed for item '${item.name}'. Resetting to default lifecycle '$defaultLifecycleId'",
+                    "Lifecycle '$lifecycleId' is not allowed for item '${item.name}'. Resetting to default lifecycle '$defaultLifecycleId'"
                 )
                 lifecycleId = defaultLifecycleId
             }

@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.MapConverter
 @Table(name = "sec_users")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 @org.hibernate.annotations.NaturalIdCache
 class User(
@@ -24,7 +24,7 @@ class User(
     @Convert(converter = org.hibernate.type.NumericBooleanConverter::class)
     var enabled: Boolean,
     @Convert(converter = MapConverter::class)
-    var sessionData: Map<String, Any?>? = null,
+    var sessionData: Map<String, Any?>? = null
 ) : AbstractEntity() {
     companion object {
         const val ROOT_USER_ID: String = "0c924266-3c61-4362-81d7-9d69403fbe32"

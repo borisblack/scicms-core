@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 
 @Component
 class CreateVersionDataFetcher(
-    private val engine: Engine,
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<Response>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<Response> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(responseFieldTypeRegex)
@@ -26,7 +26,7 @@ class CreateVersionDataFetcher(
                 data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
                 majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
                 locale = dfe.arguments[LOCALE_ARG_NAME] as String?,
-                copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?,
+                copyCollectionRelations = dfe.arguments[COPY_COLLECTION_RELATIONS_ARG_NAME] as Boolean?
             )
 
         val result = engine.createVersion(itemName, input, selectAttrNames)

@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameter
 @Component
 class ItemPaginator(
     dataProps: DataProps,
-    private val itemRecDao: ItemRecDao,
+    private val itemRecDao: ItemRecDao
 ) : AbstractPaginator(dataProps) {
     fun paginate(item: Item, paginationInput: PaginationInput?, selectPaginationFields: Set<String>, query: SelectQuery, paramSource: AttributeSqlParameterSource): Pagination {
         val total: Int? =
@@ -26,7 +26,7 @@ class ItemPaginator(
             dbMetaData = itemRecDao.dbMetaData(item),
             paginationInput = paginationInput,
             query = query,
-            total = total,
+            total = total
         )
     }
 

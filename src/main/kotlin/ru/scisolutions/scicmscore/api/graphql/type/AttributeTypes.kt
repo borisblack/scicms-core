@@ -18,7 +18,7 @@ private fun TypeName.nonNull(required: Boolean): GraphQLType<*> = if (required) 
 @Component
 class AttributeTypes(
     private val itemService: ItemService,
-    private val relationValidator: RelationValidator,
+    private val relationValidator: RelationValidator
 ) {
     fun objectType(item: Item, attrName: String, attribute: Attribute): GraphQLType<*> {
         if (attribute.keyed) {

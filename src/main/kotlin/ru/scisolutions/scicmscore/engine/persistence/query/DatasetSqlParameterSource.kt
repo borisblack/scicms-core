@@ -29,7 +29,7 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
             FieldType.password,
             FieldType.media,
             FieldType.relation,
-            FieldType.text,
+            FieldType.text
             -> this.addValue(paramName, value, Types.VARCHAR)
             FieldType.bool -> this.addValue(paramName, if (value is String) value.toBoolean() else value, Types.SMALLINT)
             FieldType.int -> this.addValue(paramName, if (value is String) value.toInt() else value, Types.INTEGER)
@@ -46,10 +46,10 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
                     } else {
                         (if (value is OffsetTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value)
                     },
-                    Types.TIME_WITH_TIMEZONE,
+                    Types.TIME_WITH_TIMEZONE
                 )
             FieldType.datetime,
-            FieldType.timestamp,
+            FieldType.timestamp
             ->
                 this.addValue(
                     paramName,
@@ -58,10 +58,10 @@ class DatasetSqlParameterSource : MapSqlParameterSource {
                     } else {
                         (if (value is OffsetDateTime) value.withOffsetSameLocal(ZoneOffset.UTC) else value)
                     },
-                    Types.TIMESTAMP_WITH_TIMEZONE,
+                    Types.TIMESTAMP_WITH_TIMEZONE
                 )
             FieldType.array,
-            FieldType.json,
+            FieldType.json
             -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
         }
 

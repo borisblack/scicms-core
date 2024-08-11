@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.AllowedPermissionSe
 @Service
 class PermissionManager(
     private val allowedPermissionService: AllowedPermissionService,
-    private val aclHelper: AclHelper,
+    private val aclHelper: AclHelper
 ) {
     fun assignPermissionAttribute(item: Item, itemRec: ItemRec) {
         itemRec.permission = checkPermissionId(item, itemRec.permission)
@@ -58,7 +58,7 @@ class PermissionManager(
             permissionId
         } else {
             logger.warn(
-                "Permission '$permissionId' is not allowed for item '${item.name}'. Resetting to default permission '$effectiveDefaultPermission'",
+                "Permission '$permissionId' is not allowed for item '${item.name}'. Resetting to default permission '$effectiveDefaultPermission'"
             )
             effectiveDefaultPermission
         }
@@ -92,7 +92,7 @@ class PermissionManager(
                 // Item.IDENTITY_ITEM_NAME,
                 // Item.PERMISSION_ITEM_NAME,
                 Item.ROLE_ITEM_NAME,
-                Item.USER_ITEM_NAME,
+                Item.USER_ITEM_NAME
             )
         private val biItemNames =
             setOf(
@@ -100,7 +100,7 @@ class PermissionManager(
                 Item.DASHBOARD_CATEGORY_ITEM_NAME,
                 Item.DASHBOARD_CATEGORY_HIERARCHY_ITEM_NAME,
                 Item.DASHBOARD_CATEGORY_MAP_ITEM_NAME,
-                Item.DATASET_ITEM_NAME,
+                Item.DATASET_ITEM_NAME
             )
     }
 }

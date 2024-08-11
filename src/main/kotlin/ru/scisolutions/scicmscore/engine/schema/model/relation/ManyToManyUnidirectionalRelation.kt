@@ -6,5 +6,5 @@ class ManyToManyUnidirectionalRelation(
     override val item: Item,
     override val attrName: String,
     override val targetItem: Item,
-    override val intermediateItem: Item,
+    override val intermediateItem: Item
 ) : UnidirectionalRelation, ManyToManyRelation

@@ -10,5 +10,5 @@ class Oauth2AccessTokenResponse(
     @JsonProperty("access_token")
     val accessToken: String,
     @JsonProperty("refresh_token")
-    val refreshToken: String,
+    val refreshToken: String
 )

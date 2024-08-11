@@ -17,7 +17,7 @@ class ItemTemplateMapper(private val appProps: AppProps) {
         val metadata = source.metadata
         val target =
             ItemTemplateEntity(
-                name = metadata.name,
+                name = metadata.name
             )
         copy(source, target)
 
@@ -46,9 +46,9 @@ class ItemTemplateMapper(private val appProps: AppProps) {
         metadata =
         ItemTemplateMetadata(
             name = requireNotNull(source.name),
-            core = source.core ?: false,
+            core = source.core ?: false
         ),
         spec = source.spec?.let { Json.objectMapper.convertValue(it, ItemSpec::class.java) } ?: ItemSpec(),
-        checksum = null,
+        checksum = null
     )
 }

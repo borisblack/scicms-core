@@ -36,7 +36,7 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
                     dbMetaData = dbMetaData,
                     query = query,
                     offset = offset,
-                    rowCount = pageSize,
+                    rowCount = pageSize
                 )
 
                 val pageCount: Int? = if (total == null) null else ceil(total.toDouble() / pageSize).toInt()
@@ -45,7 +45,7 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
                     page = page,
                     pageSize = pageSize,
                     total = total,
-                    pageCount = pageCount,
+                    pageCount = pageCount
                 )
             } else if (paginationInput.start != null || paginationInput.limit != null) {
                 val start = paginationInput.start ?: 0
@@ -66,21 +66,21 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
                     dbMetaData = dbMetaData,
                     query = query,
                     offset = start,
-                    rowCount = limit,
+                    rowCount = limit
                 )
 
                 return Pagination(
                     start = start,
                     limit = limit,
                     total = total,
-                    pageCount = null,
+                    pageCount = null
                 )
             }
         }
 
         return Pagination(
             total = total,
-            pageCount = null,
+            pageCount = null
         )
     }
 

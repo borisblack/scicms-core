@@ -18,5 +18,5 @@ class Media(
     @Column(nullable = false)
     var path: String,
     @Column(nullable = false)
-    var checksum: String,
+    var checksum: String
 ) : AbstractEntity()

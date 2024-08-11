@@ -19,7 +19,7 @@ class TablesMapper(dataProps: DataProps) {
             tableNamesPagination.list.map {
                 Table(
                     name = if (input.schema.isNullOrBlank()) it else "${input.schema.lowercase()}.$it",
-                    columns = getColumns(it),
+                    columns = getColumns(it)
                 )
             }
 
@@ -27,8 +27,8 @@ class TablesMapper(dataProps: DataProps) {
             data = tables,
             meta =
             ResponseCollectionMeta(
-                pagination = tableNamesPagination.toBasePagination(),
-            ),
+                pagination = tableNamesPagination.toBasePagination()
+            )
         )
     }
 

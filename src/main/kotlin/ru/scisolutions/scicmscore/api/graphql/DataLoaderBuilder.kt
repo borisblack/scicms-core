@@ -15,7 +15,7 @@ import java.util.concurrent.Executor
 class DataLoaderBuilder(
     private val aclItemRecDao: ACLItemRecDao,
     @Qualifier("taskExecutor") private val executor: Executor,
-    private val dataProps: DataProps,
+    private val dataProps: DataProps
 ) {
     fun build(parentItem: Item, parentAttrName: String, item: Item): MappedBatchLoader<String, ItemRec> {
         val parentAttribute = parentItem.spec.getAttribute(parentAttrName)

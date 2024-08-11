@@ -21,21 +21,21 @@ import java.net.URLEncoder
 @RequestMapping("/api/media")
 class MediaController(
     private val mediaService: MediaService,
-    private val engine: Engine,
+    private val engine: Engine
 ) {
     @PostMapping("/upload")
     fun upload(
         @RequestParam("file") file: Part,
         @RequestParam("label") label: String?,
         @RequestParam("description") description: String?,
-        @RequestParam("permission") permission: String?,
+        @RequestParam("permission") permission: String?
     ): MediaInfo {
         val uploadInput =
             UploadInput(
                 file = file,
                 label = label,
                 description = description,
-                permissionId = permission,
+                permissionId = permission
             )
         return engine.uploadData(uploadInput)
     }
@@ -45,7 +45,7 @@ class MediaController(
         @RequestParam("files") files: Array<Part>,
         @RequestParam("labels") labels: Array<String>,
         @RequestParam("descriptions") descriptions: Array<String>,
-        @RequestParam("permissions") permissions: Array<String>,
+        @RequestParam("permissions") permissions: Array<String>
     ): List<MediaInfo> {
         val uploadInputList =
             files.mapIndexed { i, file ->
@@ -53,7 +53,7 @@ class MediaController(
                     file = file,
                     label = labels[i].ifBlank { null },
                     description = descriptions[i].ifBlank { null },
-                    permissionId = permissions[i].ifBlank { null },
+                    permissionId = permissions[i].ifBlank { null }
                 )
             }
 

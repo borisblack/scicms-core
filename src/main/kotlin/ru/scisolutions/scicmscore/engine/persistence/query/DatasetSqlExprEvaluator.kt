@@ -25,7 +25,7 @@ class DatasetSqlExprEvaluator {
             custom = field.custom,
             source = field.source,
             aggregate = field.aggregate,
-            formula = field.formula,
+            formula = field.formula
         )
     }
 
@@ -33,7 +33,7 @@ class DatasetSqlExprEvaluator {
         if (input.aggregate == null) {
             if (input.formula == null) {
                 return CustomSql(
-                    if (input.source == null || omitAlias) "${table.alias}.${input.name}" else "${table.alias}.${input.source} AS ${input.name}",
+                    if (input.source == null || omitAlias) "${table.alias}.${input.name}" else "${table.alias}.${input.source} AS ${input.name}"
                 )
             } else {
                 val expr =
@@ -66,7 +66,7 @@ class DatasetSqlExprEvaluator {
         AggregateType.count -> FunctionCall.count().addColumnParams(aggregateCol)
         AggregateType.countd ->
             FunctionCall.count().addCustomParams(
-                CustomSql("DISTINCT ${aggregateCol.table.alias}.${aggregateCol.name}"),
+                CustomSql("DISTINCT ${aggregateCol.table.alias}.${aggregateCol.name}")
             )
         AggregateType.sum -> FunctionCall.sum().addColumnParams(aggregateCol)
         AggregateType.avg -> FunctionCall.avg().addColumnParams(aggregateCol)
@@ -86,8 +86,8 @@ class DatasetSqlExprEvaluator {
             custom = column.custom,
             source = column.source,
             aggregate = column.aggregate,
-            formula = column.formula,
-        ),
+            formula = column.formula
+        )
     )
 
     fun calculateType(columns: Map<String, Column>, input: DatasetFieldInput): FieldType {

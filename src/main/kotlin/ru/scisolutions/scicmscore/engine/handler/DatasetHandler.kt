@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.persistence.service.DatasetService
 class DatasetHandler(
     private val datasetService: DatasetService,
     private val datasetQueryBuilder: DatasetQueryBuilder,
-    private val datasetDao: DatasetDao,
+    private val datasetDao: DatasetDao
 ) {
     fun load(datasetName: String, input: DatasetInput): DatasetResponse {
         val dataset =
@@ -34,8 +34,8 @@ class DatasetHandler(
             cacheHit = res.cacheHit,
             meta =
             ResponseCollectionMeta(
-                pagination = loadQuery.pagination,
-            ),
+                pagination = loadQuery.pagination
+            )
         )
     }
 }

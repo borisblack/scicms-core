@@ -10,6 +10,6 @@ class MediaMapper {
         fileSize = media.fileSize,
         mimetype = media.mimetype,
         checksum = media.checksum,
-        createdAt = media.createdAt,
+        createdAt = media.createdAt
     )
 }

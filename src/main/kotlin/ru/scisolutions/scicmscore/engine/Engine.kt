@@ -65,7 +65,7 @@ interface Engine {
         itemName: String,
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
-        selectPaginationFields: Set<String>,
+        selectPaginationFields: Set<String>
     ): RelationResponseCollection
 
     fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response

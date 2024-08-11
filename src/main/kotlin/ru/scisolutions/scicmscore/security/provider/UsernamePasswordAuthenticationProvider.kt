@@ -12,7 +12,7 @@ import ru.scisolutions.scicmscore.security.service.impl.UserGroupManagerImpl
 @Component
 class UsernamePasswordAuthenticationProvider(
     customUserDetailsManager: CustomUserDetailsManager,
-    private val userService: UserService,
+    private val userService: UserService
 ) : DaoAuthenticationProvider() {
     init {
         userDetailsService = customUserDetailsManager

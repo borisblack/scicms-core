@@ -27,7 +27,7 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             FieldType.email,
             FieldType.password,
             FieldType.media,
-            FieldType.relation,
+            FieldType.relation
             -> this.addValue(paramName, value, Types.VARCHAR)
 
             FieldType.bool -> this.addValue(paramName, value, Types.SMALLINT)
@@ -35,7 +35,7 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             FieldType.long,
             FieldType.float,
             FieldType.double,
-            FieldType.decimal,
+            FieldType.decimal
             -> this.addValue(paramName, value)
 
             FieldType.date -> this.addValue(paramName, value, Types.DATE)
@@ -45,7 +45,7 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             }
 
             FieldType.datetime,
-            FieldType.timestamp,
+            FieldType.timestamp
             -> {
                 val sqlValue = if (value is OffsetDateTime) Timestamp.valueOf(LocalDateTime.from(value)) else value
                 this.addValue(paramName, sqlValue, Types.TIMESTAMP)
@@ -53,7 +53,7 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
 
             FieldType.text -> this.addValue(paramName, value)
             FieldType.array,
-            FieldType.json,
+            FieldType.json
             -> this.addValue(paramName, if (value is String) value else Json.objectMapper.writeValueAsString(value))
         }
 

@@ -21,7 +21,7 @@ import java.lang.reflect.Modifier
 @Service
 class CustomMethodHandler(
     private val classService: ClassService,
-    private val itemService: ItemService,
+    private val itemService: ItemService
 ) {
     fun getCustomMethods(itemName: String): Set<String> {
         val item = itemService.getByName(itemName)
@@ -119,7 +119,7 @@ class CustomMethodHandler(
                 LockHook::beforeLock.name,
                 LockHook::afterLock.name,
                 LockHook::beforeUnlock.name,
-                LockHook::afterUnlock.name,
+                LockHook::afterUnlock.name
             )
 
         private val logger = LoggerFactory.getLogger(CustomMethodHandler::class.java)

@@ -14,14 +14,14 @@ import java.sql.DatabaseMetaData
 @Service
 class DatasetDao(
     private val dsManager: DatasourceManager,
-    private val datasetCacheManager: DatasetCacheManager,
+    private val datasetCacheManager: DatasetCacheManager
 ) {
     fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): CacheStatistic<List<DatasetRec>> = datasetCacheManager.get(dataset, sql, paramSource) {
         logger.trace("Running load SQL: {}", sql)
         if (paramSource.parameterNames.isNotEmpty()) {
             logger.trace(
                 "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" },
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
             )
         }
 
@@ -36,7 +36,7 @@ class DatasetDao(
             if (paramSource.parameterNames.isNotEmpty()) {
                 logger.trace(
                     "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" },
+                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
                 )
             }
 

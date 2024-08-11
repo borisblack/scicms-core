@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.DatasetSpecConver
 @Table(name = "bi_datasets")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 class Dataset(
     @Column(nullable = false)
@@ -33,7 +33,7 @@ class Dataset(
     var cacheTtl: Int? = null,
     @Convert(converter = DatasetSpecConverter::class)
     var spec: DatasetSpec = DatasetSpec(),
-    var hash: String? = null,
+    var hash: String? = null
 ) : AbstractEntity() {
     val ds: String
         get() = datasource?.name ?: Datasource.MAIN_DATASOURCE_NAME

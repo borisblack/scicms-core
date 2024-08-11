@@ -11,7 +11,7 @@ import ru.scisolutions.scicmscore.engine.persistence.converter.RevisionsConverte
 @Table(name = "core_revision_policies")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 class RevisionPolicy(
     @Column(nullable = false)
@@ -20,7 +20,7 @@ class RevisionPolicy(
     var displayName: String?,
     @Column(nullable = false)
     @Convert(converter = RevisionsConverter::class)
-    var revisions: List<String>,
+    var revisions: List<String>
 ) : AbstractEntity() {
     fun firstRevision(): String {
         if (revisions.isEmpty()) {

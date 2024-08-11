@@ -11,5 +11,5 @@ class DatasetResponse(
     val params: Map<String, Any?>? = null,
     val timeMs: Long? = null,
     val cacheHit: Boolean? = null,
-    val meta: ResponseCollectionMeta = ResponseCollectionMeta(),
+    val meta: ResponseCollectionMeta = ResponseCollectionMeta()
 )

@@ -25,7 +25,7 @@ class PurgeHandler(
     private val attributeValueHelper: AttributeValueHelper,
     private val itemRecDao: ItemRecDao,
     private val aclItemRecDao: ACLItemRecDao,
-    private val cacheService: CacheService,
+    private val cacheService: CacheService
 ) {
     fun purge(itemName: String, input: DeleteInput, selectAttrNames: Set<String>): ResponseCollection {
         val item = itemService.getByName(itemName)
@@ -71,7 +71,7 @@ class PurgeHandler(
 
         val response =
             ResponseCollection(
-                data = result,
+                data = result
             )
 
         implInstance?.afterPurge(itemName, response)

@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.extension.upperFirst
 @Component
 class ItemInputObjectTypes(
     private val includeAttributePolicy: IncludeAttributePolicy,
-    private val attributeTypes: AttributeTypes,
+    private val attributeTypes: AttributeTypes
 ) {
     fun filtersInput(item: Item): InputObjectTypeDefinition {
         val inputName = "${item.name.upperFirst()}FiltersInput"
@@ -26,19 +26,19 @@ class ItemInputObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name("and")
                         .type(ListType(TypeName(inputName)))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("or")
                         .type(ListType(TypeName(inputName)))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("not")
                         .type(TypeName(inputName))
-                        .build(),
+                        .build()
                 )
 
         item.spec.attributes.asSequence()
@@ -48,7 +48,7 @@ class ItemInputObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
                         .type(attributeTypes.filterInputType(item, attrName, attribute))
-                        .build(),
+                        .build()
                 )
             }
 
@@ -67,7 +67,7 @@ class ItemInputObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name(attrName)
                         .type(attributeTypes.inputType(item, attrName, attribute))
-                        .build(),
+                        .build()
                 )
             }
 
@@ -94,7 +94,7 @@ class ItemInputObjectTypes(
             .enumValueDefinitions(
                 attribute.enumSet.map {
                     EnumValueDefinition.newEnumValueDefinition().name(it).build()
-                },
+                }
             )
             .build()
     }

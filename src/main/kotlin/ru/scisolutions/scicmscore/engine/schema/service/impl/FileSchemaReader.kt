@@ -24,7 +24,7 @@ import com.google.common.io.Files as GFiles
 
 @Service
 class FileSchemaReader(
-    private val schemaProps: SchemaProps,
+    private val schemaProps: SchemaProps
 ) : SchemaReader {
     override fun read(): Schema {
         val schemaPath = schemaProps.path ?: throw IllegalStateException("Schema path is not set")

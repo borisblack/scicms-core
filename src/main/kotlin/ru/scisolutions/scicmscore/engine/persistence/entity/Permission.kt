@@ -9,11 +9,11 @@ import jakarta.persistence.Table
 @Table(name = "sec_permissions")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 class Permission(
     @Column(nullable = false)
-    var name: String,
+    var name: String
 ) : AbstractEntity() {
     companion object {
         const val DEFAULT_PERMISSION_ID: String = "6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"

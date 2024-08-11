@@ -22,7 +22,7 @@ class DatasourceManager(
     private val environment: Environment,
     private val dataProps: DataProps,
     private val mainDataSource: DataSource,
-    private val datasourceService: DatasourceService,
+    private val datasourceService: DatasourceService
 ) {
     private val dataSourceCache: Cache<String, DataSource> =
         CacheBuilder.newBuilder()
@@ -68,7 +68,7 @@ class DatasourceManager(
             DriverManager.getConnection(
                 environment.resolvePlaceholders(url),
                 environment.resolvePlaceholders(user),
-                environment.resolvePlaceholders(password),
+                environment.resolvePlaceholders(password)
             )
             ).use {}
     }

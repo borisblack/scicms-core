@@ -21,5 +21,5 @@ enum class FieldType {
     array,
     json,
     media,
-    relation,
+    relation
 }

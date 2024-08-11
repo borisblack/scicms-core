@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.extension.lowerFirst
 @Component
 class FindAllRelatedDataFetcher(
     private val findAllInputMapper: FindAllInputMapper,
-    private val engine: Engine,
+    private val engine: Engine
 ) : DataFetcher<DataFetcherResult<RelationResponseCollection>> {
     override fun get(dfe: DataFetchingEnvironment): DataFetcherResult<RelationResponseCollection> {
         val parentType = dfe.unwrapParentType()
@@ -40,7 +40,7 @@ class FindAllRelatedDataFetcher(
                 itemName = itemName,
                 input = responseCollectionInput,
                 selectAttrNames = selectAttrNames,
-                selectPaginationFields = selectPaginationFields,
+                selectPaginationFields = selectPaginationFields
             )
 
         return DataFetcherResult.newResult<RelationResponseCollection>()

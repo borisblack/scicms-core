@@ -15,7 +15,7 @@ data class Column(
     val formula: String? = null,
     val alias: String? = null,
     val format: String? = null,
-    val colWidth: Int? = null,
+    val colWidth: Int? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -46,7 +46,7 @@ data class Column(
         hidden,
         aggregate?.name,
         alias,
-        colWidth,
+        colWidth
     )
 
     @get:JsonIgnore

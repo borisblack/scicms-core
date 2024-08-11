@@ -28,7 +28,7 @@ class JwtTokenAuthenticationProvider(private val jwtTokenService: JwtTokenServic
         return UserAuthenticationToken(
             claims.subject,
             authorities.map { SimpleGrantedAuthority(it) },
-            if (authType == null) AuthType.LOCAL else AuthType.valueOf(authType),
+            if (authType == null) AuthType.LOCAL else AuthType.valueOf(authType)
         )
     }
 }

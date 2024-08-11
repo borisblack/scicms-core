@@ -38,7 +38,7 @@ class CreateHandler(
     private val addRelationHelper: AddRelationHelper,
     private val itemRecDao: ItemRecDao,
     private val cacheService: CacheService,
-    private val idGenerator: DefaultIdGenerator,
+    private val idGenerator: DefaultIdGenerator
 ) {
     fun create(itemName: String, input: CreateInput, selectAttrNames: Set<String>): Response {
         if (itemName in disabledItemNames) {
@@ -88,7 +88,7 @@ class CreateHandler(
             addRelationHelper.addRelations(
                 item,
                 itemRec,
-                itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>,
+                itemRec.filterKeys { item.spec.getAttribute(it).type == FieldType.relation } as Map<String, Any>
             )
         }
 
@@ -96,7 +96,7 @@ class CreateHandler(
         val selectData = (preCreatedItemRec ?: itemRec).filterKeys { it in attrNames }.toMutableMap()
         val response =
             Response(
-                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData)),
+                ItemRec(attributeValueHelper.prepareValuesToReturn(item, selectData))
             )
 
         createHook?.afterCreate(itemName, response)

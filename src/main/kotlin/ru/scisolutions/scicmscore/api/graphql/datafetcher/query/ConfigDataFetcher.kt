@@ -12,20 +12,20 @@ import ru.scisolutions.scicmscore.model.SecurityConfigResponse
 class ConfigDataFetcher(
     private val i18nProps: I18nProps,
     private val securityProps: SecurityProps,
-    private val datasourceService: DatasourceService,
+    private val datasourceService: DatasourceService
 ) {
     class Config(
         val data: DataConfigResponse,
         val i18n: I18ConfigResponse,
-        val security: SecurityConfigResponse,
+        val security: SecurityConfigResponse
     )
 
     class DataConfigResponse(
-        val dataSources: Set<String>,
+        val dataSources: Set<String>
     )
 
     class I18ConfigResponse(
-        val defaultLocale: String,
+        val defaultLocale: String
     )
 
     @DgsQuery
@@ -36,11 +36,11 @@ class ConfigDataFetcher(
             setOf(Datasource.MAIN_DATASOURCE_NAME) +
                 datasourceService.findAll()
                     .map { it.name }
-                    .toSet(),
+                    .toSet()
         ),
         i18n =
         I18ConfigResponse(
-            defaultLocale = i18nProps.defaultLocale,
+            defaultLocale = i18nProps.defaultLocale
         ),
         security =
         SecurityConfigResponse(
@@ -50,9 +50,9 @@ class ConfigDataFetcher(
                     id = it.id,
                     name = it.name,
                     authUrl = it.authUrl,
-                    clientId = it.clientId,
+                    clientId = it.clientId
                 )
-            },
-        ),
+            }
+        )
     )
 }

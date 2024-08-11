@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture
 @Component
 class FindOneRelatedDataFetcher(
     private val itemService: ItemService,
-    private val dataLoaderBuilder: DataLoaderBuilder,
+    private val dataLoaderBuilder: DataLoaderBuilder
 ) : DataFetcher<CompletableFuture<RelationResponse>> {
     override fun get(dfe: DataFetchingEnvironment): CompletableFuture<RelationResponse> {
         val capitalizedItemName = dfe.extractCapitalizedItemNameFromFieldType(fieldTypeRegex)
@@ -69,7 +69,7 @@ class FindOneRelatedDataFetcher(
         if (dfe.getDataLoader<String, ItemRec>(dataLoaderName) == null) {
             dfe.dataLoaderRegistry.register(
                 dataLoaderName,
-                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(parentItem, parentAttrName, item)),
+                DataLoaderFactory.newMappedDataLoader(dataLoaderBuilder.build(parentItem, parentAttrName, item))
             )
         }
     }

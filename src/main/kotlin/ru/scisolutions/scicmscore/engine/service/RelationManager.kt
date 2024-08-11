@@ -20,7 +20,7 @@ import ru.scisolutions.scicmscore.engine.schema.service.RelationValidator
 @Service
 class RelationManager(
     private val relationValidator: RelationValidator,
-    private val itemService: ItemService,
+    private val itemService: ItemService
 ) {
     fun getAttributeRelation(item: Item, attrName: String, attribute: Attribute): Relation {
         relationValidator.validateAttribute(item, attrName, attribute)
@@ -44,7 +44,7 @@ class RelationManager(
                 owningItem = item,
                 owningAttrName = attrName,
                 inversedItem = targetItem,
-                inversedAttrName = attribute.inversedBy,
+                inversedAttrName = attribute.inversedBy
             )
         } else if (attribute.mappedBy != null) { // inversed side
             OneToOneBidirectionalRelation(
@@ -52,13 +52,13 @@ class RelationManager(
                 owningItem = targetItem,
                 owningAttrName = attribute.mappedBy,
                 inversedItem = item,
-                inversedAttrName = attrName,
+                inversedAttrName = attrName
             )
         } else {
             OneToOneUnidirectionalRelation(
                 item = item,
                 attrName = attrName,
-                targetItem = targetItem,
+                targetItem = targetItem
             )
         }
     }
@@ -74,14 +74,14 @@ class RelationManager(
             ManyToOneUnidirectionalRelation(
                 item = item,
                 attrName = attrName,
-                targetItem = targetItem,
+                targetItem = targetItem
             )
         } else {
             ManyToOneOwningBidirectionalRelation(
                 owningItem = item,
                 owningAttrName = attrName,
                 inversedItem = targetItem,
-                inversedAttrName = attribute.inversedBy,
+                inversedAttrName = attribute.inversedBy
             )
         }
     }
@@ -93,7 +93,7 @@ class RelationManager(
             owningItem = owningItem,
             owningAttrName = requireNotNull(attribute.mappedBy),
             inversedItem = item,
-            inversedAttrName = attrName,
+            inversedAttrName = attrName
         )
     }
 
@@ -107,7 +107,7 @@ class RelationManager(
                 item = item,
                 attrName = attrName,
                 targetItem = targetItem,
-                intermediateItem = intermediateItem,
+                intermediateItem = intermediateItem
             )
         } else if (attribute.inversedBy != null) { // owning side
             ManyToManyBidirectionalRelation(
@@ -116,7 +116,7 @@ class RelationManager(
                 owningAttrName = attrName,
                 inversedItem = targetItem,
                 inversedAttrName = attribute.inversedBy,
-                intermediateItem = intermediateItem,
+                intermediateItem = intermediateItem
             )
         } else if (attribute.mappedBy != null) { // inversed side
             ManyToManyBidirectionalRelation(
@@ -125,7 +125,7 @@ class RelationManager(
                 owningAttrName = attribute.mappedBy,
                 inversedItem = item,
                 inversedAttrName = attrName,
-                intermediateItem = intermediateItem,
+                intermediateItem = intermediateItem
             )
         } else {
             throw IllegalStateException("Illegal state for manyToMany context")

@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 class DatasourceService(
     private val em: EntityManager,
     private val permissionService: PermissionService,
-    private val datasourceRepository: DatasourceRepository,
+    private val datasourceRepository: DatasourceRepository
 ) {
     @Transactional(readOnly = true)
     fun findAll(): Iterable<Datasource> = datasourceRepository.findAll()

@@ -14,5 +14,5 @@ class SchemaLock(
     @Column(name = "locked_by")
     var lockedBy: String?,
     @Column(name = "lock_until")
-    var lockUntil: LocalDateTime?,
+    var lockUntil: LocalDateTime?
 )

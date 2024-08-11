@@ -14,7 +14,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 @Service
 class DatasourceHandler(
     private val datasourceService: DatasourceService,
-    private val datasourceDao: DatasourceDao,
+    private val datasourceDao: DatasourceDao
 ) {
     fun loadTables(datasource: String, input: DatasourceTablesInput): DatasourceTablesResponse {
         if ((datasource == Datasource.MAIN_DATASOURCE_NAME && (Acl.getRoles() intersect mainDatasourceRoles).isNotEmpty()) ||
@@ -31,9 +31,9 @@ class DatasourceHandler(
                 pagination =
                 Pagination(
                     total = 0,
-                    pageCount = 0,
-                ),
-            ),
+                    pageCount = 0
+                )
+            )
         )
     }
 
@@ -42,7 +42,7 @@ class DatasourceHandler(
         private val mainDatasourceRoles =
             setOf(
                 Acl.ROLE_ADMIN,
-                Acl.ROLE_ANALYST,
+                Acl.ROLE_ANALYST
             )
     }
 }

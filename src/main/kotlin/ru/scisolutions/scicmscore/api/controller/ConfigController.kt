@@ -9,7 +9,7 @@ import ru.scisolutions.scicmscore.model.SecurityConfigResponse
 @RestController
 @RequestMapping("/api/config")
 class ConfigController(
-    private val securityProps: SecurityProps,
+    private val securityProps: SecurityProps
 ) {
     @GetMapping("/security")
     fun getSecurityConfig(): SecurityConfigResponse = SecurityConfigResponse(
@@ -19,8 +19,8 @@ class ConfigController(
                 id = it.id,
                 name = it.name,
                 authUrl = it.authUrl,
-                clientId = it.clientId,
+                clientId = it.clientId
             )
-        },
+        }
     )
 }

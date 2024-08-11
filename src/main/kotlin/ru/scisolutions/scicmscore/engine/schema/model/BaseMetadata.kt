@@ -3,7 +3,7 @@ package ru.scisolutions.scicmscore.engine.schema.model
 import java.util.Objects
 
 open class BaseMetadata(
-    open val name: String, // must start with a lowercase character
+    open val name: String // must start with a lowercase character
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {

@@ -40,7 +40,7 @@ class Attribute(
     val colHidden: Boolean? = null, // hide column in UI table
     val colWidth: Int? = null, // column width in UI table
     val fieldHidden: Boolean? = null, // hide field in UI form
-    val fieldWidth: Int? = null, // field width in UI form
+    val fieldWidth: Int? = null // field width in UI form
 ) {
     @JsonIgnore
     fun isRelation() = type == FieldType.relation
@@ -109,7 +109,7 @@ class Attribute(
                 if (isCollection()) {
                     Json.objectMapper.readValue(
                         defaultValue,
-                        List::class.java,
+                        List::class.java
                     ).toSet()
                 } else {
                     defaultValue
@@ -198,7 +198,7 @@ class Attribute(
         colHidden,
         colWidth,
         fieldWidth,
-        fieldHidden,
+        fieldHidden
     )
 
     enum class RelType { oneToOne, oneToMany, manyToOne, manyToMany }

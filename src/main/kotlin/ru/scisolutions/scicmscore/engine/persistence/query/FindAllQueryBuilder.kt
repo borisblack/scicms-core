@@ -35,11 +35,11 @@ class FindAllQueryBuilder(
     private val localeConditionBuilder: LocaleConditionBuilder,
     private val itemPaginator: ItemPaginator,
     private val relationManager: RelationManager,
-    private val orderingsParser: ItemOrderingsParser,
+    private val orderingsParser: ItemOrderingsParser
 ) {
     class FindAllQuery(
         val sql: String,
-        val pagination: Pagination,
+        val pagination: Pagination
     )
 
     fun buildFindAllQuery(
@@ -47,7 +47,7 @@ class FindAllQueryBuilder(
         input: FindAllInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>,
-        paramSource: AttributeSqlParameterSource,
+        paramSource: AttributeSqlParameterSource
     ): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -83,7 +83,7 @@ class FindAllQueryBuilder(
 
         return FindAllQuery(
             sql = query.validate().toString(),
-            pagination = pagination,
+            pagination = pagination
         )
     }
 
@@ -100,7 +100,7 @@ class FindAllQueryBuilder(
         filters: ItemFiltersInput?,
         selectAttrNames: Set<String>,
         schema: DbSchema,
-        paramSource: AttributeSqlParameterSource,
+        paramSource: AttributeSqlParameterSource
     ): SelectQuery {
         val table = schema.addTable(item.qs)
 
@@ -117,7 +117,7 @@ class FindAllQueryBuilder(
         // Filters
         if (filters != null) {
             query.addCondition(
-                itemFilterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource),
+                itemFilterConditionBuilder.newFilterCondition(item, filters, schema, table, query, paramSource)
             )
         }
 
@@ -136,7 +136,7 @@ class FindAllQueryBuilder(
             ComboCondition(
                 ComboCondition.Op.OR,
                 UnaryCondition.isNull(permissionIdCol),
-                InCondition(permissionIdCol, *permissionIds.toTypedArray()),
+                InCondition(permissionIdCol, *permissionIds.toTypedArray())
             )
         }
     }
@@ -149,7 +149,7 @@ class FindAllQueryBuilder(
         input: FindAllRelationInput,
         selectAttrNames: Set<String>,
         selectPaginationFields: Set<String>,
-        paramSource: AttributeSqlParameterSource,
+        paramSource: AttributeSqlParameterSource
     ): FindAllQuery {
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
@@ -175,13 +175,13 @@ class FindAllQueryBuilder(
                         val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
                         val parentKey =
                             parentItemRec.getString(
-                                parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute,
+                                parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute
                             )
                         query.addJoin(
                             SelectQuery.JoinType.LEFT_OUTER,
                             table,
                             intermediateTable,
-                            BinaryCondition.equalTo(keyCol, targetIntermediateCol),
+                            BinaryCondition.equalTo(keyCol, targetIntermediateCol)
                         )
                         query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentKey))
                     }
@@ -191,13 +191,13 @@ class FindAllQueryBuilder(
                             val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
                             val parentKey =
                                 parentItemRec.getString(
-                                    parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute,
+                                    parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute
                                 )
                             query.addJoin(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,
                                 intermediateTable,
-                                BinaryCondition.equalTo(keyCol, targetIntermediateCol),
+                                BinaryCondition.equalTo(keyCol, targetIntermediateCol)
                             )
                             query.addCondition(BinaryCondition.equalTo(sourceIntermediateCol, parentKey))
                         } else {
@@ -209,7 +209,7 @@ class FindAllQueryBuilder(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,
                                 intermediateTable,
-                                BinaryCondition.equalTo(keyCol, sourceIntermediateCol),
+                                BinaryCondition.equalTo(keyCol, sourceIntermediateCol)
                             )
                             query.addCondition(BinaryCondition.equalTo(targetIntermediateCol, parentKey))
                         }
@@ -230,7 +230,7 @@ class FindAllQueryBuilder(
 
         return FindAllQuery(
             sql = query.validate().toString(),
-            pagination = pagination,
+            pagination = pagination
         )
     }
 }

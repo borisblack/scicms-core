@@ -8,7 +8,7 @@ class Item(
     override val metadata: ItemMetadata,
     override var checksum: String?,
     val includeTemplates: LinkedHashSet<String>,
-    val spec: ItemSpec,
+    val spec: ItemSpec
 ) : AbstractModel(coreVersion, metadata, checksum) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -33,7 +33,7 @@ class Item(
         metadata,
         // checksum, // ignore
         includeTemplates,
-        spec,
+        spec
     )
 
     override fun toString(): String {

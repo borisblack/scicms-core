@@ -28,7 +28,7 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
                     true,
                     true,
                     true,
-                    grantedAuthorities,
+                    grantedAuthorities
                 )
             customUserDetailsManager.createUser(userDetails)
         } else {
@@ -111,12 +111,12 @@ class UserGroupManagerImpl(private val customUserDetailsManager: CustomUserDetai
 
     override fun addGroupAuthority(groupName: String, authority: GrantedAuthority) = customUserDetailsManager.addGroupAuthority(
         groupName,
-        authority,
+        authority
     )
 
     override fun removeGroupAuthority(groupName: String, authority: GrantedAuthority) = customUserDetailsManager.removeGroupAuthority(
         groupName,
-        authority,
+        authority
     )
 
     override fun setAuthentication(username: String) {

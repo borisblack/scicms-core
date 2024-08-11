@@ -10,5 +10,5 @@ class MediaInfo(
     val fileSize: Long,
     val mimetype: String?,
     val checksum: String,
-    val createdAt: OffsetDateTime,
+    val createdAt: OffsetDateTime
 )

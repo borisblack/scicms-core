@@ -22,5 +22,5 @@ class Sequence(
     @Column(name = "pad_with")
     var padWith: Char?,
     @Column(name = "pad_to")
-    var padTo: Int?,
+    var padTo: Int?
 ) : AbstractEntity()

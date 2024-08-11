@@ -17,7 +17,7 @@ class FindOneHandler(
     private val classService: ClassService,
     private val itemService: ItemService,
     private val aclItemRecDao: ACLItemRecDao,
-    private val attributeValueHelper: AttributeValueHelper,
+    private val attributeValueHelper: AttributeValueHelper
 ) {
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
@@ -38,7 +38,7 @@ class FindOneHandler(
 
         val response =
             Response(
-                itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, itemRec)) },
+                itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, itemRec)) }
             )
 
         implInstance?.afterFindOne(itemName, response)
@@ -67,7 +67,7 @@ class FindOneHandler(
             }
 
         return RelationResponse(
-            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) },
+            itemRec?.let { ItemRec(attributeValueHelper.prepareValuesToReturn(item, it)) }
         )
     }
 

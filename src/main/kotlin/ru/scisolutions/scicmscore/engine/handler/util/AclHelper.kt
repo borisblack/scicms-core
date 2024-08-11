@@ -8,7 +8,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl.Mask
 
 @Component
 class AclHelper(
-    private val permissionService: PermissionService,
+    private val permissionService: PermissionService
 ) {
     fun canRead(itemRec: ItemRec) = hasAccess(itemRec, Mask.READ)
 

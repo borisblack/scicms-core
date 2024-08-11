@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 @Service
 class ItemCacheManager(
     private val dataProps: DataProps,
-    private val redissonClient: RedissonClient,
+    private val redissonClient: RedissonClient
 ) {
     init {
         // Clear caches on start

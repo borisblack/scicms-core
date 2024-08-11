@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.extension.upperFirst
 @Component
 class ItemObjectTypes(
     private val attributeTypes: AttributeTypes,
-    private val includeAttributePolicy: IncludeAttributePolicy,
+    private val includeAttributePolicy: IncludeAttributePolicy
 ) {
     fun item(item: Item): ObjectTypeDefinition {
         val dataSourceInfo = "Data source: ${item.ds}."
@@ -38,7 +38,7 @@ class ItemObjectTypes(
             .filter { (attrName, attribute) -> includeAttributePolicy.includeInObjectType(item, attrName, attribute) }
             .forEach { (attrName, attribute) ->
                 builder.fieldDefinition(
-                    newAttributeField(item, attrName, attribute),
+                    newAttributeField(item, attrName, attribute)
                 )
             }
 
@@ -62,19 +62,19 @@ class ItemObjectTypes(
                     InputValueDefinition.newInputValueDefinition()
                         .name("filters")
                         .type(TypeName("${capitalizedTargetItemName}FiltersInput"))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("pagination")
                         .type(TypeName("PaginationInput"))
-                        .build(),
+                        .build()
                 )
                 .inputValueDefinition(
                     InputValueDefinition.newInputValueDefinition()
                         .name("sort")
                         .type(ListType(TypeNames.STRING))
-                        .build(),
+                        .build()
                 )
         }
 
@@ -90,7 +90,7 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeName(capitalizedItemName))
-                    .build(),
+                    .build()
             )
             .build()
     }
@@ -104,7 +104,7 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeName(capitalizedItemName))
-                    .build(),
+                    .build()
             )
             .build()
     }
@@ -118,13 +118,13 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("success")
                     .type(TypeNames.BOOLEAN)
-                    .build(),
+                    .build()
             )
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeName(capitalizedItemName))
-                    .build(),
+                    .build()
             )
             .build()
     }
@@ -140,17 +140,17 @@ class ItemObjectTypes(
                     .type(
                         NonNullType(
                             ListType(
-                                NonNullType(TypeName(capitalizedItemName)),
-                            ),
-                        ),
+                                NonNullType(TypeName(capitalizedItemName))
+                            )
+                        )
                     )
-                    .build(),
+                    .build()
             )
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("meta")
                     .type(NonNullType(TypeName("ResponseCollectionMeta")))
-                    .build(),
+                    .build()
             )
             .build()
     }
@@ -166,17 +166,17 @@ class ItemObjectTypes(
                     .type(
                         NonNullType(
                             ListType(
-                                NonNullType(TypeName(capitalizedItemName)),
-                            ),
-                        ),
+                                NonNullType(TypeName(capitalizedItemName))
+                            )
+                        )
                     )
-                    .build(),
+                    .build()
             )
             .fieldDefinition(
                 FieldDefinition.newFieldDefinition()
                     .name("meta")
                     .type(NonNullType(TypeName("ResponseCollectionMeta")))
-                    .build(),
+                    .build()
             )
             .build()
     }
@@ -190,7 +190,7 @@ class ItemObjectTypes(
                 FieldDefinition.newFieldDefinition()
                     .name("data")
                     .type(TypeNames.OBJECT)
-                    .build(),
+                    .build()
             )
             .build()
     }

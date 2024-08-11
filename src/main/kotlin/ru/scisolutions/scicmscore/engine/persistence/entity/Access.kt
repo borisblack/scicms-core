@@ -16,7 +16,7 @@ import java.time.OffsetDateTime
 @Table(name = "sec_access")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 class Access(
     val label: String?,
@@ -34,7 +34,7 @@ class Access(
     @Column(name = "begin_date", nullable = false)
     val beginDate: OffsetDateTime,
     @Column(name = "end_date")
-    val endDate: OffsetDateTime,
+    val endDate: OffsetDateTime
 ) : AbstractEntity() {
     class AccessComparator : Comparator<Access> {
         override fun compare(left: Access, right: Access): Int {

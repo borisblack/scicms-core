@@ -9,6 +9,6 @@ class Oauth2AccessCodeAuthenticationToken : PreAuthenticatedAuthenticationToken 
     constructor(aPrincipal: Any, aCredentials: Any?, anAuthorities: Collection<GrantedAuthority>) : super(
         aPrincipal,
         aCredentials,
-        anAuthorities,
+        anAuthorities
     )
 }

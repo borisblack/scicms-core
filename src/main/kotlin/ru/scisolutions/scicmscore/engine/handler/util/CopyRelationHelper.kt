@@ -17,7 +17,7 @@ import ru.scisolutions.scicmscore.engine.service.RelationManager
 class CopyRelationHelper(
     private val itemService: ItemService,
     private val relationManager: RelationManager,
-    private val itemRecDao: ItemRecDao,
+    private val itemRecDao: ItemRecDao
 ) {
     fun copyCollectionRelations(item: Item, prevItemRec: ItemRec, itemRec: ItemRec) {
         logger.debug("Processing collection relations")
@@ -54,7 +54,7 @@ class CopyRelationHelper(
                             itemRecDao.findAllByAttribute(
                                 relation.intermediateItem,
                                 INTERMEDIATE_SOURCE_ATTR_NAME,
-                                sourcePrevItemRecId,
+                                sourcePrevItemRecId
                             )
                         prevRelItemRecs.forEach {
                             it[INTERMEDIATE_SOURCE_ATTR_NAME] = sourceItemRecId
@@ -68,7 +68,7 @@ class CopyRelationHelper(
                                 itemRecDao.findAllByAttribute(
                                     relation.intermediateItem,
                                     INTERMEDIATE_SOURCE_ATTR_NAME,
-                                    sourcePrevItemRecId,
+                                    sourcePrevItemRecId
                                 )
                             prevRelItemRecs.forEach {
                                 it[INTERMEDIATE_SOURCE_ATTR_NAME] = sourceItemRecId
@@ -83,7 +83,7 @@ class CopyRelationHelper(
                                 itemRecDao.findAllByAttribute(
                                     relation.intermediateItem,
                                     INTERMEDIATE_TARGET_ATTR_NAME,
-                                    targetPrevItemRecId,
+                                    targetPrevItemRecId
                                 )
                             prevRelItemRecs.forEach {
                                 it[INTERMEDIATE_TARGET_ATTR_NAME] = targetItemRecId

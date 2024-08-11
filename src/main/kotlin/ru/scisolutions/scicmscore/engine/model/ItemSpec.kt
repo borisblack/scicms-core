@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 
 data class ItemSpec(
     val attributes: Map<String, Attribute> = emptyMap(),
-    val indexes: Map<String, Index> = emptyMap(),
+    val indexes: Map<String, Index> = emptyMap()
 ) {
     @JsonIgnore
     val columnNameToAttrNameMap: Map<String, String> =

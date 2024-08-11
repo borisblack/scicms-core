@@ -13,7 +13,7 @@ import java.sql.DatabaseMetaData
 
 open class BaseItemRecDao(
     private val dsManager: DatasourceManager,
-    private val itemCacheManager: ItemCacheManager,
+    private val itemCacheManager: ItemCacheManager
 ) {
     protected open val logger: Logger = LoggerFactory.getLogger(BaseItemRecDao::class.java)
 
@@ -40,7 +40,7 @@ open class BaseItemRecDao(
         if (paramSource.parameterNames.isNotEmpty()) {
             logger.trace(
                 "Binding parameters: {}",
-                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" },
+                paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
             )
         }
     }

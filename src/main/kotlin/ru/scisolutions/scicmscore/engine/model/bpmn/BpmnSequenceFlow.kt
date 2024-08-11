@@ -10,5 +10,5 @@ class BpmnSequenceFlow(
     @get:XmlAttribute(name = "sourceRef", required = true)
     var sourceRef: String = "",
     @get:XmlAttribute(name = "targetRef", required = true)
-    var targetRef: String = "",
+    var targetRef: String = ""
 )

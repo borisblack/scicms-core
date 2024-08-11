@@ -17,7 +17,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 class ACLItemRecDao(
     private val permissionService: PermissionService,
     private val dsManager: DatasourceManager,
-    private val itemCacheManager: ItemCacheManager,
+    private val itemCacheManager: ItemCacheManager
 ) : BaseItemRecDao(dsManager, itemCacheManager) {
     override val logger: Logger = LoggerFactory.getLogger(ACLItemRecDao::class.java)
 
@@ -62,7 +62,7 @@ class ACLItemRecDao(
         item,
         keyAttrName,
         keys,
-        Acl.Mask.READ,
+        Acl.Mask.READ
     )
 
     private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): List<ItemRec> = findAllByKeysFor(item, item.idAttribute, ids, accessMask)

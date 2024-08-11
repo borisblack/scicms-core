@@ -27,13 +27,13 @@ import com.google.common.io.Files as GFiles
     prefix = "scicms-core.media",
     name = ["provider"],
     havingValue = "local",
-    matchIfMissing = false,
+    matchIfMissing = false
 )
 class LocalMediaHandler(
     private val mediaProps: MediaProps,
     private val mediaService: MediaService,
     private val itemService: ItemService,
-    private val permissionManager: PermissionManager,
+    private val permissionManager: PermissionManager
 ) : MediaHandler {
     init {
         if (mediaProps.provider != MediaProps.PROVIDER_LOCAL) {
@@ -65,11 +65,11 @@ class LocalMediaHandler(
                 fileSize = file.size,
                 mimetype = mimetype,
                 path = filePath,
-                checksum = md5.toString(),
+                checksum = md5.toString()
             )
 
         return mediaMapper.map(
-            mediaService.save(media),
+            mediaService.save(media)
         )
     }
 
@@ -107,13 +107,13 @@ class LocalMediaHandler(
                 fileSize = file.size,
                 mimetype = mimetype,
                 path = filePath,
-                checksum = md5.toString(),
+                checksum = md5.toString()
             ).apply {
                 permissionId = permissionManager.checkPermissionId(itemService.getMedia(), uploadInput.permissionId)
             }
 
         return mediaMapper.map(
-            mediaService.save(media),
+            mediaService.save(media)
         )
     }
 

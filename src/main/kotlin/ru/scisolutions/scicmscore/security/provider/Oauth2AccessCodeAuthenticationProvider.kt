@@ -26,7 +26,7 @@ import java.net.http.HttpResponse.BodyHandlers
 class Oauth2AccessCodeAuthenticationProvider(
     private val securityProps: SecurityProps,
     private val userGroupManager: UserGroupManager,
-    private val userService: UserService,
+    private val userService: UserService
 ) : AuthenticationProvider {
     override fun supports(authentication: Class<*>): Boolean = authentication == Oauth2AccessCodeAuthenticationToken::class.java
 
@@ -43,7 +43,7 @@ class Oauth2AccessCodeAuthenticationProvider(
             userGroupManager.createUserInGroups(
                 username = username,
                 rawPassword = Acl.randomPassword(),
-                groupNames = setOf(Acl.GROUP_USERS),
+                groupNames = setOf(Acl.GROUP_USERS)
             )
         }
 
@@ -63,7 +63,7 @@ class Oauth2AccessCodeAuthenticationProvider(
                     "Content-Type",
                     "application/json;charset=UTF-8",
                     "Accept",
-                    "application/json",
+                    "application/json"
                 )
                 .POST(
                     HttpRequest.BodyPublishers.ofString(
@@ -71,10 +71,10 @@ class Oauth2AccessCodeAuthenticationProvider(
                             Oauth2AccessTokenRequest(
                                 clientId = provider.clientId,
                                 clientSecret = provider.clientSecret,
-                                accessCode = accessCode,
-                            ),
-                        ),
-                    ),
+                                accessCode = accessCode
+                            )
+                        )
+                    )
                 )
                 .build()
 
@@ -97,7 +97,7 @@ class Oauth2AccessCodeAuthenticationProvider(
                     "Authorization",
                     "Bearer ${accessTokenResponse.accessToken}",
                     "Accept",
-                    "application/json",
+                    "application/json"
                 )
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build()

@@ -16,7 +16,7 @@ import ru.scisolutions.scicmscore.util.Jaxb
 @Table(name = "core_lifecycles")
 @Cacheable
 @org.hibernate.annotations.Cache(
-    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE,
+    usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE
 )
 class Lifecycle(
     @Column(nullable = false)
@@ -28,7 +28,7 @@ class Lifecycle(
     var implementation: String? = null,
     var spec: String,
     var checksum: String? = null,
-    var hash: String? = null,
+    var hash: String? = null
 ) : AbstractEntity() {
     @Transient
     private var parsedSpec: LifecycleSpec? = null
@@ -61,14 +61,14 @@ class Lifecycle(
                                     val targetTask = taskMap[sequenceFlow.targetRef] as BpmnTask
                                     targetTask.name
                                 }
-                                .toSet(),
+                                .toSet()
                         )
                 }
 
             parsedSpec =
                 LifecycleSpec(
                     startEvent = State(startTransitions),
-                    states = states,
+                    states = states
                 )
         }
 

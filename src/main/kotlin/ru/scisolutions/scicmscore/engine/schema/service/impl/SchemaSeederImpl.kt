@@ -24,7 +24,7 @@ class SchemaSeederImpl(
     private val schemaLockService: SchemaLockService,
     private val schemaReader: SchemaReader,
     private val tableSeeder: TableSeeder,
-    private val modelsApplier: ModelsApplier,
+    private val modelsApplier: ModelsApplier
 ) : SchemaSeeder {
     init {
         if (schemaProps.seedOnInit) {

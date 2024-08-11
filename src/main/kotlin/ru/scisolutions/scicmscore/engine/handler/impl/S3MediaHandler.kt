@@ -27,13 +27,13 @@ import java.util.UUID
     prefix = "scicms-core.media",
     name = ["provider"],
     havingValue = "s3",
-    matchIfMissing = false,
+    matchIfMissing = false
 )
 class S3MediaHandler(
     private val mediaProps: MediaProps,
     private val mediaService: MediaService,
     private val itemService: ItemService,
-    private val permissionManager: PermissionManager,
+    private val permissionManager: PermissionManager
 ) : MediaHandler {
     init {
         if (mediaProps.provider != MediaProps.PROVIDER_S3) {
@@ -59,7 +59,7 @@ class S3MediaHandler(
                 .`object`(filenameToStore)
                 .contentType(mimetype)
                 .stream(file.inputStream, file.size, DEFAULT_PART_SIZE)
-                .build(),
+                .build()
         )
 
         val media =
@@ -68,11 +68,11 @@ class S3MediaHandler(
                 fileSize = file.size,
                 mimetype = mimetype,
                 path = filenameToStore,
-                checksum = DigestUtils.md5DigestAsHex(file.inputStream),
+                checksum = DigestUtils.md5DigestAsHex(file.inputStream)
             )
 
         return mediaMapper.map(
-            mediaService.save(media),
+            mediaService.save(media)
         )
     }
 
@@ -80,7 +80,7 @@ class S3MediaHandler(
         .endpoint(mediaProps.providerOptions.s3.endpoint)
         .credentials(
             mediaProps.providerOptions.s3.accessKey,
-            mediaProps.providerOptions.s3.secretKey,
+            mediaProps.providerOptions.s3.secretKey
         )
         .build()
 
@@ -102,7 +102,7 @@ class S3MediaHandler(
                 .`object`(filenameToStore)
                 .contentType(mimetype)
                 .stream(file.inputStream, file.size, DEFAULT_PART_SIZE)
-                .build(),
+                .build()
         )
 
         val media =
@@ -113,13 +113,13 @@ class S3MediaHandler(
                 fileSize = file.size,
                 mimetype = mimetype,
                 path = filenameToStore,
-                checksum = DigestUtils.md5DigestAsHex(file.inputStream),
+                checksum = DigestUtils.md5DigestAsHex(file.inputStream)
             ).apply {
                 permissionId = permissionManager.checkPermissionId(itemService.getMedia(), uploadInput.permissionId)
             }
 
         return mediaMapper.map(
-            mediaService.save(media),
+            mediaService.save(media)
         )
     }
 
@@ -137,7 +137,7 @@ class S3MediaHandler(
                     .builder()
                     .bucket(mediaProps.providerOptions.s3.defaultBucket)
                     .`object`(media.path)
-                    .build(),
+                    .build()
             )
                 .readAllBytes()
 
@@ -156,7 +156,7 @@ class S3MediaHandler(
                 .builder()
                 .bucket(mediaProps.providerOptions.s3.defaultBucket)
                 .`object`(media.path)
-                .build(),
+                .build()
         )
     }
 

@@ -25,7 +25,7 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item as ItemEntity
 @Service
 class LiquibaseTableSeeder(
     private val schemaProps: SchemaProps,
-    private val dsManager: DatasourceManager,
+    private val dsManager: DatasourceManager
 ) : TableSeeder {
     private val liquibaseIndexes = LiquibaseIndexes()
 
@@ -97,7 +97,7 @@ class LiquibaseTableSeeder(
                 null,
                 true,
                 null,
-                databaseChangeLog,
+                databaseChangeLog
             )
         databaseChangeLog.addChangeSet(changeSet)
 
@@ -186,7 +186,7 @@ class LiquibaseTableSeeder(
                     existingItemEntity.tableName,
                     existingAttribute.getColumnName(attrName),
                     newTableName,
-                    attribute.getColumnName(attrName),
+                    attribute.getColumnName(attrName)
                 )
                 val modifyChanges = modifyColumnChangeList(existingItemEntity, item, attrName)
                 for (modifyChange in modifyChanges) {
@@ -284,8 +284,8 @@ class LiquibaseTableSeeder(
         changeSet.addChange(
             renameTableChange(
                 requireNotNull(existingItemEntity.tableName),
-                requireNotNull(metadata.tableName),
-            ),
+                requireNotNull(metadata.tableName)
+            )
         )
 
         val liquibase = newLiquibase(item.metadata.dataSource, databaseChangeLog)
@@ -442,7 +442,7 @@ class LiquibaseTableSeeder(
                 "Versioned/localized flags for item [{}] has changed. Unique index(es) for column {}.{} will be RECREATED",
                 metadata.name,
                 tableName,
-                newColumnName,
+                newColumnName
             )
             changeList.addAll(liquibaseIndexes.dropUniqueIndexes(existingItemEntity, attrName))
             changeList.addAll(liquibaseIndexes.createUniqueIndexes(item, attrName))
@@ -453,7 +453,7 @@ class LiquibaseTableSeeder(
 
     private fun modifyIndexChangeList(item: Item, indexName: String): List<Change> = listOf(
         liquibaseIndexes.dropIndexIndexChange(item, indexName),
-        liquibaseIndexes.createIndexIndexChange(item, indexName),
+        liquibaseIndexes.createIndexIndexChange(item, indexName)
     )
 
     private fun newLiquibase(dataSourceName: String, databaseChangeLog: DatabaseChangeLog): Liquibase {
@@ -463,8 +463,8 @@ class LiquibaseTableSeeder(
             databaseChangeLog,
             null,
             DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-                JdbcConnection(dataSource.connection),
-            ),
+                JdbcConnection(dataSource.connection)
+            )
         )
     }
 

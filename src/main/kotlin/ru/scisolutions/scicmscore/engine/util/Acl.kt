@@ -55,7 +55,7 @@ object Acl {
         WRITE(setOf(2, 3, 6, 7, 10, 11, 14, 15, 18, 19, 22, 23, 26, 27, 30, 31)),
         CREATE(setOf(4, 5, 6, 7, 12, 13, 14, 15, 20, 21, 22, 23, 28, 29, 30, 31)),
         DELETE(setOf(8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30, 31)),
-        ADMINISTRATION(setOf(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31)),
+        ADMINISTRATION(setOf(16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31))
     }
 
     private fun getPermissionIdsForReadStatement() = getPermissionIdsStatement(Mask.READ)

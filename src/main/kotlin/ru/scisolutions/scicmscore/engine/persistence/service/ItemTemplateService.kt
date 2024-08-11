@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 class ItemTemplateService(
     private val permissionService: PermissionService,
     private val em: EntityManager,
-    private val itemTemplateRepository: ItemTemplateRepository,
+    private val itemTemplateRepository: ItemTemplateRepository
 ) {
     @Transactional(readOnly = true)
     fun findAll(): Iterable<ItemTemplate> = itemTemplateRepository.findAll()

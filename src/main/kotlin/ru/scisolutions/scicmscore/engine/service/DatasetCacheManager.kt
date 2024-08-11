@@ -14,7 +14,7 @@ import kotlin.time.TimeSource
 @Service
 class DatasetCacheManager(
     private val dataProps: DataProps,
-    private val redissonClient: RedissonClient,
+    private val redissonClient: RedissonClient
 ) {
     init {
         // Clear caches on start
@@ -43,7 +43,7 @@ class DatasetCacheManager(
                 return CacheStatistic(
                     res,
                     startMark.elapsedNow().inWholeMilliseconds,
-                    true,
+                    true
                 )
             }
             logger.trace("Loading missed result for SQL: {}", fullSql)
@@ -58,7 +58,7 @@ class DatasetCacheManager(
         return CacheStatistic(
             res,
             startMark.elapsedNow().inWholeMilliseconds,
-            false,
+            false
         )
     }
 

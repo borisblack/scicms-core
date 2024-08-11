@@ -25,7 +25,7 @@ class DatasetFilterConditionBuilder {
         table: DbTable,
         query: SelectQuery,
         paramSource: DatasetSqlParameterSource,
-        fieldNumbers: MutableMap<String, Int> = mutableMapOf(),
+        fieldNumbers: MutableMap<String, Int> = mutableMapOf()
     ): Condition {
         val nestedConditions = mutableListOf<Condition>()
 
@@ -45,8 +45,8 @@ class DatasetFilterConditionBuilder {
                     primitiveFilterInput = fieldFilter,
                     customSql = customSql,
                     paramSource = paramSource,
-                    fieldNumbers = fieldNumbers,
-                ),
+                    fieldNumbers = fieldNumbers
+                )
             )
         }
 
@@ -60,7 +60,7 @@ class DatasetFilterConditionBuilder {
                         table = table,
                         query = query,
                         paramSource = paramSource,
-                        fieldNumbers = fieldNumbers,
+                        fieldNumbers = fieldNumbers
                     )
                 }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
@@ -76,7 +76,7 @@ class DatasetFilterConditionBuilder {
                         table = table,
                         query = query,
                         paramSource = paramSource,
-                        fieldNumbers = fieldNumbers,
+                        fieldNumbers = fieldNumbers
                     )
                 }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
@@ -92,9 +92,9 @@ class DatasetFilterConditionBuilder {
                         table = table,
                         query = query,
                         paramSource = paramSource,
-                        fieldNumbers = fieldNumbers,
-                    ),
-                ),
+                        fieldNumbers = fieldNumbers
+                    )
+                )
             )
         }
 
@@ -108,7 +108,7 @@ class DatasetFilterConditionBuilder {
         primitiveFilterInput: PrimitiveFilterInput,
         customSql: CustomSql,
         paramSource: DatasetSqlParameterSource,
-        fieldNumbers: MutableMap<String, Int>,
+        fieldNumbers: MutableMap<String, Int>
     ): Condition {
         val field = fields[fieldName]
         val fieldType =
@@ -221,7 +221,7 @@ class DatasetFilterConditionBuilder {
                         primitiveFilterInput = it,
                         customSql = customSql,
                         paramSource = paramSource,
-                        fieldNumbers = fieldNumbers,
+                        fieldNumbers = fieldNumbers
                     )
                 }
             nestedConditions.add(ComboCondition(ComboCondition.Op.AND, *andConditions.toTypedArray()))
@@ -237,7 +237,7 @@ class DatasetFilterConditionBuilder {
                         primitiveFilterInput = it,
                         customSql = customSql,
                         paramSource = paramSource,
-                        fieldNumbers = fieldNumbers,
+                        fieldNumbers = fieldNumbers
                     )
                 }
             nestedConditions.add(ComboCondition(ComboCondition.Op.OR, *orConditions.toTypedArray()))
@@ -253,9 +253,9 @@ class DatasetFilterConditionBuilder {
                         primitiveFilterInput = it,
                         customSql = customSql,
                         paramSource = paramSource,
-                        fieldNumbers = fieldNumbers,
-                    ),
-                ),
+                        fieldNumbers = fieldNumbers
+                    )
+                )
             )
         }
 

@@ -15,7 +15,7 @@ import ru.scisolutions.scicmscore.engine.util.Acl
 class ItemService(
     private val permissionService: PermissionService,
     private val em: EntityManager,
-    private val itemRepository: ItemRepository,
+    private val itemRepository: ItemRepository
 ) {
     @Transactional(readOnly = true)
     fun findAll(): Iterable<Item> = itemRepository.findAll()
