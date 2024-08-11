@@ -39,3 +39,4 @@ out/
 
 logs/
 .env
+scicms.db
