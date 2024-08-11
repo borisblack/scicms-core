@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.persistence.mapper.ItemRecMapper
 import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
 import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
+import java.sql.DatabaseMetaData
 
 open class BaseItemRecDao(
     private val dsManager: DatasourceManager,
@@ -43,4 +44,6 @@ open class BaseItemRecDao(
             )
         }
     }
+
+    fun dbMetaData(item: Item): DatabaseMetaData = dsManager.dbMetaData(item.ds)
 }

@@ -12,6 +12,7 @@ import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.persistence.entity.Datasource
 import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.extension.isUUID
+import java.sql.DatabaseMetaData
 import java.sql.DriverManager
 import java.util.concurrent.TimeUnit
 import javax.sql.DataSource
@@ -43,6 +44,8 @@ class DatasourceManager(
             if (name == Datasource.MAIN_DATASOURCE_NAME) mainDataSource else createDataSource(name)
         }
     }
+
+    fun dbMetaData(ds: String): DatabaseMetaData = dataSource(ds).connection.use { it.metaData }
 
     private fun createDataSource(name: String): DataSource {
         val datasource = datasourceService.getByName(name)

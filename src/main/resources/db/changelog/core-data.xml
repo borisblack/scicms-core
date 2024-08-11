@@ -6,6 +6,7 @@
     <property name="now" value="sysdate" dbms="oracle"/>
     <property name="now" value="now()" dbms="postgresql,mysql,h2"/>
     <property name="now" value="getdate()" dbms="mssql"/>
+    <property name="now" value="datetime('now')" dbms="sqlite"/>
     <property name="defaultRevisionPolicyId" value="48fea283-2872-4ca3-8fbd-980b7654907b"/>
     <property name="rootUserId" value="0c924266-3c61-4362-81d7-9d69403fbe32"/>
     <property name="defaultPermissionId" value="6fd701bf-87e0-4aca-bbfd-fe1e9f85fc71"/>

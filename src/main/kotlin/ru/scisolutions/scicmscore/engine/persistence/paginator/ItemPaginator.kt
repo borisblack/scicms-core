@@ -22,7 +22,12 @@ class ItemPaginator(
                 null
             }
 
-        return paginate(paginationInput, query, total)
+        return paginate(
+            dbMetaData = itemRecDao.dbMetaData(item),
+            paginationInput = paginationInput,
+            query = query,
+            total = total,
+        )
     }
 
     companion object {

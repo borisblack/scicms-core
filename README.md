@@ -33,20 +33,25 @@ SciCMS Core is a Kotlin application based on the Spring Boot 3 framework.
 To build and run, you need a Java version of at least 21. To run the build enter the command `./gradlew build` from the working directory.
 The subsequent launch of the created JAR archive is performed with the command `java -jar <build_path>`.
 Before starting, we must set the following environment variables:
-- MAIN_DB_URL - standard JDBC connection string (PostgreSQL and Oracle DBMS are currently supported);
+- MAIN_DB_URL - standard JDBC connection string (PostgreSQL, Oracle and SQLite DBMS are currently supported);
 - MAIN_DB_USERNAME - database user name;
 - MAIN_DB_PASSWORD - database user password;
 - REDIS_HOST - Redis server address (default value - `127.0.0.1`);
 - REDIS_PORT - Redis port (default value is `6379`).
 
-Examples of connection strings for PostgreSQL and Oracle respectively: `jdbc:postgresql://127.0.0.1:5432/scicms`, `jdbc:oracle:thin:@//127.0.0.1:1521/xepdb1`.
-If you do not have configured DBMS and Redis instances, you can use the file [docker-compose-infra.yml](docker/docker-compose-infra.yml) to launch them with [Docker](http://docker.io):
+Examples of connection strings:
+- PostgreSQL - `jdbc:postgresql://127.0.0.1:5432/scicms`;
+- Oracle - `jdbc:oracle:thin:@//127.0.0.1:1521/xepdb1`;
+- SQLite - `jdbc:sqlite:scicms.db?date_class=text`.
+
+If we do not have configured DBMS and Redis instances, we can use the file [docker-compose-infra.yml](docker/docker-compose-infra.yml) to launch them with [Docker](http://docker.io):
 ```shell
 cd ./docker
 docker-compose -f docker-compose-infra.yml up -d --build
 ```
 
 In this case, when running on the local computer, the environment variables should have the following values: MAIN_DB_URL = `jdbc:postgresql://127.0.0.1:5432/scicms`, MAIN_DB_USERNAME = `scicms`, MAIN_DB_PASSWORD = `scicms`.
+If the built-in SQLite database is used, then on the first launch a file is created at the path specified in the connection string.
 In future versions of SciCMS Core, in order to simplify local launch, it is planned to add the ability to work with the application with a built-in SQLite database and a cache in its own memory.
 
 ### Authentication for interacting with the API

@@ -9,6 +9,7 @@ import ru.scisolutions.scicmscore.engine.persistence.mapper.DatasetRecMapper
 import ru.scisolutions.scicmscore.engine.persistence.query.DatasetSqlParameterSource
 import ru.scisolutions.scicmscore.engine.service.DatasetCacheManager
 import ru.scisolutions.scicmscore.engine.service.DatasourceManager
+import java.sql.DatabaseMetaData
 
 @Service
 class DatasetDao(
@@ -42,6 +43,8 @@ class DatasetDao(
             dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
         }
     }
+
+    fun dbMetaData(dataset: Dataset): DatabaseMetaData = dsManager.dbMetaData(dataset.ds)
 
     companion object {
         private val logger = LoggerFactory.getLogger(DatasetDao::class.java)

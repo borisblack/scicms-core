@@ -1,13 +1,15 @@
 package ru.scisolutions.scicmscore.engine.persistence.paginator
 
 import com.healthmarketscience.sqlbuilder.SelectQuery
+import com.healthmarketscience.sqlbuilder.custom.mysql.MysLimitClause
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.model.input.PaginationInput
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
+import java.sql.DatabaseMetaData
 import kotlin.math.ceil
 
 abstract class AbstractPaginator(private val dataProps: DataProps) {
-    protected fun paginate(paginationInput: PaginationInput?, query: SelectQuery, total: Int?): Pagination {
+    protected fun paginate(dbMetaData: DatabaseMetaData, paginationInput: PaginationInput?, query: SelectQuery, total: Int?): Pagination {
         if (paginationInput != null) {
             if ((paginationInput.page != null || paginationInput.pageSize != null) && (paginationInput.start != null || paginationInput.limit != null)) {
                 throw IllegalArgumentException("Pagination methods cannot be mixed. Use either page with pageSize or start with limit")
@@ -29,9 +31,13 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
                 }
 
                 val offset = (page - 1) * pageSize
-                query
-                    .setOffset(offset)
-                    .setFetchNext(pageSize)
+
+                addPagination(
+                    dbMetaData = dbMetaData,
+                    query = query,
+                    offset = offset,
+                    rowCount = pageSize,
+                )
 
                 val pageCount: Int? = if (total == null) null else ceil(total.toDouble() / pageSize).toInt()
 
@@ -56,9 +62,12 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
                     throw IllegalArgumentException("The limit cannot be more than ${dataProps.maxLimit}")
                 }
 
-                query
-                    .setOffset(start)
-                    .setFetchNext(limit)
+                addPagination(
+                    dbMetaData = dbMetaData,
+                    query = query,
+                    offset = start,
+                    rowCount = limit,
+                )
 
                 return Pagination(
                     start = start,
@@ -73,5 +82,20 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
             total = total,
             pageCount = null,
         )
+    }
+
+    private fun addPagination(dbMetaData: DatabaseMetaData, query: SelectQuery, offset: Int, rowCount: Int) {
+        when (dbMetaData.databaseProductName) {
+            "SQLite", "mysql" -> {
+                query
+                    .addCustomization(MysLimitClause(offset, rowCount))
+            }
+
+            else -> { // SQL 2008
+                query
+                    .setOffset(offset)
+                    .setFetchNext(rowCount)
+            }
+        }
     }
 }

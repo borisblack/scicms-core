@@ -62,10 +62,12 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.google.guava:guava:33.0.0-jre")
     implementation("org.redisson:redisson-hibernate-6:3.24.3")
+    implementation("org.hibernate.orm:hibernate-community-dialects:6.2.7.Final")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // runtimeOnly("com.h2database:h2")
+    runtimeOnly("org.xerial:sqlite-jdbc:3.46.0.1")
     runtimeOnly("com.oracle.database.jdbc:ojdbc8")
     runtimeOnly("org.postgresql:postgresql")
 
