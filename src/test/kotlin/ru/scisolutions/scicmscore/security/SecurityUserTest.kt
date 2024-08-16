@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.test.context.ActiveProfiles
 import ru.scisolutions.scicmscore.security.service.UserGroupManager
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
 class SecurityUserTest {
     @Autowired
     private lateinit var userGroupManager: UserGroupManager

@@ -1,3 +1,0 @@
-spring:
-  datasource:
-    url: ${MAIN_DB_URL:jdbc:sqlite:./src/test/resources/scicms-test.db?date_class=text}
