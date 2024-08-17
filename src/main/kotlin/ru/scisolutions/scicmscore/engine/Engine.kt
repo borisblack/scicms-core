@@ -54,9 +54,20 @@ interface Engine {
 
     fun findOne(itemName: String, id: String, selectAttrNames: Set<String>): Response
 
-    fun findOneRelated(parentItemName: String, parentItemRec: ItemRec, parentAttrName: String, itemName: String, selectAttrNames: Set<String>): RelationResponse
+    fun findOneRelated(
+        parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
+        itemName: String,
+        selectAttrNames: Set<String>
+    ): RelationResponse
 
-    fun findAll(itemName: String, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>): ResponseCollection
+    fun findAll(
+        itemName: String,
+        input: FindAllInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): ResponseCollection
 
     fun findAllRelated(
         parentItemName: String,

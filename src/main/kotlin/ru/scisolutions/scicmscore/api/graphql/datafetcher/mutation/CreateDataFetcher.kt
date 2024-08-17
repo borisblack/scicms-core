@@ -22,7 +22,8 @@ class CreateDataFetcher(
         val selectAttrNames = dfe.selectDataFields()
         val input =
             CreateInput(
-                data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>? ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
+                data = dfe.arguments[DATA_ARG_NAME] as Map<String, Any?>?
+                    ?: throw IllegalArgumentException("The [$DATA_ARG_NAME] argument is null."),
                 majorRev = dfe.arguments[MAJOR_REV_ARG_NAME] as String?,
                 locale = dfe.arguments[LOCALE_ARG_NAME] as String?
             )

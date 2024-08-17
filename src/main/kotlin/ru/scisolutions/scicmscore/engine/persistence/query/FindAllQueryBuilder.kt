@@ -154,12 +154,13 @@ class FindAllQueryBuilder(
         val spec = DbSpec()
         val schema: DbSchema = spec.addDefaultSchema()
         val query = buildFindAllInitialQuery(item, input.filters, selectAttrNames, schema, paramSource)
-        val table = schema.findTable(requireNotNull(item.tableName)) ?: throw IllegalArgumentException("Table for item [${item.name}] not found in schema")
+        val table = schema.findTable(requireNotNull(item.tableName))
+            ?: throw IllegalArgumentException("Table for item [${item.name}] not found in schema")
         val parentAttribute = parentItem.spec.getAttribute(parentAttrName)
         when (val parentRelation = relationManager.getAttributeRelation(parentItem, parentAttrName, parentAttribute)) {
             is OneToManyInversedBidirectionalRelation -> {
                 val owningCol = DbColumn(table, parentRelation.getOwningColumnName(), null, null)
-                val parentKey = parentItemRec.getString(parentRelation.getOwningAttribute().referencedBy ?: parentItem.idAttribute)
+                val parentKey = parentItemRec.asString(parentRelation.getOwningAttribute().referencedBy ?: parentItem.idAttribute)
                 query.addCondition(BinaryCondition.equalTo(owningCol, parentKey))
             }
             is ManyToManyRelation -> {
@@ -174,7 +175,7 @@ class FindAllQueryBuilder(
                         val keyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
                         val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
                         val parentKey =
-                            parentItemRec.getString(
+                            parentItemRec.asString(
                                 parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute
                             )
                         query.addJoin(
@@ -190,7 +191,7 @@ class FindAllQueryBuilder(
                             val keyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
                             val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
                             val parentKey =
-                                parentItemRec.getString(
+                                parentItemRec.asString(
                                     parentRelation.getIntermediateSourceAttribute().referencedBy ?: parentItem.idAttribute
                                 )
                             query.addJoin(
@@ -204,7 +205,7 @@ class FindAllQueryBuilder(
                             val keyAttrName = parentRelation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
                             val keyCol = DbColumn(table, item.spec.getColumnName(keyAttrName), null, null)
                             val parentKeyAttrName = parentRelation.getIntermediateTargetAttribute().referencedBy ?: parentItem.idAttribute
-                            val parentKey = parentItemRec.getString(parentKeyAttrName)
+                            val parentKey = parentItemRec.asString(parentKeyAttrName)
                             query.addJoin(
                                 SelectQuery.JoinType.LEFT_OUTER,
                                 table,

@@ -50,14 +50,19 @@ class ItemService(
     @Transactional(readOnly = true)
     fun canCreate(name: String): Boolean = findByNameWithACL(name, Acl.Mask.CREATE) != null
 
-    private fun findByIdWithACL(id: String, accessMask: Acl.Mask): Item? = itemRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
+    private fun findByIdWithACL(id: String, accessMask: Acl.Mask): Item? =
+        itemRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
-    private fun findByNameWithACL(name: String, accessMask: Acl.Mask): Item? = itemRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
+    private fun findByNameWithACL(name: String, accessMask: Acl.Mask): Item? =
+        itemRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
-    fun existsByDatasourceId(id: String): Boolean = itemRepository.existsByDatasourceId(id)
+    fun existsByDatasourceId(id: String): Boolean =
+        itemRepository.existsByDatasourceId(id)
 
-    fun save(item: Item): Item = itemRepository.save(item)
+    fun save(item: Item): Item =
+        itemRepository.save(item)
 
-    fun deleteByName(name: String) = itemRepository.deleteByName(name)
+    fun deleteByName(name: String) =
+        itemRepository.deleteByName(name)
 }

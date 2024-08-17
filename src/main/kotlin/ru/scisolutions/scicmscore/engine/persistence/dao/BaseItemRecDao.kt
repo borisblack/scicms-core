@@ -17,14 +17,15 @@ open class BaseItemRecDao(
 ) {
     protected open val logger: Logger = LoggerFactory.getLogger(BaseItemRecDao::class.java)
 
-    fun findOne(item: Item, sql: String, paramSource: AttributeSqlParameterSource): ItemRec? = itemCacheManager.get(item, sql, paramSource) {
-        traceSqlAndParameters(sql, paramSource)
-        try {
-            dsManager.template(item.ds).queryForObject(sql, paramSource, ItemRecMapper(item))
-        } catch (e: EmptyResultDataAccessException) {
-            null
+    fun findOne(item: Item, sql: String, paramSource: AttributeSqlParameterSource): ItemRec? =
+        itemCacheManager.get(item, sql, paramSource) {
+            traceSqlAndParameters(sql, paramSource)
+            try {
+                dsManager.template(item.ds).queryForObject(sql, paramSource, ItemRecMapper(item))
+            } catch (e: EmptyResultDataAccessException) {
+                null
+            }
         }
-    }
 
     fun count(item: Item, sql: String, paramSource: AttributeSqlParameterSource): Int {
         val countSQL = "SELECT COUNT(*) FROM ($sql) t"
@@ -45,5 +46,5 @@ open class BaseItemRecDao(
         }
     }
 
-    fun dbMetaData(item: Item): DatabaseMetaData = dsManager.dbMetaData(item.ds)
+    fun dbMetaData(item: Item): DatabaseMetaData = dsManager.databaseMetaData(item.ds)
 }

@@ -58,7 +58,13 @@ class AttributeTypes(
 
         return when (attribute.type) {
             FieldType.uuid -> TypeNames.UUID_FILTER_INPUT
-            FieldType.string, FieldType.text, FieldType.enum, FieldType.sequence, FieldType.email, FieldType.password -> TypeNames.STRING_FILTER_INPUT
+            FieldType.string,
+            FieldType.text,
+            FieldType.enum,
+            FieldType.sequence,
+            FieldType.email,
+            FieldType.password -> TypeNames.STRING_FILTER_INPUT
+
             FieldType.int, FieldType.long -> TypeNames.INT_FILTER_INPUT
             FieldType.float, FieldType.double, FieldType.decimal -> TypeNames.FLOAT_FILTER_INPUT
             FieldType.date -> TypeNames.DATE_FILTER_INPUT

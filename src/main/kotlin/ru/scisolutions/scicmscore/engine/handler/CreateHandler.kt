@@ -53,7 +53,7 @@ class CreateHandler(
         val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val preparedData = attributeValueHelper.prepareValuesToSave(item, nonCollectionData)
         val itemRec =
-            ItemRec(preparedData.toMutableMap()).apply {
+            ItemRec(preparedData.toMutableMap().withDefault { null }).apply {
                 val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
                 val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
                 if (this[item.idAttribute] == null) {

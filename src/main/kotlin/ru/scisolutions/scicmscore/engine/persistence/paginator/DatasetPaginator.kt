@@ -15,7 +15,12 @@ class DatasetPaginator(
     dataProps: DataProps,
     private val datasetDao: DatasetDao
 ) : AbstractPaginator(dataProps) {
-    fun paginate(dataset: Dataset, paginationInput: PaginationInput, query: SelectQuery, paramSource: DatasetSqlParameterSource): Pagination {
+    fun paginate(
+        dataset: Dataset,
+        paginationInput: PaginationInput,
+        query: SelectQuery,
+        paramSource: DatasetSqlParameterSource
+    ): Pagination {
         val total: CacheStatistic<Int> = datasetDao.count(dataset, query.toString(), paramSource)
         return paginate(
             dbMetaData = datasetDao.dbMetaData(dataset),

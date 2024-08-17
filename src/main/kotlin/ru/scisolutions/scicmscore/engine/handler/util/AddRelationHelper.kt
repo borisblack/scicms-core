@@ -36,7 +36,7 @@ class AddRelationHelper(
             is OneToOneBidirectionalRelation -> {
                 if (!relation.isOwning) {
                     val referencedAttrName = relation.getOwningAttribute().referencedBy ?: relation.owningItem.idAttribute
-                    val itemRecId = itemRec.getString(referencedAttrName)
+                    val itemRecId = itemRec.asString(referencedAttrName)
                     val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRecId))
                     updateOrInsertWithDefaults(relation.owningItem, relAttrValue as String, owningItemRec)
                 }
@@ -44,12 +44,12 @@ class AddRelationHelper(
             is OneToManyInversedBidirectionalRelation -> {
                 val relIds = relAttrValue as Collection<*>
                 val referencedAttrName = relation.getOwningAttribute().referencedBy ?: item.idAttribute
-                val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRec.getString(referencedAttrName)))
+                val owningItemRec = ItemRec(mutableMapOf(relation.owningAttrName to itemRec.asString(referencedAttrName)))
                 relIds.forEach { updateOrInsertWithDefaults(relation.owningItem, it as String, owningItemRec) }
             }
             is ManyToManyRelation -> {
                 val sourceReferencedAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
-                val sourceItemRecId = itemRec.getString(sourceReferencedAttrName)
+                val sourceItemRecId = itemRec.asString(sourceReferencedAttrName)
                 val relIds = relAttrValue as Collection<*>
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
@@ -60,7 +60,7 @@ class AddRelationHelper(
                             relIds.forEach { addManyToManyRelation(relation.intermediateItem, sourceItemRecId, it as String) }
                         } else {
                             val targetReferencedAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
-                            val targetItemRecId = itemRec.getString(targetReferencedAttrName)
+                            val targetItemRecId = itemRec.asString(targetReferencedAttrName)
                             relIds.forEach { addManyToManyRelation(relation.intermediateItem, it as String, targetItemRecId) }
                         }
                     }

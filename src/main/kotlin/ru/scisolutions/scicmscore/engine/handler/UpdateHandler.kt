@@ -66,7 +66,7 @@ class UpdateHandler(
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
         val itemRec =
-            ItemRec(preparedData.toMutableMap()).apply {
+            ItemRec(preparedData.toMutableMap().withDefault { null }).apply {
                 lockedBy = null
             }
 

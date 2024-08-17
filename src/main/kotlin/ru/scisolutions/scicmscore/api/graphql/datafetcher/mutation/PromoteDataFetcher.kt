@@ -21,7 +21,8 @@ class PromoteDataFetcher(private val engine: Engine) : DataFetcher<DataFetcherRe
         val input =
             PromoteInput(
                 id = dfe.arguments[ID_ARG_NAME] as String? ?: throw IllegalArgumentException("ID argument is null."),
-                state = dfe.arguments[STATE_ARG_NAME] as String? ?: throw IllegalArgumentException("The [$STATE_ARG_NAME] argument is null.")
+                state = dfe.arguments[STATE_ARG_NAME] as String?
+                    ?: throw IllegalArgumentException("The [$STATE_ARG_NAME] argument is null.")
             )
 
         val result = engine.promote(itemName, input, selectAttrNames)

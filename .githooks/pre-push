@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Lint check
+echo "Starting lint check..."
+eval ./gradlew ktlintCheck
+LINT_CHECK_RESULT=$?
+
+if [ $LINT_CHECK_RESULT != 0 ]; then
+    echo "Lint check failed with result: $LINT_CHECK_RESULT. Push aborted."
+    exit $LINT_CHECK_RESULT
+else
+    echo "Lint check success."
+fi

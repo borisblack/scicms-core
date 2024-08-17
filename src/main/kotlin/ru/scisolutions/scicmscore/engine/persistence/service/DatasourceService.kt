@@ -43,10 +43,12 @@ class DatasourceService(
     @Transactional(readOnly = true)
     fun findByIdForRead(name: String): Datasource? = findByIdFor(name, Acl.Mask.READ)
 
-    private fun findByIdFor(id: String, accessMask: Acl.Mask): Datasource? = datasourceRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
+    private fun findByIdFor(id: String, accessMask: Acl.Mask): Datasource? =
+        datasourceRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
     fun findByNameForRead(name: String): Datasource? = findByNameFor(name, Acl.Mask.READ)
 
-    private fun findByNameFor(name: String, accessMask: Acl.Mask): Datasource? = datasourceRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
+    private fun findByNameFor(name: String, accessMask: Acl.Mask): Datasource? =
+        datasourceRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 }

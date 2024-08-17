@@ -21,7 +21,8 @@ class ItemTemplateService(
     fun findAll(): Iterable<ItemTemplate> = itemTemplateRepository.findAll()
 
     @Transactional(readOnly = true)
-    fun getById(id: String): ItemTemplate = itemTemplateRepository.findById(id).orElseThrow { IllegalArgumentException("Item template with ID [$id] not found.") }
+    fun getById(id: String): ItemTemplate =
+        itemTemplateRepository.findById(id).orElseThrow { IllegalArgumentException("Item template with ID [$id] not found.") }
 
     @Transactional(readOnly = true)
     fun findByName(name: String): ItemTemplate? = findByNaturalId(name)
@@ -40,7 +41,8 @@ class ItemTemplateService(
     @Transactional(readOnly = true)
     fun findByNameForWrite(name: String): ItemTemplate? = findByNameWithACL(name, Acl.Mask.WRITE)
 
-    private fun findByNameWithACL(name: String, accessMask: Acl.Mask): ItemTemplate? = itemTemplateRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
+    private fun findByNameWithACL(name: String, accessMask: Acl.Mask): ItemTemplate? =
+        itemTemplateRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 
     fun save(itemTemplate: ItemTemplate): ItemTemplate = itemTemplateRepository.save(itemTemplate)
 

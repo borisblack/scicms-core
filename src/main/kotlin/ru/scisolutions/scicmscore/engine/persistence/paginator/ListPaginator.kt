@@ -10,7 +10,10 @@ class ListPaginator(private val dataProps: DataProps) {
     fun <T> paginate(paginationInput: PaginationInput?, list: List<T>): ListPagination<T> {
         val total = list.size
         if (paginationInput != null) {
-            if ((paginationInput.page != null || paginationInput.pageSize != null) && (paginationInput.start != null || paginationInput.limit != null)) {
+            if (
+                (paginationInput.page != null || paginationInput.pageSize != null) &&
+                (paginationInput.start != null || paginationInput.limit != null)
+            ) {
                 throw IllegalArgumentException("Pagination methods cannot be mixed. Use either page with pageSize or start with limit")
             }
 

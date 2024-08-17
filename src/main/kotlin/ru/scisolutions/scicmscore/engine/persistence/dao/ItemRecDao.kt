@@ -51,10 +51,11 @@ class ItemRecDao(
         return count(item, query.toString(), paramSource)
     }
 
-    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> = itemCacheManager.get(item, sql, paramSource) {
-        traceSqlAndParameters(sql, paramSource)
-        dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
-    }
+    fun findAll(item: Item, sql: String, paramSource: AttributeSqlParameterSource): List<ItemRec> =
+        itemCacheManager.get(item, sql, paramSource) {
+            traceSqlAndParameters(sql, paramSource)
+            dsManager.template(item.ds).query(sql, paramSource, ItemRecMapper(item))
+        }
 
     fun findAllByAttribute(item: Item, attrName: String, attrValue: Any): List<ItemRec> {
         val paramSource = AttributeSqlParameterSource()
@@ -93,7 +94,8 @@ class ItemRecDao(
         return insert(item, itemRec)
     }
 
-    fun updateById(item: Item, id: String, updateAttributes: Map<String, Any?>): Int = updateByAttribute(item, item.idAttribute, id, updateAttributes)
+    fun updateById(item: Item, id: String, updateAttributes: Map<String, Any?>): Int =
+        updateByAttribute(item, item.idAttribute, id, updateAttributes)
 
     fun updateByAttribute(item: Item, whereAttrName: String, whereAttrValue: Any?, updateAttributes: Map<String, Any?>): Int =
         updateByAttributes(item, mapOf(whereAttrName to whereAttrValue), updateAttributes)
@@ -163,7 +165,7 @@ class ItemRecDao(
         }
 
         itemsToDelete.forEach {
-            val id = it.getString(item.idAttribute)
+            val id = it.asString(item.idAttribute)
             deleteById(item, id)
             if (it.current == true) {
                 logger.debug("Versioned item [${item.name}] with ID [$id] is current. Updating group before deleting")
@@ -184,7 +186,7 @@ class ItemRecDao(
             throw IllegalArgumentException("Item [${item.name}] is not versioned")
         }
 
-        val deletedId = deletedItemRec.getString(item.idAttribute)
+        val deletedId = deletedItemRec.asString(item.idAttribute)
         if (deletedItemRec.current != true) {
             throw IllegalArgumentException("Item [${item.name}] with ID [$deletedId] is not current")
         }
@@ -199,11 +201,11 @@ class ItemRecDao(
         }
         val lastItemRec =
             group
-                .filter { it.getString(item.idAttribute) != deletedId && it.locale == deletedItemRec.locale }
+                .filter { it.asString(item.idAttribute) != deletedId && it.locale == deletedItemRec.locale }
                 .maxByOrNull { it.generation as Int }
 
         if (lastItemRec != null) {
-            val lastId = lastItemRec.getString(item.idAttribute)
+            val lastId = lastItemRec.asString(item.idAttribute)
             logger.debug("Setting current flag for the last versioned item [${item.name}] with ID $lastId")
             lastItemRec.current = true
             auditManager.assignUpdateAttributes(lastItemRec)

@@ -13,7 +13,11 @@ import java.sql.ResultSet
 class TablesMapper(dataProps: DataProps) {
     private val paginator = ListPaginator(dataProps)
 
-    fun map(tablesResultSet: ResultSet, input: DatasourceTablesInput, getColumns: (tableName: String) -> Map<String, Column>): DatasourceTablesResponse {
+    fun map(
+        tablesResultSet: ResultSet,
+        input: DatasourceTablesInput,
+        getColumns: (tableName: String) -> Map<String, Column>
+    ): DatasourceTablesResponse {
         val tableNamesPagination = extractTableNames(tablesResultSet, input)
         val tables =
             tableNamesPagination.list.map {

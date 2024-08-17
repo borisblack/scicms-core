@@ -7,7 +7,8 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import java.util.regex.Pattern
 
 class DatasetOrderingsParser {
-    fun parseOrderings(inputSortList: List<String>, table: DbTable?, query: SelectQuery) = inputSortList.forEach { parseOrdering(it, table, query) }
+    fun parseOrderings(inputSortList: List<String>, table: DbTable?, query: SelectQuery) =
+        inputSortList.forEach { parseOrdering(it, table, query) }
 
     private fun parseOrdering(inputSort: String, table: DbTable?, query: SelectQuery) {
         val matcher = sortAttrPattern.matcher(inputSort)

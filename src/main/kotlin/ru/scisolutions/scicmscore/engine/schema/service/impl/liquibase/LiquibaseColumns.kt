@@ -67,11 +67,12 @@ class LiquibaseColumns {
         this.columnName = columnName
     }
 
-    fun renameColumnChange(tableName: String, existingColumnName: String, newColumnName: String): RenameColumnChange = RenameColumnChange().apply {
-        this.tableName = tableName
-        this.oldColumnName = existingColumnName
-        this.newColumnName = newColumnName
-    }
+    fun renameColumnChange(tableName: String, existingColumnName: String, newColumnName: String): RenameColumnChange =
+        RenameColumnChange().apply {
+            this.tableName = tableName
+            this.oldColumnName = existingColumnName
+            this.newColumnName = newColumnName
+        }
 
     fun modifyDataTypeChange(item: Item, attrName: String): ModifyDataTypeChange {
         val metadata = item.metadata
@@ -88,16 +89,18 @@ class LiquibaseColumns {
         this.columnName = columnName
     }
 
-    fun addDefaultValueChange(tableName: String, columnName: String, defaultValue: String): AddDefaultValueChange = AddDefaultValueChange().apply {
-        this.tableName = tableName
-        this.columnName = columnName
-        this.defaultValue = defaultValue
-    }
+    fun addDefaultValueChange(tableName: String, columnName: String, defaultValue: String): AddDefaultValueChange =
+        AddDefaultValueChange().apply {
+            this.tableName = tableName
+            this.columnName = columnName
+            this.defaultValue = defaultValue
+        }
 
-    fun dropNotNullConstraintChange(tableName: String, columnName: String): DropNotNullConstraintChange = DropNotNullConstraintChange().apply {
-        this.tableName = tableName
-        this.columnName = columnName
-    }
+    fun dropNotNullConstraintChange(tableName: String, columnName: String): DropNotNullConstraintChange =
+        DropNotNullConstraintChange().apply {
+            this.tableName = tableName
+            this.columnName = columnName
+        }
 
     fun addNotNullConstraintChange(tableName: String, columnName: String): AddNotNullConstraintChange = AddNotNullConstraintChange().apply {
         this.tableName = tableName

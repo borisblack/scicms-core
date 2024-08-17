@@ -33,7 +33,8 @@ class Oauth2AccessCodeAuthenticationProvider(
     override fun authenticate(authentication: Authentication): Authentication {
         val providerId = (authentication.principal as String?) ?: throw BadCredentialsException("Wrong OAuth2 provider ID.")
         val accessCode = (authentication.credentials as String?) ?: throw BadCredentialsException("Wrong OAuth2 access code.")
-        val provider = securityProps.oauth2Providers.find { it.id == providerId } ?: throw BadCredentialsException("OAuth2 provider not found.")
+        val provider = securityProps.oauth2Providers.find { it.id == providerId }
+            ?: throw BadCredentialsException("OAuth2 provider not found.")
 
         val accessTokenResponse = fetchAccessToken(provider, accessCode)
         val userInfo = fetchUserInfo(provider, accessTokenResponse)

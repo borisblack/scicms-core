@@ -24,44 +24,61 @@ class DatasourceManager(
     private val mainDataSource: DataSource,
     private val datasourceService: DatasourceService
 ) {
-    private val dataSourceCache: Cache<String, DataSource> =
+    private class DataSourceBucket(
+        val dataSource: DataSource,
+        val namedParameterJdbcTemplate: NamedParameterJdbcTemplate,
+        val databaseMetaData: DatabaseMetaData
+    )
+
+    private val buckets: Cache<String, DataSourceBucket> =
         CacheBuilder.newBuilder()
             .expireAfterAccess(dataProps.datasourceCacheExpirationMinutes, TimeUnit.MINUTES)
-            .removalListener<String, DataSource> {
-                RemovalListener<String, DataSource> {
-                    val datasource = it.value
-                    if (it.key != Datasource.MAIN_DATASOURCE_NAME && datasource is HikariDataSource) {
-                        datasource.close()
+            .removalListener<String, DataSourceBucket> {
+                RemovalListener<String, DataSourceBucket> {
+                    val dataSource = it.value?.dataSource
+                    if (it.key != Datasource.MAIN_DATASOURCE_NAME && dataSource is HikariDataSource) {
+                        dataSource.close()
                     }
                 }
             }
             .build()
 
-    fun dataSource(ds: String): DataSource {
+    fun dataSource(ds: String): DataSource =
+        dataSourceBucket(ds).dataSource
+
+    private fun dataSourceBucket(ds: String): DataSourceBucket {
         val name = if (ds.isUUID()) datasourceService.getById(ds).name else ds
 
-        return dataSourceCache.get(name) {
-            if (name == Datasource.MAIN_DATASOURCE_NAME) mainDataSource else createDataSource(name)
+        return buckets.get(name) {
+            if (name == Datasource.MAIN_DATASOURCE_NAME) createDataSourceBucket(mainDataSource) else createDataSourceBucket(name)
         }
     }
 
-    fun dbMetaData(ds: String): DatabaseMetaData = dataSource(ds).connection.use { it.metaData }
+    private fun createDataSourceBucket(dataSource: DataSource): DataSourceBucket =
+        DataSourceBucket(
+            dataSource = dataSource,
+            namedParameterJdbcTemplate = NamedParameterJdbcTemplate(dataSource),
+            databaseMetaData = dataSource.connection.use { it.metaData }
+        )
 
-    private fun createDataSource(name: String): DataSource {
+    private fun createDataSourceBucket(name: String): DataSourceBucket {
         val datasource = datasourceService.getByName(name)
-        val config =
-            HikariConfig().apply {
-                this.jdbcUrl = environment.resolvePlaceholders(datasource.connectionString)
-                this.username = environment.resolvePlaceholders(datasource.username)
-                this.password = environment.resolvePlaceholders(datasource.password)
-                this.maximumPoolSize = datasource.maxPoolSize ?: dataProps.defaultPoolSize
-                this.minimumIdle = datasource.minIdle ?: dataProps.defaultIdle
-            }
+        val config = HikariConfig().apply {
+            this.jdbcUrl = environment.resolvePlaceholders(datasource.connectionString)
+            this.username = environment.resolvePlaceholders(datasource.username)
+            this.password = environment.resolvePlaceholders(datasource.password)
+            this.maximumPoolSize = datasource.maxPoolSize ?: dataProps.defaultPoolSize
+            this.minimumIdle = datasource.minIdle ?: dataProps.defaultIdle
+        }
 
-        return HikariDataSource(config)
+        return createDataSourceBucket(HikariDataSource(config))
     }
 
-    fun template(name: String): NamedParameterJdbcTemplate = NamedParameterJdbcTemplate(dataSource(name))
+    fun template(ds: String): NamedParameterJdbcTemplate =
+        dataSourceBucket(ds).namedParameterJdbcTemplate
+
+    fun databaseMetaData(ds: String): DatabaseMetaData =
+        dataSourceBucket(ds).databaseMetaData
 
     fun checkConnection(url: String, user: String, password: String) {
         (

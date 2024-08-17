@@ -16,6 +16,7 @@ import ru.scisolutions.scicmscore.engine.model.MediaInfo
 import ru.scisolutions.scicmscore.engine.model.input.UploadInput
 import ru.scisolutions.scicmscore.engine.persistence.service.MediaService
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @RestController
 @RequestMapping("/api/media")
@@ -64,7 +65,7 @@ class MediaController(
     fun download(@PathVariable id: String, request: HttpServletRequest): ResponseEntity<*> {
         val media = mediaService.findByIdForRead(id) ?: return ResponseEntity.notFound().build<Unit>()
         val resource = engine.downloadById(id)
-        val filename = URLEncoder.encode(media.filename.replace(" ", "_"), "UTF-8")
+        val filename = URLEncoder.encode(media.filename.replace(" ", "_"), StandardCharsets.UTF_8)
 
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename*=UTF-8''$filename")

@@ -16,35 +16,32 @@ class DatasetDao(
     private val dsManager: DatasourceManager,
     private val datasetCacheManager: DatasetCacheManager
 ) {
-    fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): CacheStatistic<List<DatasetRec>> = datasetCacheManager.get(dataset, sql, paramSource) {
-        logger.trace("Running load SQL: {}", sql)
+    fun load(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): CacheStatistic<List<DatasetRec>> =
+        datasetCacheManager.get(dataset, sql, paramSource) {
+            traceSqlAndParameters(sql, paramSource)
+            dsManager.template(dataset.ds).query(sql, paramSource, DatasetRecMapper())
+        }
+
+    fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): CacheStatistic<Int> {
+        val countSQL = "SELECT COUNT(*) FROM ($sql) t"
+
+        return datasetCacheManager.get(dataset, sql, paramSource) {
+            traceSqlAndParameters(sql, paramSource)
+            dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
+        }
+    }
+
+    fun dbMetaData(dataset: Dataset): DatabaseMetaData = dsManager.databaseMetaData(dataset.ds)
+
+    private fun traceSqlAndParameters(sql: String, paramSource: DatasetSqlParameterSource) {
+        logger.trace("Running SQL: {}", sql)
         if (paramSource.parameterNames.isNotEmpty()) {
             logger.trace(
                 "Binding parameters: {}",
                 paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
             )
         }
-
-        dsManager.template(dataset.ds).query(sql, paramSource, DatasetRecMapper())
     }
-
-    fun count(dataset: Dataset, sql: String, paramSource: DatasetSqlParameterSource): CacheStatistic<Int> {
-        val countSQL = "SELECT COUNT(*) FROM ($sql) t"
-
-        return datasetCacheManager.get(dataset, sql, paramSource) {
-            logger.trace("Running count SQL: {}", countSQL)
-            if (paramSource.parameterNames.isNotEmpty()) {
-                logger.trace(
-                    "Binding parameters: {}",
-                    paramSource.parameterNames.joinToString { "$it = ${paramSource.getValue(it)}" }
-                )
-            }
-
-            dsManager.template(dataset.ds).queryForObject(countSQL, paramSource, Int::class.java) as Int
-        }
-    }
-
-    fun dbMetaData(dataset: Dataset): DatabaseMetaData = dsManager.dbMetaData(dataset.ds)
 
     companion object {
         private val logger = LoggerFactory.getLogger(DatasetDao::class.java)

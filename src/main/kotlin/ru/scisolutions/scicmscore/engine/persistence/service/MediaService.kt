@@ -23,7 +23,8 @@ class MediaService(
     @Transactional(readOnly = true)
     fun findByIdForDelete(id: String): Media? = findByIdFor(id, Acl.Mask.DELETE)
 
-    private fun findByIdFor(id: String, accessMask: Acl.Mask): Media? = mediaRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
+    private fun findByIdFor(id: String, accessMask: Acl.Mask): Media? =
+        mediaRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
     fun getById(id: String): Media = mediaRepository.findById(id).orElseThrow {

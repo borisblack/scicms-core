@@ -65,7 +65,13 @@ class FindOneRelatedDataFetcher(
         return if (parentAttribute.referencedBy == null) item.name else "${parentItem.name}#$parentAttrName"
     }
 
-    private fun registerDataLoaderIfAbsent(dfe: DataFetchingEnvironment, dataLoaderName: String, parentItem: Item, parentAttrName: String, item: Item) {
+    private fun registerDataLoaderIfAbsent(
+        dfe: DataFetchingEnvironment,
+        dataLoaderName: String,
+        parentItem: Item,
+        parentAttrName: String,
+        item: Item
+    ) {
         if (dfe.getDataLoader<String, ItemRec>(dataLoaderName) == null) {
             dfe.dataLoaderRegistry.register(
                 dataLoaderName,

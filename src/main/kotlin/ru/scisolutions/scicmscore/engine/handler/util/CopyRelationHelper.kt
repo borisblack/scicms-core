@@ -36,17 +36,17 @@ class CopyRelationHelper(
             is OneToManyInversedBidirectionalRelation -> {
                 // TODO: Use pagination to avoid OOM error
                 val referencedAttrName = relation.getOwningAttribute().referencedBy ?: item.idAttribute
-                val prevItemRecId = prevItemRec.getString(referencedAttrName)
+                val prevItemRecId = prevItemRec.asString(referencedAttrName)
                 val prevRelItemRecs = itemRecDao.findAllByAttribute(relation.owningItem, relation.owningAttrName, prevItemRecId)
                 prevRelItemRecs.forEach {
-                    it[relation.owningAttrName] = itemRec.getString(referencedAttrName)
+                    it[relation.owningAttrName] = itemRec.asString(referencedAttrName)
                     insertWithDefaults(relation.owningItem, it)
                 }
             }
             is ManyToManyRelation -> {
                 val sourceReferencedAttrName = relation.getIntermediateSourceAttribute().referencedBy ?: item.idAttribute
-                val sourceItemRecId = itemRec.getString(sourceReferencedAttrName)
-                val sourcePrevItemRecId = prevItemRec.getString(sourceReferencedAttrName)
+                val sourceItemRecId = itemRec.asString(sourceReferencedAttrName)
+                val sourcePrevItemRecId = prevItemRec.asString(sourceReferencedAttrName)
                 when (relation) {
                     is ManyToManyUnidirectionalRelation -> {
                         // TODO: Use pagination to avoid OOM error
@@ -77,8 +77,8 @@ class CopyRelationHelper(
                         } else {
                             // TODO: Use pagination to avoid OOM error
                             val targetReferencedAttrName = relation.getIntermediateTargetAttribute().referencedBy ?: item.idAttribute
-                            val targetItemRecId = itemRec.getString(targetReferencedAttrName)
-                            val targetPrevItemRecId = prevItemRec.getString(targetReferencedAttrName)
+                            val targetItemRecId = itemRec.asString(targetReferencedAttrName)
+                            val targetPrevItemRecId = prevItemRec.asString(targetReferencedAttrName)
                             val prevRelItemRecs =
                                 itemRecDao.findAllByAttribute(
                                     relation.intermediateItem,

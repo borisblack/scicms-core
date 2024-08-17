@@ -10,7 +10,10 @@ import java.util.Objects
 class Attribute(
     val type: FieldType,
     val sortOrder: Int? = null,
-    val columnName: String? = null, // optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations
+
+    /** Optional (lowercase attribute name is used in database by default), also can be null for oneToMany and manyToMany relations */
+    val columnName: String? = null,
+
     val displayName: String,
     val description: String? = null,
     val enumSet: Set<String>? = null,
@@ -19,14 +22,20 @@ class Attribute(
     val encode: Boolean? = null,
     val relType: RelType? = null,
     val target: String? = null,
-    val intermediate: String? = null, // intermediate item is used for manyToMany association and includes source and target attributes
+
+    /** Intermediate item is used for manyToMany association and includes source and target attributes */
+    val intermediate: String? = null,
     val mappedBy: String? = null,
     val inversedBy: String? = null,
-    val referencedBy: String? = null, // in manyToOne relation can be used as an alternate key of referenced entity
+
+    /** In manyToOne relation can be used as an alternate key of referenced entity */
+    val referencedBy: String? = null,
     val required: Boolean = false,
     val readOnly: Boolean = false,
     val defaultValue: String? = null,
-    val keyed: Boolean = false, // primary key, used only for id attribute
+
+    /** Primary key, used only for **id** attribute */
+    val keyed: Boolean = false,
     val unique: Boolean = false,
     val indexed: Boolean = false,
     val private: Boolean = false,
@@ -55,21 +64,25 @@ class Attribute(
                     throw IllegalArgumentException("Invalid string length ($length)")
                 }
             }
+
             FieldType.enum -> {
                 if (enumSet == null) {
                     throw IllegalArgumentException("The enumSet is required for the enum type")
                 }
             }
+
             FieldType.sequence -> {
                 if (seqName == null) {
                     throw IllegalArgumentException("The seqName is required for the sequence type")
                 }
             }
+
             FieldType.int, FieldType.long, FieldType.float, FieldType.double -> {
                 if (minRange != null && maxRange != null && minRange > maxRange) {
                     throw IllegalArgumentException("Invalid range ratio (minRange=$minRange > maxRange=$maxRange)")
                 }
             }
+
             FieldType.decimal -> {
                 if ((precision != null && precision <= 0) || (scale != null && scale < 0)) {
                     throw IllegalArgumentException("Invalid precision and/or scale ($precision, $scale)")
@@ -79,11 +92,13 @@ class Attribute(
                     throw IllegalArgumentException("Invalid range ratio (minRange=$minRange > maxRange=$maxRange)")
                 }
             }
+
             FieldType.relation -> {
                 if (isCollection() && required) {
                     throw IllegalArgumentException("Collection relation attribute cannot be required")
                 }
             }
+
             else -> {}
         }
     }
@@ -92,7 +107,14 @@ class Attribute(
         null
     } else {
         when (type) {
-            FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email, FieldType.sequence, FieldType.password -> defaultValue
+            FieldType.uuid,
+            FieldType.string,
+            FieldType.text,
+            FieldType.enum,
+            FieldType.email,
+            FieldType.sequence,
+            FieldType.password -> defaultValue
+
             FieldType.int -> defaultValue.toInt()
             FieldType.long -> defaultValue.toLong()
             FieldType.float -> defaultValue.toFloat()

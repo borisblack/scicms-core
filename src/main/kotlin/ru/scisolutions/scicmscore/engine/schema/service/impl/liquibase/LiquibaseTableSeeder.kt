@@ -126,13 +126,15 @@ class LiquibaseTableSeeder(
     }
 
     private fun isTableChanged(item: Item, existingItemEntity: ItemEntity): Boolean =
-        (item.checksum == null || item.checksum != existingItemEntity.checksum) && item.hashCode().toString() != existingItemEntity.hash && (
-            item.metadata.tableName != existingItemEntity.tableName ||
-                item.metadata.dataSource != existingItemEntity.ds ||
-                item.metadata.versioned != existingItemEntity.versioned ||
-                item.metadata.localized != existingItemEntity.localized ||
-                item.spec.hashCode() != existingItemEntity.spec.hashCode()
-            )
+        (item.checksum == null || item.checksum != existingItemEntity.checksum) &&
+            item.hashCode().toString() != existingItemEntity.hash &&
+            (
+                item.metadata.tableName != existingItemEntity.tableName ||
+                    item.metadata.dataSource != existingItemEntity.ds ||
+                    item.metadata.versioned != existingItemEntity.versioned ||
+                    item.metadata.localized != existingItemEntity.localized ||
+                    item.spec.hashCode() != existingItemEntity.spec.hashCode()
+                )
 
     private fun updateTable(item: Item, existingItemEntity: ItemEntity) {
         val metadata = item.metadata

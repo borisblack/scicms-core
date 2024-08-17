@@ -66,7 +66,12 @@ class UsernamePasswordAuthenticationFilter(
         return resourcePath == "/api/auth/local" && req.method == "POST" // Strapi compatible
     }
 
-    private fun processUsernamePasswordAuthentication(req: HttpServletRequest, res: HttpServletResponse, username: String, password: String) {
+    private fun processUsernamePasswordAuthentication(
+        req: HttpServletRequest,
+        res: HttpServletResponse,
+        username: String,
+        password: String
+    ) {
         val resultAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password)
         SecurityContextHolder.getContext().authentication = resultAuthentication
 

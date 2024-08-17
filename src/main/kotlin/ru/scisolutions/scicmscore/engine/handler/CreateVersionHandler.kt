@@ -65,7 +65,7 @@ class CreateVersionHandler(
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
         val itemRec =
-            ItemRec(preparedData.toMutableMap()).apply {
+            ItemRec(preparedData.toMutableMap().withDefault { null }).apply {
                 val generateIdHook = classService.getCastInstance(item.implementation, GenerateIdHook::class.java)
                 val id = generateIdHook?.generateId(itemName) ?: idGenerator.generateId()
                 if (this[item.idAttribute] == null) {

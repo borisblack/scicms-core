@@ -24,7 +24,12 @@ class FindAllHandler(
     private val itemRecDao: ItemRecDao,
     private val attributeValueHelper: AttributeValueHelper
 ) {
-    fun findAll(itemName: String, input: FindAllInput, selectAttrNames: Set<String>, selectPaginationFields: Set<String>): ResponseCollection {
+    fun findAll(
+        itemName: String,
+        input: FindAllInput,
+        selectAttrNames: Set<String>,
+        selectPaginationFields: Set<String>
+    ): ResponseCollection {
         val item = itemService.getByName(itemName)
 
         val attrNames = DataHandlerUtil.prepareSelectedAttrNames(item, selectAttrNames)

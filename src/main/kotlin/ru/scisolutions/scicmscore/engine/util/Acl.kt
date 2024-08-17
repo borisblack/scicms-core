@@ -22,7 +22,8 @@ object Acl {
         "SELECT acc.* " +
             "FROM sec_access acc " +
             "INNER JOIN sec_identities sid " +
-            "ON acc.target_id = sid.id AND ((sid.principal = 1 AND sid.name = :$USERNAME_PARAM_NAME) OR (sid.principal = 0 AND sid.name IN :$ROLES_PARAM_NAME))" +
+            "ON acc.target_id = sid.id " +
+            "AND ((sid.principal = 1 AND sid.name = :$USERNAME_PARAM_NAME) OR (sid.principal = 0 AND sid.name IN :$ROLES_PARAM_NAME))" +
             "WHERE acc.mask IN :$MASK_PARAM_NAME " +
             "AND acc.begin_date <= {fn NOW()} " +
             "AND (acc.end_date IS NULL OR acc.end_date > {fn NOW()}) " +
@@ -32,7 +33,8 @@ object Acl {
         "select acc " +
             "from Access acc " +
             "inner join Identity sid " +
-            "on acc.targetId = sid.id and ((sid.principal = true and sid.name = :username) or (sid.principal = false and sid.name in :roles)) " +
+            "on acc.targetId = sid.id " +
+            "and ((sid.principal = true and sid.name = :username) or (sid.principal = false and sid.name in :roles)) " +
             "where acc.mask in :mask " +
             "and acc.beginDate <= current_timestamp " +
             "and (acc.endDate is null or acc.endDate > current_timestamp) " +
@@ -42,7 +44,8 @@ object Acl {
         "SELECT DISTINCT acc.source_id " +
             "FROM sec_access acc " +
             "INNER JOIN sec_identities sid " +
-            "ON acc.target_id = sid.id AND ((sid.principal = 1 AND sid.name = :$USERNAME_PARAM_NAME) OR (sid.principal = 0 AND sid.name IN :$ROLES_PARAM_NAME))" +
+            "ON acc.target_id = sid.id " +
+            "AND ((sid.principal = 1 AND sid.name = :$USERNAME_PARAM_NAME) OR (sid.principal = 0 AND sid.name IN :$ROLES_PARAM_NAME))" +
             "WHERE acc.mask IN :$MASK_PARAM_NAME " +
             "AND acc.granting = 1 " +
             "AND acc.begin_date <= {fn NOW()} " +

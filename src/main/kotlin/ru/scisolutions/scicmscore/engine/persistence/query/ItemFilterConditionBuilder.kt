@@ -198,7 +198,12 @@ class ItemFilterConditionBuilder(
         return if (nestedConditions.isEmpty()) Condition.EMPTY else ComboCondition(ComboCondition.Op.AND, *nestedConditions.toTypedArray())
     }
 
-    private fun newPrimitiveCondition(typedPrimitiveFilterInput: TypedPrimitiveFilterInput, table: DbTable, column: DbColumn, paramSource: AttributeSqlParameterSource): Condition {
+    private fun newPrimitiveCondition(
+        typedPrimitiveFilterInput: TypedPrimitiveFilterInput,
+        table: DbTable,
+        column: DbColumn,
+        paramSource: AttributeSqlParameterSource
+    ): Condition {
         val nestedConditions = mutableListOf<Condition>()
         val sqlParamName = "${table.alias}_${column.name}_${Random.nextInt(0, 1000)}" // TODO: Change to truly unique name
 

@@ -43,7 +43,11 @@ class CustomMethodHandler(
                 }
             }
             .filter {
-                if (it.parameterCount != 1 || it.parameterTypes[0] != CustomMethodInput::class.java || it.returnType != CustomMethodResponse::class.java) {
+                if (
+                    it.parameterCount != 1 ||
+                    it.parameterTypes[0] != CustomMethodInput::class.java ||
+                    it.returnType != CustomMethodResponse::class.java
+                ) {
                     logger.warn("Method [{}#{}] has invalid signature. Skipping this method", clazz.simpleName, it.name)
                     false
                 } else {

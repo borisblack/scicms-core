@@ -24,19 +24,20 @@ class CacheConfig {
         .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer()))
 
     @Bean
-    fun redisCacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer = RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
-        builder
-            .withCacheConfiguration(
-                "itemRecCache",
-                RedisCacheConfiguration.defaultCacheConfig()
-                    .entryTtl(Duration.ofMinutes(10))
-            )
-            .withCacheConfiguration(
-                "methodCache",
-                RedisCacheConfiguration.defaultCacheConfig()
-                    .entryTtl(Duration.ofMinutes(5))
-            )
-    }
+    fun redisCacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer =
+        RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
+            builder
+                .withCacheConfiguration(
+                    "itemRecCache",
+                    RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(10))
+                )
+                .withCacheConfiguration(
+                    "methodCache",
+                    RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofMinutes(5))
+                )
+        }
 
     @Bean
     fun redissonClient(): RedissonClient {

@@ -48,7 +48,15 @@ class ItemOrderingsParser(private val itemService: ItemService) {
         }
     }
 
-    private fun addOrdering(target: Item, targetAttrName: String, schema: DbSchema, query: SelectQuery, table: DbTable, col: DbColumn, orderDir: Dir) {
+    private fun addOrdering(
+        target: Item,
+        targetAttrName: String,
+        schema: DbSchema,
+        query: SelectQuery,
+        table: DbTable,
+        col: DbColumn,
+        orderDir: Dir
+    ) {
         val targetTable = schema.addTable(requireNotNull(target.tableName))
         val targetOrderingAttribute = target.spec.getAttribute(targetAttrName)
         val targetOrderingCol = DbColumn(targetTable, targetOrderingAttribute.columnName ?: targetAttrName.lowercase(), null, null)

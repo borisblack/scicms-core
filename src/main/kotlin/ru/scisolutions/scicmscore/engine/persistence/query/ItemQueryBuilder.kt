@@ -80,7 +80,13 @@ class ItemQueryBuilder {
         return DbTable(schema, item.qs)
     }
 
-    fun buildFindAllByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
+    fun buildFindAllByAttributeQuery(
+        item: Item,
+        attrName: String,
+        attrValue: Any,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): SelectQuery {
         val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
@@ -101,7 +107,12 @@ class ItemQueryBuilder {
         return query.validate()
     }
 
-    fun buildFindAllByIdsQuery(item: Item, ids: Set<String>, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery = buildFindAllByKeysQuery(
+    fun buildFindAllByIdsQuery(
+        item: Item,
+        ids: Set<String>,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): SelectQuery = buildFindAllByKeysQuery(
         item = item,
         keyAttrName = item.idAttribute,
         keys = ids,
@@ -109,7 +120,13 @@ class ItemQueryBuilder {
         permissionIds = permissionIds
     )
 
-    fun buildFindAllByKeysQuery(item: Item, keyAttrName: String, keys: Set<String>, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): SelectQuery {
+    fun buildFindAllByKeysQuery(
+        item: Item,
+        keyAttrName: String,
+        keys: Set<String>,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): SelectQuery {
         if (keys.isEmpty()) {
             throw IllegalArgumentException("Keys set is empty")
         }
@@ -171,7 +188,8 @@ class ItemQueryBuilder {
         updateAttributes: Map<String, Any?>,
         paramSource: AttributeSqlParameterSource,
         permissionIds: Set<String>? = null
-    ): UpdateQuery = buildUpdateByAttributesQuery(item, mapOf(whereAttrName to whereAttrValue), updateAttributes, paramSource, permissionIds)
+    ): UpdateQuery =
+        buildUpdateByAttributesQuery(item, mapOf(whereAttrName to whereAttrValue), updateAttributes, paramSource, permissionIds)
 
     fun buildUpdateByAttributesQuery(
         item: Item,
@@ -218,7 +236,13 @@ class ItemQueryBuilder {
         return query.validate()
     }
 
-    fun buildDeleteByAttributeQuery(item: Item, attrName: String, attrValue: Any, paramSource: AttributeSqlParameterSource, permissionIds: Set<String>? = null): DeleteQuery {
+    fun buildDeleteByAttributeQuery(
+        item: Item,
+        attrName: String,
+        attrValue: Any,
+        paramSource: AttributeSqlParameterSource,
+        permissionIds: Set<String>? = null
+    ): DeleteQuery {
         val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
@@ -238,7 +262,13 @@ class ItemQueryBuilder {
         return query.validate()
     }
 
-    fun buildLockByAttributeQuery(item: Item, attrName: String, attrValue: Any, userId: String, paramSource: AttributeSqlParameterSource): UpdateQuery {
+    fun buildLockByAttributeQuery(
+        item: Item,
+        attrName: String,
+        attrValue: Any,
+        userId: String,
+        paramSource: AttributeSqlParameterSource
+    ): UpdateQuery {
         val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()
@@ -256,7 +286,13 @@ class ItemQueryBuilder {
         return query.validate()
     }
 
-    fun buildUnlockByAttributeQuery(item: Item, attrName: String, attrValue: Any, userId: String, paramSource: AttributeSqlParameterSource): UpdateQuery {
+    fun buildUnlockByAttributeQuery(
+        item: Item,
+        attrName: String,
+        attrValue: Any,
+        userId: String,
+        paramSource: AttributeSqlParameterSource
+    ): UpdateQuery {
         val attribute = item.spec.getAttribute(attrName)
         val table = createTable(item)
         val colName = attribute.columnName ?: attrName.lowercase()

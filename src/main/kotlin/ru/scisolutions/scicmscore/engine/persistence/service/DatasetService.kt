@@ -19,7 +19,8 @@ class DatasetService(
     @Transactional(readOnly = true)
     fun findByNameForRead(name: String): Dataset? = findByNameFor(name, Mask.READ)
 
-    private fun findByNameFor(name: String, accessMask: Mask): Dataset? = datasetRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
+    private fun findByNameFor(name: String, accessMask: Mask): Dataset? =
+        datasetRepository.findByNameWithACL(name, permissionService.idsByAccessMask(accessMask))
 
     @Transactional(readOnly = true)
     fun existsByDatasourceId(id: String): Boolean = datasetRepository.existsByDatasourceId(id)

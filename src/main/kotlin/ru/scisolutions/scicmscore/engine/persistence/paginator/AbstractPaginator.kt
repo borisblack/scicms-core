@@ -11,7 +11,10 @@ import kotlin.math.ceil
 abstract class AbstractPaginator(private val dataProps: DataProps) {
     protected fun paginate(dbMetaData: DatabaseMetaData, paginationInput: PaginationInput?, query: SelectQuery, total: Int?): Pagination {
         if (paginationInput != null) {
-            if ((paginationInput.page != null || paginationInput.pageSize != null) && (paginationInput.start != null || paginationInput.limit != null)) {
+            if (
+                (paginationInput.page != null || paginationInput.pageSize != null) &&
+                (paginationInput.start != null || paginationInput.limit != null)
+            ) {
                 throw IllegalArgumentException("Pagination methods cannot be mixed. Use either page with pageSize or start with limit")
             }
 

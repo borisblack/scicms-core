@@ -1,6 +1,11 @@
 package ru.scisolutions.scicmscore.security
 
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.access.AccessDeniedException
@@ -43,10 +48,10 @@ class SecurityGroupTest {
         val authority: GrantedAuthority = SimpleGrantedAuthority(ROLE_TEST)
         customUserDetailsManager.addGroupAuthority(TEST_GROUP_NAME, authority)
         val foundAuthorities = customUserDetailsManager.findGroupAuthorities(TEST_GROUP_NAME)
-        Assertions.assertEquals(2, foundAuthorities.size)
+        assertEquals(2, foundAuthorities.size)
         for (grantedAuthority in foundAuthorities) {
             if (ROLE_TEST == grantedAuthority.authority) {
-                Assertions.assertEquals(grantedAuthority, authority)
+                assertEquals(grantedAuthority, authority)
             }
         }
     }
@@ -55,14 +60,14 @@ class SecurityGroupTest {
     fun testAddMemberToGroup() {
         customUserDetailsManager.addUserToGroup(user!!.username, TEST_GROUP_NAME)
         val foundUsers = customUserDetailsManager.findUsersInGroup(TEST_GROUP_NAME)
-        Assertions.assertTrue(foundUsers.contains((user as UserDetails).username))
+        assertTrue(foundUsers.contains((user as UserDetails).username))
     }
 
     @Test
     fun testUserInGroupHasAccessToRoleUserMethod() {
         customUserDetailsManager.addUserToGroup((user as UserDetails).username, TEST_GROUP_NAME)
         userGroupManager.setAuthentication((user as UserDetails).username)
-        Assertions.assertTrue(securityTestService.testHasRoleUser())
+        assertTrue(securityTestService.testHasRoleUser())
     }
 
     @Test
@@ -76,8 +81,8 @@ class SecurityGroupTest {
     fun testUserInGroupHasAccessToRoleUserAndRoleGroup() {
         customUserDetailsManager.addUserToGroup((user as UserDetails).username, TEST_GROUP_NAME)
         userGroupManager.setAuthentication((user as UserDetails).username)
-        Assertions.assertTrue(securityTestService.testHasRoleUser())
-        Assertions.assertTrue(securityTestService.testHasRoleGroup())
+        assertTrue(securityTestService.testHasRoleUser())
+        assertTrue(securityTestService.testHasRoleGroup())
     }
 
     companion object {

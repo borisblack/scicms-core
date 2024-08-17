@@ -21,16 +21,20 @@ class ACLItemRecDao(
 ) : BaseItemRecDao(dsManager, itemCacheManager) {
     override val logger: Logger = LoggerFactory.getLogger(ACLItemRecDao::class.java)
 
-    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? = findByIdFor(item, id, selectAttrNames, Acl.Mask.READ)
+    fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.READ)
 
     fun findByKeyForRead(item: Item, keyAttrName: String, key: String, selectAttrNames: Set<String>?): ItemRec? =
         findByKeyFor(item, keyAttrName, key, selectAttrNames, Acl.Mask.READ)
 
-    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? = findByIdFor(item, id, selectAttrNames, Acl.Mask.WRITE)
+    fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.WRITE)
 
-    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? = findByIdFor(item, id, selectAttrNames, Acl.Mask.DELETE)
+    fun findByIdForDelete(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.DELETE)
 
-    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? = findByIdFor(item, id, selectAttrNames, Acl.Mask.ADMINISTRATION)
+    fun findByIdForAdministration(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByIdFor(item, id, selectAttrNames, Acl.Mask.ADMINISTRATION)
 
     private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Acl.Mask): ItemRec? {
         val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
@@ -65,7 +69,8 @@ class ACLItemRecDao(
         Acl.Mask.READ
     )
 
-    private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): List<ItemRec> = findAllByKeysFor(item, item.idAttribute, ids, accessMask)
+    private fun findAllByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): List<ItemRec> =
+        findAllByKeysFor(item, item.idAttribute, ids, accessMask)
 
     private fun findAllByKeysFor(item: Item, keyAttrName: String, keys: Set<String>, accessMask: Acl.Mask): List<ItemRec> {
         val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
@@ -86,15 +91,20 @@ class ACLItemRecDao(
         return count(item, query.toString(), paramSource)
     }
 
-    fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec> = findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.READ)
+    fun findAllByAttributeForRead(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.READ)
 
-    fun findAllByAttributeForWrite(item: Item, attrName: String, attrValue: Any): List<ItemRec> = findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.WRITE)
+    fun findAllByAttributeForWrite(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.WRITE)
 
-    fun findAllByAttributeForCreate(item: Item, attrName: String, attrValue: Any): List<ItemRec> = findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.CREATE)
+    fun findAllByAttributeForCreate(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.CREATE)
 
-    fun findAllByAttributeForDelete(item: Item, attrName: String, attrValue: Any): List<ItemRec> = findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.DELETE)
+    fun findAllByAttributeForDelete(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.DELETE)
 
-    fun findAllByAttributeForAdministration(item: Item, attrName: String, attrValue: Any): List<ItemRec> = findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.ADMINISTRATION)
+    fun findAllByAttributeForAdministration(item: Item, attrName: String, attrValue: Any): List<ItemRec> =
+        findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.ADMINISTRATION)
 
     private fun findAllByAttributeFor(item: Item, attrName: String, attrValue: Any, accessMask: Acl.Mask): List<ItemRec> {
         val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)

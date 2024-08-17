@@ -58,7 +58,8 @@ class PermissionManager(
             permissionId
         } else {
             logger.warn(
-                "Permission '$permissionId' is not allowed for item '${item.name}'. Resetting to default permission '$effectiveDefaultPermission'"
+                "Permission [$permissionId] is not allowed for item [${item.name}]. " +
+                    "Resetting to default permission [$effectiveDefaultPermission]"
             )
             effectiveDefaultPermission
         }

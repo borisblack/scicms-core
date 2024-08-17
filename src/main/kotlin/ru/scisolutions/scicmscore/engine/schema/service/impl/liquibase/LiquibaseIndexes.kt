@@ -315,7 +315,8 @@ class LiquibaseIndexes {
         }
     }
 
-    private fun buildIndexIndexName(tableName: String, indexName: String) = if (indexName.startsWith("_")) "${tableName}$indexName" else indexName
+    private fun buildIndexIndexName(tableName: String, indexName: String) =
+        if (indexName.startsWith("_")) "${tableName}$indexName" else indexName
 
     fun dropIndexIndexChange(item: Item, indexName: String): DropIndexChange {
         val tableName = requireNotNull(item.metadata.tableName)

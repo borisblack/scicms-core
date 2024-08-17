@@ -46,7 +46,13 @@ class FindOneHandler(
         return response
     }
 
-    fun findOneRelated(parentItemName: String, parentItemRec: ItemRec, parentAttrName: String, itemName: String, selectAttrNames: Set<String>): RelationResponse {
+    fun findOneRelated(
+        parentItemName: String,
+        parentItemRec: ItemRec,
+        parentAttrName: String,
+        itemName: String,
+        selectAttrNames: Set<String>
+    ): RelationResponse {
         val key = parentItemRec[parentAttrName] as String?
         if (key == null) {
             logger.trace("The attribute [$parentAttrName] is absent in the parent item, so it cannot be fetched")
