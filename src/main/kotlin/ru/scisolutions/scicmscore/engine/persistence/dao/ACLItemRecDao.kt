@@ -24,7 +24,8 @@ class ACLItemRecDao(
     fun findByIdForRead(item: Item, id: String, selectAttrNames: Set<String>?): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Acl.Mask.READ)
 
-    fun findByKeyForRead(item: Item, keyAttrName: String, key: String, selectAttrNames: Set<String>?): ItemRec? = findByKeyFor(item, keyAttrName, key, selectAttrNames, Acl.Mask.READ)
+    fun findByKeyForRead(item: Item, keyAttrName: String, key: String, selectAttrNames: Set<String>?): ItemRec? =
+        findByKeyFor(item, keyAttrName, key, selectAttrNames, Acl.Mask.READ)
 
     fun findByIdForWrite(item: Item, id: String, selectAttrNames: Set<String>? = null): ItemRec? =
         findByIdFor(item, id, selectAttrNames, Acl.Mask.WRITE)
