@@ -326,7 +326,7 @@
           "maxLength": 50
         },
         "format": {
-          "description": "Text format (optional, null by default). For text type",
+          "description": "Text format (sql, js, etc.) - optional, null by default. For text type",
           "type": "string",
           "minLength": 1,
           "maxLength": 50
@@ -353,6 +353,10 @@
         "maxRange": {
           "description": "Maximum range (optional, null by default). For int, long, float, double and decimal types",
           "type": "number"
+        },
+        "accept": {
+          "description": "Comma-separated list of one or more file types (https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept). For media type",
+          "type": "string"
         },
         "colHidden": {
           "description": "Hide column in UI table (optional, null by default)",

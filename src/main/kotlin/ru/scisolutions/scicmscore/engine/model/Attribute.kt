@@ -25,17 +25,20 @@ class Attribute(
 
     /** Intermediate item is used for manyToMany association and includes source and target attributes */
     val intermediate: String? = null,
+
     val mappedBy: String? = null,
     val inversedBy: String? = null,
 
     /** In manyToOne relation can be used as an alternate key of referenced entity */
     val referencedBy: String? = null,
+
     val required: Boolean = false,
     val readOnly: Boolean = false,
     val defaultValue: String? = null,
 
     /** Primary key, used only for **id** attribute */
     val keyed: Boolean = false,
+
     val unique: Boolean = false,
     val indexed: Boolean = false,
     val private: Boolean = false,
@@ -46,6 +49,12 @@ class Attribute(
     val scale: Int? = null, // for decimal types
     val minRange: Long? = null, // for int, long, float, double, decimal types
     val maxRange: Long? = null, // for int, long, float, double, decimal types
+
+    /**
+     * Comma-separated list of one or more file types (https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/accept). For media type
+     * */
+    val accept: String? = null,
+
     val colHidden: Boolean? = null, // hide column in UI table
     val colWidth: Int? = null, // column width in UI table
     val fieldHidden: Boolean? = null, // hide field in UI form
@@ -181,6 +190,7 @@ class Attribute(
             scale == other.scale &&
             minRange == other.minRange &&
             maxRange == other.maxRange &&
+            accept == other.accept &&
             colHidden == other.colHidden &&
             colWidth == other.colWidth &&
             fieldHidden == other.fieldHidden &&
@@ -217,6 +227,7 @@ class Attribute(
         scale,
         minRange,
         maxRange,
+        accept,
         colHidden,
         colWidth,
         fieldWidth,
