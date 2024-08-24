@@ -24,6 +24,11 @@ If you've noticed a bug, [please submit an issue][new issue].
 
 If this is something you think you can fix, then [fork SciCMS Core] and create a branch with a descriptive name.
 
+When cloning a repository, please specify the path to the hook scripts:
+```shell
+git config --local core.hooksPath .githooks
+```
+
 ### Get the app running
 
 See [Getting Started](README.md).
