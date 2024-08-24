@@ -69,7 +69,7 @@ class AttributeValueHelper(
 
     fun prepareValueToSave(item: Item, attrName: String, value: Any?): Any? {
         val attribute = item.spec.getAttribute(attrName)
-        if (value == null) {
+        if (value == null || (value is String && value.isBlank())) {
             if (attribute.defaultValue !== null) {
                 return attribute.parseDefaultValue()
             }
@@ -297,6 +297,7 @@ class AttributeValueHelper(
     fun prepareValuesToReturn(item: Item, attributes: Map<String, Any?>): MutableMap<String, Any?> = attributes
         .mapValues { (attrName, value) -> prepareValueToReturn(item, attrName, value) }
         .toMutableMap()
+        .withDefault { null }
 
     fun prepareValueToReturn(item: Item, attrName: String, value: Any?): Any? {
         val attribute = item.spec.getAttribute(attrName)

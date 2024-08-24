@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.engine.model.itemrec
 
-open class ItemTemplateItemRec(map: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }) : ItemRec(map) {
+open class ItemTemplateItemRec(map: MutableMap<String, Any?> = mutableMapOf()) : ItemRec(map.withDefault { null }) {
     var core: Boolean? by map
     var name: String? by map
     var pluralName: String? by map

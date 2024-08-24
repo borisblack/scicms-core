@@ -21,15 +21,20 @@ class DatasourceItemImpl(
     private val datasetService: DatasetService
 ) : CreateHook, UpdateHook, DeleteHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
-        checkConnection(DatasourceItemRec(data))
+        val datasourceItemRec = DatasourceItemRec(data)
+        if (datasourceItemRec.isFile == true) {
+            requireNotNull(datasourceItemRec.media) { "Media is required" }
+        } else {
+            checkConnection(datasourceItemRec)
+        }
         return null
     }
 
     private fun checkConnection(ds: DatasourceItemRec) {
         datasourceManager.checkConnection(
-            requireNotNull(ds.connectionString),
-            requireNotNull(ds.username),
-            requireNotNull(ds.password)
+            requireNotNull(ds.connectionString) { "Connection string is required" },
+            requireNotNull(ds.username) { "Username is required" },
+            requireNotNull(ds.password) { "Password is required" }
         )
     }
 
@@ -38,7 +43,12 @@ class DatasourceItemImpl(
     }
 
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
-        checkConnection(DatasourceItemRec(data))
+        val datasourceItemRec = DatasourceItemRec(data)
+        if (datasourceItemRec.isFile == true) {
+            requireNotNull(datasourceItemRec.media)
+        } else {
+            checkConnection(datasourceItemRec)
+        }
         return null
     }
 

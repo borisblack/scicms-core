@@ -31,7 +31,6 @@ spec:
       columnName: connection_string
       displayName: Connection String
       description: Connection String
-      required: true
       length: 100
       colWidth: 360
     username:
@@ -39,7 +38,6 @@ spec:
       columnName: username
       displayName: Username
       description: Username
-      required: true
       length: 50
       colWidth: 200
     password:
@@ -47,7 +45,6 @@ spec:
       columnName: passwd
       displayName: Password
       description: Password
-      required: true
       confirm: true
       encode: false
       length: 50
@@ -66,6 +63,19 @@ spec:
       description: Minimum Idle Connections
       minRange: 0
       colWidth: 320
+    isFile:
+      type: bool
+      columnName: is_file
+      displayName: Is File
+      description: Is File
+      defaultValue: false
+    media:
+      type: media
+      columnName: media
+      displayName: Media
+      description: Media
+      accept: .xls,.xlsx,.csv
+      colWidth: 250
     params:
       type: json
       columnName: params

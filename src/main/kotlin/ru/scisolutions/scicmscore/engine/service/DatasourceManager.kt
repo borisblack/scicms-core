@@ -63,10 +63,12 @@ class DatasourceManager(
 
     private fun createDataSourceBucket(name: String): DataSourceBucket {
         val datasource = datasourceService.getByName(name)
+        if (datasource.file == true) throw IllegalArgumentException("Datasource [$name] is file-based.")
+
         val config = HikariConfig().apply {
-            this.jdbcUrl = environment.resolvePlaceholders(datasource.connectionString)
-            this.username = environment.resolvePlaceholders(datasource.username)
-            this.password = environment.resolvePlaceholders(datasource.password)
+            this.jdbcUrl = environment.resolvePlaceholders(requireNotNull(datasource.connectionString))
+            this.username = environment.resolvePlaceholders(requireNotNull(datasource.username))
+            this.password = environment.resolvePlaceholders(requireNotNull(datasource.password))
             this.maximumPoolSize = datasource.maxPoolSize ?: dataProps.defaultPoolSize
             this.minimumIdle = datasource.minIdle ?: dataProps.defaultIdle
         }

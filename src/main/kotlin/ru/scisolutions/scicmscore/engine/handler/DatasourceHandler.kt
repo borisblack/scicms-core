@@ -16,14 +16,18 @@ class DatasourceHandler(
     private val datasourceService: DatasourceService,
     private val datasourceDao: DatasourceDao
 ) {
-    fun loadTables(datasource: String, input: DatasourceTablesInput): DatasourceTablesResponse {
-        if ((datasource == Datasource.MAIN_DATASOURCE_NAME && (Acl.getRoles() intersect mainDatasourceRoles).isNotEmpty()) ||
-            datasourceService.findByNameForRead(datasource) != null
-        ) {
-            return datasourceDao.loadTables(datasource, input)
+    fun loadTables(datasourceName: String, input: DatasourceTablesInput): DatasourceTablesResponse {
+        val isMainDataSource = datasourceName == Datasource.MAIN_DATASOURCE_NAME
+        val datasource = if (isMainDataSource) null else datasourceService.findByNameForRead(datasourceName)
+        if ((isMainDataSource && (Acl.getRoles() intersect mainDatasourceRoles).isNotEmpty()) || datasource != null) {
+            if (datasource?.file == true) {
+                TODO("CSV and Excel files processing")
+            } else {
+                return datasourceDao.loadTables(datasourceName, input)
+            }
         }
 
-        logger.warn("Datasource [$datasource] not found.")
+        logger.warn("Datasource [$datasourceName] not found.")
         return DatasourceTablesResponse(
             data = emptyList(),
             meta =

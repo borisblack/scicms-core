@@ -42,6 +42,8 @@ class ItemMapper(
                 datasourceService.findByName(metadata.dataSource)
             }
 
+        if (datasource?.file == true) throw IllegalArgumentException("File-based datasource cannot be used for Item.")
+
         target.name = metadata.name
         target.displayName = metadata.displayName.ifBlank { metadata.name }
         target.pluralName = metadata.pluralName

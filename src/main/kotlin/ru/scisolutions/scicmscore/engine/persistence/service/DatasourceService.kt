@@ -41,7 +41,7 @@ class DatasourceService(
     fun getByName(name: String): Datasource = findByNaturalId(name) ?: throw IllegalArgumentException("Datasource [$name] not found.")
 
     @Transactional(readOnly = true)
-    fun findByIdForRead(name: String): Datasource? = findByIdFor(name, Acl.Mask.READ)
+    fun findByIdForRead(id: String): Datasource? = findByIdFor(id, Acl.Mask.READ)
 
     private fun findByIdFor(id: String, accessMask: Acl.Mask): Datasource? =
         datasourceRepository.findByIdWithACL(id, permissionService.idsByAccessMask(accessMask))

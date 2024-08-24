@@ -71,7 +71,7 @@ class ItemItemImpl(
     }
 
     override fun afterDelete(itemName: String, response: Response) {
-        val itemItemRec = ItemItemRec(response.data as ItemRec)
+        val itemItemRec = ItemItemRec((response.data as ItemRec))
         if (itemItemRec.performDdl == true) {
             tableSeeder.dropTable(
                 itemItemRec.datasource ?: ItemMetadata.MAIN_DATASOURCE_NAME,
