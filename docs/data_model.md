@@ -7,7 +7,7 @@ Other data can be stored either in the main database or in any other database.
 The system allows you to connect unlimited number of databases dynamically at runtime.
 In this case, actual connections are opened only at the moment accessing the database without wasting resources on idle connections.
 When idle for a long time (configured by the `scicms-core.data.datasource-cache-expiration-minutes` parameter), connections are closed, freeing up system resources.
-PostgreSQL, Oracle and SQLite DBMS are currently supported.
+PostgreSQL, Oracle, SQLite and H2 DBMS are currently supported.
 In future versions of SciCMS Core, in order to simplify local launch, it is planned to add the ability for the application to work with a cache in its own memory.
 Also, if necessary, support for other types of DBMS will be added.
 The process of creating additional data sources will be discussed later in the current section.

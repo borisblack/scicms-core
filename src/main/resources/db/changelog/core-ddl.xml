@@ -28,7 +28,6 @@
             </column>
             <column name="permission_id" type="varchar(36)"/>
             <column name="locale" type="varchar(50)">
-                <constraints foreignKeyName="core_locales_locale_fk" references="core_locales(name)"/>
             </column>
             <column name="lifecycle_id" type="varchar(36)"/>
             <column name="state" type="varchar(50)"/>
@@ -43,6 +42,9 @@
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
 
+        <createIndex tableName="core_locales" indexName="core_locales_locale_idx">
+            <column name="locale"/>
+        </createIndex>
 <!--        <createIndex tableName="core_locales" indexName="core_locales_config_idx">-->
 <!--            <column name="config_id"/>-->
 <!--        </createIndex>-->
