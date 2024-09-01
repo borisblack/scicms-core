@@ -66,7 +66,7 @@ dependencies {
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    // runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.h2database:h2")
     runtimeOnly("org.xerial:sqlite-jdbc:3.46.0.1")
     runtimeOnly("com.oracle.database.jdbc:ojdbc8")
     runtimeOnly("org.postgresql:postgresql")
