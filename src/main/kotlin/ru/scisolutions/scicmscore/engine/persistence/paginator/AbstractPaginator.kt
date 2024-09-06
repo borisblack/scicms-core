@@ -93,7 +93,7 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
                 query
                     .addCustomization(MysLimitClause(offset, rowCount))
             }
-            "Microsoft SQL Server", "mssql" -> {
+            "Microsoft SQL Server" -> {
                 query
                     .addCustomOrderings("(select null)")
                     .setOffset(offset)
