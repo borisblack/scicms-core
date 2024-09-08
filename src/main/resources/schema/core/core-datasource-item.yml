@@ -26,6 +26,17 @@ spec:
       unique: true
       length: 50
       colWidth: 200
+    sourceType:
+      type: enum
+      enumSet:
+        - DATABASE
+        - SPREADSHEET
+        - CSV
+      columnName: source_type
+      displayName: Type
+      description: Type
+      defaultValue: DATABASE
+      colWidth: 250
     connectionString:
       type: string
       columnName: connection_string
@@ -63,12 +74,6 @@ spec:
       description: Minimum Idle Connections
       minRange: 0
       colWidth: 320
-    isFile:
-      type: bool
-      columnName: is_file
-      displayName: Is File
-      description: Is File
-      defaultValue: false
     media:
       type: media
       columnName: media

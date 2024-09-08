@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
+import ru.scisolutions.scicmscore.engine.model.DatasourceType
 import ru.scisolutions.scicmscore.engine.persistence.entity.Datasource
 import ru.scisolutions.scicmscore.engine.persistence.service.DatasourceService
 import ru.scisolutions.scicmscore.extension.isUUID
@@ -63,7 +64,10 @@ class DatasourceManager(
 
     private fun createDataSourceBucket(name: String): DataSourceBucket {
         val datasource = datasourceService.getByName(name)
-        if (datasource.file == true) throw IllegalArgumentException("Datasource [$name] is file-based.")
+        val sourceType = datasource.sourceType
+        if (sourceType == DatasourceType.SPREADSHEET || sourceType == DatasourceType.CSV) {
+            throw IllegalArgumentException("Datasource [$name] has invalid type.")
+        }
 
         val config = HikariConfig().apply {
             this.jdbcUrl = environment.resolvePlaceholders(requireNotNull(datasource.connectionString))

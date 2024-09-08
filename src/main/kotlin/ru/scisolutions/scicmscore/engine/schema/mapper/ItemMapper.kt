@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.schema.mapper
 
 import org.springframework.stereotype.Component
 import ru.scisolutions.scicmscore.config.props.AppProps
+import ru.scisolutions.scicmscore.engine.model.DatasourceType
 import ru.scisolutions.scicmscore.engine.model.ItemSpec
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemItemRec
 import ru.scisolutions.scicmscore.engine.persistence.entity.Permission
@@ -42,7 +43,10 @@ class ItemMapper(
                 datasourceService.findByName(metadata.dataSource)
             }
 
-        if (datasource?.file == true) throw IllegalArgumentException("File-based datasource cannot be used for Item.")
+        val sourceType = datasource?.sourceType
+        if (sourceType == DatasourceType.SPREADSHEET || sourceType == DatasourceType.CSV) {
+            throw IllegalArgumentException("Spreadsheet/CSV datasource cannot be used for Item.")
+        }
 
         target.name = metadata.name
         target.displayName = metadata.displayName.ifBlank { metadata.name }

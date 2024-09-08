@@ -197,12 +197,14 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_datasources_name_uk"/>
             </column>
+            <column name="source_type" type="varchar(50)" defaultValue="DATABASE">
+                <constraints nullable="false"/>
+            </column>
             <column name="connection_string" type="varchar(100)"/>
             <column name="username" type="varchar(50)"/>
             <column name="passwd" type="varchar(50)"/>
             <column name="max_pool_size" type="int"/>
             <column name="min_idle" type="int"/>
-            <column name="is_file" type="tinyint" defaultValue="0"/>
             <column name="media" type="varchar(50)"/>
             <column name="params" type="text" defaultValue="{}">
                 <constraints nullable="false"/>

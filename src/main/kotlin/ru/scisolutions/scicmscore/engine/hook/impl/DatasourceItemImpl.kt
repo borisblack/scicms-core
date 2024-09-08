@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.engine.hook.CreateHook
 import ru.scisolutions.scicmscore.engine.hook.DeleteHook
 import ru.scisolutions.scicmscore.engine.hook.UpdateHook
+import ru.scisolutions.scicmscore.engine.model.DatasourceType
 import ru.scisolutions.scicmscore.engine.model.input.CreateInput
 import ru.scisolutions.scicmscore.engine.model.input.DeleteInput
 import ru.scisolutions.scicmscore.engine.model.input.UpdateInput
@@ -22,7 +23,8 @@ class DatasourceItemImpl(
 ) : CreateHook, UpdateHook, DeleteHook {
     override fun beforeCreate(itemName: String, input: CreateInput, data: ItemRec): ItemRec? {
         val datasourceItemRec = DatasourceItemRec(data)
-        if (datasourceItemRec.isFile == true) {
+        val sourceType = datasourceItemRec.sourceType
+        if (sourceType == DatasourceType.SPREADSHEET || sourceType == DatasourceType.CSV) {
             requireNotNull(datasourceItemRec.media) { "Media is required" }
         } else {
             checkConnection(datasourceItemRec)
@@ -44,8 +46,9 @@ class DatasourceItemImpl(
 
     override fun beforeUpdate(itemName: String, input: UpdateInput, data: ItemRec): ItemRec? {
         val datasourceItemRec = DatasourceItemRec(data)
-        if (datasourceItemRec.isFile == true) {
-            requireNotNull(datasourceItemRec.media)
+        val sourceType = datasourceItemRec.sourceType
+        if (sourceType == DatasourceType.SPREADSHEET || sourceType == DatasourceType.CSV) {
+            requireNotNull(datasourceItemRec.media) { "Media is required" }
         } else {
             checkConnection(datasourceItemRec)
         }

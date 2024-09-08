@@ -2,6 +2,7 @@ package ru.scisolutions.scicmscore.engine.handler
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.model.DatasourceType
 import ru.scisolutions.scicmscore.engine.model.input.DatasourceTablesInput
 import ru.scisolutions.scicmscore.engine.model.response.DatasourceTablesResponse
 import ru.scisolutions.scicmscore.engine.model.response.Pagination
@@ -20,10 +21,18 @@ class DatasourceHandler(
         val isMainDataSource = datasourceName == Datasource.MAIN_DATASOURCE_NAME
         val datasource = if (isMainDataSource) null else datasourceService.findByNameForRead(datasourceName)
         if ((isMainDataSource && (Acl.getRoles() intersect mainDatasourceRoles).isNotEmpty()) || datasource != null) {
-            if (datasource?.file == true) {
-                TODO("CSV and Excel files processing")
-            } else {
-                return datasourceDao.loadTables(datasourceName, input)
+            when (datasource?.sourceType) {
+                DatasourceType.SPREADSHEET -> {
+                    TODO("Excel file processing")
+                }
+
+                DatasourceType.CSV -> {
+                    TODO("CSV file processing")
+                }
+
+                else -> {
+                    return datasourceDao.loadTables(datasourceName, input)
+                }
             }
         }
 
