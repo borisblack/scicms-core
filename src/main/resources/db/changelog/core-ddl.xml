@@ -208,7 +208,7 @@
             </column>
             <column name="max_pool_size" type="int"/>
             <column name="min_idle" type="int"/>
-            <column name="params" type="text" defaultValue="{}">
+            <column name="params" type="text" defaultValueComputed="('{}')">
                 <constraints nullable="false"/>
             </column>
             <column name="generation" type="int" defaultValue="1">
@@ -252,7 +252,7 @@
                 <constraints nullable="false" unique="true" uniqueConstraintName="core_item_templates_name_uk"/>
             </column>
             <column name="core" type="tinyint"/>
-            <column name="spec" type="text" defaultValue="{}">
+            <column name="spec" type="text" defaultValueComputed="('{}')">
                 <constraints nullable="false"/>
             </column>
             <column name="checksum" type="varchar(50)"/>
@@ -336,7 +336,7 @@
             </column>
             <column name="default_sort_attribute" type="varchar(50)"/>
             <column name="default_sort_order" type="varchar(50)"/>
-            <column name="include_templates" type="text" defaultValue='["default"]'>
+            <column name="include_templates" type="text" defaultValueComputed='(&apos;["default"]&apos;)'>
                 <constraints nullable="false"/>
             </column>
             <column name="description" type="varchar(250)"/>
@@ -352,7 +352,7 @@
             <column name="not_lockable" type="tinyint"/>
             <column name="localized" type="tinyint"/>
             <column name="implementation" type="varchar(250)"/>
-            <column name="spec" type="text" defaultValue="{}">
+            <column name="spec" type="text" defaultValueComputed="('{}')">
                 <constraints nullable="false"/>
             </column>
             <column name="checksum" type="varchar(50)"/>
@@ -630,7 +630,7 @@
             <column name="query" type="text"/>
             <column name="cache_ttl" type="int"/>
             <column name="description" type="varchar(250)"/>
-            <column name="spec" type="text" defaultValue="{}">
+            <column name="spec" type="text" defaultValueComputed="('{}')">
                 <constraints nullable="false"/>
             </column>
             <column name="hash" type="varchar(50)"/>
@@ -662,7 +662,9 @@
             <column name="updated_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
-
+<!--        <sql dbms="mysql">-->
+<!--            ALTER TABLE bi_datasets MODIFY COLUMN spec TEXT NOT NULL DEFAULT ('{}')-->
+<!--        </sql>-->
 <!--        <createIndex tableName="bi_datasets" indexName="bi_datasets_config_idx">-->
 <!--            <column name="config_id"/>-->
 <!--        </createIndex>-->
@@ -693,7 +695,7 @@
             <column name="is_public" type="tinyint" defaultValue="1">
                 <constraints nullable="false"/>
             </column>
-            <column name="spec" type="text" defaultValue="{}">
+            <column name="spec" type="text" defaultValueComputed="('{}')">
                 <constraints nullable="false"/>
             </column>
             <column name="hash" type="varchar(50)"/>
@@ -725,6 +727,9 @@
             <column name="updated_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
+<!--        <sql dbms="mysql">-->
+<!--            ALTER TABLE bi_dashboards MODIFY COLUMN spec TEXT NOT NULL DEFAULT ('{}')-->
+<!--        </sql>-->
 
 <!--        <createIndex tableName="bi_dashboards" indexName="bi_dashboards_config_idx">-->
 <!--            <column name="config_id"/>-->

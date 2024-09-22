@@ -89,7 +89,7 @@ abstract class AbstractPaginator(private val dataProps: DataProps) {
 
     private fun addPagination(dbMetaData: DatabaseMetaData, query: SelectQuery, offset: Int, rowCount: Int) {
         when (dbMetaData.databaseProductName) {
-            "SQLite", "mysql" -> {
+            "SQLite", "MySQL" -> {
                 query
                     .addCustomization(MysLimitClause(offset, rowCount))
             }
