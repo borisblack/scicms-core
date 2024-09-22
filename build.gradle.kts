@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "ru.scisolutions"
-version = "0.10.0-SNAPSHOT"
+version = "0.11.0-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -72,7 +72,6 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11")
     runtimeOnly("com.mysql:mysql-connector-j:8.4.0")
-
 
     // kapt("org.springframework.boot:spring-boot-configuration-processor")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
