@@ -662,9 +662,6 @@
             <column name="updated_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
-<!--        <sql dbms="mysql">-->
-<!--            ALTER TABLE bi_datasets MODIFY COLUMN spec TEXT NOT NULL DEFAULT ('{}')-->
-<!--        </sql>-->
 <!--        <createIndex tableName="bi_datasets" indexName="bi_datasets_config_idx">-->
 <!--            <column name="config_id"/>-->
 <!--        </createIndex>-->
@@ -727,9 +724,6 @@
             <column name="updated_by_id" type="varchar(36)"/>
             <column name="locked_by_id" type="varchar(36)"/>
         </createTable>
-<!--        <sql dbms="mysql">-->
-<!--            ALTER TABLE bi_dashboards MODIFY COLUMN spec TEXT NOT NULL DEFAULT ('{}')-->
-<!--        </sql>-->
 
 <!--        <createIndex tableName="bi_dashboards" indexName="bi_dashboards_config_idx">-->
 <!--            <column name="config_id"/>-->

@@ -72,6 +72,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11")
     runtimeOnly("com.mysql:mysql-connector-j:8.4.0")
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.0")
 
     // kapt("org.springframework.boot:spring-boot-configuration-processor")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
