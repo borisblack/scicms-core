@@ -90,3 +90,4 @@ spec:
       defaultValue: '{}'
       colHidden: true
       fieldWidth: 12
+      fieldHidden: true
