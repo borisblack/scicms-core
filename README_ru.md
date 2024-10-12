@@ -33,7 +33,7 @@ SciCMS Core представляет собой Kotlin-приложение на
 Для сборки и запуска необходима версия Java не ниже 21. Сборка осуществляется из рабочего каталога командой `./gradlew build`.
 Последующий запуск собранного JAR архива выполняется командой `java -jar <build_path>`.
 Перед запуском необходимо задать следующие переменные окружения:
-- MAIN_DB_URL - стандартная строка соединения JDBC (в настоящий момент поддерживаются СУБД PostgreSQL, Oracle, SQLite и H2);
+- MAIN_DB_URL - стандартная строка соединения JDBC (в настоящий момент поддерживаются СУБД PostgreSQL, Oracle, Microsoft SQL Server, MySQL/MariaDB, SQLite и H2);
 - MAIN_DB_USERNAME - имя пользователя БД;
 - MAIN_DB_PASSWORD - пароль пользователя БД;
 - REDIS_HOST - адрес сервера Redis (значение по умолчанию - `127.0.0.1`);
@@ -42,6 +42,9 @@ SciCMS Core представляет собой Kotlin-приложение на
 Примеры строк подключения:
 - PostgreSQL - `jdbc:postgresql://127.0.0.1:5432/scicms`;
 - Oracle - `jdbc:oracle:thin:@//127.0.0.1:1521/xepdb1`;
+- Microsoft SQL Server - `jdbc:sqlserver://localhost:1433;databaseName=scicms;trustServerCertificate=true`;
+- MySQL - `jdbc:mysql://localhost:3306/scicms?sessionVariables=sql_mode=''&jdbcCompliantTruncation=false`;
+- MariaDB - `jdbc:mariadb://localhost:3306/scicms?sessionVariables=sql_mode=''&jdbcCompliantTruncation=false`;
 - SQLite - `jdbc:sqlite:scicms.db?date_class=text`;
 - H2 - `jdbc:h2:file:./scicms.h2`.
 

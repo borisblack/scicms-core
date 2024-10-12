@@ -33,7 +33,7 @@ SciCMS Core is a Kotlin application based on the Spring Boot 3 framework.
 To build and run, you need a Java version of at least 21. To run the build enter the command `./gradlew build` from the working directory.
 The subsequent launch of the created JAR archive is performed with the command `java -jar <build_path>`.
 Before starting, we must set the following environment variables:
-- MAIN_DB_URL - standard JDBC connection string (PostgreSQL, Oracle, SQLite and H2 DBMS are currently supported);
+- MAIN_DB_URL - standard JDBC connection string (PostgreSQL, Oracle, Microsoft SQL Server, MySQL/MariaDB, SQLite and H2 DBMS are currently supported);
 - MAIN_DB_USERNAME - database user name;
 - MAIN_DB_PASSWORD - database user password;
 - REDIS_HOST - Redis server address (default value - `127.0.0.1`);
@@ -42,6 +42,9 @@ Before starting, we must set the following environment variables:
 Examples of connection strings:
 - PostgreSQL - `jdbc:postgresql://127.0.0.1:5432/scicms`;
 - Oracle - `jdbc:oracle:thin:@//127.0.0.1:1521/xepdb1`;
+- Microsoft SQL Server - `jdbc:sqlserver://localhost:1433;databaseName=scicms;trustServerCertificate=true`;
+- MySQL - `jdbc:mysql://localhost:3306/scicms?sessionVariables=sql_mode=''&jdbcCompliantTruncation=false`;
+- MariaDB - `jdbc:mariadb://localhost:3306/scicms?sessionVariables=sql_mode=''&jdbcCompliantTruncation=false`;
 - SQLite - `jdbc:sqlite:scicms.db?date_class=text`;
 - H2 - `jdbc:h2:file:./scicms.h2`.
 

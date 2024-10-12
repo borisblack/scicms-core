@@ -1,18 +1,19 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.2.0"
+    id("org.springframework.boot") version "3.3.4"
     id("io.spring.dependency-management") version "1.1.6"
+    id("com.netflix.dgs.codegen") version "6.2.1"
     // id("org.graalvm.buildtools.native") version "0.9.28"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
-    kotlin("jvm") version "1.9.20"
-    kotlin("plugin.spring") version "1.9.22"
-    kotlin("plugin.jpa") version "1.9.22"
+    kotlin("jvm") version "1.9.25"
+    kotlin("plugin.spring") version "1.9.25"
+    kotlin("plugin.jpa") version "1.9.25"
     // kotlin("kapt") version "1.9.22"
 }
 
 group = "ru.scisolutions"
-version = "0.10.0-SNAPSHOT"
+version = "0.11.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -52,8 +53,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
+    implementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter")
     implementation("com.netflix.graphql.dgs:graphql-dgs-extended-scalars")
+    implementation("name.nkonev.multipart-spring-graphql:multipart-spring-graphql:1.4.1")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
     implementation("org.liquibase:liquibase-core:4.25.0")
     implementation("io.minio:minio:8.5.7")
@@ -71,12 +73,16 @@ dependencies {
     runtimeOnly("com.oracle.database.jdbc:ojdbc8")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11")
+    runtimeOnly("com.mysql:mysql-connector-j:8.4.0")
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.0")
 
     // kapt("org.springframework.boot:spring-boot-configuration-processor")
     compileOnly("org.springframework.boot:spring-boot-configuration-processor")
 
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter-test")
 }
 
 tasks.withType<KotlinCompile> {
