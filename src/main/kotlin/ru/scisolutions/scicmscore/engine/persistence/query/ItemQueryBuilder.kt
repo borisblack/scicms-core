@@ -14,7 +14,6 @@ import com.healthmarketscience.sqlbuilder.UpdateQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
-import ru.scisolutions.scicmscore.engine.model.FieldType
 import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
