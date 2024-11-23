@@ -31,12 +31,11 @@ class AttributeSqlParameterSource : MapSqlParameterSource {
             -> this.addValue(paramName, value, Types.VARCHAR)
 
             FieldType.bool -> this.addValue(paramName, value, Types.SMALLINT)
-            FieldType.int,
-            FieldType.long,
-            FieldType.float,
-            FieldType.double,
-            FieldType.decimal
-            -> this.addValue(paramName, value)
+            FieldType.int -> this.addValue(paramName, value, Types.INTEGER)
+            FieldType.long -> this.addValue(paramName, value, Types.BIGINT)
+            FieldType.float -> this.addValue(paramName, value, Types.FLOAT)
+            FieldType.double -> this.addValue(paramName, value, Types.DOUBLE)
+            FieldType.decimal -> this.addValue(paramName, value, Types.DECIMAL)
 
             FieldType.date -> this.addValue(paramName, value, Types.DATE)
             FieldType.time -> {

@@ -1,6 +1,5 @@
 package ru.scisolutions.scicmscore.engine.handler.util
 
-import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
 object DataHandlerUtil {
@@ -9,7 +8,7 @@ object DataHandlerUtil {
             val attribute = item.spec.getAttribute(it)
             !attribute.isCollection()
         }
-        .plus(ItemRec.ID_ATTR_NAME)
+        // .plus(ItemRec.ID_ATTR_NAME)
         .plus(item.idAttribute)
         .toSet()
 

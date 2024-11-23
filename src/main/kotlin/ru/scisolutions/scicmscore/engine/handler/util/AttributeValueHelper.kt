@@ -87,7 +87,11 @@ class AttributeValueHelper(
             FieldType.uuid, FieldType.string, FieldType.text, FieldType.enum, FieldType.email -> value
             FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
             FieldType.password -> if (attribute.encode == true) UserGroupManagerImpl.passwordEncoder.encode(value as String) else value
-            FieldType.int, FieldType.long, FieldType.float, FieldType.double, FieldType.decimal -> value
+            FieldType.int -> if (value is String) value.toInt() else value
+            FieldType.long -> if (value is String) value.toLong() else value
+            FieldType.float -> if (value is String) value.toFloat() else value
+            FieldType.double -> if (value is String) value.toDouble() else value
+            FieldType.decimal -> if (value is String) value.toBigDecimal() else value
             FieldType.date, FieldType.time, FieldType.datetime, FieldType.timestamp -> value
             FieldType.bool -> value
             FieldType.array, FieldType.json -> value
@@ -153,32 +157,32 @@ class AttributeValueHelper(
             }
             FieldType.sequence -> throw IllegalArgumentException("Sequence cannot be set manually")
             FieldType.int -> {
-                if (value !is Int) {
+                if (value !is Int && value !is String) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
                 }
-
-                validateAttributeNumberValue(item, attrName, attribute, value)
+                val intValue = if (value is String) value.toInt() else value as Int
+                validateAttributeNumberValue(item, attrName, attribute, intValue)
             }
             FieldType.long -> {
-                if (value !is Int && value !is Long) {
+                if (value !is Int && value !is Long && value !is String) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
                 }
-
-                validateAttributeNumberValue(item, attrName, attribute, value as Number)
+                val longValue = if (value is String) value.toLong() else value as Number
+                validateAttributeNumberValue(item, attrName, attribute, longValue)
             }
             FieldType.float, FieldType.double -> {
-                if (value !is Float && value !is Double) {
+                if (value !is Float && value !is Double && value !is String) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
                 }
-
-                validateAttributeNumberValue(item, attrName, attribute, value as Number)
+                val doubleValue = if (value is String) value.toDouble() else value as Number
+                validateAttributeNumberValue(item, attrName, attribute, doubleValue)
             }
             FieldType.decimal -> {
-                if (value !is Float && value !is Double && value !is BigDecimal) {
+                if (value !is Float && value !is Double && value !is BigDecimal && value !is String) {
                     throw IllegalArgumentException(WRONG_VALUE_TYPE_MSG.format(item.name, attrName, value))
                 }
-
-                validateAttributeNumberValue(item, attrName, attribute, value as Number)
+                val decimalValue = if (value is String) value.toBigDecimal() else value as Number
+                validateAttributeNumberValue(item, attrName, attribute, decimalValue)
             }
             FieldType.date -> {
                 if (value !is LocalDate) {

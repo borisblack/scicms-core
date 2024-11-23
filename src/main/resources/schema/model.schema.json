@@ -290,7 +290,7 @@
           "maxLength": 50
         },
         "keyed": {
-          "description": "Primary key flag (used only for id attribute)",
+          "description": "Primary key flag",
           "type": "boolean"
         },
         "required": {

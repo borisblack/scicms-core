@@ -64,7 +64,7 @@ class ItemQueryBuilder {
 
         val sqlParamName = "${table.alias}_$keyColName"
         query.addCondition(BinaryCondition.equalTo(keyCol, CustomSql(":$sqlParamName")))
-        paramSource.addValue(sqlParamName, key, FieldType.string)
+        paramSource.addValue(sqlParamName, key, keyAttribute.type)
 
         if (permissionIds != null) {
             val permissionCondition = getPermissionCondition(table, permissionIds)
