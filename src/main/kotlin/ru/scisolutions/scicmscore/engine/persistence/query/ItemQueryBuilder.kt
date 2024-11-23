@@ -66,8 +66,8 @@ class ItemQueryBuilder {
         query.addCondition(BinaryCondition.equalTo(keyCol, CustomSql(":$sqlParamName")))
         paramSource.addValue(sqlParamName, key, FieldType.string)
 
-        val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null) {
+        if (permissionIds != null) {
+            val permissionCondition = getPermissionCondition(table, permissionIds)
             query.addCondition(permissionCondition)
         }
 
@@ -99,8 +99,8 @@ class ItemQueryBuilder {
 
         paramSource.addValue(sqlParamName, attrValue, attribute.type)
 
-        val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null) {
+        if (permissionIds != null) {
+            val permissionCondition = getPermissionCondition(table, permissionIds)
             query.addCondition(permissionCondition)
         }
 
@@ -139,19 +139,15 @@ class ItemQueryBuilder {
                 .addAllColumns()
                 .addCondition(InCondition(keyCol, *keys.toTypedArray()))
 
-        val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null) {
+        if (permissionIds != null) {
+            val permissionCondition = getPermissionCondition(table, permissionIds)
             query.addCondition(permissionCondition)
         }
 
         return query.validate()
     }
 
-    private fun getPermissionCondition(table: DbTable, permissionIds: Set<String>?): Condition? {
-        if (permissionIds == null) {
-            return null
-        }
-
+    private fun getPermissionCondition(table: DbTable, permissionIds: Set<String>): Condition {
         val permissionIdCol = DbColumn(table, ItemRec.PERMISSION_COL_NAME, null, null)
 
         return if (permissionIds.isEmpty()) {
@@ -228,8 +224,8 @@ class ItemQueryBuilder {
             // query.addSetClause(column, SQL.toSqlValue(recValue))
         }
 
-        val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null) {
+        if (permissionIds != null) {
+            val permissionCondition = getPermissionCondition(table, permissionIds)
             query.addCondition(permissionCondition)
         }
 
@@ -254,8 +250,8 @@ class ItemQueryBuilder {
 
         paramSource.addValue(sqlParamName, attrValue, attribute.type)
 
-        val permissionCondition = getPermissionCondition(table, permissionIds)
-        if (permissionCondition != null) {
+        if (permissionIds != null) {
+            val permissionCondition = getPermissionCondition(table, permissionIds)
             query.addCondition(permissionCondition)
         }
 

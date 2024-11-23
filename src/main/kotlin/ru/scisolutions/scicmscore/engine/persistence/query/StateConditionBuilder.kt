@@ -10,11 +10,17 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 
 @Component
 class StateConditionBuilder {
-    fun newStateCondition(table: DbTable, item: Item, state: String?): Condition? = if (state == null) {
-        UnaryCondition.EMPTY
-    } else {
-        val stateCol = DbColumn(table, STATE_COL_NAME, null, null)
-        BinaryCondition.equalTo(stateCol, state)
+    fun newStateCondition(table: DbTable, item: Item, state: String?): Condition? {
+        if (!item.hasLifecycleAttribute() || !item.hasStateAttribute()) {
+            return null
+        }
+
+        return if (state == null) {
+            UnaryCondition.EMPTY
+        } else {
+            val stateCol = DbColumn(table, STATE_COL_NAME, null, null)
+            BinaryCondition.equalTo(stateCol, state)
+        }
     }
 
     companion object {

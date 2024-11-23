@@ -58,24 +58,25 @@ class UpdateHandler(
             throw IllegalArgumentException("State can be changed only by promote action")
         }
 
-        if (!item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (isLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id)
         }
 
         val nonCollectionData = input.data.filterKeys { !item.spec.getAttribute(it).isCollection() }
         val mergedData = attributeValueHelper.merge(item, nonCollectionData, prevItemRec)
         val preparedData = attributeValueHelper.prepareValuesToSave(item, mergedData)
-        val itemRec =
-            ItemRec(preparedData.toMutableMap().withDefault { null }).apply {
-                lockedBy = null
-            }
+        val itemRec = ItemRec(preparedData.toMutableMap().withDefault { null })
+        if (isLockable) {
+            itemRec.lockedBy = null
+        }
 
         // Assign other attributes
         versionManager.assignVersionAttributes(item, itemRec, null)
         localizationManager.assignLocaleAttribute(item, itemRec, null)
         lifecycleManager.assignLifecycleAttributes(item, prevItemRec, itemRec)
         permissionManager.assignPermissionAttribute(item, prevItemRec, itemRec)
-        auditManager.assignUpdateAttributes(itemRec)
+        auditManager.assignUpdateAttributes(item, itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
@@ -93,7 +94,7 @@ class UpdateHandler(
             )
         }
 
-        if (!item.notLockable) {
+        if (isLockable) {
             itemRecDao.unlockByIdOrThrow(item, input.id)
         }
 

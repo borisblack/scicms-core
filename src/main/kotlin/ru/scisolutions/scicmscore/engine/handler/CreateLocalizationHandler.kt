@@ -42,7 +42,7 @@ class CreateLocalizationHandler(
 ) {
     fun createLocalization(itemName: String, input: CreateLocalizationInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
-        if (!item.localized) {
+        if (!item.localized || !item.hasLocaleAttribute()) {
             throw IllegalArgumentException("Item [$itemName] is not localized")
         }
 
@@ -59,7 +59,8 @@ class CreateLocalizationHandler(
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] has the same locale (${input.locale})")
         }
 
-        if (!item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (isLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id) // lock
         }
 
@@ -73,16 +74,21 @@ class CreateLocalizationHandler(
                 if (this[item.idAttribute] == null) {
                     this[item.idAttribute] = id
                 }
-                this.id = id
-                this.lockedBy = null
+
+                if (item.hasIdAttribute() && this.id == null) {
+                    this.id = id
+                }
             }
+        if (isLockable) {
+            itemRec.lockedBy = null
+        }
 
         // Assign other attributes
         sequenceManager.assignSequenceAttributes(item, itemRec)
         localizationManager.assignLocaleAttribute(item, itemRec, input.locale)
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
-        auditManager.assignUpdateAttributes(itemRec)
+        auditManager.assignUpdateAttributes(item, itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
@@ -121,7 +127,7 @@ class CreateLocalizationHandler(
             copyRelationHelper.copyCollectionRelations(item, prevItemRec, itemRec)
         }
 
-        if (!item.notLockable) {
+        if (isLockable) {
             itemRecDao.unlockByIdOrThrow(item, input.id) // unlock
         }
 

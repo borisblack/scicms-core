@@ -121,8 +121,10 @@ class FindAllQueryBuilder(
             )
         }
 
-        val permissionCondition = getPermissionCondition(table)
-        query.addCondition(permissionCondition)
+        if (item.hasPermissionAttribute()) {
+            val permissionCondition = getPermissionCondition(table)
+            query.addCondition(permissionCondition)
+        }
 
         return query.validate()
     }

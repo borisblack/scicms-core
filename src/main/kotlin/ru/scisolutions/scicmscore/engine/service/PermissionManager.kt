@@ -14,14 +14,26 @@ class PermissionManager(
     private val aclHelper: AclHelper
 ) {
     fun assignPermissionAttribute(item: Item, itemRec: ItemRec) {
+        if (!item.hasPermissionAttribute()) {
+            return
+        }
+
         itemRec.permission = checkPermissionId(item, itemRec.permission)
     }
 
     fun assignPermissionAttribute(item: Item, prevItemRec: ItemRec, itemRec: ItemRec) {
+        if (!item.hasPermissionAttribute()) {
+            return
+        }
+
         itemRec.permission = checkPermissionId(item, prevItemRec.permission, itemRec.permission)
     }
 
     fun checkPermissionId(item: Item, permissionId: String?): String {
+        if (!item.hasPermissionAttribute()) {
+            throw IllegalArgumentException("Item has no permission attribute.")
+        }
+
         val allowedPermissions = allowedPermissionService.findAllByItemName(item.name)
 
         return if (permissionId == null) {
@@ -40,6 +52,10 @@ class PermissionManager(
     }
 
     fun checkPermissionId(item: Item, prevPermissionId: String?, permissionId: String?): String {
+        if (!item.hasPermissionAttribute()) {
+            throw IllegalArgumentException("Item has no permission attribute.")
+        }
+
         val allowedPermissions = allowedPermissionService.findAllByItemName(item.name)
         val defaultPermission = getDefaultPermission(item.name)
         val effectiveDefaultPermission = allowedPermissions.find { it.isDefault }?.targetId ?: defaultPermission

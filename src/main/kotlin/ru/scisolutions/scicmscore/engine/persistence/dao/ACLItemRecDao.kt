@@ -37,14 +37,14 @@ class ACLItemRecDao(
         findByIdFor(item, id, selectAttrNames, Acl.Mask.ADMINISTRATION)
 
     private fun findByIdFor(item: Item, id: String, selectAttrNames: Set<String>?, accessMask: Acl.Mask): ItemRec? {
-        val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
+        val permissionIds: Set<String>? = if (item.hasPermissionAttribute()) permissionService.idsByAccessMask(accessMask) else null
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindByIdQuery(item, id, paramSource, selectAttrNames, permissionIds)
         return findOne(item, query.toString(), paramSource)
     }
 
     private fun findByKeyFor(item: Item, keyAttrName: String, key: String, selectAttrNames: Set<String>?, accessMask: Acl.Mask): ItemRec? {
-        val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
+        val permissionIds: Set<String>? = if (item.hasPermissionAttribute()) permissionService.idsByAccessMask(accessMask) else null
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindByKeyQuery(item, keyAttrName, key, paramSource, selectAttrNames, permissionIds)
         return findOne(item, query.toString(), paramSource)
@@ -73,7 +73,7 @@ class ACLItemRecDao(
         findAllByKeysFor(item, item.idAttribute, ids, accessMask)
 
     private fun findAllByKeysFor(item: Item, keyAttrName: String, keys: Set<String>, accessMask: Acl.Mask): List<ItemRec> {
-        val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
+        val permissionIds: Set<String>? = if (item.hasPermissionAttribute()) permissionService.idsByAccessMask(accessMask) else null
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindAllByKeysQuery(item, keyAttrName, keys, paramSource, permissionIds)
         val sql = query.toString()
@@ -85,7 +85,7 @@ class ACLItemRecDao(
     }
 
     private fun countByIdsFor(item: Item, ids: Set<String>, accessMask: Acl.Mask): Int {
-        val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
+        val permissionIds: Set<String>? = if (item.hasPermissionAttribute()) permissionService.idsByAccessMask(accessMask) else null
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindAllByIdsQuery(item, ids, paramSource, permissionIds)
         return count(item, query.toString(), paramSource)
@@ -107,7 +107,7 @@ class ACLItemRecDao(
         findAllByAttributeFor(item, attrName, attrValue, Acl.Mask.ADMINISTRATION)
 
     private fun findAllByAttributeFor(item: Item, attrName: String, attrValue: Any, accessMask: Acl.Mask): List<ItemRec> {
-        val permissionIds: Set<String> = permissionService.idsByAccessMask(accessMask)
+        val permissionIds: Set<String>? = if (item.hasPermissionAttribute()) permissionService.idsByAccessMask(accessMask) else null
         val paramSource = AttributeSqlParameterSource()
         val query = itemQueryBuilder.buildFindAllByAttributeQuery(item, attrName, attrValue, paramSource, permissionIds)
         val sql = query.toString()

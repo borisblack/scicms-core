@@ -59,7 +59,8 @@ class DeleteHandler(
             throw IllegalArgumentException("Item [$itemName] cannot be deleted.")
         }
 
-        if (!item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (isLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id)
         }
 

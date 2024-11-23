@@ -28,12 +28,16 @@ class PromoteHandler(
 ) {
     fun promote(itemName: String, input: PromoteInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
+        if (!item.hasLifecycleAttribute() || !item.hasStateAttribute()) {
+            throw IllegalArgumentException("Item [$itemName] has no lifecycle or state attribute.")
+        }
 
         val itemRec =
             aclItemRecDao.findByIdForWrite(item, input.id)
                 ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
 
-        if (!item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (isLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id)
         }
 
@@ -60,7 +64,7 @@ class PromoteHandler(
 
         itemRec.state = input.state
 
-        auditManager.assignUpdateAttributes(itemRec)
+        auditManager.assignUpdateAttributes(item, itemRec)
 
         itemRecDao.updateById(item, input.id, itemRec) // update
 
@@ -71,7 +75,7 @@ class PromoteHandler(
             instance.promote(itemName, input.id, input.state)
         }
 
-        if (!item.notLockable) {
+        if (isLockable) {
             itemRecDao.unlockByIdOrThrow(item, input.id)
         }
 

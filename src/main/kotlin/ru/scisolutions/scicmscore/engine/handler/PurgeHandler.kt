@@ -37,7 +37,8 @@ class PurgeHandler(
             aclItemRecDao.findByIdForDelete(item, input.id)
                 ?: throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] not found.")
 
-        if (!item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (isLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id)
         }
 

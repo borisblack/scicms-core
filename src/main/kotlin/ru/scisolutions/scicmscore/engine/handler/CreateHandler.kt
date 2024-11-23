@@ -60,7 +60,7 @@ class CreateHandler(
                     this[item.idAttribute] = id
                 }
 
-                if (item.hasIdAttribute()) {
+                if (item.hasIdAttribute() && this.id == null) {
                     this.id = id
                 }
 
@@ -75,7 +75,7 @@ class CreateHandler(
         localizationManager.assignLocaleAttribute(item, itemRec, input.locale)
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
-        auditManager.assignAuditAttributes(itemRec)
+        auditManager.assignAuditAttributes(item, itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 

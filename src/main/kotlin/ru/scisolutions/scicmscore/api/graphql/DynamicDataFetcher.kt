@@ -71,7 +71,13 @@ class DynamicDataFetcher(
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "create$capitalizedItemName"), createDataFetcher)
                 }
 
-                if (it.versioned) {
+                val isVersioned = it.versioned &&
+                    it.hasConfigIdAttribute() &&
+                    it.hasMajorRevAttribute() &&
+                    it.hasGenerationAttribute() &&
+                    it.hasCurrentAttribute()
+
+                if (isVersioned) {
                     codeRegistryBuilder
                         .dataFetcher(
                             FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Version"),
@@ -82,7 +88,7 @@ class DynamicDataFetcher(
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "update$capitalizedItemName"), updateDataFetcher)
                 }
 
-                if (it.localized) {
+                if (it.localized && it.hasLocaleAttribute()) {
                     codeRegistryBuilder
                         .dataFetcher(
                             FieldCoordinates.coordinates(MUTATION_TYPE, "create${capitalizedItemName}Localization"),
@@ -93,12 +99,12 @@ class DynamicDataFetcher(
                 codeRegistryBuilder
                     .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "delete$capitalizedItemName"), deleteDataFetcher)
 
-                if (it.versioned) {
+                if (isVersioned) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "purge$capitalizedItemName"), purgeDataFetcher)
                 }
 
-                if (!it.notLockable) {
+                if (!it.notLockable && it.hasLockedByAttribute()) {
                     codeRegistryBuilder
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "lock$capitalizedItemName"), lockDataFetcher)
 
@@ -106,8 +112,10 @@ class DynamicDataFetcher(
                         .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "unlock$capitalizedItemName"), unlockDataFetcher)
                 }
 
-                codeRegistryBuilder
-                    .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote$capitalizedItemName"), promoteDataFetcher)
+                if (it.hasLifecycleAttribute() && it.hasStateAttribute()) {
+                    codeRegistryBuilder
+                        .dataFetcher(FieldCoordinates.coordinates(MUTATION_TYPE, "promote$capitalizedItemName"), promoteDataFetcher)
+                }
 
                 // Custom methods
                 if (!it.implementation.isNullOrBlank()) {

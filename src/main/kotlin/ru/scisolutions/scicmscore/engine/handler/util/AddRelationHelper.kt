@@ -85,7 +85,7 @@ class AddRelationHelper(
                 return 0
             }
 
-            auditManager.assignUpdateAttributes(itemRec)
+            auditManager.assignUpdateAttributes(item, itemRec)
             return itemRecDao.updateById(item, id, itemRec)
         }
     }

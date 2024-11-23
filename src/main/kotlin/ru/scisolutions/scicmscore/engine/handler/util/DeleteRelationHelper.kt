@@ -156,7 +156,7 @@ class DeleteRelationHelper(
     }
 
     private fun updateByAttribute(item: Item, attrName: String, attrValue: Any, itemRec: ItemRec): Int {
-        auditManager.assignUpdateAttributes(itemRec)
+        auditManager.assignUpdateAttributes(item, itemRec)
         val itemsToUpdate = aclItemRecDao.findAllByAttributeForWrite(item, attrName, attrValue)
         itemsToUpdate.forEach {
             itemRecDao.updateById(item, it.asString(item.idAttribute), itemRec)

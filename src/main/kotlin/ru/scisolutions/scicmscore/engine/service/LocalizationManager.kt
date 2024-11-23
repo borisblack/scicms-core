@@ -12,6 +12,10 @@ class LocalizationManager(
     private val localeService: LocaleService
 ) {
     fun assignLocaleAttribute(item: Item, itemRec: ItemRec, locale: String?) {
+        if (!item.hasLocaleAttribute()) {
+            return
+        }
+
         if (!item.localized) {
             itemRec.locale = null
             return

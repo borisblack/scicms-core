@@ -16,6 +16,10 @@ class LifecycleManager(
     private val aclHelper: AclHelper
 ) {
     fun assignLifecycleAttributes(item: Item, itemRec: ItemRec) {
+        if (!item.hasLifecycleAttribute() || !item.hasStateAttribute()) {
+            return
+        }
+
         var lifecycleId = itemRec.lifecycle
         val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
         if (lifecycleId == null) {
@@ -36,6 +40,10 @@ class LifecycleManager(
     }
 
     fun assignLifecycleAttributes(item: Item, prevItemRec: ItemRec, itemRec: ItemRec) {
+        if (!item.hasLifecycleAttribute() || !item.hasStateAttribute()) {
+            return
+        }
+
         var lifecycleId = itemRec.lifecycle
         val allowedLifecycles = allowedLifecycleService.findAllByItemName(item.name)
         val defaultLifecycleId = allowedLifecycles.find { it.isDefault }?.targetId ?: Lifecycle.DEFAULT_LIFECYCLE_ID

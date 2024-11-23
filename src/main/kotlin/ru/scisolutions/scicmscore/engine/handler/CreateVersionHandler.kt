@@ -44,7 +44,9 @@ class CreateVersionHandler(
 ) {
     fun createVersion(itemName: String, input: CreateVersionInput, selectAttrNames: Set<String>): Response {
         val item = itemService.getByName(itemName)
-        if (!item.versioned) {
+        if (!item.versioned ||
+            !item.hasConfigIdAttribute() || !item.hasMajorRevAttribute() || !item.hasGenerationAttribute() || !item.hasCurrentAttribute()
+        ) {
             throw IllegalArgumentException("Item [$itemName] is not versioned")
         }
 
@@ -57,7 +59,8 @@ class CreateVersionHandler(
             throw IllegalArgumentException("Item [$itemName] with ID [${input.id}] is not a current version")
         }
 
-        if (!item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (isLockable) {
             itemRecDao.lockByIdOrThrow(item, input.id)
         }
 
@@ -71,9 +74,14 @@ class CreateVersionHandler(
                 if (this[item.idAttribute] == null) {
                     this[item.idAttribute] = id
                 }
-                this.id = id
-                this.lockedBy = null
+
+                if (item.hasIdAttribute() && this.id == null) {
+                    this.id = id
+                }
             }
+        if (isLockable) {
+            itemRec.lockedBy = null
+        }
 
         // Assign other attributes
         sequenceManager.assignSequenceAttributes(item, itemRec)
@@ -81,7 +89,7 @@ class CreateVersionHandler(
         localizationManager.assignLocaleAttribute(item, itemRec, input.locale)
         lifecycleManager.assignLifecycleAttributes(item, itemRec)
         permissionManager.assignPermissionAttribute(item, itemRec)
-        auditManager.assignUpdateAttributes(itemRec)
+        auditManager.assignUpdateAttributes(item, itemRec)
 
         DataHandlerUtil.checkRequiredAttributes(item, itemRec.keys)
 
@@ -118,7 +126,7 @@ class CreateVersionHandler(
             copyRelationHelper.copyCollectionRelations(item, prevItemRec, itemRec)
         }
 
-        if (!item.notLockable) {
+        if (isLockable) {
             itemRecDao.unlockByIdOrThrow(item, input.id)
         }
 

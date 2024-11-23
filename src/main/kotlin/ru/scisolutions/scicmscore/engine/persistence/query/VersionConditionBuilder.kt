@@ -10,6 +10,10 @@ import ru.scisolutions.scicmscore.engine.persistence.entity.Item
 @Component
 class VersionConditionBuilder {
     fun newVersionCondition(table: DbTable, item: Item, majorRev: String?): Condition? {
+        if (!item.hasMajorRevAttribute() || !item.hasCurrentAttribute()) {
+            return null
+        }
+
         val currentCol = DbColumn(table, IS_CURRENT_COL_NAME, null, null)
         return if (item.versioned) {
             if (majorRev == null) {

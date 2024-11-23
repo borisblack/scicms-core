@@ -58,29 +58,37 @@ class DynamicTypeDefinitions(
                     mutationBuilder.fieldDefinition(mutationItemFields.create(it))
                 }
 
-                if (it.versioned) {
+                val isVersioned = it.versioned &&
+                    it.hasConfigIdAttribute() &&
+                    it.hasMajorRevAttribute() &&
+                    it.hasGenerationAttribute() &&
+                    it.hasCurrentAttribute()
+
+                if (isVersioned) {
                     mutationBuilder.fieldDefinition(mutationItemFields.createVersion(it))
                 } else if (!excludeItemPolicy.excludeFromUpdateMutation(it)) {
                     mutationBuilder.fieldDefinition(mutationItemFields.update(it))
                 }
 
-                if (it.localized) {
+                if (it.localized && it.hasLocaleAttribute()) {
                     mutationBuilder.fieldDefinition(mutationItemFields.createLocalization(it))
                 }
 
                 mutationBuilder.fieldDefinition(mutationItemFields.delete(it))
 
-                if (it.versioned) {
+                if (isVersioned) {
                     mutationBuilder.fieldDefinition(mutationItemFields.purge(it))
                 }
 
-                if (!it.notLockable) {
+                if (!it.notLockable && it.hasLockedByAttribute()) {
                     typeDefinitionRegistry.add(itemObjectTypes.flaggedResponse(it))
                     mutationBuilder.fieldDefinition(mutationItemFields.lock(it))
                     mutationBuilder.fieldDefinition(mutationItemFields.unlock(it))
                 }
 
-                mutationBuilder.fieldDefinition(mutationItemFields.promote(it))
+                if (it.hasLifecycleAttribute() && it.hasStateAttribute()) {
+                    mutationBuilder.fieldDefinition(mutationItemFields.promote(it))
+                }
 
                 // Add custom mutations
                 if (!it.implementation.isNullOrBlank()) {

@@ -26,7 +26,8 @@ class LockHandler(
 ) {
     fun lock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
-        if (item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (!isLockable) {
             throw IllegalArgumentException("Item [$itemName] is not lockable")
         }
 
@@ -57,7 +58,8 @@ class LockHandler(
 
     fun unlock(itemName: String, id: String, selectAttrNames: Set<String>): FlaggedResponse {
         val item = itemService.getByName(itemName)
-        if (item.notLockable) {
+        val isLockable = !item.notLockable && item.hasLockedByAttribute()
+        if (!isLockable) {
             throw IllegalArgumentException("Item [$itemName] is not lockable")
         }
 

@@ -9,6 +9,10 @@ import ru.scisolutions.scicmscore.engine.persistence.service.RevisionPolicyServi
 @Service
 class VersionManager(private val revisionPolicyService: RevisionPolicyService) {
     fun assignVersionAttributes(item: Item, itemRec: ItemRec, majorRev: String?) {
+        if (!item.hasMajorRevAttribute() || !item.hasGenerationAttribute() || !item.hasCurrentAttribute()) {
+            return
+        }
+
         if (item.versioned && item.manualVersioning) {
             if (majorRev == null) {
                 throw IllegalArgumentException("Attribute [majorRev] is required")
@@ -30,6 +34,10 @@ class VersionManager(private val revisionPolicyService: RevisionPolicyService) {
     fun assignVersionAttributes(item: Item, prevItemRec: ItemRec, itemRec: ItemRec, majorRev: String?) {
         if (!item.versioned) {
             throw IllegalArgumentException("Item is not versioned")
+        }
+
+        if (!item.hasMajorRevAttribute() || !item.hasGenerationAttribute() || !item.hasCurrentAttribute()) {
+            return
         }
 
         if (item.manualVersioning) {

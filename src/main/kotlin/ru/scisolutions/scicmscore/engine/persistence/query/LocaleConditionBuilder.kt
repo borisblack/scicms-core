@@ -15,6 +15,10 @@ class LocaleConditionBuilder(
     private val i18nProps: I18nProps
 ) {
     fun newLocaleCondition(table: DbTable, item: Item, locale: String?): Condition? {
+        if (!item.hasLocaleAttribute()) {
+            return null
+        }
+
         val localeCol = DbColumn(table, LOCALE_COL_NAME, null, null)
         return if (item.localized) {
             if (locale == null) {

@@ -84,12 +84,17 @@ class ItemRecDao(
         if (itemRec[item.idAttribute] == null) {
             itemRec[item.idAttribute] = id
         }
-        itemRec.id = id
-        itemRec.configId = id
+        if (item.hasIdAttribute()) {
+            itemRec.id = id
+        }
+
+        if (item.hasConfigIdAttribute()) {
+            itemRec.configId = id
+        }
 
         sequenceManager.assignSequenceAttributes(item, itemRec)
         versionManager.assignVersionAttributes(item, itemRec, itemRec.majorRev)
-        auditManager.assignAuditAttributes(itemRec)
+        auditManager.assignAuditAttributes(item, itemRec)
 
         return insert(item, itemRec)
     }
@@ -208,7 +213,7 @@ class ItemRecDao(
             val lastId = lastItemRec.asString(item.idAttribute)
             logger.debug("Setting current flag for the last versioned item [${item.name}] with ID $lastId")
             lastItemRec.current = true
-            auditManager.assignUpdateAttributes(lastItemRec)
+            auditManager.assignUpdateAttributes(item, lastItemRec)
             updateById(item, lastId, lastItemRec)
         } else {
             logger.debug("There are no another items [${item.name}] within group.")
