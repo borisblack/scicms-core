@@ -1,6 +1,6 @@
 package ru.scisolutions.scicmscore.api.graphql
 
-import com.netflix.graphql.dgs.internal.DefaultDgsQueryExecutor.ReloadSchemaIndicator
+import com.netflix.graphql.dgs.ReloadSchemaIndicator
 import org.redisson.api.RAtomicLong
 import org.redisson.api.RedissonClient
 import org.springframework.stereotype.Component

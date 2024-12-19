@@ -6,10 +6,10 @@ plugins {
     id("com.netflix.dgs.codegen") version "6.2.1"
     // id("org.graalvm.buildtools.native") version "0.9.28"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
-    kotlin("plugin.jpa") version "1.9.25"
-    // kotlin("kapt") version "1.9.22"
+    kotlin("jvm") version "2.1.0"
+    kotlin("plugin.spring") version "2.1.0"
+    kotlin("plugin.jpa") version "2.1.0"
+    // kotlin("kapt") version "2.1.0"
 }
 
 group = "ru.scisolutions"
