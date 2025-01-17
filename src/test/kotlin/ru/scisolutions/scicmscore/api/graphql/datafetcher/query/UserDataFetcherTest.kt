@@ -1,7 +1,6 @@
 package ru.scisolutions.scicmscore.api.graphql.datafetcher.query
 
 import com.netflix.graphql.dgs.DgsQueryExecutor
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration
 import com.netflix.graphql.dgs.autoconfig.DgsExtendedScalarsAutoConfiguration
 import com.netflix.graphql.dgs.scalars.UploadScalar
 import com.netflix.graphql.dgs.test.EnableDgsTest
@@ -21,7 +20,6 @@ import java.util.UUID
 
 @SpringBootTest(
     classes = [
-        DgsAutoConfiguration::class,
         DgsExtendedScalarsAutoConfiguration::class,
         CustomScalarsRegistration::class,
         UploadScalar::class,
