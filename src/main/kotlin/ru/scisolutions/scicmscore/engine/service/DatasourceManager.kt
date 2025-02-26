@@ -65,8 +65,8 @@ class DatasourceManager(
     private fun createDataSourceBucket(name: String): DataSourceBucket {
         val datasource = datasourceService.getByName(name)
         val sourceType = datasource.sourceType
-        if (sourceType == DatasourceType.SPREADSHEET || sourceType == DatasourceType.CSV) {
-            throw IllegalArgumentException("Datasource [$name] has invalid type.")
+        if (sourceType != DatasourceType.DATABASE) {
+            throw IllegalArgumentException("Datasource [$name] has invalid type: $sourceType.")
         }
 
         val config = HikariConfig().apply {
