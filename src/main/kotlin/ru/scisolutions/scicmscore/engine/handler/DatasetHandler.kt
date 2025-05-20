@@ -72,20 +72,18 @@ class DatasetHandler(
         )
     }
 
-/*    fun loadExcelData(datasetName: String, input: DatasetInput): DatasetResponse {
+    fun loadExcelData(datasetName: String, input: DatasetInput): DatasetResponse {
         val workbook = WorkbookFactory.create(File(datasetName))
         val sheet = workbook.getSheet(datasetName) ?: throw IllegalArgumentException("Sheet $datasetName not found")
 
-        // Чтение данных
         val headers = readHeaders(sheet)
         val rows = readRows(sheet, headers)
 
-        // Обработка данных
         val processedData = processData(rows, input)
 
         return DatasetResponse(
             data = processedData,
-            meta = ResponseCollectionMeta(pagination = null) // Пагинация больше не используется
+            meta = ResponseCollectionMeta(pagination = null)
         )
     }
 
@@ -109,7 +107,7 @@ class DatasetHandler(
             colIndex++
         }
 
-        return headers.distinct() // Гарантируем уникальность имен колонок
+        return headers.distinct()
     }
 
     private fun readRows(sheet: Sheet, headers: List<String>): List<Map<String, Any?>> {
@@ -139,10 +137,8 @@ class DatasetHandler(
     private fun processData(rows: List<Map<String, Any?>>, input: DatasetInput): List<DatasetRec> {
         var result = rows
 
-        // Применяем фильтры
         input.filters?.let { result = applyFilters(result, it) }
 
-        // Применяем агрегации
         result = applyAggregations(result, input.fields)
 
         return result.map { DatasetRec(it) }
@@ -153,14 +149,12 @@ class DatasetHandler(
         filter: DatasetFiltersInput
     ): List<Map<String, Any?>> {
         val filtered = when {
-            // Обработка AND
             filter.andFilterList != null -> {
                 filter.andFilterList.fold(rows) { acc, f ->
                     applyFilters(acc, f)
                 }
             }
 
-            // Обработка OR
             filter.orFilterList != null -> {
                 rows.filter { row ->
                     filter.orFilterList.any { orFilter ->
@@ -169,13 +163,11 @@ class DatasetHandler(
                 }
             }
 
-            // Обработка NOT
             filter.notFilter != null -> {
                 val excluded = applyFilters(rows, filter.notFilter)
                 rows.minus(excluded.toSet())
             }
 
-            // Базовые фильтры по полям
             else -> {
                 rows.filter { row ->
                     filter.fieldFilters.all { (fieldName, filterInput) ->
@@ -192,8 +184,6 @@ class DatasetHandler(
     }
 
     private fun checkFieldCondition(value: Any?, filter: PrimitiveFilterInput): Boolean {
-        // Предполагаем, что PrimitiveFilterInput содержит Map операторов
-        // Например: PrimitiveFilterInput(operators = mapOf("\$gte" to 10))
         return filter.operators.entries.all { (operator, expected) ->
             when (operator) {
                 "\$eq" -> value == expected
@@ -218,7 +208,6 @@ class DatasetHandler(
                         "\$gte" -> (value as? Comparable<Any>)?.compareTo(expected) >= 0
                         "\$lte" -> (value as? Comparable<Any>)?.compareTo(expected) <= 0
                         "\$eq" -> value == expected
-                        // Добавьте другие операторы при необходимости
                         else -> throw IllegalArgumentException("Unsupported operator: $operator")
                     }
                 }
@@ -244,7 +233,6 @@ class DatasetHandler(
                     }
                 }
         } else {
-            // Просто выбираем запрошенные поля
             rows.map { row ->
                 fields.associate { field ->
                     field.name to row[field.name]
@@ -261,5 +249,5 @@ class DatasetHandler(
             "avg" -> rows.mapNotNull { (it[sourceField] as? Number)?.toDouble() }.average()
             else -> throw IllegalArgumentException("Unsupported aggregate: ${field.aggregate}")
         }
-    }*/
+    }
 }
