@@ -35,7 +35,7 @@ class DatasetHandler(
 
         return when (dataset.datasource?.sourceType) {
             DatasourceType.SPREADSHEET -> {
-                /*loadExcelData(datasetName, input)*/
+                loadExcelData(datasetName, input)
                 TODO("CSV file processing")
             }
             DatasourceType.CSV -> {
