@@ -3,6 +3,7 @@ package ru.scisolutions.scicmscore.engine.persistence.dao
 import com.healthmarketscience.sqlbuilder.SelectQuery
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec
+import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.slf4j.LoggerFactory
@@ -27,15 +28,12 @@ private fun getColumnType(sheet: Sheet, columnIndex: Int): FieldType {
         val cell = row?.getCell(columnIndex)
 
         if (cell != null) {
-            return when (cell.cellType) {
-                CellType.STRING -> FieldType.string
-                CellType.NUMERIC -> FieldType.float
-                CellType.BOOLEAN -> FieldType.bool
-                else -> FieldType.unknown
-            }
+            if (cell.cellType == CellType.STRING) { return FieldType.string }
+            if (cell.cellType == CellType.NUMERIC) { return FieldType.float }
+            if (cell.cellType == CellType.BOOLEAN) { return FieldType.bool }
         }
     }
-    return FieldType.unknown
+    return FieldType.float
 }
 
 @Service
@@ -63,6 +61,7 @@ class DatasourceDao(
     }
 
     fun loadTables(datasource: String, input: DatasourceTablesInput): DatasourceTablesResponse {
+        logger.debug("ABRACADABRA")
         val dataSource = dsManager.dataSource(datasource)
         dataSource.connection.use {
             val metaData = it.metaData
@@ -87,40 +86,48 @@ class DatasourceDao(
     }
 
     fun loadExcelTables(filePath: String, input: DatasourceTablesInput): DatasourceTablesResponse {
-        val logger = LoggerFactory.getLogger(this::class.java)
+        try {
+            val logger = LoggerFactory.getLogger(this::class.java)
 
-        val file = File(filePath)
-        if (!file.exists()) {
-            throw IllegalArgumentException("File not found: $filePath")
-        }
-
-        val workbook = WorkbookFactory.create(file)
-        val tableList = mutableListOf<Table>()
-        logger.debug("Fetching Excel file sheets")
-        for (sheetIndex in 0 until workbook.numberOfSheets) {
-            val sheet: Sheet = workbook.getSheetAt(sheetIndex)
-
-            val metadata = mutableMapOf<String, Any>()
-            metadata["sheetName"] = sheet.sheetName
-            metadata["rowCount"] = sheet.physicalNumberOfRows
-            metadata["columnCount"] = sheet.getRow(0)?.physicalNumberOfCells ?: 0
-            metadata["isHidden"] = sheet.sheetHidden
-
-
-            val headerRow = sheet.getRow(0) // заголовок
-            val numberOfColumns = headerRow?.physicalNumberOfCells ?: 0
-            val columns = mutableMapOf<String, Column>()
-
-            for (colIndex in 0 until numberOfColumns) {
-                val columnName = headerRow?.getCell(colIndex)?.stringCellValue ?: "Unknown"
-                val col = Column(type = getColumnType(sheet, colIndex))
-                columns[columnName] = col
+            val file = File("/Users/alexkrasav4ik/Desktop/fbe1cc29-0c07-4da8-8cb7-7379170e8dec.xlsx")
+            if (!file.exists()) {
+                throw IllegalArgumentException("File not fooound: $filePath")
             }
-            tableList.add(Table(name = sheet.sheetName, columns = columns))
+
+            val workbook = WorkbookFactory.create(file)
+            val tableList = mutableListOf<Table>()
+            logger.debug("Fetching Excel file sheets")
+            logger.debug("workbook.numberOfSheets {}", workbook.numberOfSheets)
+            for (sheetIndex in 0 until workbook.numberOfSheets) {
+                logger.debug("current ind {}", sheetIndex)
+                val sheet: Sheet = workbook.getSheetAt(sheetIndex)
+
+                val metadata = mutableMapOf<String, Any>()
+                metadata["sheetName"] = sheet.sheetName
+                metadata["rowCount"] = sheet.physicalNumberOfRows
+                metadata["columnCount"] = sheet.getRow(0)?.physicalNumberOfCells ?: 0
+
+
+                val headerRow = sheet.getRow(0) // заголовок
+                val numberOfColumns = headerRow?.physicalNumberOfCells ?: 0
+                val columns = mutableMapOf<String, Column>()
+                logger.debug("numb of columns {}", numberOfColumns)
+                for (colIndex in 0 until numberOfColumns) {
+                    logger.debug("cell value {}", headerRow?.getCell(colIndex))
+                    val columnName = headerRow?.getCell(colIndex)?.toString() ?: "Unknown"
+                    val col = Column(type = getColumnType(sheet, colIndex))
+                    columns[columnName] = col
+                }
+                tableList.add(Table(name = sheet.sheetName, columns = columns))
+            }
+            logger.debug("Fetched Excel file sheets.")
+            val response = DatasourceTablesResponse(data = tableList)
+            return response
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw IllegalArgumentException("ahahah")
+            //return DatasourceTablesResponse(data = mutableListOf<Table>())
         }
-        logger.debug("Fetched Excel file sheets.")
-        val response = DatasourceTablesResponse(data = tableList)
-        return response
     }
 
     companion object {

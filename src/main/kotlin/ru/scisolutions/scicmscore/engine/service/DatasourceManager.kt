@@ -65,7 +65,7 @@ class DatasourceManager(
     private fun createDataSourceBucket(name: String): DataSourceBucket {
         val datasource = datasourceService.getByName(name)
         val sourceType = datasource.sourceType
-        if (sourceType != DatasourceType.DATABASE) {
+        if (sourceType != DatasourceType.DATABASE && sourceType != DatasourceType.SPREADSHEET) {
             throw IllegalArgumentException("Datasource [$name] has invalid type: $sourceType.")
         }
 

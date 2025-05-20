@@ -31,6 +31,7 @@ class DatasourceHandler(
                 }
 
                 else -> {
+                    logger.debug("smth228")
                     return datasourceDao.loadTables(datasourceName, input)
                 }
             }
