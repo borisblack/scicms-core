@@ -46,7 +46,7 @@ class ItemApplier(
         if (itemEntity == null) {
             if (item.checksum == null && !itemService.canCreate(ItemEntity.ITEM_ITEM_NAME)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("You has no CREATE permission for [${ItemEntity.ITEM_ITEM_NAME}] item")
+                throw AccessDeniedException("You have no CREATE permission for [${ItemEntity.ITEM_ITEM_NAME}] item")
             }
 
             tableSeeder.create(item) // create table
@@ -60,7 +60,7 @@ class ItemApplier(
         } else if (isChanged(itemEntity, item)) {
             if (item.checksum == null && (itemEntity.core || (itemService.findByNameForWrite(name)) == null)) {
                 schemaLockService.unlockOrThrow()
-                throw AccessDeniedException("You has no WRITE permission for [$name] item.")
+                throw AccessDeniedException("You have no WRITE permission for [$name] item.")
             }
 
 //            if (item.metadata.dataSource != itemEntity.ds) {

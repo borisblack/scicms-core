@@ -8,8 +8,8 @@ class Item(
     override val metadata: ItemMetadata,
     override var checksum: String?,
     val includeTemplates: LinkedHashSet<String>,
-    val spec: ItemSpec
-) : AbstractModel(coreVersion, metadata, checksum) {
+    override val spec: ItemSpec
+) : AbstractModel(coreVersion, metadata, checksum, spec) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true

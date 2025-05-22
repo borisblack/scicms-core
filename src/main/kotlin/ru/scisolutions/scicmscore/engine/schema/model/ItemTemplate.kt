@@ -7,8 +7,8 @@ class ItemTemplate(
     override val coreVersion: String,
     override val metadata: ItemTemplateMetadata,
     override var checksum: String?,
-    val spec: ItemSpec
-) : AbstractModel(coreVersion, metadata, checksum) {
+    override val spec: ItemSpec
+) : AbstractModel(coreVersion, metadata, checksum, spec) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
