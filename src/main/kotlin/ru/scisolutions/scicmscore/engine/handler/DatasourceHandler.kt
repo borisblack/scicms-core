@@ -23,7 +23,7 @@ class DatasourceHandler(
         if ((isMainDataSource && (Acl.getRoles() intersect mainDatasourceRoles).isNotEmpty()) || datasource != null) {
             when (datasource?.sourceType) {
                 DatasourceType.SPREADSHEET -> {
-                    TODO("Excel file processing")
+                    return datasourceDao.loadExcelTables(datasourceName, input)
                 }
 
                 DatasourceType.CSV -> {
@@ -31,6 +31,7 @@ class DatasourceHandler(
                 }
 
                 else -> {
+                    logger.debug("smth228")
                     return datasourceDao.loadTables(datasourceName, input)
                 }
             }

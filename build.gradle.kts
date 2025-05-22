@@ -65,6 +65,9 @@ dependencies {
     implementation("com.google.guava:guava:33.0.0-jre")
     implementation("org.redisson:redisson-hibernate-6:3.24.3")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.2.7.Final")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.apache.poi:poi:5.2.0")
+    implementation("org.apache.poi:poi-ooxml:5.2.0")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
