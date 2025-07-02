@@ -107,7 +107,7 @@ class UpdateHandler(
 
         implInstance?.afterUpdate(itemName, response)
 
-        cacheService.optimizeSchemaCaches(item)
+        cacheService.actualizeCaches(item, itemRec)
 
         return response
     }

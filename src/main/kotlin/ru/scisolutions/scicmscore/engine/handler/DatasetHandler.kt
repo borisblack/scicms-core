@@ -30,7 +30,7 @@ class DatasetHandler(
                 TODO("CSV file processing")
             }
             else -> {
-                load(dataset, input);
+                load(dataset, input)
             }
         }
     }

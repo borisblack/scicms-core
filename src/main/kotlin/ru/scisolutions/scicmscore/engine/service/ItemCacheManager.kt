@@ -6,6 +6,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import ru.scisolutions.scicmscore.config.props.DataProps
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item.Companion.LIFECYCLE_ATTR_NAME
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item.Companion.PERMISSION_ATTR_NAME
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item.Companion.CREATED_BY_ATTR_NAME
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item.Companion.UPDATED_BY_ATTR_NAME
+import ru.scisolutions.scicmscore.engine.persistence.entity.Item.Companion.LOCKED_BY_ATTR_NAME
 import ru.scisolutions.scicmscore.engine.persistence.query.AttributeSqlParameterSource
 import java.util.concurrent.TimeUnit
 
@@ -66,9 +71,16 @@ class ItemCacheManager(
         return resSql
     }
 
+    /**
+     * Clears item's cache.
+     */
     fun clear(item: Item) {
         getItemCache(item.name).clear()
-        for ((_, attr) in item.spec.relationAttributes) {
+
+        // Clear related items' caches excluded system attributes (it seems that changing the current item should not affect them).
+        for ((attrName, attr) in item.spec.relationAttributes) {
+            if (attrName in (systemTargetAttrNames)) continue
+
             val target = requireNotNull(attr.target)
             getItemCache(target).clear()
         }
@@ -77,5 +89,12 @@ class ItemCacheManager(
     companion object {
         private const val ITEM_QUERY_RESULTS_REGION = "scicms_item_query_results"
         private val logger = LoggerFactory.getLogger(ItemCacheManager::class.java)
+        private val systemTargetAttrNames = setOf(
+            LIFECYCLE_ATTR_NAME,
+            PERMISSION_ATTR_NAME,
+            CREATED_BY_ATTR_NAME,
+            UPDATED_BY_ATTR_NAME,
+            LOCKED_BY_ATTR_NAME
+        )
     }
 }

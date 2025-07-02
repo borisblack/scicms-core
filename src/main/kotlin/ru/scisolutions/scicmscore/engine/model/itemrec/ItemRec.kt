@@ -2,6 +2,9 @@ package ru.scisolutions.scicmscore.engine.model.itemrec
 
 import java.time.OffsetDateTime
 
+/**
+ * Item record base class.
+ */
 open class ItemRec(
     protected val map: MutableMap<String, Any?> = mutableMapOf<String, Any?>().withDefault { null }
 ) : MutableMap<String, Any?> by map {

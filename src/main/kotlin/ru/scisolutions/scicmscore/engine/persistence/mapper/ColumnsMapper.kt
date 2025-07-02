@@ -18,10 +18,11 @@ class ColumnsMapper {
         val columns = mutableMapOf<String, Column>()
         for (i in 1..metaData.columnCount) {
             val colName = metaData.getColumnName(i).lowercase()
-            columns[colName] =
-                Column(
-                    type = getColumnType(metaData.getColumnType(i))
-                )
+            val newColumn = Column(
+                type = getColumnType(metaData.getColumnType(i))
+            )
+            newColumn.validate(colName)
+            columns[colName] = newColumn
         }
 
         return columns.toMap()
@@ -29,44 +30,48 @@ class ColumnsMapper {
 
     fun map(dataset: Dataset, metaData: SqlRowSetMetaData): Map<String, Column> {
         val prevColumns = dataset.spec.columns
-        val columns =
-            if (PRESERVE_CUSTOM_COLUMNS) {
-                prevColumns.filterValues { it.custom }.toMutableMap()
-            } else {
-                mutableMapOf()
-            }
+        val columns = if (PRESERVE_CUSTOM_COLUMNS) {
+            prevColumns.filterValues { it.custom }.toMutableMap()
+        } else {
+            mutableMapOf()
+        }
 
         for (i in 1..metaData.columnCount) {
             val colName = metaData.getColumnName(i).lowercase()
             val prevColumn = prevColumns[colName]
-            columns[colName] =
-                Column(
-                    type = getColumnType(metaData.getColumnType(i)),
-                    custom = false,
-                    hidden = prevColumn?.hidden ?: false,
-                    source = null,
-                    aggregate = null,
-                    formula = null,
-                    alias = prevColumn?.alias,
-                    format = prevColumn?.format,
-                    colWidth = prevColumn?.colWidth
-                )
+            val newColumn = Column(
+                type = getColumnType(metaData.getColumnType(i)),
+                custom = false,
+                hidden = prevColumn?.hidden ?: false,
+                source = null,
+                aggregate = null,
+                formula = null,
+                alias = prevColumn?.alias,
+                format = prevColumn?.format,
+                colWidth = prevColumn?.colWidth,
+                rls = prevColumn?.rls
+            )
+            newColumn.validate(colName)
+            columns[colName] = newColumn
         }
 
         // Resolve actual types for custom columns
         return columns.mapValues { (colName, column) ->
             if (column.custom) {
-                Column(
+                val newColumn = Column(
                     type = datasetSqlExprEvaluator.calculateType(columns, colName, column), // resolve actual type
-                    custom = column.custom,
+                    custom = true,
                     hidden = column.hidden,
                     source = column.source,
                     aggregate = column.aggregate,
                     formula = column.formula,
                     alias = column.alias,
                     format = column.format,
-                    colWidth = column.colWidth
+                    colWidth = column.colWidth,
+                    rls = column.rls
                 )
+                newColumn.validate(colName)
+                newColumn
             } else {
                 column
             }

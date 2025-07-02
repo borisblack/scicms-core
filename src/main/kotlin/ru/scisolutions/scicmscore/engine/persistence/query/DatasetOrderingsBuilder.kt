@@ -6,11 +6,11 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable
 import java.util.regex.Pattern
 
-class DatasetOrderingsParser {
-    fun parseOrderings(inputSortList: List<String>, table: DbTable?, query: SelectQuery) =
-        inputSortList.forEach { parseOrdering(it, table, query) }
+class DatasetOrderingsBuilder {
+    fun addOrderings(inputSortList: List<String>, table: DbTable?, query: SelectQuery) =
+        inputSortList.forEach { addOrdering(it, table, query) }
 
-    private fun parseOrdering(inputSort: String, table: DbTable?, query: SelectQuery) {
+    private fun addOrdering(inputSort: String, table: DbTable?, query: SelectQuery) {
         val matcher = sortAttrPattern.matcher(inputSort)
         if (!matcher.matches()) {
             throw IllegalArgumentException("Invalid sort expression: $inputSort")

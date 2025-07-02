@@ -125,6 +125,7 @@ The `spec` field contains descriptions of the columns in the `columns` subfield.
 - `alias` - column alias for display in the user interface, used in the client application [SciCMS Client](https://github.com/borisblack/scicms-client);
 - `format` - column value format for display in the user interface, used in the client application [SciCMS Client](https://github.com/borisblack/scicms-client); can take values `int`, `float`, `date`, `time`, `datetime`;
 - `colWidth` - column width for display in the user interface, used in the client application [SciCMS Client](https://github.com/borisblack/scicms-client).
+- `rls` - row-level access control settings (see below).
 
 Changing the dataset is performed using the `updateDataset` operation with similar GraphQL query parameters.
 
@@ -215,5 +216,28 @@ Sample answer:
 The `data` block contains the found records, the `meta` block contains information about pagination.
 In addition to them, the response contains such fields as `query` (text of the actual query in the database), `params` (query parameters), `cacheHit` (cache hit flag) and `timeMs` (query execution time in milliseconds).
 These fields are used to analyze query performance. If the dataset is cacheable, but the data size exceeds the application configuration parameter `scicms-core.data.max-cached-records-size` (default - 200), then the data will not be cached.
+
+### Row-level security (RLS)
+
+SciCMS allows to restrict access to data for users or roles within a single dataset using the RLS (Row-level security) mechanism. The logic of RLS is similar to solutions for other BI products, for example, [Yandex DataLens](https://datalens.yandex.cloud).
+The dataset column specification contains a description of the rules in its own `rls` field. The description is presented as a list of objects with the following properties:
+- `value` - the string value of the column to which this rule is restricted (RLS supports access control only for string values); may contain the `*` symbol, meaning that any value is available;
+- `identities` - a list of users/roles to which this rule applies; roles must begin with the prefix `@role:`;
+- `anyIdentity` - a flag indicating that the rule is applicable to any user or role; if this flag is set, then the `users` and `roles` lists must be empty;
+- `active` - the "enable" flag of the rule; the rule is applied only if the flag is set.
+
+An example of an RLS rule:
+```json
+{
+  "value": "value1",
+  "identities": [
+    "user1",
+    "user2",
+    "@role:ROLE_MANAGER"
+  ],
+  "anyIdentity": false,
+  "active": true
+}
+```
 
 Based on the described tools, the client application [SciCMS Client](https://github.com/borisblack/scicms-client) implements a business analysis module that provides a convenient user interface for managing data sources and datasets, building visualization panels, as well as many other functions.

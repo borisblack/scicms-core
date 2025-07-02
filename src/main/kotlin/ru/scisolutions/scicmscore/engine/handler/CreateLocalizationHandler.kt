@@ -140,7 +140,7 @@ class CreateLocalizationHandler(
 
         createLocalizationHook?.afterCreateLocalization(itemName, response)
 
-        cacheService.optimizeSchemaCaches(item)
+        cacheService.actualizeCaches(item, itemRec)
 
         return response
     }

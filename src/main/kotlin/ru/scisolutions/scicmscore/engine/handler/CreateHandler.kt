@@ -101,7 +101,7 @@ class CreateHandler(
 
         createHook?.afterCreate(itemName, response)
 
-        cacheService.optimizeSchemaCaches(item)
+        cacheService.actualizeCaches(item, itemRec)
 
         return response
     }

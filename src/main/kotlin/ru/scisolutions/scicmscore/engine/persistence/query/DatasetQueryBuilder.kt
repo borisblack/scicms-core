@@ -37,7 +37,7 @@ class DatasetQueryBuilder(
 
         // Sort
         if (!input.sort.isNullOrEmpty()) {
-            datasetOrderingsParser.parseOrderings(
+            datasetOrderingsBuilder.addOrderings(
                 input.sort,
                 null, // no table for custom fields
                 query
@@ -139,8 +139,8 @@ class DatasetQueryBuilder(
             .addFromTable(table)
 
         // Filters
-        val fields = input.fields?.associateBy { it.name } ?: emptyMap()
         if (input.filters != null) {
+            val fields = input.fields?.associateBy { it.name } ?: emptyMap()
             val whereFilters = whereFiltersInput(dataset, fields, input.filters)
             if (whereFilters.isNotEmpty()) {
                 query.addCondition(
@@ -187,11 +187,15 @@ class DatasetQueryBuilder(
             query.addGroupings(*groupingColumns)
         }
 
+        // Process RLS
+        datasetRlsRulesBuilder.addRlsRules(dataset, table, input, query)
+
         return query.validate()
     }
 
     companion object {
         private val datasetSqlExprEvaluator = DatasetSqlExprEvaluator()
-        private val datasetOrderingsParser = DatasetOrderingsParser()
+        private val datasetRlsRulesBuilder = DatasetRlsRulesBuilder()
+        private val datasetOrderingsBuilder = DatasetOrderingsBuilder()
     }
 }

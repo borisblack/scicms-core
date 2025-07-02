@@ -166,13 +166,13 @@ class Item(
         private const val MINOR_REV_ATTR_NAME = "minorRev"
         private const val CURRENT_ATTR_NAME = "current"
         private const val LOCALE_ATTR_NAME = "locale"
-        private const val LIFECYCLE_ATTR_NAME = "lifecycle"
+        const val LIFECYCLE_ATTR_NAME = "lifecycle"
         private const val STATE_ATTR_NAME = "state"
-        private const val PERMISSION_ATTR_NAME = "permission"
+        const val PERMISSION_ATTR_NAME = "permission"
         private const val CREATED_AT_ATTR_NAME = "createdAt"
-        private const val CREATED_BY_ATTR_NAME = "createdBy"
+        const val CREATED_BY_ATTR_NAME = "createdBy"
         private const val UPDATED_AT_ATTR_NAME = "updatedAt"
-        private const val UPDATED_BY_ATTR_NAME = "updatedBy"
-        private const val LOCKED_BY_ATTR_NAME = "lockedBy"
+        const val UPDATED_BY_ATTR_NAME = "updatedBy"
+        const val LOCKED_BY_ATTR_NAME = "lockedBy"
     }
 }

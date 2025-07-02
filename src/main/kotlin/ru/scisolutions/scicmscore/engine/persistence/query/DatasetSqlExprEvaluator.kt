@@ -17,18 +17,6 @@ class DatasetSqlExprEvaluator {
         return evaluate(dataset, table, input, omitAlias)
     }
 
-    private fun toFieldInput(dataset: Dataset, fieldName: String): DatasetFieldInput {
-        val field = dataset.spec.getField(fieldName)
-
-        return DatasetFieldInput(
-            name = fieldName,
-            custom = field.custom,
-            source = field.source,
-            aggregate = field.aggregate,
-            formula = field.formula
-        )
-    }
-
     fun evaluate(dataset: Dataset, table: DbTable, input: DatasetFieldInput, omitAlias: Boolean = false): CustomSql {
         if (input.aggregate == null) {
             if (input.formula == null) {
@@ -79,14 +67,22 @@ class DatasetSqlExprEvaluator {
 
     fun isAggregate(dataset: Dataset, fieldName: String): Boolean = isAggregate(toFieldInput(dataset, fieldName))
 
+    fun toFieldInput(dataset: Dataset, fieldName: String): DatasetFieldInput {
+        val field = dataset.spec.getField(fieldName)
+
+        return DatasetFieldInput(
+            name = fieldName,
+            custom = field.custom,
+            source = field.source,
+            aggregate = field.aggregate,
+            formula = field.formula
+        )
+    }
+
     fun isAggregate(input: DatasetFieldInput): Boolean =
-        input.custom && (
-            (input.source != null && input.aggregate != null) || (
-                input.formula != null && input.formula.contains(
-                    aggregateRegex
-                )
-                )
-            )
+        input.custom && ((input.source != null && input.aggregate != null) || (input.formula != null && input.formula.contains(
+            aggregateRegex
+        )))
 
     fun calculateType(columns: Map<String, Column>, colName: String, column: Column): FieldType = calculateType(
         columns,

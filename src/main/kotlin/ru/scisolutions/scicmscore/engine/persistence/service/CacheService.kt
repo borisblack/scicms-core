@@ -8,13 +8,19 @@ import org.redisson.api.RedissonClient
 import org.slf4j.LoggerFactory
 import org.springframework.cache.CacheManager
 import org.springframework.stereotype.Service
+import ru.scisolutions.scicmscore.engine.model.itemrec.DatasetItemRec
+import ru.scisolutions.scicmscore.engine.model.itemrec.ItemRec
 import ru.scisolutions.scicmscore.engine.persistence.entity.Item
+import ru.scisolutions.scicmscore.engine.service.DatasetCacheManager
+import ru.scisolutions.scicmscore.engine.service.ItemCacheManager
 
 @Service
 class CacheService(
     private val emf: EntityManagerFactory,
     private val entityManager: EntityManager,
     private val cacheManager: CacheManager,
+    private val itemCacheManager: ItemCacheManager,
+    private val datasetCacheManager: DatasetCacheManager,
     private val redissonClient: RedissonClient
 ) {
     fun clearSchemaCaches(vararg classes: Class<*>) {
@@ -34,12 +40,25 @@ class CacheService(
         logger.debug("All schema cashes cleared.")
     }
 
-    fun optimizeSchemaCaches(changedItem: Item) {
-        if (!changedItem.core || changedItem.name in excludedItemNames) {
+    /**
+     * Clears the appropriate caches when the item's record changes.
+     */
+    fun actualizeCaches(item: Item, itemRec: ItemRec) {
+        if (!item.core || isItemExcluded(item.name)) {
             return
         }
 
         clearAllSchemaCaches()
+
+        if (isSecurityItem(item.name)) {
+            // Security settings have been changed. Clear item and dataset caches
+            itemCacheManager.clearAll()
+            datasetCacheManager.clearAll()
+        } else if (item.name == Item.DATASET_ITEM_NAME) {
+            // In dataset RLS could have changed. Clear dataset cache
+            val datasetItemRec = DatasetItemRec(itemRec)
+            datasetCacheManager.clear(requireNotNull(datasetItemRec.name))
+        }
     }
 
     fun printStatistics() {
@@ -70,8 +89,23 @@ class CacheService(
             }
     }
 
+    private fun isItemExcluded(itemName: String) = itemName in excludedItemNames
+
+    private fun isSecurityItem(itemName: String) = itemName in securityItemNames
+
     companion object {
         private val logger = LoggerFactory.getLogger(CacheService::class.java)
         private val excludedItemNames = setOf(Item.MEDIA_ITEM_NAME)
+        private val securityItemNames = setOf(
+            Item.ACCESS_ITEM_NAME,
+            Item.ALLOWED_PERMISSION_ITEM_NAME,
+            Item.GROUP_ITEM_NAME,
+            Item.GROUP_MEMBER_ITEM_NAME,
+            Item.GROUP_ROLE_ITEM_NAME,
+            Item.IDENTITY_ITEM_NAME,
+            Item.PERMISSION_ITEM_NAME,
+            Item.ROLE_ITEM_NAME,
+            Item.USER_ITEM_NAME
+        )
     }
 }

@@ -80,7 +80,7 @@ class DatasetCacheManager(
         return resSql
     }
 
-    fun clear(dataset: Dataset) = getDatasetCache(dataset.name).clear()
+    fun clear(datasetName: String) = getDatasetCache(datasetName).clear()
 
     companion object {
         private const val DATASET_QUERY_RESULTS_REGION = "scicms_dataset_query_results"

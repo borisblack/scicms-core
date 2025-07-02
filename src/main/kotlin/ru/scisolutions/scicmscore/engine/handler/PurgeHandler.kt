@@ -77,7 +77,7 @@ class PurgeHandler(
 
         implInstance?.afterPurge(itemName, response)
 
-        cacheService.optimizeSchemaCaches(item)
+        cacheService.actualizeCaches(item, itemRec)
 
         return response
     }

@@ -139,7 +139,7 @@ class CreateVersionHandler(
 
         createVersionHook?.afterCreateVersion(itemName, response)
 
-        cacheService.optimizeSchemaCaches(item)
+        cacheService.actualizeCaches(item, itemRec)
 
         return response
     }

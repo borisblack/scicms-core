@@ -89,7 +89,7 @@ class DeleteHandler(
 
         implInstance?.afterDelete(itemName, response)
 
-        cacheService.optimizeSchemaCaches(item)
+        cacheService.actualizeCaches(item, itemRec)
 
         return response
     }
