@@ -57,6 +57,16 @@ data class Column(
                 throw IllegalStateException("Invalid RLS identities definition for column [$colName]. All identities are allowed, but the personal identities list is not empty.")
         }
 
+        override fun toString(): String {
+            val invalid = (anyValue && anyIdentity) || (anyIdentity && identities.isNotEmpty())
+            val prefix = if (invalid) "! " else ""
+            val comment = if (active) "" else "# "
+            val valueExp = if (anyValue) "*" else "'$value'"
+            val identitiesExp = if (anyIdentity) "*" else identities.joinToString(", ")
+
+            return "$prefix$comment$valueExp: $identitiesExp"
+        }
+
         companion object {
             private const val ROLE_PREFIX = "@role:"
         }
@@ -80,6 +90,8 @@ data class Column(
     override fun hashCode(): Int = Objects.hash(
         type, custom, source, formula, hidden, aggregate?.name, alias, colWidth
     )
+
+
 
     @get:JsonIgnore
     val typeRequired: FieldType

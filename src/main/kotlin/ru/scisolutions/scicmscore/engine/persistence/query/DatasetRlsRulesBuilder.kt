@@ -10,30 +10,26 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import ru.scisolutions.scicmscore.engine.model.FieldType
-import ru.scisolutions.scicmscore.engine.model.input.DatasetInput
 import ru.scisolutions.scicmscore.engine.persistence.entity.Dataset
 
 class DatasetRlsRulesBuilder {
     /**
      * Adds RLS restrictions into SQL query.
      */
-    fun addRlsRules(dataset: Dataset, table: DbTable, input: DatasetInput, query: SelectQuery) {
+    fun addRlsRules(dataset: Dataset, table: DbTable, query: SelectQuery) {
         val activeRls = dataset.spec.activeRls
         if (activeRls.isEmpty()) return
 
         val authentication = SecurityContextHolder.getContext().authentication ?: throw AccessDeniedException("User is not authenticated.")
         val authorities = AuthorityUtils.authorityListToSet(authentication.authorities)
-        val fields = input.fields?.associateBy { it.name }
-            ?: dataset.spec.columns.mapValues { (colName, _) -> datasetSqlExprEvaluator.toFieldInput(dataset, colName) }
 
         val falseCond = CustomSql("0 = 1")
 
         // Process RLS entries
         for ((colName, rlsEntries) in activeRls) {
-            val field = fields[colName] ?: continue
-            val type = datasetSqlExprEvaluator.calculateType(dataset.spec.columns, field)
-            if (type != FieldType.string)
-                throw IllegalArgumentException("Only string column types are supported in RLS (actual type of column [$colName] is [$type]).")
+            val column = dataset.spec.getColumn(colName)
+            if (column.typeRequired != FieldType.string)
+                throw IllegalArgumentException("Only string column types are supported in RLS (actual type of column [$colName] is [${column.type}]).")
 
             var colWhereCond: InCondition? = null
             var colHavingCond: InCondition? = null
@@ -48,7 +44,7 @@ class DatasetRlsRulesBuilder {
                         break
                     }
 
-                    if (datasetSqlExprEvaluator.isAggregate(field)) {
+                    if (datasetSqlExprEvaluator.isAggregate(dataset, colName)) {
                         if (colHavingCond == null) {
                             val col = DbColumn(table, colName, null, null)
                             colHavingCond = InCondition(col, rlsEntry.value)

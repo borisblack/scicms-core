@@ -36,7 +36,7 @@ class DatasetSqlExprEvaluator {
                         throw IllegalArgumentException("Illegal formula [${input.formula}].")
                     }
 
-                    val column = dataset.spec.getField(colName)
+                    val column = dataset.spec.getColumn(colName)
                     if (column.custom) {
                         throw IllegalArgumentException("Custom columns ($colName) cannot be used in formulas.")
                     }
@@ -68,7 +68,7 @@ class DatasetSqlExprEvaluator {
     fun isAggregate(dataset: Dataset, fieldName: String): Boolean = isAggregate(toFieldInput(dataset, fieldName))
 
     fun toFieldInput(dataset: Dataset, fieldName: String): DatasetFieldInput {
-        val field = dataset.spec.getField(fieldName)
+        val field = dataset.spec.getColumn(fieldName)
 
         return DatasetFieldInput(
             name = fieldName,

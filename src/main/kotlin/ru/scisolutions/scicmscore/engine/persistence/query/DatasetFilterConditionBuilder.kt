@@ -113,7 +113,7 @@ class DatasetFilterConditionBuilder {
         val field = fields[fieldName]
         val fieldType =
             if (field == null) {
-                dataset.spec.getField(fieldName).typeRequired
+                dataset.spec.getColumn(fieldName).typeRequired
             } else {
                 datasetSqlExprEvaluator.calculateType(dataset.spec.columns, field)
             }

@@ -188,7 +188,7 @@ class DatasetQueryBuilder(
         }
 
         // Process RLS
-        datasetRlsRulesBuilder.addRlsRules(dataset, table, input, query)
+        datasetRlsRulesBuilder.addRlsRules(dataset, table, query)
 
         return query.validate()
     }

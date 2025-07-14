@@ -13,7 +13,7 @@ data class DatasetSpec(
             .filterValues { col -> col.rls?.any { it.active } == true }
             .mapValues { (_, col) -> col.rls?.filter { it.active } ?: emptyList() }
 
-    fun getField(fieldName: String): Column = columns[fieldName] ?: throw IllegalArgumentException("Column [$fieldName] not found.")
+    fun getColumn(fieldName: String): Column = columns[fieldName] ?: throw IllegalArgumentException("Column [$fieldName] not found.")
 
     fun validate(): DatasetSpec {
         if (!isColumnsValid()) {
