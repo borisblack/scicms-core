@@ -19,7 +19,7 @@ scicms-core:
     provider: ${MEDIA_PROVIDER:local}
     provider-options:
       local:
-        base-path: ${MEDIA_LOCAL_PATH}
+        base-path: /Users/alexkrasav4ik/Desktop/
         create-directories: true
       s3:
         endpoint: ${S3_ENDPOINT:http://127.0.0.1:9000}
@@ -60,9 +60,9 @@ spring:
       host: ${REDIS_HOST:127.0.0.1}
       port: ${REDIS_PORT:6379}
   datasource:
-    url: ${MAIN_DB_URL}
-    username: ${MAIN_DB_USERNAME}
-    password: ${MAIN_DB_PASSWORD}
+    url: jdbc:postgresql://127.0.0.1:5432/scicms
+    username: scicms
+    password: scicms
     hikari:
       maximum-pool-size: 5
       minimum-idle: 1
